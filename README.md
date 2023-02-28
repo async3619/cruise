@@ -1,7 +1,24 @@
-# Tauri + React + Typescript
+<h1 align="center">
+  <br />
+  🚢
+  <br />
+  Cruise
+  <sup>
+    <br />
+    <br />
+  </sup>    
+</h1>
 
-This template should help get you started developing with Tauri, React and Typescript in Vite.
+<div align="center">
+    <a href="https://github.com/async3619/cruise/blob/main/LICENSE">
+        <img src="https://img.shields.io/github/license/async3619/cruise.svg?style=flat-square" alt="MIT License" />
+    </a>
+    <br />
+    <sup>next-gen media player for various platforms</sup>
+    <br />
+    <br />
+</div>
 
-## Recommended IDE Setup
+## 📖 About
 
-- [VS Code](https://code.visualstudio.com/) + [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode) + [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer)
+Cruise is a next-gen media player for various platforms. It is currently in development.
