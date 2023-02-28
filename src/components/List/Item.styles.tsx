@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 
-export const Button = styled.button`
+export const Button = styled.button<{ active: boolean }>`
     width: 100%;
 
     margin: 0 0 ${({ theme }) => theme.spacing(1)};
@@ -8,12 +8,13 @@ export const Button = styled.button`
     border: 0;
     border-radius: 4px;
 
+    position: relative;
     display: flex;
     align-items: center;
     text-align: left;
 
     color: ${({ theme }) => theme.palette.text.primary};
-    background: transparent;
+    background: ${({ active }) => (active ? "#eaeaea" : "transparent")};
 
     &:hover {
         background: #eaeaea;
@@ -28,6 +29,25 @@ export const Button = styled.button`
         margin-right: ${({ theme }) => theme.spacing(2)};
 
         display: block;
+    }
+
+    &:before {
+        content: "";
+
+        width: 3px;
+        height: 50%;
+
+        border-radius: 32px;
+
+        position: absolute;
+        top: 50%;
+        left: 0;
+
+        background: ${({ theme }) => theme.palette.primary.main};
+        transform: translateY(-50%);
+
+        opacity: ${({ active }) => (active ? 1 : 0)};
+        transition: ${({ theme }) => theme.transitions.create("opacity", { duration: 100 })};
     }
 `;
 

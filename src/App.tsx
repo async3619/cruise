@@ -1,23 +1,17 @@
 import React from "react";
-import { RouterProvider } from "react-router-dom";
+import { MemoryRouter } from "react-router-dom";
 
 import { ThemeProvider } from "@mui/material";
-import Layout from "@components/Layout";
-import { router } from "@/router";
+import Router from "@components/Router";
 
 import { mainTheme } from "@styles/theme";
 
-export interface AppProps {}
-export interface AppStates {}
-
-export default class App extends React.Component<AppProps, AppStates> {
-    public render() {
-        return (
-            <ThemeProvider theme={mainTheme}>
-                <Layout>
-                    <RouterProvider router={router} />
-                </Layout>
-            </ThemeProvider>
-        );
-    }
+export default function App() {
+    return (
+        <ThemeProvider theme={mainTheme}>
+            <MemoryRouter initialEntries={["/"]}>
+                <Router />
+            </MemoryRouter>
+        </ThemeProvider>
+    );
 }

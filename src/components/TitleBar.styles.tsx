@@ -1,7 +1,9 @@
 import styled from "@emotion/styled";
 
+import { TITLE_BAR_HEIGHT } from "@constants/layout";
+
 export const Root = styled.div`
-    min-height: ${({ theme }) => theme.spacing(6)};
+    height: ${TITLE_BAR_HEIGHT}px;
 
     margin: 0;
     padding: ${({ theme }) => theme.spacing(0, 2)};

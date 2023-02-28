@@ -1,10 +1,12 @@
 import styled from "@emotion/styled";
 
+import { SIDEBAR_WIDTH, TITLE_BAR_HEIGHT } from "@constants/layout";
+
 export const Root = styled.div`
-    width: 330px;
+    width: ${SIDEBAR_WIDTH}px;
 
     margin: 0;
-    padding: ${({ theme }) => theme.spacing(6, 0, 0, 0)};
+    padding-top: ${TITLE_BAR_HEIGHT}px;
     border-right: 1px solid ${({ theme }) => theme.palette.divider};
 
     position: fixed;

@@ -1,5 +1,6 @@
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
+import { SIDEBAR_WIDTH, TITLE_BAR_HEIGHT } from "@constants/layout";
 
 export const GlobalStyles = css`
     html,
@@ -25,7 +26,7 @@ export const Root = styled.div`
 `;
 
 export const Main = styled.main`
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    padding-top: ${TITLE_BAR_HEIGHT}px;
+    padding-left: calc(${SIDEBAR_WIDTH}px + ${({ theme }) => theme.spacing(2)});
+    padding-right: ${({ theme }) => theme.spacing(2)};
 `;

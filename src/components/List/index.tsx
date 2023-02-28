@@ -2,12 +2,13 @@ import React from "react";
 
 import ListItem from "@components/List/Item";
 
-import { ListItemType } from "@components/List/index.types";
+import { ListItemType, NormalListItem } from "@components/List/index.types";
 import { Gap, Root, Separator } from "@components/List/index.styles";
 
 export interface ListProps {
     items: ListItemType[];
-    onClick?: (item: ListItemType) => void;
+    selectedItem?: ListItemType;
+    onClick?: (item: NormalListItem) => void;
 }
 
 export default class List extends React.Component<ListProps> {
@@ -19,6 +20,7 @@ export default class List extends React.Component<ListProps> {
     };
 
     public renderItem = (item: ListItemType, index: number) => {
+        const { onClick, selectedItem } = this.props;
         if (item === "gap") {
             return this.renderGap(index);
         }
@@ -27,7 +29,7 @@ export default class List extends React.Component<ListProps> {
             return this.renderSeparator(index);
         }
 
-        return <ListItem item={item} key={item.id} />;
+        return <ListItem item={item} key={item.id} onClick={onClick} active={selectedItem === item} />;
     };
 
     public render() {
