@@ -1,24 +1,32 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 import { Typography } from "@mui/material";
+import { ArrowLeft20Regular } from "@fluentui/react-icons";
 
 import WindowControl from "@components/WindowControl";
+import { BackButton, Icon, Root } from "@components/TitleBar.styles";
 
-import { Icon, Root } from "@components/TitleBar.styles";
+import useHistoryStack from "@utils/useHistoryStack";
 
-export interface TitleBarProps {}
-export interface TitleBarStates {}
+export default function TitleBar() {
+    const navigate = useNavigate();
+    const historyStack = useHistoryStack();
 
-export default class TitleBar extends React.Component<TitleBarProps, TitleBarStates> {
-    public render() {
-        return (
-            <Root data-tauri-drag-region>
-                <Icon src="/icon.svg" alt="Application Icon" />
-                <Typography variant="body1" fontSize="0.85rem">
-                    Cruise
-                </Typography>
-                <WindowControl />
-            </Root>
-        );
-    }
+    const handleBack = () => {
+        navigate(-1);
+    };
+
+    return (
+        <Root data-tauri-drag-region>
+            <BackButton onClick={handleBack} disabled={!historyStack.length}>
+                <ArrowLeft20Regular />
+            </BackButton>
+            <Icon src="/icon.svg" alt="Application Icon" />
+            <Typography variant="body1" fontSize="0.85rem">
+                Cruise
+            </Typography>
+            <WindowControl />
+        </Root>
+    );
 }
