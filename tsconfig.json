@@ -21,7 +21,9 @@
             "@components/*": ["src/components/*"],
             "@pages/*": ["src/pages/*"],
             "@styles/*": ["src/styles/*"],
-            "@commands": ["src/bindings.ts"]
+            "@commands": ["src/bindings.ts"],
+            "@utils/*": ["src/utils/*"],
+            "@constants/*": ["src/constants/*"],
         }
     },
     "include": ["src"],

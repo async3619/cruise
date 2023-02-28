@@ -7,6 +7,12 @@ export const GlobalStyles = css`
     #root {
         height: 100%;
     }
+
+    @font-face {
+        font-family: "SUIT Variable";
+        font-weight: 100 900;
+        src: url("/suit.woff2") format("woff2-variations");
+    }
 `;
 
 export const Root = styled.div`
@@ -14,11 +20,11 @@ export const Root = styled.div`
 
     margin: 0;
     padding: 0;
+
+    background: #f9f9f9;
 `;
 
 export const Main = styled.main`
-    height: 100%;
-
     display: flex;
     justify-content: center;
     align-items: center;

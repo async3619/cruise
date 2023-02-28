@@ -12,17 +12,23 @@
   "dependencies": {
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
+    "@fluentui/react-icons": "^2.0.195",
+    "@mui/icons-material": "^5.11.11",
     "@mui/material": "^5.11.10",
     "@tauri-apps/api": "^1.2.0",
+    "memoize-one": "^6.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.8.2"
+    "react-router-dom": "^6.8.2",
+    "shortid": "^2.2.16"
   },
   "devDependencies": {
+    "@swc/plugin-emotion": "^2.5.43",
     "@tauri-apps/cli": "^1.2.2",
     "@types/node": "^18.7.10",
     "@types/react": "^18.0.15",
     "@types/react-dom": "^18.0.6",
+    "@types/shortid": "^0.0.29",
     "@typescript-eslint/eslint-plugin": "^5.54.0",
     "@typescript-eslint/parser": "^5.54.0",
     "@vitejs/plugin-react-swc": "^3.2.0",
