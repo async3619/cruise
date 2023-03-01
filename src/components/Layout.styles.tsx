@@ -3,10 +3,18 @@ import { css } from "@emotion/react";
 import { SIDEBAR_WIDTH, TITLE_BAR_HEIGHT } from "@constants/layout";
 
 export const GlobalStyles = css`
+    html {
+        font-size: 14px;
+    }
+
     html,
     body,
     #root {
         height: 100%;
+    }
+
+    * {
+        user-select: none;
     }
 
     @font-face {
@@ -27,6 +35,6 @@ export const Root = styled.div`
 
 export const Main = styled.main`
     padding-top: ${TITLE_BAR_HEIGHT}px;
-    padding-left: calc(${SIDEBAR_WIDTH}px + ${({ theme }) => theme.spacing(2)});
-    padding-right: ${({ theme }) => theme.spacing(2)};
+    padding-left: calc(${SIDEBAR_WIDTH}px + ${({ theme }) => theme.spacing(7)});
+    padding-right: ${({ theme }) => theme.spacing(7)};
 `;

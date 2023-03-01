@@ -23,9 +23,7 @@ export default function TitleBar() {
                 <ArrowLeft20Regular />
             </BackButton>
             <Icon src="/icon.svg" alt="Application Icon" />
-            <Typography variant="body1" fontSize="0.85rem">
-                Cruise
-            </Typography>
+            <Typography variant="body1">Cruise</Typography>
             <WindowControl />
         </Root>
     );

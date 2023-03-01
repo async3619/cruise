@@ -8,8 +8,13 @@ declare global {
 
 const invoke = window.__TAURI_INVOKE__;
 
-export function greet(name: string) {
-    return invoke<string>("greet", { name })
+export function getConfig() {
+    return invoke<Config>("get_config")
 }
 
+export function setConfig(config: Config) {
+    return invoke<Config>("set_config", { config })
+}
 
+export type Config = { library_directory: string[]; app_theme: AppTheme }
+export type AppTheme = "Light" | "Dark" | "System"

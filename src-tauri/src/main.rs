@@ -1,21 +1,34 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use tauri::Manager;
+mod config;
+mod library;
+
+use crate::config::Config;
 use specta::collect_types;
-use tauri_specta::{ts};
+use tauri::Manager;
+use tauri_specta::ts;
 use window_shadows::set_shadow;
 
-// Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 #[tauri::command]
 #[specta::specta]
-fn greet(name: &str) -> String {
-    format!("Hello, {}! You've been greeted from Rust!", name)
+fn get_config() -> Result<Config, String> {
+    let config = config::get_config()?;
+
+    Ok(config)
+}
+
+#[tauri::command]
+#[specta::specta]
+fn set_config(config: Config) -> Result<Config, String> {
+    let config = config::set_config(config)?;
+
+    Ok(config)
 }
 
 fn export_bindings() {
     #[cfg(debug_assertions)]
-    ts::export(collect_types![greet], "../src/bindings.ts").unwrap();
+    ts::export(collect_types![get_config, set_config], "../src/bindings.ts").unwrap();
 }
 
 fn main() {
@@ -30,7 +43,7 @@ fn main() {
 
             Ok(())
         })
-        .invoke_handler(tauri::generate_handler![greet])
+        .invoke_handler(tauri::generate_handler![get_config, set_config])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

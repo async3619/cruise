@@ -7,7 +7,7 @@ export const Root = styled.div`
 
     margin: 0;
     padding-top: ${TITLE_BAR_HEIGHT}px;
-    border-right: 1px solid ${({ theme }) => theme.palette.divider};
+    border-right: 1px solid #e5e5e5;
 
     position: fixed;
     top: 0;

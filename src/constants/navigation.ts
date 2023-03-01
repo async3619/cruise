@@ -10,8 +10,8 @@ export const NAVIGATION_ITEMS: ListItemType[] = [
     },
     "separator",
     {
-        id: "/music",
-        label: "Music",
+        id: "/musics",
+        label: "Musics",
         icon: MusicNote220Regular,
     },
     "gap",

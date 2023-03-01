@@ -30,7 +30,7 @@ export default class ListItem extends React.Component<ListItemProps, ListItemSta
             <Root>
                 <Button onClick={this.handleClick} active={active}>
                     <Icon />
-                    <Typography variant="body1" fontSize="0.9rem" lineHeight={1}>
+                    <Typography variant="body1" lineHeight={1}>
                         {item.label}
                     </Typography>
                 </Button>
