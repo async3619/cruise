@@ -9,7 +9,7 @@
         "allowSyntheticDefaultImports": true,
         "strict": true,
         "forceConsistentCasingInFileNames": true,
-        "module": "ESNext",
+        "module": "esnext",
         "moduleResolution": "Node",
         "resolveJsonModule": true,
         "isolatedModules": true,
@@ -17,15 +17,15 @@
         "jsx": "react-jsx",
         "baseUrl": ".",
         "paths": {
-            "@/*": ["src/*"],
-            "@components/*": ["src/components/*"],
-            "@pages/*": ["src/pages/*"],
-            "@styles/*": ["src/styles/*"],
-            "@commands": ["src/bindings.ts"],
-            "@utils/*": ["src/utils/*"],
-            "@constants/*": ["src/constants/*"],
+            "@/*": ["renderer/*"],
+            "@components/*": ["renderer/components/*"],
+            "@pages/*": ["renderer/pages/*"],
+            "@styles/*": ["renderer/styles/*"],
+            "@commands": ["renderer/bindings.ts"],
+            "@utils/*": ["renderer/utils/*"],
+            "@constants/*": ["renderer/constants/*"],
         }
     },
-    "include": ["src"],
+    "include": ["renderer", "main", "scripts"],
     "references": [{ "path": "./tsconfig.node.json" }]
 }

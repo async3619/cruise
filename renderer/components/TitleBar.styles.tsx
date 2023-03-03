@@ -19,9 +19,14 @@ export const Root = styled.div`
     z-index: 10;
 
     user-select: none;
+    -webkit-app-region: drag;
 
     > p {
         pointer-events: none;
+    }
+
+    > * {
+        -webkit-app-region: none;
     }
 `;
 

@@ -1,7 +1,6 @@
 import React from "react";
 
 import { Dismiss24Regular, MaximizeRegular, SquareMultiple20Regular } from "@fluentui/react-icons";
-import { appWindow } from "@tauri-apps/api/window";
 
 import { Button, MinimizeIcon, Root } from "./WindowControl.styles";
 
@@ -15,30 +14,12 @@ export default class WindowControl extends React.Component<WindowControlProps, W
         maximized: false,
     };
 
-    public async componentDidMount() {
-        await this.handleResize();
-        await appWindow.onResized(this.handleResize);
-    }
+    public async componentDidMount() {}
 
-    private handleResize = async () => {
-        const maximized = await appWindow.isMaximized();
-        this.setState({ maximized });
-    };
-    private handleMinimize = () => {
-        appWindow.minimize().then();
-    };
-    private handleMaximize = () => {
-        const { maximized } = this.state;
-
-        if (maximized) {
-            appWindow.unmaximize().then();
-        } else {
-            appWindow.maximize().then();
-        }
-    };
-    private handleClose = () => {
-        appWindow.close().then();
-    };
+    private handleResize = async () => {};
+    private handleMinimize = () => {};
+    private handleMaximize = () => {};
+    private handleClose = () => {};
 
     public render() {
         const { maximized } = this.state;
