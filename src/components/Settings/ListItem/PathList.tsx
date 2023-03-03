@@ -5,6 +5,8 @@ import StringList from "@components/UI/StringList";
 import BaseSettingsListItem from "@components/Settings/ListItem/Base";
 import { PathListSettingsItem, SettingsListItemProps } from "@components/Settings/types";
 
+import { client } from "@/api";
+
 export interface PathListSettingsListItemProps extends SettingsListItemProps<PathListSettingsItem> {}
 export interface PathListSettingsListItemStates {}
 
@@ -18,7 +20,11 @@ export default class PathListSettingsListItem extends React.Component<
 
     private handleAddPathClick = async () => {
         const { item, value, onChange } = this.props;
-        const targetPath = "";
+        const targetPath = await client.selectPath.query({
+            directory: true,
+            multiple: true,
+        });
+
         if (!targetPath) {
             return;
         }

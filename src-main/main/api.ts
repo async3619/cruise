@@ -1,4 +1,5 @@
-import { BrowserWindow } from "electron";
+import { z } from "zod";
+import { BrowserWindow, dialog, OpenDialogOptions } from "electron";
 
 import { initTRPC } from "@trpc/server";
 import { observable } from "@trpc/server/observable";
@@ -12,18 +13,40 @@ interface Context {
 const t = initTRPC.context<Context>().create({ isServer: true });
 
 export const router = t.router({
+    selectPath: t.procedure
+        .input(z.object({ directory: z.boolean().optional(), multiple: z.boolean().optional() }))
+        .query(async ({ ctx, input }) => {
+            if (!ctx.window) {
+                return;
+            }
+
+            const properties: OpenDialogOptions["properties"] = [];
+            if (input.directory) {
+                properties.push("openDirectory");
+            } else {
+                properties.push("openFile");
+            }
+
+            if (input.multiple) {
+                properties.push("multiSelections");
+            }
+
+            const { filePaths } = await dialog.showOpenDialog(ctx.window, {
+                properties,
+            });
+
+            return filePaths;
+        }),
+
     maximize: t.procedure.query(({ ctx }) => {
         ctx.window?.maximize();
     }),
-
     unmaximize: t.procedure.query(({ ctx }) => {
         ctx.window?.unmaximize();
     }),
-
     minimize: t.procedure.query(({ ctx }) => {
         ctx.window?.minimize();
     }),
-
     close: t.procedure.query(({ ctx }) => {
         ctx.window?.close();
     }),

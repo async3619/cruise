@@ -1,4 +1,6 @@
-import { Folder20Regular, FolderAdd20Regular } from "@fluentui/react-icons";
+import RefreshIcon from "@mui/icons-material/Refresh";
+import LibraryAddIcon from "@mui/icons-material/LibraryAdd";
+import LibraryMusicIcon from "@mui/icons-material/LibraryMusic";
 
 import { SettingsItem } from "@components/Settings/types";
 
@@ -8,10 +10,20 @@ export const LIBRARY_SETTINGS_ITEMS: SettingsItem[] = [
         pathType: "directory",
         id: "libraryDirectories",
         title: "Music Library Directories",
-        icon: Folder20Regular,
+        icon: LibraryMusicIcon,
         button: {
             label: "Add Directory",
-            icon: FolderAdd20Regular,
+            icon: LibraryAddIcon,
+        },
+    },
+    {
+        type: "button",
+        id: "rescanLibrary",
+        title: "Rescan Library",
+        description: "Rescan the music library to add new files.",
+        button: {
+            label: "Rescan",
+            icon: RefreshIcon,
         },
     },
 ];
