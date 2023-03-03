@@ -17,15 +17,15 @@
         "jsx": "react-jsx",
         "baseUrl": ".",
         "paths": {
-            "@/*": ["renderer/*"],
-            "@components/*": ["renderer/components/*"],
-            "@pages/*": ["renderer/pages/*"],
-            "@styles/*": ["renderer/styles/*"],
-            "@commands": ["renderer/bindings.ts"],
-            "@utils/*": ["renderer/utils/*"],
-            "@constants/*": ["renderer/constants/*"],
+            "@/*": ["src/*"],
+            "@components/*": ["src/components/*"],
+            "@pages/*": ["src/pages/*"],
+            "@styles/*": ["src/styles/*"],
+            "@commands": ["src/bindings.ts"],
+            "@utils/*": ["src/utils/*"],
+            "@constants/*": ["src/constants/*"],
         }
     },
-    "include": ["renderer", "main", "scripts"],
+    "include": ["src", "src-main", "scripts"],
     "references": [{ "path": "./tsconfig.node.json" }]
 }
