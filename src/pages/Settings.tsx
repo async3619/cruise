@@ -4,10 +4,11 @@ import Page from "@components/Page";
 
 import { LIBRARY_SETTINGS_ITEMS } from "@constants/settings";
 
-import { Config, getConfig, setConfig } from "@commands";
+import type { Config } from "@main/config";
 
 import { Root } from "@pages/Settings.styles";
 import SettingsSection from "@components/Settings/SettingsSection";
+import { client } from "@/api";
 
 export interface SettingsProps {}
 export interface SettingsStates {
@@ -20,15 +21,14 @@ export default class Settings extends React.Component<SettingsProps, SettingsSta
     };
 
     public componentDidMount() {
-        getConfig().then(config => {
+        client.getConfig.query().then(config => {
             this.setState({ config });
         });
     }
 
     private handleChange = (config: Config) => {
-        setConfig(config).then(cfg => {
-            this.setState({ config: cfg });
-        });
+        client.setConfig.mutate(config);
+        this.setState({ config });
     };
 
     public render() {

@@ -6,7 +6,7 @@ export const LIBRARY_SETTINGS_ITEMS: SettingsItem[] = [
     {
         type: "path_list",
         pathType: "directory",
-        id: "library_directory",
+        id: "libraryDirectories",
         title: "Music Library Directories",
         icon: Folder20Regular,
         button: {

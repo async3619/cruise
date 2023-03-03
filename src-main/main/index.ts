@@ -1,6 +1,10 @@
 import { app, BrowserWindow, shell } from "electron";
+import { createIPCHandler } from "electron-trpc/main";
+
 import { release } from "node:os";
 import { join } from "node:path";
+
+import { router } from "./api";
 
 // The built directory structure
 //
@@ -45,11 +49,8 @@ async function createWindow() {
         frame: false,
         webPreferences: {
             preload,
-            // Warning: Enable nodeIntegration and disable contextIsolation is not secure in production
-            // Consider using contextBridge.exposeInMainWorld
-            // Read more on https://www.electronjs.org/docs/latest/tutorial/context-isolation
             nodeIntegration: true,
-            contextIsolation: false,
+            contextIsolation: true,
         },
     });
 
@@ -73,6 +74,16 @@ async function createWindow() {
     win.webContents.setWindowOpenHandler(({ url }) => {
         if (url.startsWith("https:")) shell.openExternal(url);
         return { action: "deny" };
+    });
+
+    createIPCHandler({
+        router,
+        windows: [win],
+        createContext: async ({ event }) => {
+            return {
+                window: BrowserWindow.fromWebContents(event.sender),
+            };
+        },
     });
 }
 

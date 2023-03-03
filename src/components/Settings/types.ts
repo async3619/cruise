@@ -1,8 +1,8 @@
 import React from "react";
 
-import { Config } from "@commands";
+import type { Config } from "@main/config";
 
-import { ReplaceUnions, SelectOnly, ValueOf } from "@utils/types";
+import { ReplaceUnions, SelectOnly, UnionOnly, ValueOf } from "@utils/types";
 
 export interface BaseSettingsItem<TValueType extends null | ValueOf<ReplaceUnions<Config>>> {
     id: TValueType extends null ? string : keyof SelectOnly<ReplaceUnions<Config>, Exclude<TValueType, null>>;
@@ -25,7 +25,7 @@ export interface ButtonSettingsItem extends BaseSettingsItem<null> {
     description?: React.ReactNode | (() => React.ReactNode);
 }
 
-export interface RadioSettingsItem extends BaseSettingsItem<string> {
+export interface RadioSettingsItem extends BaseSettingsItem<ValueOf<UnionOnly<Config>>> {
     type: "radio";
     options: Array<{
         label: string;

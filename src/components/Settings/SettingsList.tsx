@@ -2,10 +2,11 @@ import React from "react";
 
 import { renderSettingsListItem } from "@components/Settings/ListItem";
 import { SettingsItem } from "@components/Settings/types";
-
 import { Root } from "@components/Settings/SettingsList.styles";
+
+import type { Config } from "@main/config";
+
 import { ValueOf } from "@utils/types";
-import { Config } from "@commands";
 
 export interface SettingsListProps {
     items: SettingsItem[];

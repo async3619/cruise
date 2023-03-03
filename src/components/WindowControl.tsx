@@ -2,40 +2,40 @@ import React from "react";
 
 import { Dismiss24Regular, MaximizeRegular, SquareMultiple20Regular } from "@fluentui/react-icons";
 
-import { Button, MinimizeIcon, Root } from "./WindowControl.styles";
+import { Button, MinimizeIcon, Root } from "@components/WindowControl.styles";
 
-export interface WindowControlProps {}
-export interface WindowControlStates {
-    maximized: boolean;
-}
+import { client, trpcReact } from "@/api";
 
-export default class WindowControl extends React.Component<WindowControlProps, WindowControlStates> {
-    public state: WindowControlStates = {
-        maximized: false,
+export default function WindowControl() {
+    const [maximized, setMaximized] = React.useState(false);
+
+    trpcReact.onMaximizedStateChange.useSubscription(undefined, {
+        onData: setMaximized,
+    });
+
+    const handleMinimize = () => {
+        client.minimize.query().then();
+    };
+    const handleMaximize = () => {
+        if (maximized) {
+            client.minimize.query().then();
+        } else {
+            client.maximize.query().then();
+        }
+    };
+    const handleClose = () => {
+        client.close.query().then();
     };
 
-    public async componentDidMount() {}
-
-    private handleResize = async () => {};
-    private handleMinimize = () => {};
-    private handleMaximize = () => {};
-    private handleClose = () => {};
-
-    public render() {
-        const { maximized } = this.state;
-
-        return (
-            <Root>
-                <Button onClick={this.handleMinimize}>
-                    <MinimizeIcon />
-                </Button>
-                <Button onClick={this.handleMaximize}>
-                    {maximized ? <SquareMultiple20Regular /> : <MaximizeRegular />}
-                </Button>
-                <Button close onClick={this.handleClose}>
-                    <Dismiss24Regular />
-                </Button>
-            </Root>
-        );
-    }
+    return (
+        <Root>
+            <Button onClick={handleMinimize}>
+                <MinimizeIcon />
+            </Button>
+            <Button onClick={handleMaximize}>{maximized ? <SquareMultiple20Regular /> : <MaximizeRegular />}</Button>
+            <Button close onClick={handleClose}>
+                <Dismiss24Regular />
+            </Button>
+        </Root>
+    );
 }

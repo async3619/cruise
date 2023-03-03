@@ -21,11 +21,12 @@
             "@components/*": ["src/components/*"],
             "@pages/*": ["src/pages/*"],
             "@styles/*": ["src/styles/*"],
-            "@commands": ["src/bindings.ts"],
             "@utils/*": ["src/utils/*"],
             "@constants/*": ["src/constants/*"],
+            "@main/*": ["src-main/main/*"],
+            "@common/*": ["common/*"]
         }
     },
-    "include": ["src", "src-main", "scripts"],
+    "include": ["src", "src-main", "scripts", "common"],
     "references": [{ "path": "./tsconfig.node.json" }]
 }
