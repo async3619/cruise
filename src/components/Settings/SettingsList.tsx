@@ -1,6 +1,7 @@
 import React from "react";
 
 import { renderSettingsListItem } from "@components/Settings/ListItem";
+import SettingsContext from "@components/Settings/context";
 import { SettingsItem } from "@components/Settings/types";
 import { Root } from "@components/Settings/SettingsList.styles";
 
@@ -12,6 +13,7 @@ export interface SettingsListProps {
     items: SettingsItem[];
     config: Config;
     onChange(config: Config): void;
+    onButtonClick(item: SettingsItem): void;
 }
 export interface SettingsListStates {}
 
@@ -38,6 +40,10 @@ export default class SettingsList extends React.Component<SettingsListProps, Set
     public render() {
         const { items } = this.props;
 
-        return <Root>{items.map(this.renderItem)}</Root>;
+        return (
+            <SettingsContext.Provider value={{ onButtonClick: this.props.onButtonClick }}>
+                <Root>{items.map(this.renderItem)}</Root>
+            </SettingsContext.Provider>
+        );
     }
 }

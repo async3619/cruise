@@ -12,6 +12,8 @@
         "module": "esnext",
         "moduleResolution": "Node",
         "resolveJsonModule": true,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
         "isolatedModules": true,
         "noEmit": true,
         "jsx": "react-jsx",
@@ -23,10 +25,17 @@
             "@styles/*": ["src/styles/*"],
             "@utils/*": ["src/utils/*"],
             "@constants/*": ["src/constants/*"],
-            "@main/*": ["src-main/main/*"],
+            "@main/*": ["src-main/*"],
             "@common/*": ["common/*"]
-        }
+        },
+        "plugins": [
+            {
+                "transform": "typia/lib/transform"
+                // "functional": true, // validate function type
+                // "numeric": true, // check `isNaN()` and `isFinite()`
+            }
+        ]
     },
-    "include": ["src", "src-main", "scripts", "common"],
+    "include": ["src", "src-main", "scripts", "common", "package.json"],
     "references": [{ "path": "./tsconfig.node.json" }]
 }

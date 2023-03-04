@@ -1,20 +1,13 @@
-import { z } from "zod";
 import * as fs from "fs-extra";
 import * as mgr from "@async3619/merry-go-round";
 
 import { CONFIG_FILE_DIR, CONFIG_FILE_PATH } from "./constants";
+import { assert, is } from "typia";
 
 export interface Config {
     libraryDirectories: string[];
     appTheme: "Light" | "Dark" | "System";
 }
-
-export const CONFIG_SCHEMA = z
-    .object({
-        libraryDirectories: z.array(z.string()),
-        appTheme: z.enum(["Light", "Dark", "System"]),
-    })
-    .required();
 
 const DEFAULT_CONFIG: Config = (() => {
     const libraryDirectories: string[] = [];
@@ -36,17 +29,19 @@ export async function getConfig(): Promise<Config> {
         await fs.writeJson(CONFIG_FILE_PATH, DEFAULT_CONFIG, { spaces: 4 });
     }
 
-    const config: Config = {
-        ...DEFAULT_CONFIG,
-        ...(await fs.readJson(CONFIG_FILE_PATH)),
-    };
-    CONFIG_SCHEMA.parse(config);
+    const data = await fs.readFile(CONFIG_FILE_PATH, "utf8");
+    const config = JSON.parse(data);
+    if (!is<Config>(config)) {
+        await fs.unlink(CONFIG_FILE_PATH);
+        await setConfig(DEFAULT_CONFIG);
+
+        return DEFAULT_CONFIG;
+    }
 
     return config;
 }
 
 export function setConfig(config: Config): Promise<void> {
-    CONFIG_SCHEMA.parse(config);
-
+    assert<Config>(config);
     return fs.writeJson(CONFIG_FILE_PATH, config, { spaces: 4 });
 }

@@ -4,7 +4,9 @@
     "module": "esnext",
     "moduleResolution": "Node",
     "allowSyntheticDefaultImports": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true
   },
-  "include": ["vite.config.ts"]
+  "include": ["vite.config.ts", "package.json"]
 }

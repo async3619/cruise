@@ -6,7 +6,8 @@ import { ChevronDown16Regular } from "@fluentui/react-icons";
 
 import IconButton from "@components/UI/IconButton";
 import Button from "@components/UI/Button";
-import { BaseSettingsItem } from "@components/Settings/types";
+import { useSettings } from "@components/Settings/context";
+import { BaseSettingsItem, SettingsItem } from "@components/Settings/types";
 
 import { Content, ContentWrapper, IconWrapper, Root, Wrapper } from "@components/Settings/ListItem/Base.styles";
 
@@ -22,6 +23,7 @@ export default function BaseSettingsListItem(props: BaseSettingsListItemProps) {
     const { title, icon: Icon, button } = item;
     const [opened, setOpened] = React.useState(false);
     const [ref, bounds] = useMeasure();
+    const settings = useSettings();
 
     const handleClick = () => {
         setOpened(!opened);
@@ -31,6 +33,10 @@ export default function BaseSettingsListItem(props: BaseSettingsListItemProps) {
         const { onButtonClick } = props;
         if (onButtonClick) {
             onButtonClick(e);
+        }
+
+        if (settings.onButtonClick) {
+            settings.onButtonClick(item as SettingsItem);
         }
 
         e.stopPropagation();
