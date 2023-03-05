@@ -26,7 +26,8 @@
             "@utils/*": ["src/utils/*"],
             "@constants/*": ["src/constants/*"],
             "@main/*": ["src-main/*"],
-            "@common/*": ["common/*"]
+            "@common/*": ["common/*"],
+            "@queries": ["src/queries/index.tsx"],
         },
         "plugins": [
             {

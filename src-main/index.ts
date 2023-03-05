@@ -1,10 +1,15 @@
-import { app, BrowserWindow, shell } from "electron";
+import { app, BrowserWindow, shell, ipcMain } from "electron";
 import { createIPCHandler } from "electron-trpc/main";
 
+import { printSchema } from "graphql";
 import { release } from "node:os";
 import { join } from "node:path";
+import * as path from "path";
+import * as fs from "fs-extra";
 
-import { router } from "./api";
+import { initializeDatabase, initializeSchema } from "@main/library";
+import { createIpcExecutor, createSchemaLink } from "@main/graphql/server";
+import { router } from "@main/api";
 
 // The built directory structure
 //
@@ -75,6 +80,19 @@ async function createWindow() {
         if (url.startsWith("https:")) shell.openExternal(url);
         return { action: "deny" };
     });
+
+    const dataSource = await initializeDatabase();
+    const schema = await initializeSchema(dataSource);
+    const schemaFileData = printSchema(schema);
+
+    if (process.env.NODE_ENV === "development") {
+        await fs.writeFile(path.join(process.cwd(), "schema.graphql"), schemaFileData);
+    }
+
+    await initializeDatabase();
+
+    const link = createSchemaLink({ schema, context: () => ({}) });
+    createIpcExecutor({ link, ipc: ipcMain });
 
     createIPCHandler({
         router,

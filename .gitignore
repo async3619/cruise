@@ -25,3 +25,5 @@ dist-ssr
 
 /dist-main
 /dist
+/src/queries/index.d.ts
+/src/queries/index.tsx

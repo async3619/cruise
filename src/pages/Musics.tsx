@@ -2,19 +2,18 @@ import React from "react";
 
 import Page from "@components/Page";
 
+import { useMusicsQuery } from "@queries";
+
 import { Root } from "@pages/Musics.styles";
 
-export interface MusicProps {}
-export interface MusicStates {}
+export default function Musics() {
+    const { data } = useMusicsQuery();
 
-export default class Musics extends React.Component<MusicProps, MusicStates> {
-    public render() {
-        return (
-            <Page title="Musics">
-                <Root>
-                    <span>Musics</span>
-                </Root>
-            </Page>
-        );
-    }
+    return (
+        <Page title="Musics">
+            <Root>
+                <span>{data?.musics?.length}</span>
+            </Root>
+        </Page>
+    );
 }
