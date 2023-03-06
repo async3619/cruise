@@ -4,4 +4,43 @@ type Query {
 
 type Music {
   id: Int!
+  title: String!
+  albumArtist: String
+  genre: String
+  year: Int
+  track: Int
+  disc: Int
+  duration: Int!
+  path: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  artists: [Artist!]!
+  album: Album
+}
+
+"""
+The javascript `Date` as string. Type represents date and time as the ISO Date string.
+"""
+scalar DateTime
+
+type Artist {
+  id: Int!
+  name: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  musics: [Music!]!
+  albums: [Album!]!
+}
+
+type Album {
+  id: Int!
+  title: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  musics: [Music!]!
+  artists: [Artist!]!
+}
+
+type Mutation {
+  rescanLibrary: Boolean!
 }

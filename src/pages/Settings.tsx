@@ -6,55 +6,46 @@ import { SettingsItem } from "@components/Settings/types";
 
 import { LIBRARY_SETTINGS_ITEMS } from "@constants/settings";
 
-import type { Config } from "@main/config";
+import { Config } from "@main/config";
+import { client } from "@/api";
+
+import { useRescanMutation } from "@queries";
 
 import { Root } from "@pages/Settings.styles";
 
-import { client } from "@/api";
+export default function Settings() {
+    const [config, setConfig] = React.useState<Config | null>(null);
+    const [rescan] = useRescanMutation();
 
-export interface SettingsProps {}
-export interface SettingsStates {
-    config: Config | null;
-}
+    React.useEffect(() => {
+        client.getConfig.query().then(setConfig);
+    }, []);
 
-export default class Settings extends React.Component<SettingsProps, SettingsStates> {
-    public state: SettingsStates = {
-        config: null,
+    const handleChange = (config: Config) => {
+        client.setConfig.mutate(config).then(setConfig);
     };
 
-    public componentDidMount() {
-        client.getConfig.query().then(config => {
-            this.setState({ config });
-        });
-    }
-
-    private handleChange = (config: Config) => {
-        client.setConfig.mutate(config);
-        this.setState({ config });
-    };
-    private handleButtonClick = (item: SettingsItem) => {
-        console.log(item);
+    const handleButtonClick = async (item: SettingsItem) => {
+        switch (item.id) {
+            case "rescanLibrary":
+                rescan().then();
+                break;
+        }
     };
 
-    public render() {
-        const { config } = this.state;
-
-        return (
-            <Page title="Settings">
-                <Root>
-                    {config && (
-                        <>
-                            <SettingsSection
-                                onButtonClick={this.handleButtonClick}
-                                title="Library"
-                                config={config}
-                                onChange={this.handleChange}
-                                items={LIBRARY_SETTINGS_ITEMS}
-                            />
-                        </>
-                    )}
-                </Root>
-            </Page>
-        );
-    }
+    return (
+        <Page title="Settings">
+            <Root>
+                {config && (
+                    <SettingsSection
+                        onButtonClick={handleButtonClick}
+                        onChange={handleChange}
+                        title="Library"
+                        config={config}
+                        items={LIBRARY_SETTINGS_ITEMS}
+                    />
+                )}
+            </Root>
+        </Page>
+    );
 }

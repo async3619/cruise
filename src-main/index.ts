@@ -6,10 +6,19 @@ import { release } from "node:os";
 import { join } from "node:path";
 import * as path from "path";
 import * as fs from "fs-extra";
+import { Container } from "typedi";
 
-import { initializeDatabase, initializeSchema } from "@main/library";
 import { createIpcExecutor, createSchemaLink } from "@main/graphql/server";
+import { initializeSchema } from "@main/graphql/schema";
+
 import { router } from "@main/api";
+
+import { initializeDatabase } from "@main/database";
+
+import { createGraphQLContext } from "@main/graphql/context";
+import ArtistService from "@main/artist/artist.service";
+import AlbumService from "@main/album/album.service";
+import MusicService from "@main/music/music.service";
 
 // The built directory structure
 //
@@ -52,6 +61,8 @@ async function createWindow() {
         title: "Main window",
         icon: join(publicPath, "favicon.ico"),
         frame: false,
+        width: 1300,
+        height: 800,
         webPreferences: {
             preload,
             nodeIntegration: true,
@@ -91,7 +102,15 @@ async function createWindow() {
 
     await initializeDatabase();
 
-    const link = createSchemaLink({ schema, context: () => ({}) });
+    const link = createSchemaLink({
+        schema,
+        context: createGraphQLContext(
+            win,
+            Container.get(ArtistService),
+            Container.get(AlbumService),
+            Container.get(MusicService),
+        ),
+    });
     createIpcExecutor({ link, ipc: ipcMain });
 
     createIPCHandler({

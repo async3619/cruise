@@ -1,5 +1,24 @@
 query musics {
     musics {
         id
+        title
+        genre
+        year
+        track
+        disc
+        duration
+        path
+        album {
+            id
+            title
+            artists {
+                id
+                name
+            }
+        }
+        artists {
+            id
+            name
+        }
     }
 }

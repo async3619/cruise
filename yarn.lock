@@ -59,29 +59,29 @@
   dependencies:
     node-fetch "^2.6.1"
 
-"@async3619/merry-go-round-darwin-x64@1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@async3619/merry-go-round-darwin-x64/-/merry-go-round-darwin-x64-1.1.0.tgz#2d55d3d5504abf11e3adf24754e1cdf735378d8b"
-  integrity sha512-l09eIlK0EfxVFCz0CsgaeG/SxuaLAecMamaQfWgdss+OcnsG6+NCKRNHspZBrSkN+jWmXcow0j4iBhi/8NaKIw==
+"@async3619/merry-go-round-darwin-x64@1.3.0":
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/@async3619/merry-go-round-darwin-x64/-/merry-go-round-darwin-x64-1.3.0.tgz#2138130e877935d933efec3b0c53ee3fabd2bb29"
+  integrity sha512-ndLoBES+gfsBeJe/0t4COyrGhb/QRpRlZc7lSvGx+n0NZXf4PcQj3hDPLWmec+WA1O/3Byea3gBIZgpgqrFk+Q==
 
-"@async3619/merry-go-round-linux-x64-gnu@1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@async3619/merry-go-round-linux-x64-gnu/-/merry-go-round-linux-x64-gnu-1.1.0.tgz#c4188c3633c1210aa873e4261474bc4ca2ddd82e"
-  integrity sha512-gWK30DoMtKYnmTjYaRWZUJjuoBjVOxFKaXdqF6kwctPfP/k1bjK7DjTsBsK04xYOK/oN6TPjUQvHcHMcleqACQ==
+"@async3619/merry-go-round-linux-x64-gnu@1.3.0":
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/@async3619/merry-go-round-linux-x64-gnu/-/merry-go-round-linux-x64-gnu-1.3.0.tgz#b03f967ae69fd3f38a10cd7dc3e0dc3f6580a78e"
+  integrity sha512-Lbx/ozZFWC6hoho1nLHp8UNChKF6VQJEGyUfTOeuomoE3cDAK/VYtLqPOJ5fQ5CUrYCTJSNa7briyTzpmwx7xA==
 
-"@async3619/merry-go-round-win32-x64-msvc@1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@async3619/merry-go-round-win32-x64-msvc/-/merry-go-round-win32-x64-msvc-1.1.0.tgz#7f3c37bddc168f5cf717c80bac5ec1fefb5e8a63"
-  integrity sha512-CFbtE5SkN4c4s1W1e7pfG5estkqp2aB8Fmdq4sNykKYepxneDoiC3avTLDcSubk0RYWCJ6zxdAJ6jmsS7DfcIA==
+"@async3619/merry-go-round-win32-x64-msvc@1.3.0":
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/@async3619/merry-go-round-win32-x64-msvc/-/merry-go-round-win32-x64-msvc-1.3.0.tgz#8e2920db0c80bb97471579612147a631e98df6c9"
+  integrity sha512-S+XYcAc82X2MklF7WmFRIhWJOtXeKfTB8KanthgmvK3tC1Bn7jyx9n2dbBUU37BYyT5UI1bgpTs025EEcKOCMg==
 
-"@async3619/merry-go-round@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@async3619/merry-go-round/-/merry-go-round-1.1.0.tgz#f32f539f1943741bf7e02f4c1252eec7c2dbf9f0"
-  integrity sha512-0XLulT3FMOJZJcH1Bdu5f0qTe4o+Pc6gcCzKQQTQAau/FncNbQdTSRqUJ1c4hQsF9HP6fhJrOG0kNURFIms7Ig==
+"@async3619/merry-go-round@^1.3.0":
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/@async3619/merry-go-round/-/merry-go-round-1.3.0.tgz#c207b92eacba2dbf0a6bfde6ba98164429e21804"
+  integrity sha512-d+JaaE0Rtphk+YYGChtjAfSAh/QzZR+A09u+V1LRC5477kovwZFDJjp2HsRc8a6FiCLXuFVxjoU+u3b6TJzbgA==
   optionalDependencies:
-    "@async3619/merry-go-round-darwin-x64" "1.1.0"
-    "@async3619/merry-go-round-linux-x64-gnu" "1.1.0"
-    "@async3619/merry-go-round-win32-x64-msvc" "1.1.0"
+    "@async3619/merry-go-round-darwin-x64" "1.3.0"
+    "@async3619/merry-go-round-linux-x64-gnu" "1.3.0"
+    "@async3619/merry-go-round-win32-x64-msvc" "1.3.0"
 
 "@babel/code-frame@^7.0.0", "@babel/code-frame@^7.18.6":
   version "7.18.6"
@@ -1974,6 +1974,11 @@
   integrity sha512-BQ5aZNSCpj7D6K2ksrRCTmKRLEpnPvWDiLPfoGyhZ++8YtiK9d/3DBKPJgry359X/P1PfruyYwvnvwFjuEiEIg==
   dependencies:
     "@types/node" "*"
+
+"@types/lodash@^4.14.191":
+  version "4.14.191"
+  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.191.tgz#09511e7f7cba275acd8b419ddac8da9a6a79e2fa"
+  integrity sha512-BdZ5BCCvho3EIXw6wUCXHe7rS53AIDPLE+JzwgT+OsJk53oBfbSmZZ7CX4VaRoN78N+TJpFi9QPlfIVNmJYWxQ==
 
 "@types/minimatch@*":
   version "5.1.2"

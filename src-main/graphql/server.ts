@@ -35,6 +35,10 @@ export function createSchemaLink(options: SchemaLinkOptions) {
             };
 
             const result = await (isSubscription(request.query) ? subscribe(args) : execute(args));
+            if ("errors" in result && Array.isArray(result.errors) && result.errors.length > 0) {
+                console.log(result.errors[0]);
+            }
+
             const iterable = ensureIterable(result) as any as AsyncIterable<any>;
             await forAwaitEach(iterable, (value: any) => observer.next(value));
             observer.complete();

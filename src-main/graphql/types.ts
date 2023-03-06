@@ -1,8 +1,19 @@
-import { ApolloLink, Operation } from "@apollo/client/core";
 import { GraphQLSchema } from "graphql";
-import { IpcMain } from "electron";
+import { BrowserWindow, IpcMain } from "electron";
+import DataLoader from "dataloader";
 
-export interface GraphQLContext {}
+import { ApolloLink, Operation } from "@apollo/client/core";
+
+import { Artist } from "@main/artist/models/artist.model";
+import { Album } from "@main/album/models/album.model";
+import { Music } from "@main/music/models/music.model";
+
+export interface GraphQLContext {
+    window: BrowserWindow;
+    artistLoader: DataLoader<number, Artist>;
+    musicLoader: DataLoader<number, Music>;
+    albumLoader: DataLoader<number, Album>;
+}
 
 export interface SchemaLinkOptions<TRoot = any> {
     schema: GraphQLSchema;

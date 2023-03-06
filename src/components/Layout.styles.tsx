@@ -11,6 +11,8 @@ export const GlobalStyles = css`
     body,
     #root {
         height: 100%;
+
+        overflow-y: hidden;
     }
 
     * {
@@ -30,11 +32,15 @@ export const Root = styled.div`
     margin: 0;
     padding: 0;
 
+    display: flex;
+    flex-direction: column;
+
     background: #f9f9f9;
 `;
 
 export const Main = styled.main`
     padding-top: ${TITLE_BAR_HEIGHT}px;
-    padding-left: calc(${SIDEBAR_WIDTH}px + ${({ theme }) => theme.spacing(7)});
-    padding-right: ${({ theme }) => theme.spacing(7)};
+    padding-left: ${SIDEBAR_WIDTH}px;
+
+    flex: 1 1 auto;
 `;
