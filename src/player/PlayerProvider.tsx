@@ -180,6 +180,15 @@ export default class PlayerProvider extends React.Component<PlayerProviderProps,
         this.seekPlaylist(1);
     };
     private previous = () => {
+        if (!this.audioRef.current) {
+            return;
+        }
+
+        if (this.audioRef.current.currentTime > 3) {
+            this.audioRef.current.currentTime = 0;
+            return;
+        }
+
         this.seekPlaylist(-1);
     };
 
