@@ -20,6 +20,8 @@ export default class PlayerProvider extends React.Component<PlayerProviderProps,
             play: this.play,
             pause: this.pause,
             getAudio: this.getAudio,
+            next: this.next,
+            previous: this.previous,
         };
     }
 
