@@ -27,7 +27,8 @@ export const GlobalStyles = css`
 `;
 
 export const Root = styled.div`
-    height: 100%;
+    height: 100vh;
+    max-height: 100vh;
 
     margin: 0;
     padding: 0;
@@ -38,9 +39,14 @@ export const Root = styled.div`
     background: #f9f9f9;
 `;
 
-export const Main = styled.main`
-    height: 100vh;
+export const MainWrapper = styled.div`
+    min-height: 0;
 
+    display: flex;
+    flex: 1 1 auto;
+`;
+
+export const Main = styled.main`
     padding-top: ${TITLE_BAR_HEIGHT}px;
 
     flex: 1 1 auto;

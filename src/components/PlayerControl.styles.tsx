@@ -8,11 +8,6 @@ export const Root = styled.div`
     display: flex;
     flex-direction: column;
 
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: 0;
-
     z-index: 100;
 
     background: #f9f9f9;

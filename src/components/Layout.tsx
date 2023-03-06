@@ -1,13 +1,13 @@
 import React from "react";
 
 import { Global } from "@emotion/react";
-import { Box, CssBaseline } from "@mui/material";
+import { CssBaseline } from "@mui/material";
 
 import TitleBar from "@components/TitleBar";
 import SideBar from "@components/SideBar";
-
-import { GlobalStyles, Main, Root } from "@components/Layout.styles";
 import PlayerControl from "@components/PlayerControl";
+
+import { GlobalStyles, Main, MainWrapper, Root } from "@components/Layout.styles";
 
 export interface LayoutProps {
     children: React.ReactNode;
@@ -21,10 +21,10 @@ export default function Layout(props: LayoutProps) {
             <CssBaseline />
             <Global styles={GlobalStyles} />
             <TitleBar />
-            <Box display="flex">
+            <MainWrapper>
                 <SideBar />
                 <Main>{children}</Main>
-            </Box>
+            </MainWrapper>
             <PlayerControl />
         </Root>
     );
