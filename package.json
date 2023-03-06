@@ -45,6 +45,7 @@
         "typedi": "^0.10.0",
         "typeorm": "^0.3.13-dev.58fc088",
         "typia": "^3.6.2",
+        "utility-types": "^3.10.0",
         "zen-observable-ts": "^1.1.0",
         "zod": "^3.20.6"
     },

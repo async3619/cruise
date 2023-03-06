@@ -16,6 +16,7 @@ import { mainTheme } from "@styles/theme";
 import { trpcReact } from "@/api";
 import { createIpcLink } from "@/graphql/ipc-link";
 import { ApolloLink } from "@apollo/client/core";
+import PlayerProvider from "@player/PlayerProvider";
 
 declare global {
     interface Window {
@@ -49,9 +50,11 @@ export default function App() {
         <ApolloProvider client={apolloClient}>
             <trpcReact.Provider client={trpcClient} queryClient={queryClient}>
                 <ThemeProvider theme={mainTheme}>
-                    <HashRouter>
-                        <Router />
-                    </HashRouter>
+                    <PlayerProvider>
+                        <HashRouter>
+                            <Router />
+                        </HashRouter>
+                    </PlayerProvider>
                 </ThemeProvider>
             </trpcReact.Provider>
         </ApolloProvider>

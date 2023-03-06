@@ -1,0 +1,17 @@
+fragment PlayableMusic on Music {
+    id
+    title
+    path
+    artists {
+        id
+        name
+    }
+    album {
+        id
+        title
+        artists {
+            id
+            name
+        }
+    }
+}

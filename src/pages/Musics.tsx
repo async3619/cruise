@@ -4,17 +4,29 @@ import Page from "@components/Page";
 import MusicList from "@components/UI/MusicList";
 
 import { useMusicsQuery } from "@queries";
+import usePlayer from "@player/usePlayer";
 
 import { Root } from "@pages/Musics.styles";
 
+import { MusicListItem } from "@utils/types";
+
 export default function Musics() {
+    const { play } = usePlayer();
     const { data } = useMusicsQuery({
         fetchPolicy: "network-only",
     });
 
+    const handlePlay = (item: MusicListItem) => {
+        if (!data?.musics) {
+            return;
+        }
+
+        play(data.musics, item);
+    };
+
     return (
         <Page title="Musics">
-            <Root>{data?.musics && <MusicList items={data.musics} />}</Root>
+            <Root>{data?.musics && <MusicList onPlay={handlePlay} items={data.musics} />}</Root>
         </Page>
     );
 }

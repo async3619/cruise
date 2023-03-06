@@ -1,13 +1,11 @@
 query musics {
     musics {
-        id
-        title
+        ...PlayableMusic
         genre
         year
         track
         disc
         duration
-        path
         album {
             id
             title
@@ -15,10 +13,6 @@ query musics {
                 id
                 name
             }
-        }
-        artists {
-            id
-            name
         }
     }
 }

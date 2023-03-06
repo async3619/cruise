@@ -9,10 +9,5 @@ export const Root = styled.div`
     padding-top: ${TITLE_BAR_HEIGHT}px;
     border-right: 1px solid #e5e5e5;
 
-    position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-
     background: #f3f3f3;
 `;

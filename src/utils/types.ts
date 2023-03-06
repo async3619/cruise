@@ -1,4 +1,4 @@
-import { MusicsQuery } from "@queries";
+import { MusicsQuery, PlayableMusicFragment } from "@queries";
 
 export type SelectOnly<Record, Type extends Record[keyof Record]> = {
     [Key in keyof Required<Record> as Required<Record>[Key] extends Type ? Key : never]: Record[Key];
@@ -18,3 +18,4 @@ export type ReplaceUnions<Record> = {
 };
 
 export type MusicListItem = MusicsQuery["musics"][0];
+export type PlayableMusic = PlayableMusicFragment;

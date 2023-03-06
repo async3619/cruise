@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
-import { SIDEBAR_WIDTH, TITLE_BAR_HEIGHT } from "@constants/layout";
+import { TITLE_BAR_HEIGHT } from "@constants/layout";
 
 export const GlobalStyles = css`
     html {
@@ -39,8 +39,9 @@ export const Root = styled.div`
 `;
 
 export const Main = styled.main`
+    height: 100vh;
+
     padding-top: ${TITLE_BAR_HEIGHT}px;
-    padding-left: ${SIDEBAR_WIDTH}px;
 
     flex: 1 1 auto;
 `;

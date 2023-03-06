@@ -17,10 +17,10 @@ export const Root = styled.table`
 
 export const Row = styled.tr``;
 
-export const Column = styled.td<{ shrink?: boolean }>`
+export const Column = styled.td<{ shrink?: boolean; withoutPadding?: boolean }>`
     max-width: 0;
 
-    padding: ${({ theme }) => theme.spacing(0, 1.5)};
+    padding: ${({ theme, withoutPadding }) => (withoutPadding ? 0 : theme.spacing(0, 1.5))};
 
     height: ${({ theme }) => theme.spacing(6)};
 
@@ -62,5 +62,16 @@ export const Column = styled.td<{ shrink?: boolean }>`
         &:last-of-type {
             border-right: 1px solid #eaeaea;
         }
+    }
+`;
+
+export const Controls = styled.div`
+    display: flex;
+    justify-content: center;
+
+    opacity: 0;
+
+    ${Row}:hover & {
+        opacity: 1;
     }
 `;

@@ -1,16 +1,24 @@
 import React from "react";
+import memoizeOne from "memoize-one";
 
-import { Column, Root, Row } from "@components/UI/MusicList.styles";
+import { Typography } from "@mui/material";
+
+import PlayArrowRoundedIcon from "@mui/icons-material/PlayArrowRounded";
+
+import SquaredIconButton from "@components/UI/SquaredIconButton";
+import { Column, Controls, Root, Row } from "@components/UI/MusicList.styles";
 
 import { MusicListItem } from "@utils/types";
-import { Typography } from "@mui/material";
 
 export interface MusicListProps {
     items: MusicListItem[];
+    onPlay(item: MusicListItem): void;
 }
 export interface MusicListStates {}
 
 export default class MusicList extends React.Component<MusicListProps, MusicListStates> {
+    private handlePlay = memoizeOne((item: MusicListItem) => () => this.props.onPlay(item));
+
     private renderRow = (item: MusicListItem) => {
         const durationMinute = Math.floor(item.duration / 60);
         const durationSecond = (item.duration % 60).toString().padStart(2, "0");
@@ -19,6 +27,13 @@ export default class MusicList extends React.Component<MusicListProps, MusicList
 
         return (
             <Row key={item.id}>
+                <Column withoutPadding>
+                    <Controls>
+                        <SquaredIconButton onClick={this.handlePlay(item)}>
+                            <PlayArrowRoundedIcon />
+                        </SquaredIconButton>
+                    </Controls>
+                </Column>
                 <Column>
                     <Typography variant="body1" fontSize="0.9rem">
                         {item.title}
@@ -58,6 +73,7 @@ export default class MusicList extends React.Component<MusicListProps, MusicList
         return (
             <Root>
                 <colgroup>
+                    <col width="50px" />
                     <col width="*" />
                     <col width="20%" />
                     <col width="17.5%" />

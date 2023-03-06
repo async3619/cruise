@@ -1,4 +1,4 @@
-import { app, BrowserWindow, shell, ipcMain } from "electron";
+import { app, BrowserWindow, shell, ipcMain, protocol } from "electron";
 import { createIPCHandler } from "electron-trpc/main";
 
 import { printSchema } from "graphql";
@@ -6,6 +6,7 @@ import { release } from "node:os";
 import { join } from "node:path";
 import * as path from "path";
 import * as fs from "fs-extra";
+import URL from "url";
 import { Container } from "typedi";
 
 import { createIpcExecutor, createSchemaLink } from "@main/graphql/server";
@@ -20,25 +21,17 @@ import ArtistService from "@main/artist/artist.service";
 import AlbumService from "@main/album/album.service";
 import MusicService from "@main/music/music.service";
 
-// The built directory structure
-//
-// ├─┬ dist-electron
-// │ ├─┬ main
-// │ │ └── index.js    > Electron-Main
-// │ └─┬ preload
-// │   └── index.js    > Preload-Scripts
-// ├─┬ dist
-// │ └── index.html    > Electron-Renderer
-//
 const mainDistPath = join(__dirname, "../");
 const distPath = join(mainDistPath, "../dist");
 const publicPath = process.env.VITE_DEV_SERVER_URL ? join(mainDistPath, "../public") : distPath;
 
-// Disable GPU Acceleration for Windows 7
-if (release().startsWith("6.1")) app.disableHardwareAcceleration();
+if (release().startsWith("6.1")) {
+    app.disableHardwareAcceleration();
+}
 
-// Set application name for Windows 10+ notifications
-if (process.platform === "win32") app.setAppUserModelId(app.getName());
+if (process.platform === "win32") {
+    app.setAppUserModelId(app.getName());
+}
 
 if (!app.requestSingleInstanceLock()) {
     app.quit();
@@ -57,6 +50,11 @@ const url = process.env.VITE_DEV_SERVER_URL;
 const indexHtml = join(distPath, "index.html");
 
 async function createWindow() {
+    protocol.registerFileProtocol("cruise", (request, callback) => {
+        const filePath = URL.fileURLToPath(`file://${request.url.slice("cruise://".length)}`);
+        callback(filePath);
+    });
+
     win = new BrowserWindow({
         title: "Main window",
         icon: join(publicPath, "favicon.ico"),
