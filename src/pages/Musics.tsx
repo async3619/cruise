@@ -11,7 +11,7 @@ import { Root } from "@pages/Musics.styles";
 import { MusicListItem } from "@utils/types";
 
 export default function Musics() {
-    const { play } = usePlayer();
+    const { play, currentMusic } = usePlayer();
     const { data } = useMusicsQuery({
         fetchPolicy: "network-only",
     });
@@ -26,7 +26,9 @@ export default function Musics() {
 
     return (
         <Page title="Musics">
-            <Root>{data?.musics && <MusicList onPlay={handlePlay} items={data.musics} />}</Root>
+            <Root>
+                {data?.musics && <MusicList activeItem={currentMusic} onPlay={handlePlay} items={data.musics} />}
+            </Root>
         </Page>
     );
 }

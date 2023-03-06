@@ -15,8 +15,6 @@ export const Root = styled.table`
     }
 `;
 
-export const Row = styled.tr``;
-
 export const Column = styled.td<{ shrink?: boolean; withoutPadding?: boolean }>`
     max-width: 0;
 
@@ -70,8 +68,20 @@ export const Controls = styled.div`
     justify-content: center;
 
     opacity: 0;
+`;
 
-    ${Row}:hover & {
-        opacity: 1;
+export const Row = styled.tr<{ active?: boolean }>`
+    ${Column} {
+        color: ${({ active, theme }) => (active ? theme.palette.primary.main : "inherit")};
+    }
+
+    ${Controls} {
+        opacity: ${({ active }) => (active ? 1 : 0)};
+    }
+
+    &:hover {
+        ${Controls} {
+            opacity: 1;
+        }
     }
 `;

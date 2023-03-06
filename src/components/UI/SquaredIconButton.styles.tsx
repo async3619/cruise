@@ -22,11 +22,13 @@ export const Root = styled.button`
         color: ${({ theme }) => theme.palette.primary.main};
     }
 
-    &:hover {
-        background: rgba(0, 0, 0, 0.1);
-    }
+    &:not(:disabled) {
+        &:hover {
+            background: rgba(0, 0, 0, 0.1);
+        }
 
-    &:active {
-        background: rgba(0, 0, 0, 0.05);
+        &:active {
+            background: rgba(0, 0, 0, 0.05);
+        }
     }
 `;

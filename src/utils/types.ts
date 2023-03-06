@@ -17,5 +17,7 @@ export type ReplaceUnions<Record> = {
     [Key in keyof Required<Record>]: IsUnion<Required<Record>[Key]> extends true ? string : Required<Record>[Key];
 };
 
+export type Nullable<T> = T | null | undefined;
+
 export type MusicListItem = MusicsQuery["musics"][0];
 export type PlayableMusic = PlayableMusicFragment;
