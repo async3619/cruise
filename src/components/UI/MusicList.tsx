@@ -86,7 +86,7 @@ export default class MusicList extends React.Component<MusicListProps, MusicList
                     <col width="15%" />
                     <col width="65px" />
                 </colgroup>
-                {items.map(this.renderRow)}
+                <tbody>{items.map(this.renderRow)}</tbody>
             </Root>
         );
     }
