@@ -4,7 +4,6 @@ import { Box, Typography } from "@mui/material";
 
 import withPlayer, { WithPlayerProps } from "@player/withPlayer";
 
-import Placeholder from "@components/Placeholder";
 import PlayerControl from "@components/PlayerControl";
 import PlayerOptions from "@components/PlayerOptions";
 import Slider from "@components/UI/Slider";
@@ -95,12 +94,13 @@ class PlayerPanel extends React.Component<PlayerPanelProps, PlayerPanelStates> {
                     </PlayTime>
                 </ProgressWrapper>
                 <Content>
-                    <Placeholder />
-                    <Box>
+                    <Box flex="1 1"></Box>
+                    <Box flex="1 1" display="flex" justifyContent="center">
                         <PlayerControl />
                     </Box>
-                    <Placeholder />
-                    <PlayerOptions />
+                    <Box display="flex" flex="1 1" justifyContent="flex-end" alignItems="center">
+                        <PlayerOptions />
+                    </Box>
                 </Content>
             </Root>
         );

@@ -37,6 +37,9 @@ export interface PlayerContextValue {
 
     addEventListener<K extends keyof PlayerEventMap>(type: K, listener: PlayerEventMap[K]): void;
     removeEventListener<K extends keyof PlayerEventMap>(type: K, listener: PlayerEventMap[K]): void;
+
+    volume: number;
+    setVolume: (volume: number) => void;
 }
 
 export const PlayerContext = React.createContext<PlayerContextValue>({
@@ -78,6 +81,10 @@ export const PlayerContext = React.createContext<PlayerContextValue>({
         throw new Error("Not implemented");
     },
     removeEventListener: () => {
+        throw new Error("Not implemented");
+    },
+    volume: 0,
+    setVolume: () => {
         throw new Error("Not implemented");
     },
 });

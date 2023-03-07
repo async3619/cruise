@@ -7,6 +7,8 @@ import { Slider as MuiSlider, SliderProps as MuiSliderProps } from "@mui/materia
 const SliderImpl = styled(MuiSlider)`
     height: 4px;
 
+    display: block;
+
     & .MuiSlider-rail {
         height: 4px;
         background: #8a8a8a;

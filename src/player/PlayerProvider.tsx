@@ -25,6 +25,8 @@ export default class PlayerProvider extends React.Component<PlayerProviderProps,
             playlist: [],
             isPlaying: false,
             repeatMode: RepeatMode.None,
+            volume: 0,
+            setVolume: this.setVolume,
             play: this.play,
             pause: this.pause,
             getAudio: this.getAudio,
@@ -59,6 +61,8 @@ export default class PlayerProvider extends React.Component<PlayerProviderProps,
         navigator.mediaSession.setActionHandler("seekto", this.handleMediaSessionAction);
         navigator.mediaSession.setActionHandler("previoustrack", this.handleMediaSessionAction);
         navigator.mediaSession.setActionHandler("nexttrack", this.handleMediaSessionAction);
+
+        this.setState({ volume: this.audioRef.current.volume });
     }
     public componentWillUnmount() {
         if (!this.audioRef.current) {
@@ -190,6 +194,10 @@ export default class PlayerProvider extends React.Component<PlayerProviderProps,
         }
 
         return this.audioRef.current;
+    };
+    private setVolume = (volume: number) => {
+        const audio = this.getAudio();
+        audio.volume = volume;
     };
 
     private seekTo = (time: number) => {

@@ -1,13 +1,18 @@
 import React from "react";
 
+import PopupState, { bindPopover, bindTrigger } from "material-ui-popup-state";
 import { IconButton, Tooltip, useTheme } from "@mui/material";
 import ShuffleRoundedIcon from "@mui/icons-material/ShuffleRounded";
+import VolumeUpRoundedIcon from "@mui/icons-material/VolumeUpRounded";
 
 import { Root } from "@components/PlayerOptions.styles";
 import { ButtonWrapper } from "@components/PlayerControl.styles";
+
 import usePlayer from "@player/usePlayer";
 import { RepeatMode } from "@player/context";
+
 import { REPEAT_MODE_ICONS, REPEAT_MODE_NAMES } from "@constants/player";
+import VolumePopover from "@components/VolumePopover";
 
 export default function PlayerOptions() {
     const { shuffle, repeatMode, toggleRepeatMode } = usePlayer();
@@ -35,6 +40,28 @@ export default function PlayerOptions() {
 
     return (
         <Root>
+            <PopupState variant="popover" popupId="demo-popup-popover">
+                {popupState => (
+                    <ButtonWrapper disabled>
+                        <Tooltip title="Volume">
+                            <IconButton {...bindTrigger(popupState)}>
+                                <VolumeUpRoundedIcon />
+                            </IconButton>
+                        </Tooltip>
+                        <VolumePopover
+                            {...bindPopover(popupState)}
+                            anchorOrigin={{
+                                vertical: "top",
+                                horizontal: "center",
+                            }}
+                            transformOrigin={{
+                                vertical: "bottom",
+                                horizontal: "center",
+                            }}
+                        />
+                    </ButtonWrapper>
+                )}
+            </PopupState>
             <ButtonWrapper disabled={repeatMode === RepeatMode.None}>
                 <Tooltip title={REPEAT_MODE_NAMES[repeatMode]}>
                     <IconButton onClick={toggleRepeatMode}>
