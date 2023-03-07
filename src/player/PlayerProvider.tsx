@@ -1,7 +1,7 @@
 import * as _ from "lodash";
 import React from "react";
 
-import { PlayerContext, PlayerContextValue, RepeatMode } from "@player/context";
+import { EventHandlerMap, PlayerContext, PlayerContextValue, RepeatMode } from "@player/context";
 
 export interface PlayerProviderProps {
     children: React.ReactNode;
@@ -10,6 +10,12 @@ export interface PlayerProviderStates extends PlayerContextValue {}
 
 export default class PlayerProvider extends React.Component<PlayerProviderProps, PlayerProviderStates> {
     private readonly audioRef = React.createRef<HTMLAudioElement>();
+    private readonly eventHandlers: EventHandlerMap = {
+        pause: [],
+        play: [],
+        progress: [],
+        load: [],
+    };
 
     constructor(props: Readonly<PlayerProviderProps> | PlayerProviderProps) {
         super(props);
@@ -28,6 +34,9 @@ export default class PlayerProvider extends React.Component<PlayerProviderProps,
             hasPrevious: this.hasPrevious,
             toggleRepeatMode: this.toggleRepeatMode,
             shuffle: this.shufflePlaylist,
+            addEventListener: this.addEventListener,
+            removeEventListener: this.removeEventListener,
+            seekTo: this.seekTo,
         };
     }
 
@@ -39,6 +48,8 @@ export default class PlayerProvider extends React.Component<PlayerProviderProps,
         this.audioRef.current.addEventListener("pause", this.handlePause);
         this.audioRef.current.addEventListener("play", this.handlePlay);
         this.audioRef.current.addEventListener("ended", this.handleEnded);
+        this.audioRef.current.addEventListener("timeupdate", this.handleTimeUpdate);
+        this.audioRef.current.addEventListener("canplay", this.handleCanPlay);
 
         navigator.mediaSession.setActionHandler("play", this.handleMediaSessionAction);
         navigator.mediaSession.setActionHandler("pause", this.handleMediaSessionAction);
@@ -57,6 +68,7 @@ export default class PlayerProvider extends React.Component<PlayerProviderProps,
         this.audioRef.current.removeEventListener("pause", this.handlePause);
         this.audioRef.current.removeEventListener("play", this.handlePlay);
         this.audioRef.current.removeEventListener("ended", this.handleEnded);
+        this.audioRef.current.removeEventListener("timeupdate", this.handleTimeUpdate);
 
         navigator.mediaSession.setActionHandler("play", null);
         navigator.mediaSession.setActionHandler("pause", null);
@@ -93,10 +105,18 @@ export default class PlayerProvider extends React.Component<PlayerProviderProps,
     };
     private handlePause = () => {
         this.setState({ isPlaying: false });
+
+        const audio = this.getAudio();
+        if (!audio) {
+            return;
+        }
+
+        this.eventHandlers.pause.forEach(handler => handler(audio.currentTime, audio.duration));
     };
     private handlePlay = () => {
-        const { currentMusic } = this.state;
-        if (!currentMusic) {
+        const { currentMusic, playlist } = this.state;
+        const audio = this.getAudio();
+        if (!currentMusic || !audio || !playlist.length) {
             return;
         }
 
@@ -115,6 +135,16 @@ export default class PlayerProvider extends React.Component<PlayerProviderProps,
         });
 
         this.setState({ isPlaying: true });
+
+        this.eventHandlers.play.forEach(handler => handler(currentMusic, playlist));
+    };
+    private handleTimeUpdate = () => {
+        const audio = this.getAudio();
+        if (!audio) {
+            return;
+        }
+
+        this.eventHandlers.progress.forEach(handler => handler(audio.currentTime, audio.duration));
     };
     private handleEnded = () => {
         const { repeatMode } = this.state;
@@ -125,6 +155,34 @@ export default class PlayerProvider extends React.Component<PlayerProviderProps,
 
         this.next();
     };
+    private handleCanPlay = () => {
+        const audio = this.getAudio();
+        if (!audio) {
+            return;
+        }
+
+        this.eventHandlers.load.forEach(handler => handler(audio.currentTime, audio.duration));
+    };
+
+    private addEventListener: PlayerContextValue["addEventListener"] = (event, handler) => {
+        if (!this.eventHandlers[event]) {
+            this.eventHandlers[event] = [];
+        }
+
+        this.eventHandlers[event].push(handler);
+    };
+    private removeEventListener: PlayerContextValue["removeEventListener"] = (event, handler) => {
+        if (!this.eventHandlers[event]) {
+            return;
+        }
+
+        const index = this.eventHandlers[event].indexOf(handler);
+        if (index === -1) {
+            return;
+        }
+
+        this.eventHandlers[event].splice(index, 1);
+    };
 
     private getAudio = () => {
         if (!this.audioRef.current) {
@@ -134,57 +192,9 @@ export default class PlayerProvider extends React.Component<PlayerProviderProps,
         return this.audioRef.current;
     };
 
-    private shufflePlaylist = () => {
-        if (!this.state.playlist) {
-            return;
-        }
-
-        this.setState(state => ({
-            playlist: _.shuffle(state.playlist),
-        }));
-    };
-
-    private toggleRepeatMode = () => {
-        const { repeatMode } = this.state;
-
-        switch (repeatMode) {
-            case RepeatMode.None:
-                this.setState({ repeatMode: RepeatMode.All });
-                break;
-
-            case RepeatMode.All:
-                this.setState({ repeatMode: RepeatMode.One });
-                break;
-
-            case RepeatMode.One:
-                this.setState({ repeatMode: RepeatMode.None });
-                break;
-        }
-    };
-
-    private hasPrevious = () => {
-        const { playlist, currentMusic, repeatMode } = this.state;
-        if (!playlist || !currentMusic) {
-            return false;
-        }
-
-        if (repeatMode === RepeatMode.All) {
-            return true;
-        }
-
-        return playlist.indexOf(currentMusic) > 0;
-    };
-    private hasNext = () => {
-        const { playlist, currentMusic, repeatMode } = this.state;
-        if (!playlist || !currentMusic) {
-            return false;
-        }
-
-        if (repeatMode === RepeatMode.All) {
-            return true;
-        }
-
-        return playlist.indexOf(currentMusic) < playlist.length - 1;
+    private seekTo = (time: number) => {
+        const audio = this.getAudio();
+        audio.currentTime = time;
     };
 
     private play: PlayerContextValue["play"] = async (playlist, music) => {
@@ -227,6 +237,45 @@ export default class PlayerProvider extends React.Component<PlayerProviderProps,
             playlist: [],
         });
     };
+    private next = () => {
+        this.seekPlaylist(1);
+    };
+    private previous = () => {
+        if (!this.audioRef.current) {
+            return;
+        }
+
+        if (this.audioRef.current.currentTime > 3) {
+            this.audioRef.current.currentTime = 0;
+            return;
+        }
+
+        this.seekPlaylist(-1);
+    };
+    private hasPrevious = () => {
+        const { playlist, currentMusic, repeatMode } = this.state;
+        if (!playlist || !currentMusic) {
+            return false;
+        }
+
+        if (repeatMode === RepeatMode.All) {
+            return true;
+        }
+
+        return playlist.indexOf(currentMusic) > 0;
+    };
+    private hasNext = () => {
+        const { playlist, currentMusic, repeatMode } = this.state;
+        if (!playlist || !currentMusic) {
+            return false;
+        }
+
+        if (repeatMode === RepeatMode.All) {
+            return true;
+        }
+
+        return playlist.indexOf(currentMusic) < playlist.length - 1;
+    };
     private seekPlaylist = (delta: number) => {
         const { playlist, currentMusic, repeatMode } = this.state;
         if (!playlist || !currentMusic) {
@@ -251,20 +300,31 @@ export default class PlayerProvider extends React.Component<PlayerProviderProps,
 
         this.play(playlist, nextMusic);
     };
-    private next = () => {
-        this.seekPlaylist(1);
+    private shufflePlaylist = () => {
+        if (!this.state.playlist) {
+            return;
+        }
+
+        this.setState(state => ({
+            playlist: _.shuffle(state.playlist),
+        }));
     };
-    private previous = () => {
-        if (!this.audioRef.current) {
-            return;
-        }
+    private toggleRepeatMode = () => {
+        const { repeatMode } = this.state;
 
-        if (this.audioRef.current.currentTime > 3) {
-            this.audioRef.current.currentTime = 0;
-            return;
-        }
+        switch (repeatMode) {
+            case RepeatMode.None:
+                this.setState({ repeatMode: RepeatMode.All });
+                break;
 
-        this.seekPlaylist(-1);
+            case RepeatMode.All:
+                this.setState({ repeatMode: RepeatMode.One });
+                break;
+
+            case RepeatMode.One:
+                this.setState({ repeatMode: RepeatMode.None });
+                break;
+        }
     };
 
     public render() {

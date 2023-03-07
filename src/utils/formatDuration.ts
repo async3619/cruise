@@ -1,4 +1,8 @@
 export default function formatDuration(seconds: number): string {
+    if (isNaN(seconds)) {
+        return "0:00:00";
+    }
+
     seconds = Math.floor(seconds);
 
     const hours = Math.floor(seconds / 3600);

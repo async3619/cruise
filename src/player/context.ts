@@ -8,11 +8,23 @@ export enum RepeatMode {
     All = "all",
 }
 
+export interface PlayerEventMap {
+    play(music: PlayableMusic, playlist: PlayableMusic[]): void;
+    load(currentTime: number, duration: number): void;
+    pause(currentTime: number, duration: number): void;
+    progress(currentTime: number, duration: number): void;
+}
+
+export type EventHandlerMap = {
+    [K in keyof PlayerEventMap]: PlayerEventMap[K][];
+};
+
 export interface PlayerContextValue {
     playlist: PlayableMusic[];
     currentMusic: PlayableMusic | null;
     isPlaying: boolean;
     repeatMode: RepeatMode;
+    seekTo(time: number): void;
     play(playlist?: PlayableMusic[], music?: PlayableMusic): void;
     pause(): void;
     previous(): void;
@@ -22,6 +34,9 @@ export interface PlayerContextValue {
     hasPrevious(): boolean;
     hasNext(): boolean;
     shuffle(): void;
+
+    addEventListener<K extends keyof PlayerEventMap>(type: K, listener: PlayerEventMap[K]): void;
+    removeEventListener<K extends keyof PlayerEventMap>(type: K, listener: PlayerEventMap[K]): void;
 }
 
 export const PlayerContext = React.createContext<PlayerContextValue>({
@@ -29,6 +44,9 @@ export const PlayerContext = React.createContext<PlayerContextValue>({
     playlist: [],
     currentMusic: null,
     repeatMode: RepeatMode.None,
+    seekTo: () => {
+        throw new Error("Not implemented");
+    },
     hasPrevious: () => {
         throw new Error("Not implemented");
     },
@@ -54,6 +72,12 @@ export const PlayerContext = React.createContext<PlayerContextValue>({
         throw new Error("Not implemented");
     },
     shuffle: () => {
+        throw new Error("Not implemented");
+    },
+    addEventListener: () => {
+        throw new Error("Not implemented");
+    },
+    removeEventListener: () => {
         throw new Error("Not implemented");
     },
 });
