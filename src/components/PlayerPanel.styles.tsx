@@ -116,7 +116,7 @@ export const PlayTime = styled.div`
 `;
 
 export const Content = styled.div`
-    padding: ${({ theme }) => theme.spacing(0.5, 2, 2)};
+    padding: ${({ theme }) => theme.spacing(0, 1, 1)};
 
     display: flex;
 `;

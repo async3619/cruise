@@ -9,6 +9,7 @@ import { Content, Cursor, Filled, PlayTime, Progress, ProgressWrapper, Root } fr
 import formatDuration from "@utils/formatDuration";
 import Placeholder from "@components/Placeholder";
 import PlayerControl from "@components/PlayerControl";
+import PlayerOptions from "@components/PlayerOptions";
 
 export interface PlayerPanelProps extends WithPlayerProps {}
 export interface PlayerPanelStates {}
@@ -165,6 +166,7 @@ class PlayerPanel extends React.Component<PlayerPanelProps, PlayerPanelStates> {
                         <PlayerControl />
                     </Box>
                     <Placeholder />
+                    <PlayerOptions />
                 </Content>
             </Root>
         );

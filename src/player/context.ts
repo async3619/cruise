@@ -2,21 +2,42 @@ import React from "react";
 
 import { PlayableMusic } from "@utils/types";
 
+export enum RepeatMode {
+    None = "none",
+    One = "one",
+    All = "all",
+}
+
 export interface PlayerContextValue {
     playlist: PlayableMusic[];
     currentMusic: PlayableMusic | null;
     isPlaying: boolean;
+    repeatMode: RepeatMode;
     play(playlist?: PlayableMusic[], music?: PlayableMusic): void;
     pause(): void;
     previous(): void;
     next(): void;
     getAudio(): HTMLAudioElement;
+    toggleRepeatMode(): void;
+    hasPrevious(): boolean;
+    hasNext(): boolean;
+    shuffle(): void;
 }
 
 export const PlayerContext = React.createContext<PlayerContextValue>({
     isPlaying: false,
     playlist: [],
     currentMusic: null,
+    repeatMode: RepeatMode.None,
+    hasPrevious: () => {
+        throw new Error("Not implemented");
+    },
+    hasNext: () => {
+        throw new Error("Not implemented");
+    },
+    toggleRepeatMode: () => {
+        throw new Error("Not implemented");
+    },
     play: () => {
         throw new Error("Not implemented");
     },
@@ -30,6 +51,9 @@ export const PlayerContext = React.createContext<PlayerContextValue>({
         throw new Error("Not implemented");
     },
     getAudio: () => {
+        throw new Error("Not implemented");
+    },
+    shuffle: () => {
         throw new Error("Not implemented");
     },
 });

@@ -1,6 +1,7 @@
+import * as _ from "lodash";
 import React from "react";
 
-import { PlayerContext, PlayerContextValue } from "@player/context";
+import { PlayerContext, PlayerContextValue, RepeatMode } from "@player/context";
 
 export interface PlayerProviderProps {
     children: React.ReactNode;
@@ -17,11 +18,16 @@ export default class PlayerProvider extends React.Component<PlayerProviderProps,
             currentMusic: null,
             playlist: [],
             isPlaying: false,
+            repeatMode: RepeatMode.None,
             play: this.play,
             pause: this.pause,
             getAudio: this.getAudio,
             next: this.next,
             previous: this.previous,
+            hasNext: this.hasNext,
+            hasPrevious: this.hasPrevious,
+            toggleRepeatMode: this.toggleRepeatMode,
+            shuffle: this.shufflePlaylist,
         };
     }
 
@@ -111,6 +117,12 @@ export default class PlayerProvider extends React.Component<PlayerProviderProps,
         this.setState({ isPlaying: true });
     };
     private handleEnded = () => {
+        const { repeatMode } = this.state;
+        if (repeatMode === RepeatMode.One) {
+            this.play();
+            return;
+        }
+
         this.next();
     };
 
@@ -120,6 +132,59 @@ export default class PlayerProvider extends React.Component<PlayerProviderProps,
         }
 
         return this.audioRef.current;
+    };
+
+    private shufflePlaylist = () => {
+        if (!this.state.playlist) {
+            return;
+        }
+
+        this.setState(state => ({
+            playlist: _.shuffle(state.playlist),
+        }));
+    };
+
+    private toggleRepeatMode = () => {
+        const { repeatMode } = this.state;
+
+        switch (repeatMode) {
+            case RepeatMode.None:
+                this.setState({ repeatMode: RepeatMode.All });
+                break;
+
+            case RepeatMode.All:
+                this.setState({ repeatMode: RepeatMode.One });
+                break;
+
+            case RepeatMode.One:
+                this.setState({ repeatMode: RepeatMode.None });
+                break;
+        }
+    };
+
+    private hasPrevious = () => {
+        const { playlist, currentMusic, repeatMode } = this.state;
+        if (!playlist || !currentMusic) {
+            return false;
+        }
+
+        if (repeatMode === RepeatMode.All) {
+            return true;
+        }
+
+        return playlist.indexOf(currentMusic) > 0;
+    };
+    private hasNext = () => {
+        const { playlist, currentMusic, repeatMode } = this.state;
+        if (!playlist || !currentMusic) {
+            return false;
+        }
+
+        if (repeatMode === RepeatMode.All) {
+            return true;
+        }
+
+        return playlist.indexOf(currentMusic) < playlist.length - 1;
     };
 
     private play: PlayerContextValue["play"] = async (playlist, music) => {
@@ -163,13 +228,23 @@ export default class PlayerProvider extends React.Component<PlayerProviderProps,
         });
     };
     private seekPlaylist = (delta: number) => {
-        const { playlist, currentMusic } = this.state;
+        const { playlist, currentMusic, repeatMode } = this.state;
         if (!playlist || !currentMusic) {
             return;
         }
 
         const currentIndex = playlist.findIndex(music => music.id === currentMusic.id);
-        const nextMusic = playlist[currentIndex + delta];
+
+        let nextIndex = currentIndex + delta;
+        if (repeatMode === RepeatMode.All) {
+            if (nextIndex < 0) {
+                nextIndex = playlist.length - 1;
+            } else if (nextIndex >= playlist.length) {
+                nextIndex = 0;
+            }
+        }
+
+        const nextMusic = playlist[nextIndex];
         if (!nextMusic) {
             return;
         }
