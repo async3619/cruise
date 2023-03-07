@@ -1,3 +1,6 @@
+import * as path from "path";
+import * as fs from "fs-extra";
+
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import tsconfigPaths from "vite-tsconfig-paths";
@@ -13,6 +16,8 @@ const devServerUrl = "http://127.0.0.1:7777/";
 
 // https://vitejs.dev/config/
 export default defineConfig(() => {
+    fs.rm(path.join(__dirname, "dist-main"), { recursive: true, force: true });
+
     return {
         plugins: [
             electron([
