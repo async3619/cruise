@@ -4,7 +4,7 @@ import glob from "fast-glob";
 import * as path from "path";
 import * as fs from "fs-extra";
 
-import { Audio } from "@async3619/merry-go-round";
+import { Audio, AlbumArt as RawAlbumArt } from "@async3619/merry-go-round";
 
 import { Music } from "@main/music/models/music.model";
 import { Artist } from "@main/artist/models/artist.model";
@@ -15,7 +15,7 @@ import { getConfig } from "@main/config";
 import { ALBUM_ART_PATH } from "@main/constants";
 
 import { InjectRepository } from "@main/utils/models";
-import { getImageSize } from "@main/utils/images";
+import { getImageSize, ImageSize } from "@main/utils/images";
 
 @Service()
 export class LibraryService {
@@ -25,6 +25,37 @@ export class LibraryService {
         @InjectRepository(Album) private readonly albumRepository: Repository<Album>,
         @InjectRepository(AlbumArt) private readonly albumArtRepository: Repository<AlbumArt>,
     ) {}
+
+    private async generateAlbumArt(rawAlbumArt: RawAlbumArt, music: Music, index: number) {
+        const extension = rawAlbumArt.mimeType.split("/")[1];
+        const targetPath = path.join(ALBUM_ART_PATH, `${music.id}.${index}.${extension}`);
+        const buffer = rawAlbumArt.data();
+
+        await fs.ensureDir(path.dirname(targetPath));
+        await fs.writeFile(targetPath, buffer);
+
+        let imageSize: ImageSize;
+        try {
+            imageSize = await getImageSize(buffer);
+        } catch (e) {
+            await fs.rm(targetPath);
+
+            console.error(e);
+            return null;
+        }
+
+        let albumArtEntity = this.albumArtRepository.create();
+        albumArtEntity.path = targetPath;
+        albumArtEntity.mimeType = rawAlbumArt.mimeType;
+        albumArtEntity.size = buffer.length;
+        albumArtEntity.width = imageSize.width;
+        albumArtEntity.height = imageSize.height;
+        albumArtEntity.type = rawAlbumArt.type as unknown as AlbumArtType;
+        albumArtEntity.musics = [music];
+        albumArtEntity = await this.albumArtRepository.save(albumArtEntity);
+
+        return albumArtEntity;
+    }
 
     public async rescan() {
         await this.musicRepository.clear();
@@ -109,23 +140,10 @@ export class LibraryService {
             const albumArtEntities: AlbumArt[] = [];
             for (let i = 0; i < albumArts.length; i++) {
                 const albumArt = albumArts[i];
-                const extension = albumArt.mimeType.split("/")[1];
-                const targetPath = path.join(ALBUM_ART_PATH, `${music.id}.${i}.${extension}`);
-                const buffer = albumArt.data();
-
-                await fs.ensureDir(path.dirname(targetPath));
-                await fs.writeFile(targetPath, buffer);
-
-                const imageSize = await getImageSize(buffer);
-                let albumArtEntity = this.albumArtRepository.create();
-                albumArtEntity.path = targetPath;
-                albumArtEntity.mimeType = albumArt.mimeType;
-                albumArtEntity.size = buffer.length;
-                albumArtEntity.width = imageSize.width;
-                albumArtEntity.height = imageSize.height;
-                albumArtEntity.type = albumArt.type as unknown as AlbumArtType;
-                albumArtEntity.musics = [music];
-                albumArtEntity = await this.albumArtRepository.save(albumArtEntity);
+                const albumArtEntity = await this.generateAlbumArt(albumArt, music, i);
+                if (!albumArtEntity) {
+                    continue;
+                }
 
                 albumArtEntities.push(albumArtEntity);
             }

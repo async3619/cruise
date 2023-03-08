@@ -1,6 +1,6 @@
 import sharp from "sharp";
 
-interface ImageSize {
+export interface ImageSize {
     width: number;
     height: number;
 }
