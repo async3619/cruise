@@ -6,7 +6,6 @@ import { release } from "node:os";
 import { join } from "node:path";
 import * as path from "path";
 import * as fs from "fs-extra";
-import URL from "url";
 import { Container } from "typedi";
 
 import { createIpcExecutor, createSchemaLink } from "@main/graphql/server";
@@ -52,8 +51,9 @@ const indexHtml = join(distPath, "index.html");
 
 async function createWindow() {
     protocol.registerFileProtocol("cruise", (request, callback) => {
-        const filePath = URL.fileURLToPath(`file://${request.url.slice("cruise://".length)}`);
-        callback(filePath);
+        callback({
+            path: decodeURIComponent(request.url.slice("cruise://".length)),
+        });
     });
 
     win = new BrowserWindow({

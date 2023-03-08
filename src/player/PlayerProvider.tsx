@@ -225,7 +225,7 @@ export default class PlayerProvider extends React.Component<PlayerProviderProps,
             currentMusic,
         });
 
-        this.audioRef.current.src = `cruise://${currentMusic.path}`;
+        this.audioRef.current.src = `cruise://${encodeURIComponent(currentMusic.path)}`;
         await this.audioRef.current.play();
     };
     private playShuffled = (playlist: PlayableMusic[]) => {
