@@ -25,7 +25,7 @@ export default class PathListSettingsListItem extends React.Component<
             multiple: true,
         });
 
-        if (!targetPath) {
+        if (!targetPath || targetPath.length === 0) {
             return;
         }
 
