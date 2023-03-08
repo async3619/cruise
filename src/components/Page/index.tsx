@@ -1,4 +1,5 @@
 import React from "react";
+import { Scrollbars } from "react-custom-scrollbars-2";
 
 import { Typography } from "@mui/material";
 
@@ -28,7 +29,9 @@ export default class Page extends React.Component<PageProps, PageStates> {
         return (
             <Root>
                 <Header>{headerNode}</Header>
-                <Main>{children}</Main>
+                <Scrollbars autoHide>
+                    <Main>{children}</Main>
+                </Scrollbars>
             </Root>
         );
     }

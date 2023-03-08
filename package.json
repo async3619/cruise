@@ -35,6 +35,7 @@
         "material-ui-popup-state": "^5.0.4",
         "memoize-one": "^6.0.0",
         "react": "^18.2.0",
+        "react-custom-scrollbars-2": "^4.5.0",
         "react-dom": "^18.2.0",
         "react-router-dom": "^6.8.2",
         "react-use-measure": "^2.1.1",
