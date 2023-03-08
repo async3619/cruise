@@ -1,5 +1,7 @@
 type Query {
   musics: [Music!]!
+  album(id: Int!): Album
+  albums: [Album!]!
 }
 
 type Music {
@@ -38,7 +40,7 @@ type Album {
   title: String!
   createdAt: DateTime!
   updatedAt: DateTime!
-  musics: [Music!]!
+  musics(limit: Int): [Music!]!
   artists: [Artist!]!
 }
 

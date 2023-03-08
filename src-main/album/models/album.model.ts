@@ -40,7 +40,7 @@ export class Album extends BaseEntity {
     public musics!: Music[];
 
     @RelationId((item: Album) => item.musics)
-    public musicIds!: Music["id"];
+    public musicIds!: Music["id"][];
 
     // Album[] => Artist[]
     @Field(() => [Artist])

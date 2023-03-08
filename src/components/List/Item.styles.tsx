@@ -29,6 +29,8 @@ export const Button = styled.button<{ active: boolean }>`
         margin-right: ${({ theme }) => theme.spacing(2)};
 
         display: block;
+
+        color: rgba(0, 0, 0, 0.35);
     }
 
     &:before {

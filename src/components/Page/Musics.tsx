@@ -62,7 +62,7 @@ class MusicsPage extends React.Component<MusicsPageProps, MusicsPageStates> {
         const { title, children } = this.props;
 
         return (
-            <Page title={title} header={this.renderHeader("Musics")}>
+            <Page title={title} header={this.renderHeader(title)}>
                 {children}
             </Page>
         );

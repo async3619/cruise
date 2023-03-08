@@ -1,0 +1,17 @@
+query albums {
+    albums {
+        id
+        title
+        artists {
+            id
+            name
+        }
+        musics(limit: 1) {
+            id
+            albumArts {
+                id
+                path
+            }
+        }
+    }
+}
