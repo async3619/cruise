@@ -3,8 +3,8 @@ import { Service } from "typedi";
 
 import { Music } from "@main/music/models/music.model";
 
-import { InjectRepository } from "@main/utils/models";
 import BaseService from "@main/utils/base.service";
+import { InjectRepository } from "@main/utils/models";
 
 @Service()
 export default class MusicService extends BaseService<Music> {

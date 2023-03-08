@@ -5,9 +5,12 @@ import { ipcLink } from "electron-trpc/renderer";
 
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 import { onError } from "@apollo/client/link/error";
+import { ApolloLink } from "@apollo/client/core";
 
 import { ThemeProvider } from "@mui/material";
 import Router from "@components/Router";
+
+import PlayerProvider from "@player/PlayerProvider";
 
 import { QueryClient } from "@tanstack/react-query";
 
@@ -15,8 +18,6 @@ import { mainTheme } from "@styles/theme";
 
 import { trpcReact } from "@/api";
 import { createIpcLink } from "@/graphql/ipc-link";
-import { ApolloLink } from "@apollo/client/core";
-import PlayerProvider from "@player/PlayerProvider";
 
 declare global {
     interface Window {

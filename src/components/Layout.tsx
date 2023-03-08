@@ -5,7 +5,7 @@ import { CssBaseline } from "@mui/material";
 
 import TitleBar from "@components/TitleBar";
 import SideBar from "@components/SideBar";
-import PlayerControl from "@components/PlayerPanel";
+import PlayerControl from "@components/Player/Panel";
 
 import { GlobalStyles, Main, MainWrapper, Root } from "@components/Layout.styles";
 

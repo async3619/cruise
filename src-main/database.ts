@@ -11,8 +11,8 @@ export async function initializeDatabase() {
         type: "sqlite",
         database: DATABASE_PATH,
         entities: ["./dist-main/**/*.model.js"],
-        dropSchema: true,
         synchronize: true,
+        dropSchema: true,
     });
 
     await dataSource.initialize();

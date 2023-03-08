@@ -5,8 +5,8 @@ import { IconButton, Tooltip, useTheme } from "@mui/material";
 import ShuffleRoundedIcon from "@mui/icons-material/ShuffleRounded";
 import VolumeUpRoundedIcon from "@mui/icons-material/VolumeUpRounded";
 
-import { Root } from "@components/PlayerOptions.styles";
-import { ButtonWrapper } from "@components/PlayerControl.styles";
+import { Root } from "@components/Player/Options.styles";
+import { ButtonWrapper } from "@components/Player/Control.styles";
 
 import usePlayer from "@player/usePlayer";
 import { RepeatMode } from "@player/context";

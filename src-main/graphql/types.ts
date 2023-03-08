@@ -7,12 +7,14 @@ import { ApolloLink, Operation } from "@apollo/client/core";
 import { Artist } from "@main/artist/models/artist.model";
 import { Album } from "@main/album/models/album.model";
 import { Music } from "@main/music/models/music.model";
+import { AlbumArt } from "@main/album-art/models/album-art.model";
 
 export interface GraphQLContext {
     window: BrowserWindow;
     artistLoader: DataLoader<number, Artist>;
     musicLoader: DataLoader<number, Music>;
     albumLoader: DataLoader<number, Album>;
+    albumArtLoader: DataLoader<number, AlbumArt>;
 }
 
 export interface SchemaLinkOptions<TRoot = any> {

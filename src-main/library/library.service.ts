@@ -2,15 +2,20 @@ import { Repository } from "typeorm";
 import { Service } from "typedi";
 import glob from "fast-glob";
 import * as path from "path";
+import * as fs from "fs-extra";
 
 import { Audio } from "@async3619/merry-go-round";
 
 import { Music } from "@main/music/models/music.model";
 import { Artist } from "@main/artist/models/artist.model";
 import { Album } from "@main/album/models/album.model";
+import { AlbumArt, AlbumArtType } from "@main/album-art/models/album-art.model";
+
+import { getConfig } from "@main/config";
+import { ALBUM_ART_PATH } from "@main/constants";
 
 import { InjectRepository } from "@main/utils/models";
-import { getConfig } from "@main/config";
+import { getImageSize } from "@main/utils/images";
 
 @Service()
 export class LibraryService {
@@ -18,6 +23,7 @@ export class LibraryService {
         @InjectRepository(Music) private readonly musicRepository: Repository<Music>,
         @InjectRepository(Artist) private readonly artistRepository: Repository<Artist>,
         @InjectRepository(Album) private readonly albumRepository: Repository<Album>,
+        @InjectRepository(AlbumArt) private readonly albumArtRepository: Repository<AlbumArt>,
     ) {}
 
     public async rescan() {
@@ -97,6 +103,34 @@ export class LibraryService {
                 }
             }
 
+            music = await this.musicRepository.save(music);
+
+            const albumArts = audio.albumArts();
+            const albumArtEntities: AlbumArt[] = [];
+            for (let i = 0; i < albumArts.length; i++) {
+                const albumArt = albumArts[i];
+                const extension = albumArt.mimeType.split("/")[1];
+                const targetPath = path.join(ALBUM_ART_PATH, `${music.id}.${i}.${extension}`);
+                const buffer = albumArt.data();
+
+                await fs.ensureDir(path.dirname(targetPath));
+                await fs.writeFile(targetPath, buffer);
+
+                const imageSize = await getImageSize(buffer);
+                let albumArtEntity = this.albumArtRepository.create();
+                albumArtEntity.path = targetPath;
+                albumArtEntity.mimeType = albumArt.mimeType;
+                albumArtEntity.size = buffer.length;
+                albumArtEntity.width = imageSize.width;
+                albumArtEntity.height = imageSize.height;
+                albumArtEntity.type = albumArt.type as unknown as AlbumArtType;
+                albumArtEntity.musics = [music];
+                albumArtEntity = await this.albumArtRepository.save(albumArtEntity);
+
+                albumArtEntities.push(albumArtEntity);
+            }
+
+            music.albumArts = albumArtEntities;
             music = await this.musicRepository.save(music);
         }
 

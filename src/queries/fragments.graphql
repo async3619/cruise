@@ -6,6 +6,11 @@ fragment PlayableMusic on Music {
         id
         name
     }
+    albumArts {
+        id
+        path
+        type
+    }
     album {
         id
         title

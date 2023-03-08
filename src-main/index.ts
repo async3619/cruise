@@ -20,6 +20,7 @@ import { createGraphQLContext } from "@main/graphql/context";
 import ArtistService from "@main/artist/artist.service";
 import AlbumService from "@main/album/album.service";
 import MusicService from "@main/music/music.service";
+import AlbumArtService from "@main/album-art/album-art.service";
 
 const mainDistPath = join(__dirname, "../");
 const distPath = join(mainDistPath, "../dist");
@@ -98,8 +99,6 @@ async function createWindow() {
         await fs.writeFile(path.join(process.cwd(), "schema.graphql"), schemaFileData);
     }
 
-    await initializeDatabase();
-
     const link = createSchemaLink({
         schema,
         context: createGraphQLContext(
@@ -107,6 +106,7 @@ async function createWindow() {
             Container.get(ArtistService),
             Container.get(AlbumService),
             Container.get(MusicService),
+            Container.get(AlbumArtService),
         ),
     });
     createIpcExecutor({ link, ipc: ipcMain });

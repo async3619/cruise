@@ -4,11 +4,12 @@ import { Box, Typography } from "@mui/material";
 
 import withPlayer, { WithPlayerProps } from "@player/withPlayer";
 
-import PlayerControl from "@components/PlayerControl";
-import PlayerOptions from "@components/PlayerOptions";
+import PlayerControl from "@components/Player/Control";
+import PlayerOptions from "@components/Player/Options";
+import PlayerMusicView from "@components/Player/MusicView";
 import Slider from "@components/UI/Slider";
 
-import { Content, PlayTime, ProgressWrapper, Root } from "@components/PlayerPanel.styles";
+import { Content, PlayTime, ProgressWrapper, Root } from "@components/Player/Panel.styles";
 
 import formatDuration from "@utils/formatDuration";
 
@@ -94,8 +95,10 @@ class PlayerPanel extends React.Component<PlayerPanelProps, PlayerPanelStates> {
                     </PlayTime>
                 </ProgressWrapper>
                 <Content>
-                    <Box flex="1 1"></Box>
-                    <Box flex="1 1" display="flex" justifyContent="center">
+                    <Box flex="1 1">
+                        <PlayerMusicView player={this.props} />
+                    </Box>
+                    <Box flex="0 0" display="flex" justifyContent="center">
                         <PlayerControl />
                     </Box>
                     <Box display="flex" flex="1 1" justifyContent="flex-end" alignItems="center">

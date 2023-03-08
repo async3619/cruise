@@ -6,6 +6,7 @@ import MusicService from "@main/music/music.service";
 import { Music } from "@main/music/models/music.model";
 import { Artist } from "@main/artist/models/artist.model";
 import { Album } from "@main/album/models/album.model";
+import { AlbumArt } from "@main/album-art/models/album-art.model";
 
 import type { GraphQLContext } from "@main/graphql/types";
 
@@ -31,5 +32,10 @@ export default class MusicResolver {
         }
 
         return context.albumLoader.load(music.albumId);
+    }
+
+    @FieldResolver(() => [AlbumArt], { nullable: true })
+    public async albumArts(@Root() music: Music, @Ctx() context: GraphQLContext) {
+        return context.albumArtLoader.loadMany(music.albumArtIds);
     }
 }

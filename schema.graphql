@@ -16,6 +16,7 @@ type Music {
   updatedAt: DateTime!
   artists: [Artist!]!
   album: Album
+  albumArts: [AlbumArt!]!
 }
 
 """
@@ -39,6 +40,43 @@ type Album {
   updatedAt: DateTime!
   musics: [Music!]!
   artists: [Artist!]!
+}
+
+type AlbumArt {
+  id: Int!
+  type: AlbumArtType!
+  path: String!
+  mimeType: String!
+  width: Int!
+  height: Int!
+  size: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+enum AlbumArtType {
+  Other
+  Icon
+  OtherIcon
+  CoverFront
+  CoverBack
+  Leaflet
+  Media
+  LeadArtist
+  Artist
+  Conductor
+  Band
+  Composer
+  Lyricist
+  RecordingLocation
+  DuringRecording
+  DuringPerformance
+  ScreenCapture
+  BrightFish
+  Illustration
+  BandLogo
+  PublisherLogo
+  Undefined
 }
 
 type Mutation {

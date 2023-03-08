@@ -14,6 +14,7 @@ import { Field, Int, ObjectType } from "type-graphql";
 
 import { Artist } from "@main/artist/models/artist.model";
 import { Album } from "@main/album/models/album.model";
+import { AlbumArt } from "@main/album-art/models/album-art.model";
 
 import type { Nullable } from "@main/utils/types";
 
@@ -80,4 +81,13 @@ export class Music extends BaseEntity {
 
     @RelationId((item: Music) => item.album)
     public albumId?: Album["id"];
+
+    // Music[] => AlbumArt[]
+    @Field(() => [AlbumArt])
+    @ManyToMany(() => AlbumArt, item => item.musics, { cascade: true })
+    @JoinTable()
+    public albumArts!: AlbumArt[];
+
+    @RelationId((item: Music) => item.albumArts)
+    public albumArtIds!: AlbumArt["id"][];
 }

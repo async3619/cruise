@@ -6,3 +6,5 @@ export const CONFIG_FILE_PATH = path.join(INTERNAL_ROOT_PATH, "config.json");
 export const CONFIG_FILE_DIR = INTERNAL_ROOT_PATH;
 
 export const DATABASE_PATH = path.join(INTERNAL_ROOT_PATH, "database.sqlite");
+
+export const ALBUM_ART_PATH = path.join(INTERNAL_ROOT_PATH, "album-art");

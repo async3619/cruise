@@ -8,7 +8,7 @@ import PauseRoundedIcon from "@mui/icons-material/PauseRounded";
 
 import usePlayer from "@player/usePlayer";
 
-import { ButtonWrapper, PlayWrapper, Root } from "@components/PlayerControl.styles";
+import { ButtonWrapper, PlayWrapper, Root } from "@components/Player/Control.styles";
 
 export default function PlayerControl() {
     const { play, pause, isPlaying, playlist, next, previous, hasNext, hasPrevious } = usePlayer();
