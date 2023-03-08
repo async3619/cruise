@@ -2,6 +2,7 @@ fragment PlayableMusic on Music {
     id
     title
     path
+    track
     artists {
         id
         name

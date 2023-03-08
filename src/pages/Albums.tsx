@@ -1,4 +1,5 @@
 import React from "react";
+import * as _ from "lodash";
 
 import MusicsPage from "@components/Page/Musics";
 import AlbumList from "@components/UI/AlbumList";
@@ -30,7 +31,8 @@ export default function Albums() {
             throw new Error(`Failed to get musics of album: ${album.title}`);
         }
 
-        await player.play(data.album.musics, data.album.musics[0]);
+        const musics = _.orderBy(data.album.musics, m => m.track ?? m.id, "asc");
+        await player.play(musics, musics[0]);
     };
 
     return (
