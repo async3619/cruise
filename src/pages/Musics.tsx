@@ -1,6 +1,6 @@
 import React from "react";
 
-import Page from "@components/Page";
+import MusicsPage from "@components/Page/Musics";
 import MusicList from "@components/UI/MusicList";
 
 import { useMusicsQuery } from "@queries";
@@ -11,7 +11,8 @@ import { Root } from "@pages/Musics.styles";
 import { MusicListItem } from "@utils/types";
 
 export default function Musics() {
-    const { play, currentMusic } = usePlayer();
+    const player = usePlayer();
+    const { currentMusic, play } = player;
     const { data } = useMusicsQuery({
         fetchPolicy: "network-only",
     });
@@ -25,10 +26,10 @@ export default function Musics() {
     };
 
     return (
-        <Page title="Musics">
+        <MusicsPage title="Musics" player={player}>
             <Root>
                 {data?.musics && <MusicList activeItem={currentMusic} onPlay={handlePlay} items={data.musics} />}
             </Root>
-        </Page>
+        </MusicsPage>
     );
 }

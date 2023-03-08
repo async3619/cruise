@@ -6,8 +6,8 @@ export const Root = styled.table`
     margin: 0;
 
     border-collapse: separate;
-    border-spacing: 0 ${({ theme }) => theme.spacing(0.75)};
 
+    &,
     tr,
     td,
     th {

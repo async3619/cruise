@@ -1,23 +1,20 @@
 import React from "react";
 
-import { Root } from "./Button.styles";
 import { Typography } from "@mui/material";
+
+import { Root } from "@components/UI/Button.styles";
 
 export interface ButtonProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "children"> {
     children: string;
     icon?: React.ComponentType;
+    color?: "primary" | "secondary";
 }
-export interface ButtonStates {}
 
-export default class Button extends React.Component<ButtonProps, ButtonStates> {
-    public render() {
-        const { children, icon: Icon, ...props } = this.props;
-
-        return (
-            <Root {...props}>
-                {Icon && <Icon />}
-                <Typography lineHeight={1}>{children}</Typography>
-            </Root>
-        );
-    }
+export default function Button({ children, icon: Icon, ...props }: ButtonProps) {
+    return (
+        <Root {...props}>
+            {Icon && <Icon />}
+            <Typography lineHeight={1}>{children}</Typography>
+        </Root>
+    );
 }

@@ -21,18 +21,23 @@ export type EventHandlerMap = {
 
 export interface PlayerContextValue {
     playlist: PlayableMusic[];
+    setPlaylist(playlist: PlayableMusic[]): void;
+
     currentMusic: PlayableMusic | null;
     isPlaying: boolean;
     repeatMode: RepeatMode;
     seekTo(time: number): void;
-    play(playlist?: PlayableMusic[], music?: PlayableMusic): void;
+    play(playlist?: PlayableMusic[], music?: PlayableMusic): Promise<void>;
+    playShuffled(playlist: PlayableMusic[]): Promise<void>;
     pause(): void;
     previous(): void;
     next(): void;
-    getAudio(): HTMLAudioElement;
-    toggleRepeatMode(): void;
     hasPrevious(): boolean;
     hasNext(): boolean;
+
+    getAudio(): HTMLAudioElement;
+    toggleRepeatMode(): void;
+
     shuffle(): void;
 
     addEventListener<K extends keyof PlayerEventMap>(type: K, listener: PlayerEventMap[K]): void;
@@ -47,6 +52,12 @@ export const PlayerContext = React.createContext<PlayerContextValue>({
     playlist: [],
     currentMusic: null,
     repeatMode: RepeatMode.None,
+    playShuffled: () => {
+        throw new Error("Not implemented");
+    },
+    setPlaylist: () => {
+        throw new Error("Not implemented");
+    },
     seekTo: () => {
         throw new Error("Not implemented");
     },

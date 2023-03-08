@@ -32,12 +32,12 @@ class PlayerPanel extends React.Component<PlayerPanelProps, PlayerPanelStates> {
     };
 
     public componentDidMount() {
-        this.props.addEventListener("load", this.handlePlay);
-        this.props.addEventListener("progress", this.handleProgress);
+        this.props.player.addEventListener("load", this.handlePlay);
+        this.props.player.addEventListener("progress", this.handleProgress);
     }
     public componentWillUnmount() {
-        this.props.removeEventListener("load", this.handlePlay);
-        this.props.removeEventListener("progress", this.handleProgress);
+        this.props.player.removeEventListener("load", this.handlePlay);
+        this.props.player.removeEventListener("progress", this.handleProgress);
     }
 
     private handlePlay = (currentTime: number, duration: number) => {
@@ -67,7 +67,7 @@ class PlayerPanel extends React.Component<PlayerPanelProps, PlayerPanelStates> {
             sliderDragging: false,
         });
 
-        this.props.seekTo(value);
+        this.props.player.seekTo(value);
     };
 
     public render() {
@@ -96,7 +96,7 @@ class PlayerPanel extends React.Component<PlayerPanelProps, PlayerPanelStates> {
                 </ProgressWrapper>
                 <Content>
                     <Box flex="1 1">
-                        <PlayerMusicView player={this.props} />
+                        <PlayerMusicView player={this.props.player} />
                     </Box>
                     <Box flex="0 0" display="flex" justifyContent="center">
                         <PlayerControl />

@@ -1,8 +1,9 @@
 import React from "react";
 
-import { Typography } from "@mui/material";
+import { Box } from "@mui/material";
 
 import Page from "@components/Page";
+import Button from "@components/UI/Button";
 
 import { Root } from "@pages/Home.styles";
 
@@ -16,7 +17,18 @@ export default class Home extends React.Component<HomeProps, HomeStates> {
         return (
             <Page title="Home">
                 <Root>
-                    <Typography>Home</Typography>
+                    <Box my={2}>
+                        <Button>Button</Button>
+                    </Box>
+                    <Box my={2}>
+                        <Button color="primary">Button</Button>
+                    </Box>
+                    <Box my={2}>
+                        <Button color="secondary">Button</Button>
+                    </Box>
+                    <Box my={2}>
+                        <Button>Button</Button>
+                    </Box>
                 </Root>
             </Page>
         );

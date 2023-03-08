@@ -39,7 +39,7 @@ export const Root = styled.div`
 `;
 
 export const Header = styled.header`
-    margin: ${({ theme }) => theme.spacing(0, 0, 2)};
+    margin: ${({ theme }) => theme.spacing(0)};
     padding: ${({ theme }) => theme.spacing(0, 7)};
 
     flex: 0 0 auto;

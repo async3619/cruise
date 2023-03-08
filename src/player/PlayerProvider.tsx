@@ -2,6 +2,7 @@ import * as _ from "lodash";
 import React from "react";
 
 import { EventHandlerMap, PlayerContext, PlayerContextValue, RepeatMode } from "@player/context";
+import { PlayableMusic } from "@utils/types";
 
 export interface PlayerProviderProps {
     children: React.ReactNode;
@@ -28,6 +29,7 @@ export default class PlayerProvider extends React.Component<PlayerProviderProps,
             volume: 0,
             setVolume: this.setVolume,
             play: this.play,
+            playShuffled: this.playShuffled,
             pause: this.pause,
             getAudio: this.getAudio,
             next: this.next,
@@ -39,6 +41,7 @@ export default class PlayerProvider extends React.Component<PlayerProviderProps,
             addEventListener: this.addEventListener,
             removeEventListener: this.removeEventListener,
             seekTo: this.seekTo,
+            setPlaylist: this.setPlaylist,
         };
     }
 
@@ -224,6 +227,14 @@ export default class PlayerProvider extends React.Component<PlayerProviderProps,
 
         this.audioRef.current.src = `cruise://${currentMusic.path}`;
         await this.audioRef.current.play();
+    };
+    private playShuffled = (playlist: PlayableMusic[]) => {
+        const shuffled = _.shuffle(playlist);
+        return this.play(shuffled, shuffled[0]);
+    };
+
+    private setPlaylist = (playlist: PlayableMusic[]) => {
+        this.setState({ playlist, currentMusic: playlist[0] });
     };
     private pause = () => {
         if (!this.audioRef.current) {

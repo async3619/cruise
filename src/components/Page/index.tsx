@@ -7,23 +7,23 @@ import { Header, Main, Root } from "@components/Page/index.styles";
 
 export interface PageProps {
     title: string;
-    renderHeader?(title: string): React.ReactNode;
+    header?: ((title: string) => React.ReactNode) | React.ReactNode;
     children?: React.ReactNode;
 }
 export interface PageStates {}
 
 export default class Page extends React.Component<PageProps, PageStates> {
     public render() {
-        const { renderHeader, title, children } = this.props;
+        const { header, title, children } = this.props;
         const titleNode: React.ReactNode = (
-            <Typography variant="h4" lineHeight={1} gutterBottom>
+            <Typography variant="h4" lineHeight={1}>
                 {title}
             </Typography>
         );
 
         let headerNode: React.ReactNode = titleNode;
-        if (renderHeader) {
-            headerNode = renderHeader(title);
+        if (header) {
+            headerNode = typeof header === "function" ? header(title) : header;
         }
 
         return (

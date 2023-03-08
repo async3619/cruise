@@ -28,7 +28,8 @@
             "@main/*": ["src-main/*"],
             "@common/*": ["common/*"],
             "@queries": ["src/queries/index.tsx"],
-            "@player/*": ["src/player/*"]
+            "@player/*": ["src/player/*"],
+            "@graphql/*": ["src/graphql/*"]
         },
         "plugins": [
             {
