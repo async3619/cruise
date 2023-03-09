@@ -3,18 +3,20 @@ import { Scrollbars } from "react-custom-scrollbars-2";
 
 import { Typography } from "@mui/material";
 
-import { Header, Main, Root } from "@components/Page/index.styles";
+import { FloatingHeader, Header, Main, Root } from "@components/Page/index.styles";
 
 export interface PageProps {
     title: string;
     header?: ((title: string) => React.ReactNode) | React.ReactNode;
     children?: React.ReactNode;
+    floatingHeader?: boolean;
+    onScroll?(e: React.UIEvent<HTMLDivElement>): void;
 }
 export interface PageStates {}
 
 export default class Page extends React.Component<PageProps, PageStates> {
     public render() {
-        const { header, title, children } = this.props;
+        const { header, title, children, floatingHeader, onScroll } = this.props;
         const titleNode: React.ReactNode = (
             <Typography variant="h4" lineHeight={1}>
                 {title}
@@ -26,10 +28,12 @@ export default class Page extends React.Component<PageProps, PageStates> {
             headerNode = typeof header === "function" ? header(title) : header;
         }
 
+        const HeaderComponent = floatingHeader ? FloatingHeader : Header;
+
         return (
             <Root>
-                <Header>{headerNode}</Header>
-                <Scrollbars autoHide>
+                <HeaderComponent>{headerNode}</HeaderComponent>
+                <Scrollbars autoHide onScroll={onScroll}>
                     <Main>{children}</Main>
                 </Scrollbars>
             </Root>

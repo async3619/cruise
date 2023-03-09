@@ -40,13 +40,20 @@ export const Root = styled.div`
 `;
 
 export const MainWrapper = styled.div`
+    width: 100vw;
+    max-width: 100vw;
+
     min-height: 0;
+
+    overflow: hidden;
 
     display: flex;
     flex: 1 1 auto;
 `;
 
 export const Main = styled.main`
+    min-width: 0;
+
     padding-top: ${TITLE_BAR_HEIGHT}px;
 
     flex: 1 1 auto;

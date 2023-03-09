@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import * as _ from "lodash";
 
 import MusicsPage from "@components/Page/Musics";
@@ -15,6 +16,7 @@ import { AlbumListItem } from "@utils/types";
 export default function Albums() {
     const player = usePlayer();
     const client = useApolloClient();
+    const navigate = useNavigate();
     const { data } = useAlbumsQuery({
         fetchPolicy: "network-only",
     });
@@ -35,9 +37,13 @@ export default function Albums() {
         await player.play(musics, musics[0]);
     };
 
+    const handleClick = (album: AlbumListItem) => {
+        navigate(`/albums/${album.id}`);
+    };
+
     return (
         <MusicsPage title="Albums" player={player}>
-            <Root>{data?.albums && <AlbumList onPlay={handlePlay} items={data.albums} />}</Root>
+            <Root>{data?.albums && <AlbumList onClick={handleClick} onPlay={handlePlay} items={data.albums} />}</Root>
         </MusicsPage>
     );
 }

@@ -7,6 +7,9 @@ export const mainTheme = createTheme({
             secondary: "rgba(0, 0, 0, 0.6063)",
             disabled: "rgba(0, 0, 0, 0.3614)",
         },
+        background: {
+            default: "#f9f9f9",
+        },
     },
     typography: {
         fontFamily: ["SUIT Variable", "sans-serif"].join(","),

@@ -24,6 +24,9 @@ const MainAnimation = keyframes`
 `;
 
 export const Root = styled.div`
+    width: 100%;
+    max-width: 100%;
+
     height: 100%;
     max-height: 100vh;
 
@@ -35,6 +38,8 @@ export const Root = styled.div`
     display: flex;
     flex-direction: column;
 
+    position: relative;
+
     animation: ${PageAnimation} 0.25s ${({ theme }) => theme.transitions.easing.easeInOut} forwards;
 `;
 
@@ -43,6 +48,13 @@ export const Header = styled.header`
     padding: ${({ theme }) => theme.spacing(0, 7)};
 
     flex: 0 0 auto;
+`;
+
+export const FloatingHeader = styled(Header)`
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
 `;
 
 export const Main = styled.main`

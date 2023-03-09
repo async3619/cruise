@@ -3,21 +3,21 @@ import { HashRouter } from "react-router-dom";
 import type { ipcRenderer } from "electron";
 import { ipcLink } from "electron-trpc/renderer";
 
+import { QueryClient } from "@tanstack/react-query";
+
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 import { onError } from "@apollo/client/link/error";
 import { ApolloLink } from "@apollo/client/core";
+import { createIpcLink } from "@graphql/ipc-link";
 
 import { ThemeProvider } from "@mui/material";
-import Router from "@components/Router";
 
 import PlayerProvider from "@player/PlayerProvider";
 
-import { QueryClient } from "@tanstack/react-query";
-
 import { mainTheme } from "@styles/theme";
 
-import { trpcReact } from "@/api";
-import { createIpcLink } from "@/graphql/ipc-link";
+import Router from "@renderer/Router";
+import { trpcReact } from "@renderer/api";
 
 declare global {
     interface Window {

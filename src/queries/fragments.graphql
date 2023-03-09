@@ -1,3 +1,9 @@
+fragment MinimalAlbumArt on AlbumArt {
+    id
+    path
+    type
+}
+
 fragment PlayableMusic on Music {
     id
     title
@@ -8,9 +14,7 @@ fragment PlayableMusic on Music {
         name
     }
     albumArts {
-        id
-        path
-        type
+        ...MinimalAlbumArt
     }
     album {
         id

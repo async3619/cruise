@@ -9,5 +9,7 @@ export const Root = styled.div`
     padding-top: ${TITLE_BAR_HEIGHT}px;
     border-right: 1px solid #e5e5e5;
 
+    flex: 0 0 ${SIDEBAR_WIDTH}px;
+
     background: #f3f3f3;
 `;

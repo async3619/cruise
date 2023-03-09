@@ -13,18 +13,26 @@ import { AlbumListItem as AlbumListItemType } from "@utils/types";
 export interface AlbumListItemProps {
     item: AlbumListItemType;
     onPlay(item: AlbumListItemType): void;
+    onClick(item: AlbumListItemType): void;
 }
 
 export default function AlbumListItem(props: AlbumListItemProps) {
-    const { item, onPlay } = props;
+    const { item, onPlay, onClick } = props;
     const albumArt = item.musics[0]?.albumArts[0];
 
-    const handlePlayButtonClick = () => {
+    const handlePlayButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         onPlay(item);
+
+        e.stopPropagation();
+        e.preventDefault();
+    };
+
+    const handleClick = () => {
+        onClick(item);
     };
 
     return (
-        <Root>
+        <Root onClick={handleClick}>
             <AlbumArtWrapper empty={!albumArt}>
                 {albumArt && <AlbumArt src={`cruise://${albumArt.path}`} alt={item.title} />}
                 {!albumArt && <ImageNotSupportedRoundedIcon />}

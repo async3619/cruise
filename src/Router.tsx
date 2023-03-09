@@ -7,6 +7,7 @@ import Home from "@pages/Home";
 import Musics from "@pages/Musics";
 import Settings from "@pages/Settings";
 import Albums from "@pages/Albums";
+import Album from "@pages/Album";
 
 export default function Router() {
     return (
@@ -21,6 +22,7 @@ export default function Router() {
                 <Route path="/" element={<Home />} />
                 <Route path="/musics" element={<Musics />} />
                 <Route path="/albums" element={<Albums />} />
+                <Route path="/albums/:albumId" element={<Album />} />
                 <Route path="/settings" element={<Settings />} />
             </Route>
         </Routes>

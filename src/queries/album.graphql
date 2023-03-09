@@ -1,0 +1,15 @@
+query album($id: Int!) {
+    album(id: $id) {
+        id
+        title
+        artists {
+            id
+            name
+        }
+        musics {
+            ...PlayableMusic
+            duration
+            year
+        }
+    }
+}

@@ -29,7 +29,8 @@
             "@common/*": ["common/*"],
             "@queries": ["src/queries/index.tsx"],
             "@player/*": ["src/player/*"],
-            "@graphql/*": ["src/graphql/*"]
+            "@graphql/*": ["src/graphql/*"],
+            "@renderer/*": ["src/*"]
         },
         "plugins": [
             {

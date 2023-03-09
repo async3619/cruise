@@ -9,14 +9,15 @@ import { Root } from "@components/UI/AlbumList/index.styles";
 export interface AlbumListProps {
     items: AlbumListItemType[];
     onPlay(item: AlbumListItemType): void;
+    onClick(item: AlbumListItemType): void;
 }
 export interface AlbumListStates {}
 
 export default class AlbumList extends React.Component<AlbumListProps, AlbumListStates> {
     private renderItem = (item: AlbumListItemType) => {
-        const { onPlay } = this.props;
+        const { onPlay, onClick } = this.props;
 
-        return <AlbumListItem onPlay={onPlay} key={item.id} item={item} />;
+        return <AlbumListItem onClick={onClick} onPlay={onPlay} key={item.id} item={item} />;
     };
 
     public render() {
