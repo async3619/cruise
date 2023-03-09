@@ -1,5 +1,6 @@
 import * as _ from "lodash";
 import React from "react";
+import * as localforage from "localforage";
 
 import { EventHandlerMap, PlayerContext, PlayerContextValue, RepeatMode } from "@player/context";
 import { PlayableMusic } from "@utils/types";
@@ -45,7 +46,7 @@ export default class PlayerProvider extends React.Component<PlayerProviderProps,
         };
     }
 
-    public componentDidMount() {
+    public async componentDidMount() {
         if (!this.audioRef.current) {
             return;
         }
@@ -65,7 +66,8 @@ export default class PlayerProvider extends React.Component<PlayerProviderProps,
         navigator.mediaSession.setActionHandler("previoustrack", this.handleMediaSessionAction);
         navigator.mediaSession.setActionHandler("nexttrack", this.handleMediaSessionAction);
 
-        this.setState({ volume: this.audioRef.current.volume });
+        const volume = await this.restoreVolume();
+        this.setVolume(volume);
     }
     public componentWillUnmount() {
         if (!this.audioRef.current) {
@@ -198,9 +200,30 @@ export default class PlayerProvider extends React.Component<PlayerProviderProps,
 
         return this.audioRef.current;
     };
+
     private setVolume = (volume: number) => {
         const audio = this.getAudio();
         audio.volume = volume;
+
+        this.setState({
+            volume,
+        });
+
+        this.saveVolume(volume);
+    };
+    private saveVolume = _.debounce((volume: number) => {
+        (async () => {
+            await localforage.setItem("volume", volume);
+        })();
+    }, 500);
+    private restoreVolume = async () => {
+        const audio = this.getAudio();
+        const volume = await localforage.getItem<number>("volume");
+        if (volume === null) {
+            return audio.volume;
+        }
+
+        return volume;
     };
 
     private seekTo = (time: number) => {
