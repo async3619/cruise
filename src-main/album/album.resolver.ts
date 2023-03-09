@@ -1,3 +1,4 @@
+import * as _ from "lodash";
 import { Ctx, FieldResolver, Arg, Query, Resolver, Root, Int } from "type-graphql";
 import { Service } from "typedi";
 
@@ -36,7 +37,18 @@ export default class AlbumResolver {
         @Arg("limit", () => Int, { nullable: true }) limit?: number,
     ) {
         const musicIds = limit ? album.musicIds.slice(0, limit) : album.musicIds;
+        const data = await context.musicLoader.loadMany(musicIds);
+        const musics: Music[] = [];
+        for (const item of data) {
+            if (!(item instanceof Music)) {
+                continue;
+            }
 
-        return context.musicLoader.loadMany(musicIds);
+            musics.push(item);
+        }
+
+        return _.chain(musics)
+            .orderBy(t => t.track || t.id, "asc")
+            .value();
     }
 }
