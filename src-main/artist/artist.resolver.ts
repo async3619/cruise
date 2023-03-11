@@ -1,3 +1,5 @@
+import _ from "lodash";
+
 import { Arg, Ctx, FieldResolver, Int, Query, Resolver, Root } from "type-graphql";
 import { Service } from "typedi";
 
@@ -25,6 +27,19 @@ export default class ArtistResolver {
 
     @FieldResolver(() => [Album])
     public async albums(@Root() artist: Artist, @Ctx() ctx: GraphQLContext) {
-        return ctx.albumLoader.loadMany(artist.albumIds);
+        const albums = await ctx.albumLoader.loadMany(artist.albumIds);
+        const items: Album[] = [];
+        for (const album of albums) {
+            if (!(album instanceof Album)) {
+                //TODO: Throw error
+                continue;
+            }
+
+            items.push(album);
+        }
+
+        return _.chain(items)
+            .orderBy(a => a.year || 0, "desc")
+            .value();
     }
 }

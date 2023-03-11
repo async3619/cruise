@@ -26,6 +26,10 @@ export class Album extends BaseEntity {
     @Column({ type: "text" })
     public title!: string;
 
+    @Field(() => Int, { nullable: true })
+    @Column({ type: "integer", nullable: true })
+    public year?: number;
+
     @Field(() => Date)
     @CreateDateColumn()
     public createdAt!: Date;

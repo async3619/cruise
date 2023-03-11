@@ -150,6 +150,12 @@ export class LibraryService {
 
             music.albumArts = albumArtEntities;
             music = await this.musicRepository.save(music);
+
+            // set album.year to the biggest music.year
+            if (music.album && music.year && (!music.album.year || music.album.year < music.year)) {
+                music.album.year = music.year;
+                await this.albumRepository.save(music.album);
+            }
         }
 
         for (const [albumName, artists] of Object.entries(albumArtists)) {

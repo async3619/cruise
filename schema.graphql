@@ -40,6 +40,7 @@ type Artist {
 type Album {
   id: Int!
   title: String!
+  year: Int
   createdAt: DateTime!
   updatedAt: DateTime!
   musics(limit: Int): [Music!]!
