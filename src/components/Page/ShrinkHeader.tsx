@@ -82,7 +82,7 @@ export default class ShrinkHeaderPage extends React.Component<Props> {
             return this.renderSkeleton();
         }
 
-        const { title, content, image, buttons, shape = "circle" } = this.props;
+        const { title, content, image, buttons, shape = "square" } = this.props;
 
         return (
             <Wrapper>
