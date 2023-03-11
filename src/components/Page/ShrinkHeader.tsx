@@ -10,7 +10,10 @@ import { ButtonContainer, Content, Information, Root, Wrapper } from "@component
 
 import { reverseLerp } from "@utils/math";
 
-export interface ShrinkHeaderPageProps {
+export interface BaseShrinkHeaderPageProps {
+    shape?: "square" | "circle";
+}
+export interface ShrinkHeaderPageProps extends BaseShrinkHeaderPageProps {
     loading?: false;
     title: string;
     image?: string;
@@ -18,16 +21,15 @@ export interface ShrinkHeaderPageProps {
     buttons: React.ReactNode;
     children: React.ReactNode;
 }
-export interface SkeletonShrinkHeaderPageProps {
+export interface SkeletonShrinkHeaderPageProps extends BaseShrinkHeaderPageProps {
     loading: true;
 }
-export interface ShrinkHeaderPageStates {}
 
 type Props = ShrinkHeaderPageProps | SkeletonShrinkHeaderPageProps;
 
 const MIN_ALBUM_ART_SIZE = 104;
 
-export default class ShrinkHeaderPage extends React.Component<Props, ShrinkHeaderPageStates> {
+export default class ShrinkHeaderPage extends React.Component<Props> {
     private readonly albumArtRef = React.createRef<HTMLDivElement>();
     private readonly informationRef = React.createRef<HTMLDivElement>();
     private albumArtHeight: number | null = null;
@@ -64,9 +66,11 @@ export default class ShrinkHeaderPage extends React.Component<Props, ShrinkHeade
     };
 
     private renderSkeleton = () => {
+        const { shape = "square" } = this.props;
+
         return (
             <Root>
-                <AlbumArt size={208} />
+                <AlbumArt size={208} shape={shape} />
                 <Box flex="1 1 auto" display="flex" alignItems="center" justifyContent="center">
                     <CircularProgress />
                 </Box>
@@ -78,12 +82,12 @@ export default class ShrinkHeaderPage extends React.Component<Props, ShrinkHeade
             return this.renderSkeleton();
         }
 
-        const { title, content, image, buttons } = this.props;
+        const { title, content, image, buttons, shape = "circle" } = this.props;
 
         return (
             <Wrapper>
                 <Root>
-                    <AlbumArt ref={this.albumArtRef} image={image} size={208} />
+                    <AlbumArt ref={this.albumArtRef} image={image} size={208} shape={shape} />
                     <Content>
                         <Typography variant="h4" noWrap overflow="hidden" fontWeight={800}>
                             {title}

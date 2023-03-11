@@ -11,20 +11,24 @@ import { ArtistListItem as ArtistListItemType } from "@utils/types";
 export interface ArtistListItemProps {
     item: ArtistListItemType;
     onPlay(item: ArtistListItemType): void;
+    onClick(item: ArtistListItemType): void;
 }
 
 export default function ArtistListItem(props: ArtistListItemProps) {
-    const { item, onPlay } = props;
+    const { item, onPlay, onClick } = props;
 
     const handlePlayClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         onPlay(item);
 
         e.stopPropagation();
-        e.preventDefault();
+    };
+
+    const handleClick = () => {
+        onClick(item);
     };
 
     return (
-        <Root>
+        <Root onClick={handleClick}>
             <Profile empty>
                 <PersonOutlineRoundedIcon />
                 <Controls>

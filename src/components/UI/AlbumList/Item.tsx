@@ -8,16 +8,17 @@ import Placeholder from "@components/Placeholder";
 
 import { AlbumArt, AlbumArtWrapper, Button, Controls, Root } from "@components/UI/AlbumList/Item.styles";
 
-import { AlbumListItem as AlbumListItemType } from "@utils/types";
+import { AlbumListItem as AlbumListItemType, ArtistAlbumListItem } from "@utils/types";
 
 export interface AlbumListItemProps {
-    item: AlbumListItemType;
+    subtitleType?: "artist" | "year";
+    item: AlbumListItemType | ArtistAlbumListItem;
     onPlay(item: AlbumListItemType): void;
     onClick(item: AlbumListItemType): void;
 }
 
 export default function AlbumListItem(props: AlbumListItemProps) {
-    const { item, onPlay, onClick } = props;
+    const { item, onPlay, onClick, subtitleType = "artist" } = props;
     const albumArt = item.musics[0]?.albumArts[0];
 
     const handlePlayButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -30,6 +31,17 @@ export default function AlbumListItem(props: AlbumListItemProps) {
     const handleClick = () => {
         onClick(item);
     };
+
+    let subtitle: React.ReactNode;
+    if (subtitleType === "artist") {
+        subtitle = item.artists.map(artist => artist.name).join(", ");
+    } else {
+        if ("year" in item && item.year) {
+            subtitle = item.year.toString();
+        } else {
+            subtitle = "Unknown Year";
+        }
+    }
 
     return (
         <Root onClick={handleClick}>
@@ -48,7 +60,7 @@ export default function AlbumListItem(props: AlbumListItemProps) {
                     {item.title}
                 </Typography>
                 <Typography variant="body2" color="textSecondary">
-                    {item.artists.map(artist => artist.name).join(", ")}
+                    {subtitle}
                 </Typography>
             </Box>
         </Root>

@@ -1,9 +1,10 @@
 import React from "react";
 import { Diff } from "utility-types";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 export interface WithParamsProps<TParams extends Record<string, string>> {
     params: Partial<TParams>;
+    navigate: ReturnType<typeof useNavigate>;
 }
 
 const withParams = <BaseProps extends WithParamsProps<any>>(BaseComponent: React.ComponentType<BaseProps>) => {
@@ -11,8 +12,9 @@ const withParams = <BaseProps extends WithParamsProps<any>>(BaseComponent: React
 
     function Hoc({ ...restProps }: HocProps) {
         const params = useParams();
+        const navigate = useNavigate();
 
-        return <BaseComponent {...(restProps as BaseProps)} params={params} />;
+        return <BaseComponent {...(restProps as BaseProps)} params={params} navigate={navigate} />;
     }
 
     Hoc.displayName = `WithParams(${BaseComponent.name})`;

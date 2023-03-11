@@ -9,6 +9,7 @@ import Settings from "@pages/Settings";
 import Albums from "@pages/Albums";
 import Album from "@pages/Album";
 import Artists from "@pages/Artists";
+import Artist from "@pages/Artist";
 
 export default function Router() {
     return (
@@ -25,6 +26,7 @@ export default function Router() {
                 <Route path="/albums" element={<Albums />} />
                 <Route path="/albums/:albumId" element={<Album />} />
                 <Route path="/artists" element={<Artists />} />
+                <Route path="/artists/:artistId" element={<Artist />} />
                 <Route path="/settings" element={<Settings />} />
             </Route>
         </Routes>

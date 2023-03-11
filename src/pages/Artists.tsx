@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 import ArtistList from "@components/UI/ArtistList";
 import MusicsPage from "@components/Page/Musics";
@@ -20,6 +21,7 @@ import { Root } from "@pages/Artists.styles";
 export default function Artists() {
     const player = usePlayer();
     const client = useApolloClient();
+    const navigate = useNavigate();
     const { data } = useArtistsQuery({
         fetchPolicy: "network-only",
     });
@@ -41,9 +43,15 @@ export default function Artists() {
         await player.play(musics, musics[0]);
     };
 
+    const handleClick = (item: ArtistListItemType) => {
+        navigate(`/artists/${item.id}`);
+    };
+
     return (
         <MusicsPage title="Artists" player={player}>
-            <Root>{data?.artists && <ArtistList items={data.artists} onPlay={handlePlay} />}</Root>
+            <Root>
+                {data?.artists && <ArtistList items={data.artists} onPlay={handlePlay} onClick={handleClick} />}
+            </Root>
         </MusicsPage>
     );
 }

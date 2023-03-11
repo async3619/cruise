@@ -28,6 +28,10 @@ export const Root = styled.div<{ empty: boolean }>`
     }
 `;
 
+export const CircledRoot = styled(Root)`
+    border-radius: 100%;
+`;
+
 export const Image = styled.img`
     width: 100%;
 `;

@@ -6,6 +6,7 @@ import {
     AlbumQuery,
     MinimalAlbumArtFragment,
     ArtistsQuery,
+    ArtistAlbumsQuery,
 } from "@queries";
 
 export type SelectOnly<Record, Type extends Record[keyof Record]> = {
@@ -35,3 +36,5 @@ export type PlayableMusic = PlayableMusicFragment;
 export type AlbumArtType = AlbumArtTypeImpl;
 export type AlbumType = Required<AlbumQuery["album"]>;
 export type MinimumAlbumArt = MinimalAlbumArtFragment;
+export type ArtistPageData = Required<ArtistAlbumsQuery["artist"]>;
+export type ArtistAlbumListItem = ArtistPageData["albums"][0];
