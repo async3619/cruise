@@ -5,6 +5,7 @@ import {
     AlbumsQuery,
     AlbumQuery,
     MinimalAlbumArtFragment,
+    ArtistsQuery,
 } from "@queries";
 
 export type SelectOnly<Record, Type extends Record[keyof Record]> = {
@@ -29,6 +30,7 @@ export type Required<T> = Exclude<T, null | undefined>;
 
 export type MusicListItem = MusicsQuery["musics"][0];
 export type AlbumListItem = AlbumsQuery["albums"][0];
+export type ArtistListItem = ArtistsQuery["artists"][0];
 export type PlayableMusic = PlayableMusicFragment;
 export type AlbumArtType = AlbumArtTypeImpl;
 export type AlbumType = Required<AlbumQuery["album"]>;

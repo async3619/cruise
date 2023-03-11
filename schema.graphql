@@ -2,6 +2,8 @@ type Query {
   musics: [Music!]!
   album(id: Int!): Album
   albums: [Album!]!
+  artist(id: Int!): Artist
+  artists: [Artist!]!
 }
 
 type Music {

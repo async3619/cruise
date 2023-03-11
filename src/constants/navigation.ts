@@ -2,6 +2,7 @@ import MusicNoteRoundedIcon from "@mui/icons-material/MusicNoteRounded";
 import AlbumRoundedIcon from "@mui/icons-material/AlbumRounded";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
+import PeopleAltRoundedIcon from "@mui/icons-material/PeopleAltRounded";
 
 import { ListItemType } from "@components/List/index.types";
 
@@ -21,6 +22,11 @@ export const NAVIGATION_ITEMS: ListItemType[] = [
         id: "/albums",
         label: "Albums",
         icon: AlbumRoundedIcon,
+    },
+    {
+        id: "/artists",
+        label: "Artists",
+        icon: PeopleAltRoundedIcon,
     },
     "gap",
     {
