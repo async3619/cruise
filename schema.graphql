@@ -35,6 +35,7 @@ type Artist {
   updatedAt: DateTime!
   musics: [Music!]!
   albums: [Album!]!
+  leadAlbums: [Album!]!
 }
 
 type Album {
@@ -45,6 +46,7 @@ type Album {
   updatedAt: DateTime!
   musics(limit: Int): [Music!]!
   artists: [Artist!]!
+  leadArtists: [Artist!]!
 }
 
 type AlbumArt {

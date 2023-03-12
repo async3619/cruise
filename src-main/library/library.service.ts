@@ -105,7 +105,8 @@ export class LibraryService {
             }
         }
 
-        const albumArtists: Record<string, Artist[]> = {};
+        const albumArtists: Record<string, Record<string, Artist>> = {};
+        const albumLeadArtists: Record<string, Record<string, Artist>> = {};
         for (const [audioPath, audio] of audios) {
             const fileName = path.basename(audioPath);
             let music = this.musicRepository.create();
@@ -126,11 +127,16 @@ export class LibraryService {
                 .filter((artist): artist is Artist => !!artist);
 
             const albumName = audio.album;
-            const albumArtist = audio.albumArtist || audio.artists[0];
-            if (albumName && albumArtist && artists[albumArtist]) {
-                albumArtists[albumName] ??= [];
-                if (!albumArtists[albumName].some(a => a.name === albumArtist)) {
-                    albumArtists[albumName].push(artists[albumArtist]);
+            if (albumName) {
+                albumArtists[albumName] ??= {};
+                for (const artist of music.artists) {
+                    albumArtists[albumName][artist.name] = artist;
+                }
+
+                const albumArtistName = audio.albumArtist;
+                if (albumArtistName) {
+                    albumLeadArtists[albumName] ??= {};
+                    albumLeadArtists[albumName][albumArtistName] = artists[albumArtistName];
                 }
             }
 
@@ -164,7 +170,8 @@ export class LibraryService {
                 continue;
             }
 
-            album.artists = artists;
+            album.artists = Object.values(artists);
+            album.leadArtists = Object.values(albumLeadArtists[albumName] || {});
             await this.albumRepository.save(album);
         }
 

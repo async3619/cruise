@@ -47,4 +47,12 @@ export class Artist extends BaseEntity {
 
     @RelationId((item: Artist) => item.albums)
     public albumIds!: Album["id"][];
+
+    // Artist[] => Album[]
+    @Field(() => [Album])
+    @ManyToMany(() => Album, item => item.artists)
+    public leadAlbums!: Album[];
+
+    @RelationId((item: Artist) => item.leadAlbums)
+    public leadAlbumIds!: Album["id"];
 }
