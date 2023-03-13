@@ -7,8 +7,7 @@ import tsconfigPaths from "vite-tsconfig-paths";
 import electron from "vite-plugin-electron";
 import renderer from "vite-plugin-electron-renderer";
 import noBundlePlugin from "vite-plugin-no-bundle";
-import typescript from "@rollup/plugin-typescript";
-import ttypescript from "ttypescript";
+import checker from "vite-plugin-checker";
 
 import pkg from "./package.json";
 
@@ -25,8 +24,8 @@ export default defineConfig(() => {
                     entry: ["src-main/index.ts"],
                     vite: {
                         plugins: [
-                            typescript({
-                                typescript: ttypescript,
+                            checker({
+                                typescript: true,
                             }),
                             noBundlePlugin({
                                 root: "src-main",
