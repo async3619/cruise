@@ -1,45 +1,47 @@
+import { z } from "zod";
 import { BrowserWindow, dialog, OpenDialogOptions } from "electron";
 
 import { initTRPC } from "@trpc/server";
 import { observable } from "@trpc/server/observable";
 
-import { Config, getConfig, setConfig } from "./config";
-import { createAssert } from "typia";
+import { Config, CONFIG_SCHEMA, getConfig, setConfig } from "./config";
 
 interface Context {
     window: BrowserWindow | null;
 }
 
-interface SelectPathInput {
-    directory?: boolean;
-    multiple?: boolean;
-}
-
 const t = initTRPC.context<Context>().create({ isServer: true });
 
 export const router = t.router({
-    selectPath: t.procedure.input(createAssert<SelectPathInput>()).query(async ({ ctx, input }) => {
-        if (!ctx.window) {
-            return;
-        }
+    selectPath: t.procedure
+        .input(
+            z.object({
+                directory: z.boolean().optional(),
+                multiple: z.boolean().optional(),
+            }),
+        )
+        .query(async ({ ctx, input }) => {
+            if (!ctx.window) {
+                return;
+            }
 
-        const properties: OpenDialogOptions["properties"] = [];
-        if (input.directory) {
-            properties.push("openDirectory");
-        } else {
-            properties.push("openFile");
-        }
+            const properties: OpenDialogOptions["properties"] = [];
+            if (input.directory) {
+                properties.push("openDirectory");
+            } else {
+                properties.push("openFile");
+            }
 
-        if (input.multiple) {
-            properties.push("multiSelections");
-        }
+            if (input.multiple) {
+                properties.push("multiSelections");
+            }
 
-        const { filePaths } = await dialog.showOpenDialog(ctx.window, {
-            properties,
-        });
+            const { filePaths } = await dialog.showOpenDialog(ctx.window, {
+                properties,
+            });
 
-        return filePaths;
-    }),
+            return filePaths;
+        }),
 
     maximize: t.procedure.query(({ ctx }) => {
         ctx.window?.maximize();
@@ -81,7 +83,7 @@ export const router = t.router({
     getConfig: t.procedure.query<Config>(async () => {
         return getConfig();
     }),
-    setConfig: t.procedure.input(createAssert<Config>()).mutation(async ({ input: config }) => {
+    setConfig: t.procedure.input(CONFIG_SCHEMA).mutation(async ({ input: config }) => {
         return setConfig(config);
     }),
 });
