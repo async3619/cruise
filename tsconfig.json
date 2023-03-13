@@ -35,8 +35,6 @@
         "plugins": [
             {
                 "transform": "typia/lib/transform"
-                // "functional": true, // validate function type
-                // "numeric": true, // check `isNaN()` and `isFinite()`
             }
         ]
     },

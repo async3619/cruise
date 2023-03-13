@@ -6,7 +6,7 @@
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
     "emitDecoratorMetadata": true,
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
   },
-  "include": ["vite.config.ts", "package.json"]
+  "include": ["vite.config.ts", "package.json", "tsconfig.json"]
 }

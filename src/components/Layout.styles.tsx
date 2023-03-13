@@ -22,7 +22,7 @@ export const GlobalStyles = css`
     @font-face {
         font-family: "SUIT Variable";
         font-weight: 100 900;
-        src: url("/suit.woff2") format("woff2-variations");
+        src: url("./suit.woff2") format("woff2-variations");
     }
 `;
 

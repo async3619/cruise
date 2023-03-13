@@ -22,7 +22,7 @@ export default function TitleBar() {
             <BackButton onClick={handleBack} disabled={!historyStack.length}>
                 <ArrowLeft20Regular />
             </BackButton>
-            <Icon src="/icon.svg" alt="Application Icon" />
+            <Icon src="./icon.svg" alt="Application Icon" />
             <Typography variant="body1">Cruise</Typography>
             <WindowControl />
         </Root>

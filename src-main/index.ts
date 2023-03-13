@@ -1,5 +1,6 @@
-import { app, BrowserWindow, shell, ipcMain, protocol } from "electron";
+import { app, BrowserWindow, ipcMain, protocol } from "electron";
 import { createIPCHandler } from "electron-trpc/main";
+import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 
 import { printSchema } from "graphql";
 import { release } from "node:os";
@@ -38,16 +39,7 @@ if (!app.requestSingleInstanceLock()) {
     process.exit(0);
 }
 
-// Remove electron security warnings
-// This warning only shows in development mode
-// Read more on https://www.electronjs.org/docs/latest/tutorial/security
-// process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true'
-
 let win: BrowserWindow | null = null;
-// Here, you can also use other preload
-const preload = join(__dirname, "./preload.js");
-const url = process.env.VITE_DEV_SERVER_URL;
-const indexHtml = join(distPath, "index.html");
 
 async function createWindow() {
     protocol.registerFileProtocol("cruise", (request, callback) => {
@@ -63,33 +55,17 @@ async function createWindow() {
         width: 1300,
         height: 800,
         webPreferences: {
-            preload,
+            preload: join(__dirname, "../preload/index.js"),
             nodeIntegration: true,
             contextIsolation: true,
         },
     });
 
-    if (url) {
-        // electron-vite-vue#298
-        win.loadURL(url);
-        // Open devTool if the app is not packaged
-        win.webContents.openDevTools({
-            mode: "undocked",
-        });
+    if (is.dev && process.env["ELECTRON_RENDERER_URL"]) {
+        win.loadURL(process.env["ELECTRON_RENDERER_URL"]);
     } else {
-        win.loadFile(indexHtml);
+        win.loadFile(join(__dirname, "../renderer/index.html"));
     }
-
-    // Test actively push message to the Electron-Renderer
-    win.webContents.on("did-finish-load", () => {
-        win?.webContents.send("main-process-message", new Date().toLocaleString());
-    });
-
-    // Make all links open with the browser, not with the application
-    win.webContents.setWindowOpenHandler(({ url }) => {
-        if (url.startsWith("https:")) shell.openExternal(url);
-        return { action: "deny" };
-    });
 
     const dataSource = await initializeDatabase();
     const schema = await initializeSchema(dataSource);
@@ -122,26 +98,28 @@ async function createWindow() {
     });
 }
 
-app.whenReady().then(createWindow);
+app.whenReady().then(() => {
+    // Set app user model id for windows
+    electronApp.setAppUserModelId("com.electron");
+
+    // Default open or close DevTools by F12 in development
+    // and ignore CommandOrControl + R in production.
+    // see https://github.com/alex8088/electron-toolkit/tree/master/packages/utils
+    app.on("browser-window-created", (_, window) => {
+        optimizer.watchWindowShortcuts(window);
+    });
+
+    createWindow();
+
+    app.on("activate", function () {
+        // On macOS it's common to re-create a window in the app when the
+        // dock icon is clicked and there are no other windows open.
+        if (BrowserWindow.getAllWindows().length === 0) createWindow();
+    });
+});
 
 app.on("window-all-closed", () => {
-    win = null;
-    if (process.platform !== "darwin") app.quit();
-});
-
-app.on("second-instance", () => {
-    if (win) {
-        // Focus on the main window if the user tried to open another
-        if (win.isMinimized()) win.restore();
-        win.focus();
-    }
-});
-
-app.on("activate", () => {
-    const allWindows = BrowserWindow.getAllWindows();
-    if (allWindows.length) {
-        allWindows[0].focus();
-    } else {
-        createWindow();
+    if (process.platform !== "darwin") {
+        app.quit();
     }
 });
