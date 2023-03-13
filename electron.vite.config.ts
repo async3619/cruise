@@ -4,6 +4,7 @@ import * as fs from "fs";
 import { defineConfig, externalizeDepsPlugin, swcPlugin } from "electron-vite";
 import react from "@vitejs/plugin-react-swc";
 import tsconfigPaths from "vite-tsconfig-paths";
+import checker from "vite-plugin-checker";
 
 const tsconfig = fs.readFileSync("./tsconfig.json", "utf8");
 const tsconfigJson = JSON.parse(tsconfig);
@@ -55,6 +56,9 @@ export default defineConfig({
                 plugins: [["@swc/plugin-emotion", {}]],
             }),
             tsconfigPaths(),
+            checker({
+                typescript: true,
+            }),
         ],
     },
 });
