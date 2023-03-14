@@ -62,5 +62,5 @@ export class Album extends BaseEntity {
     public leadArtists!: Artist[];
 
     @RelationId((item: Album) => item.leadArtists)
-    public leadArtistIds!: Artist["id"];
+    public leadArtistIds!: Artist["id"][];
 }

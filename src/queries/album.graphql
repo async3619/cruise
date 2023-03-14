@@ -2,7 +2,7 @@ query album($id: Int!) {
     album(id: $id) {
         id
         title
-        artists {
+        leadArtists {
             id
             name
         }

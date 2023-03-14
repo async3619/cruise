@@ -34,7 +34,7 @@ export default function AlbumListItem(props: AlbumListItemProps) {
 
     let subtitle: React.ReactNode;
     if (subtitleType === "artist") {
-        subtitle = item.artists.map(artist => artist.name).join(", ");
+        subtitle = item.leadArtists.map(artist => artist.name).join(", ");
     } else {
         if ("year" in item && item.year) {
             subtitle = item.year.toString();

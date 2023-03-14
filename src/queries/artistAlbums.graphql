@@ -6,7 +6,7 @@ query artistAlbums($artistId: Int!) {
             id
             title
             year
-            artists {
+            leadArtists {
                 id
                 name
             }

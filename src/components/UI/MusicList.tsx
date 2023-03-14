@@ -27,7 +27,7 @@ export default class MusicList extends React.Component<MusicListProps, MusicList
         const durationMinute = Math.floor(item.duration / 60);
         const durationSecond = (item.duration % 60).toString().padStart(2, "0");
         const duration = `${durationMinute}:${durationSecond}`;
-        const artists = (item.album?.artists || item.artists).map(artist => artist.name).join(", ");
+        const artists = (item.album?.leadArtists || item.artists).map(artist => artist.name).join(", ");
         const active = activeItem?.id === item.id;
 
         return (

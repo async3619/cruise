@@ -47,7 +47,7 @@ export default class PlayerMusicView extends React.Component<PlayerMusicViewProp
                     </Typography>
                     <Box display="flex" alignItems="center">
                         <Typography variant="body1" color="text.secondary">
-                            {currentMusic.album?.artists?.[0]?.name || "Unknown Artist"}
+                            {currentMusic.album?.leadArtists?.[0]?.name || "Unknown Artist"}
                         </Typography>
                         <Separator />
                         <Typography variant="body1" color="text.secondary">

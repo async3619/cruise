@@ -30,6 +30,11 @@ export default class AlbumResolver {
         return context.artistLoader.loadMany(album.artistIds);
     }
 
+    @FieldResolver(() => [Artist])
+    public async leadArtists(@Root() album: Album, @Ctx() context: GraphQLContext) {
+        return context.artistLoader.loadMany(album.leadArtistIds);
+    }
+
     @FieldResolver(() => [Music])
     public async musics(
         @Root() album: Album,

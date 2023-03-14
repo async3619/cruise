@@ -131,7 +131,7 @@ export default class PlayerProvider extends React.Component<PlayerProviderProps,
 
         navigator.mediaSession.metadata = new MediaMetadata({
             title: currentMusic.title,
-            artist: (currentMusic.album?.artists || currentMusic.artists).map(artist => artist.name).join(", "),
+            artist: (currentMusic.album?.leadArtists || currentMusic.artists).map(artist => artist.name).join(", "),
             album: currentMusic?.album?.title || "Unknown Album",
             artwork: [
                 { src: "https://dummyimage.com/96x96", sizes: "96x96", type: "image/png" },

@@ -2,7 +2,7 @@ query albums {
     albums {
         id
         title
-        artists {
+        leadArtists {
             id
             name
         }

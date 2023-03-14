@@ -86,7 +86,7 @@ class Album extends React.Component<AlbumProps> {
     private renderContent = (album: AlbumType) => {
         const { metadata } = this.state;
 
-        const artists = album.artists.map(artist => artist.name).join(", ");
+        const artists = album.leadArtists.map(artist => artist.name).join(", ");
 
         return (
             <>

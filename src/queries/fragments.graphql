@@ -19,7 +19,7 @@ fragment PlayableMusic on Music {
     album {
         id
         title
-        artists {
+        leadArtists {
             id
             name
         }
