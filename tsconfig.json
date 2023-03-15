@@ -30,7 +30,9 @@
             "@queries": ["src/queries/index.tsx"],
             "@player/*": ["src/player/*"],
             "@graphql/*": ["src/graphql/*"],
-            "@renderer/*": ["src/*"]
+            "@renderer/*": ["src/*"],
+            "@dialogs/*": ["src/components/Dialogs/*"],
+            "@dialogs": ["src/components/Dialogs/index.ts"]
         },
         "plugins": [
             {

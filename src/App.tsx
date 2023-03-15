@@ -12,6 +12,7 @@ import { createIpcLink } from "@graphql/ipc-link";
 
 import { ThemeProvider } from "@mui/material";
 
+import DialogProvider from "@dialogs/Provider";
 import PlayerProvider from "@player/PlayerProvider";
 
 import { mainTheme } from "@styles/theme";
@@ -52,9 +53,11 @@ export default function App() {
             <trpcReact.Provider client={trpcClient} queryClient={queryClient}>
                 <ThemeProvider theme={mainTheme}>
                     <PlayerProvider>
-                        <HashRouter>
-                            <Router />
-                        </HashRouter>
+                        <DialogProvider>
+                            <HashRouter>
+                                <Router />
+                            </HashRouter>
+                        </DialogProvider>
                     </PlayerProvider>
                 </ThemeProvider>
             </trpcReact.Provider>

@@ -6,17 +6,33 @@ import { Box, Typography } from "@mui/material";
 import Button from "@components/UI/Button";
 import { Item, Label, Root } from "@components/UI/StringList.styles";
 
-export interface StringListProps {
+import { DialogButtonType } from "@dialogs";
+import withDialog, { WithDialogProps } from "@dialogs/withDialog";
+import YesNoDialog from "@dialogs/YesNo";
+
+export interface StringListProps extends WithDialogProps {
     items: string[];
     onChange?(items: string[]): void;
 }
 export interface StringListStates {}
 
-export default class StringList extends React.Component<StringListProps, StringListStates> {
-    private handleClick = memoizeOne((item: string) => {
-        return () => {
-            const { onChange, items } = this.props;
+class StringList extends React.Component<StringListProps, StringListStates> {
+    private handleDeleteClick = memoizeOne((item: string) => {
+        return async () => {
+            const { onChange, items, showDialog } = this.props;
             if (!onChange) {
+                return;
+            }
+
+            const result = await showDialog(YesNoDialog, "Delete Path", {
+                content: `Are you sure to delete this path: "${item}"?`,
+                positiveLabel: "Delete",
+                positiveProps: {
+                    color: "error",
+                },
+            });
+
+            if (result.reason !== "button-clicked" || result.buttonType !== DialogButtonType.Ok) {
                 return;
             }
 
@@ -29,7 +45,7 @@ export default class StringList extends React.Component<StringListProps, StringL
             <Item key={+index}>
                 <Typography component={Label}>{item}</Typography>
                 <Box flex="1 1 auto" />
-                <Button onClick={this.handleClick(item)}>Delete</Button>
+                <Button onClick={this.handleDeleteClick(item)}>Delete</Button>
             </Item>
         );
     };
@@ -39,3 +55,5 @@ export default class StringList extends React.Component<StringListProps, StringL
         return <Root>{items.map(this.renderItem)}</Root>;
     }
 }
+
+export default withDialog(StringList);

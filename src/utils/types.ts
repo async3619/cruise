@@ -1,12 +1,12 @@
 import {
+    AlbumArtType as AlbumArtTypeImpl,
+    AlbumQuery,
+    AlbumsQuery,
+    ArtistAlbumsQuery,
+    ArtistsQuery,
+    MinimalAlbumArtFragment,
     MusicsQuery,
     PlayableMusicFragment,
-    AlbumArtType as AlbumArtTypeImpl,
-    AlbumsQuery,
-    AlbumQuery,
-    MinimalAlbumArtFragment,
-    ArtistsQuery,
-    ArtistAlbumsQuery,
 } from "@queries";
 
 export type SelectOnly<Record, Type extends Record[keyof Record]> = {
@@ -28,6 +28,12 @@ export type ReplaceUnions<Record> = {
 
 export type Nullable<T> = T | null | undefined;
 export type Required<T> = Exclude<T, null | undefined>;
+export type Fn<TArgs = void, TReturn = void> = TArgs extends void
+    ? () => TReturn
+    : TArgs extends any[]
+    ? (...args: TArgs) => TReturn
+    : (args: TArgs) => TReturn;
+export type IsEmpty<TRecord, TTrue, TFalse> = keyof TRecord extends never ? TTrue : TFalse;
 
 export type MusicListItem = MusicsQuery["musics"][0];
 export type AlbumListItem = AlbumsQuery["albums"][0];

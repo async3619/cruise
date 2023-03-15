@@ -4,6 +4,7 @@ import React from "react";
 import { Typography } from "@mui/material";
 import PlayArrowRoundedIcon from "@mui/icons-material/PlayArrowRounded";
 import ShuffleRoundedIcon from "@mui/icons-material/ShuffleRounded";
+import EditRoundedIcon from "@mui/icons-material/EditRounded";
 
 import ShrinkHeaderPage from "@components/Page/ShrinkHeader";
 import Button from "@components/UI/Button";
@@ -106,6 +107,7 @@ class Album extends React.Component<AlbumProps> {
                 <Button icon={ShuffleRoundedIcon} onClick={this.handleShuffleAll}>
                     Shuffle All
                 </Button>
+                <Button icon={EditRoundedIcon}>Edit Information</Button>
             </>
         );
     };
