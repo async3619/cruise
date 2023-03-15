@@ -84,7 +84,8 @@ export const router = t.router({
         return getConfig();
     }),
     setConfig: t.procedure.input(CONFIG_SCHEMA).mutation(async ({ input: config }) => {
-        return setConfig(config);
+        await setConfig(config);
+        return getConfig();
     }),
 });
 
