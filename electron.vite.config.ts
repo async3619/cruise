@@ -22,13 +22,13 @@ export default defineConfig({
         build: {
             rollupOptions: {
                 input: {
-                    index: resolve(__dirname, "src-main/index.ts"),
+                    index: resolve(__dirname, "src/index.ts"),
                 },
             },
         },
         resolve: {
             alias: {
-                "@main": resolve(__dirname, "src-main"),
+                "@main": resolve(__dirname, "src"),
             },
         },
     },
@@ -37,7 +37,7 @@ export default defineConfig({
         build: {
             rollupOptions: {
                 input: {
-                    index: resolve(__dirname, "src-main/preload.ts"),
+                    index: resolve(__dirname, "src/preload.ts"),
                 },
             },
         },

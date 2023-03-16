@@ -19,20 +19,20 @@
         "jsx": "react-jsx",
         "baseUrl": ".",
         "paths": {
-            "@/*": ["src/*"],
-            "@components/*": ["src/components/*"],
-            "@pages/*": ["src/pages/*"],
-            "@styles/*": ["src/styles/*"],
-            "@utils/*": ["src/utils/*"],
-            "@constants/*": ["src/constants/*"],
-            "@main/*": ["src-main/*"],
+            "@/*": ["src-renderer/*"],
+            "@components/*": ["src-renderer/components/*"],
+            "@pages/*": ["src-renderer/pages/*"],
+            "@styles/*": ["src-renderer/styles/*"],
+            "@utils/*": ["src-renderer/utils/*"],
+            "@constants/*": ["src-renderer/constants/*"],
+            "@main/*": ["src/*"],
             "@common/*": ["common/*"],
-            "@queries": ["src/queries/index.tsx"],
-            "@player/*": ["src/player/*"],
-            "@graphql/*": ["src/graphql/*"],
-            "@renderer/*": ["src/*"],
-            "@dialogs/*": ["src/components/Dialogs/*"],
-            "@dialogs": ["src/components/Dialogs/index.ts"]
+            "@queries": ["src-renderer/queries/index.tsx"],
+            "@player/*": ["src-renderer/player/*"],
+            "@graphql/*": ["src-renderer/graphql/*"],
+            "@renderer/*": ["src-renderer/*"],
+            "@dialogs/*": ["src-renderer/components/Dialogs/*"],
+            "@dialogs": ["src-renderer/components/Dialogs/index.ts"]
         },
         "plugins": [
             {
@@ -40,6 +40,6 @@
             }
         ]
     },
-    "include": ["src", "src-main", "scripts", "common", "package.json"],
+    "include": ["src-renderer", "src", "scripts", "common", "package.json"],
     "references": [{ "path": "./tsconfig.node.json" }]
 }

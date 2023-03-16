@@ -25,6 +25,6 @@ dist-ssr
 
 /dist-main
 /dist
-/src/queries/index.d.ts
-/src/queries/index.tsx
+/src-renderer/queries/index.d.ts
+/src-renderer/queries/index.tsx
 /out

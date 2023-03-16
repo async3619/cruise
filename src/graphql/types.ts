@@ -1,9 +1,32 @@
-import type { IpcRenderer } from "electron";
+import { GraphQLSchema } from "graphql";
+import { BrowserWindow, IpcMain } from "electron";
+import DataLoader from "dataloader";
 
-export interface ApolloIpcLinkOptions<TContext = any> {
+import { ApolloLink, Operation } from "@apollo/client/core";
+
+import { Artist } from "@main/artist/models/artist.model";
+import { Album } from "@main/album/models/album.model";
+import { Music } from "@main/music/models/music.model";
+import { AlbumArt } from "@main/album-art/models/album-art.model";
+
+export interface GraphQLContext {
+    window: BrowserWindow;
+    artistLoader: DataLoader<number, Artist>;
+    musicLoader: DataLoader<number, Music>;
+    albumLoader: DataLoader<number, Album>;
+    albumArtLoader: DataLoader<number, AlbumArt>;
+}
+
+export interface SchemaLinkOptions<TRoot = any> {
+    schema: GraphQLSchema;
+    root?: TRoot;
+    context(request: Operation): GraphQLContext;
+}
+
+export interface IpcExecutorOptions {
+    link: ApolloLink;
+    ipc: IpcMain;
     channel?: string;
-    ipc: IpcRenderer;
-    contextSerializer?: (context: TContext) => any;
 }
 
 export interface SerializableGraphQLRequest<TContext = any, TVariables = any, TExtensions = any> {
