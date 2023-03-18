@@ -1,59 +1,80 @@
-import * as _ from "lodash";
-import { Ctx, FieldResolver, Arg, Query, Resolver, Root, Int } from "type-graphql";
-import { Service } from "typedi";
+import { Inject } from "@nestjs/common";
+import { Args, Context, Int, Query, ResolveField, Resolver, Root } from "@nestjs/graphql";
 
-import AlbumService from "@main/album/album.service";
+import { GraphQLContext } from "@main/context";
+
+import { AlbumService } from "@main/album/album.service";
+import { MusicService } from "@main/music/music.service";
 
 import { Album } from "@main/album/models/album.model";
-import { Artist } from "@main/artist/models/artist.model";
 import { Music } from "@main/music/models/music.model";
+import { Artist } from "@main/artist/models/artist.model";
 
-import type { GraphQLContext } from "@main/graphql/types";
+import loadMany from "@main/utils/loadMany";
+import common from "@main/utils/common";
 
-@Service()
+import { Nullable } from "@common/types";
+
 @Resolver(() => Album)
-export default class AlbumResolver {
-    public constructor(private readonly albumService: AlbumService) {}
+export class AlbumResolver {
+    public constructor(
+        @Inject(AlbumService) private readonly albumService: AlbumService,
+        @Inject(MusicService) private readonly musicService: MusicService,
+    ) {}
 
     @Query(() => Album, { nullable: true })
-    public async album(@Arg("id", () => Int) id: number): Promise<Album | null> {
-        return this.albumService.getItem(id);
+    public async album(@Args("id", { type: () => Int }) id: number): Promise<Nullable<Album>> {
+        return this.albumService.findById(id);
     }
 
     @Query(() => [Album])
-    public async albums() {
-        return this.albumService.getItems();
+    public async albums(): Promise<Album[]> {
+        return this.albumService.findAll();
     }
 
-    @FieldResolver(() => [Artist])
-    public async artists(@Root() album: Album, @Ctx() context: GraphQLContext) {
-        return context.artistLoader.loadMany(album.artistIds);
-    }
-
-    @FieldResolver(() => [Artist])
-    public async leadArtists(@Root() album: Album, @Ctx() context: GraphQLContext) {
-        return context.artistLoader.loadMany(album.leadArtistIds);
-    }
-
-    @FieldResolver(() => [Music])
-    public async musics(
+    @ResolveField(() => Int, { nullable: true })
+    public async year(
         @Root() album: Album,
-        @Ctx() context: GraphQLContext,
-        @Arg("limit", () => Int, { nullable: true }) limit?: number,
-    ) {
-        const musicIds = limit ? album.musicIds.slice(0, limit) : album.musicIds;
-        const data = await context.musicLoader.loadMany(musicIds);
-        const musics: Music[] = [];
-        for (const item of data) {
-            if (!(item instanceof Music)) {
-                continue;
-            }
+        @Context("loaders") loaders: GraphQLContext["loaders"],
+    ): Promise<Nullable<number>> {
+        const musics = await loadMany(loaders.music, album.musicIds);
+        const years = musics.map(music => music.year).filter((year): year is number => !!year);
 
-            musics.push(item);
+        if (years.length === 0) {
+            return null;
         }
 
-        return _.chain(musics)
-            .orderBy(t => t.track || t.id, "asc")
-            .value();
+        return Math.max(...years);
+    }
+
+    @ResolveField(() => String, { nullable: true })
+    public async genre(
+        @Root() album: Album,
+        @Context("loaders") loaders: GraphQLContext["loaders"],
+    ): Promise<Nullable<string>> {
+        const musics = await loadMany(loaders.music, album.musicIds);
+        const genres = musics.map(music => music.genre).filter((genre): genre is string => !!genre);
+
+        return common(genres);
+    }
+
+    @ResolveField(() => Int)
+    public async musicCount(@Root() album: Album): Promise<number> {
+        return album.musicIds.length;
+    }
+
+    @ResolveField(() => [Music])
+    public async musics(@Root() album: Album, @Context("loaders") loaders: GraphQLContext["loaders"]) {
+        return loaders.music.loadMany(album.musicIds);
+    }
+
+    @ResolveField(() => [Artist])
+    public async artists(@Root() album: Album, @Context("loaders") loaders: GraphQLContext["loaders"]) {
+        return loaders.artist.loadMany(album.artistIds);
+    }
+
+    @ResolveField(() => [Artist])
+    public async leadArtists(@Root() album: Album, @Context("loaders") loaders: GraphQLContext["loaders"]) {
+        return loaders.artist.loadMany(album.leadArtistIds);
     }
 }

@@ -1,9 +1,10 @@
-import { ApolloLink, Observable, Operation, FetchResult } from "@apollo/client/core";
 import type { IpcRenderer, IpcRendererEvent } from "electron";
 import { print } from "graphql";
 import { deserializeError } from "serialize-error";
 
-import { ApolloIpcLinkOptions, SerializableGraphQLRequest } from "./types";
+import { ApolloLink, Observable, Operation, FetchResult } from "@apollo/client/core";
+
+import { ApolloIpcLinkOptions, SerializableGraphQLRequest } from "@common/types";
 
 export class IpcLink extends ApolloLink {
     private readonly channel: string = "graphql";
@@ -31,7 +32,7 @@ export class IpcLink extends ApolloLink {
 
     public request(operation: Operation) {
         return new Observable((observer: ZenObservable.SubscriptionObserver<FetchResult>) => {
-            const current = `${++this.counter}`;
+            const id = `${++this.counter}`;
             const request: SerializableGraphQLRequest = {
                 operationName: operation.operationName,
                 variables: operation.variables,
@@ -39,8 +40,8 @@ export class IpcLink extends ApolloLink {
                 context: this.contextSerializer?.(operation.getContext()),
             };
 
-            this.observers.set(current, observer);
-            this.ipc.send(this.channel, current, request);
+            this.observers.set(id, observer);
+            this.ipc.send(this.channel, id, request);
         });
     }
 
@@ -48,6 +49,8 @@ export class IpcLink extends ApolloLink {
         if (!this.observers.has(id)) {
             console.error(`Missing observer for query id ${id}.`);
         }
+
+        console.log(data);
 
         const observer = this.observers.get(id);
         switch (type) {

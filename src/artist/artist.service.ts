@@ -1,14 +1,22 @@
 import { Repository } from "typeorm";
-import { Service } from "typedi";
+
+import { Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
 
 import { Artist } from "@main/artist/models/artist.model";
 
-import { InjectRepository } from "@main/utils/models";
-import BaseService from "@main/utils/base.service";
+import { BaseService } from "@main/common/base.service";
 
-@Service()
-export default class ArtistService extends BaseService<Artist> {
+@Injectable()
+export class ArtistService extends BaseService<Artist> {
     public constructor(@InjectRepository(Artist) private readonly artistRepository: Repository<Artist>) {
-        super(artistRepository, "Artist");
+        super(artistRepository, Artist);
+    }
+
+    public async create(name: string) {
+        const artist = this.artistRepository.create();
+        artist.name = name;
+
+        return this.artistRepository.save(artist);
     }
 }

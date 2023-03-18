@@ -10,7 +10,7 @@ import {
     RelationId,
     UpdateDateColumn,
 } from "typeorm";
-import { Field, Int, ObjectType } from "type-graphql";
+import { Field, Int, ObjectType } from "@nestjs/graphql";
 
 import { Music } from "@main/music/models/music.model";
 import { Artist } from "@main/artist/models/artist.model";
@@ -25,10 +25,6 @@ export class Album extends BaseEntity {
     @Field(() => String)
     @Column({ type: "text" })
     public title!: string;
-
-    @Field(() => Int, { nullable: true })
-    @Column({ type: "integer", nullable: true })
-    public year?: number;
 
     @Field(() => Date)
     @CreateDateColumn()

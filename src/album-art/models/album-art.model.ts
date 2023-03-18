@@ -1,4 +1,4 @@
-import { Field, Int, ObjectType, registerEnumType } from "type-graphql";
+import { Field, Int, ObjectType, registerEnumType } from "@nestjs/graphql";
 import {
     BaseEntity,
     Column,
@@ -52,11 +52,11 @@ export class AlbumArt extends BaseEntity {
 
     @Field(() => String)
     @Column({ type: "text" })
-    public path!: string;
+    public mimeType!: string;
 
     @Field(() => String)
     @Column({ type: "text" })
-    public mimeType!: string;
+    public description!: string;
 
     @Field(() => Int)
     @Column({ type: "integer" })
@@ -69,6 +69,10 @@ export class AlbumArt extends BaseEntity {
     @Field(() => Int)
     @Column({ type: "integer" })
     public size!: number;
+
+    @Field(() => String)
+    @Column({ type: "text" })
+    public path!: string;
 
     @Field(() => Date)
     @CreateDateColumn()

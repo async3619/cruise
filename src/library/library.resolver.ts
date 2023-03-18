@@ -1,15 +1,16 @@
-import { Mutation, Resolver } from "type-graphql";
-import { Service } from "typedi";
+import { Inject } from "@nestjs/common";
+import { Mutation, Resolver } from "@nestjs/graphql";
 
 import { LibraryService } from "@main/library/library.service";
 
-@Service()
 @Resolver()
-export default class LibraryResolver {
-    public constructor(private readonly historyService: LibraryService) {}
+export class LibraryResolver {
+    public constructor(@Inject(LibraryService) private readonly libraryService: LibraryService) {}
 
     @Mutation(() => Boolean)
-    public async rescanLibrary(): Promise<boolean> {
-        return this.historyService.rescan();
+    public async scan(): Promise<boolean> {
+        this.libraryService.scan().then();
+
+        return true;
     }
 }

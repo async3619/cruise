@@ -1,10 +1,12 @@
 import { resolve } from "path";
-import * as fs from "fs";
+import fs from "fs-extra";
 
 import { defineConfig, externalizeDepsPlugin, swcPlugin } from "electron-vite";
 import react from "@vitejs/plugin-react-swc";
 import tsconfigPaths from "vite-tsconfig-paths";
 import checker from "vite-plugin-checker";
+
+import glob from "fast-glob";
 
 const tsconfig = fs.readFileSync("./tsconfig.json", "utf8");
 const tsconfigJson = JSON.parse(tsconfig);
@@ -16,9 +18,31 @@ for (const key in paths) {
     alias[key] = resolve(__dirname, value.replace("/*", ""));
 }
 
+// get all modules from node_modules
+const modules = glob.sync("node_modules/**/package.json", {
+    onlyFiles: true,
+    cwd: process.cwd(),
+});
+
+// get all names of modules
+const moduleNames = modules
+    .map(module => {
+        try {
+            return fs.readJsonSync(module).name;
+        } catch (e) {
+            return undefined;
+        }
+    })
+    .filter(name => Boolean(name));
+
 export default defineConfig({
     main: {
-        plugins: [externalizeDepsPlugin(), swcPlugin()],
+        plugins: [
+            externalizeDepsPlugin({
+                include: [...moduleNames, "@as-integrations/fastify"],
+            }),
+            swcPlugin(),
+        ],
         build: {
             rollupOptions: {
                 input: {
@@ -56,9 +80,7 @@ export default defineConfig({
                 plugins: [["@swc/plugin-emotion", {}]],
             }),
             tsconfigPaths(),
-            checker({
-                typescript: true,
-            }),
+            ...(process.env.SURPRESS_ERRORS !== "true" ? [checker({ typescript: true })] : []),
         ],
     },
 });

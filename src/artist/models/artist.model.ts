@@ -8,7 +8,7 @@ import {
     RelationId,
     UpdateDateColumn,
 } from "typeorm";
-import { Field, Int, ObjectType } from "type-graphql";
+import { Field, Int, ObjectType } from "@nestjs/graphql";
 
 import { Music } from "@main/music/models/music.model";
 import { Album } from "@main/album/models/album.model";
@@ -38,7 +38,7 @@ export class Artist extends BaseEntity {
     public musics!: Music[];
 
     @RelationId((item: Artist) => item.musics)
-    public musicIds!: Music["id"];
+    public musicIds!: Music["id"][];
 
     // Artist[] => Album[]
     @Field(() => [Album])
@@ -54,5 +54,5 @@ export class Artist extends BaseEntity {
     public leadAlbums!: Album[];
 
     @RelationId((item: Artist) => item.leadAlbums)
-    public leadAlbumIds!: Album["id"];
+    public leadAlbumIds!: Album["id"][];
 }

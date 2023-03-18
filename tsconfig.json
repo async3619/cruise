@@ -26,13 +26,13 @@
             "@utils/*": ["src-renderer/utils/*"],
             "@constants/*": ["src-renderer/constants/*"],
             "@main/*": ["src/*"],
-            "@common/*": ["common/*"],
             "@queries": ["src-renderer/queries/index.tsx"],
             "@player/*": ["src-renderer/player/*"],
             "@graphql/*": ["src-renderer/graphql/*"],
             "@renderer/*": ["src-renderer/*"],
             "@dialogs/*": ["src-renderer/components/Dialogs/*"],
-            "@dialogs": ["src-renderer/components/Dialogs/index.ts"]
+            "@dialogs": ["src-renderer/components/Dialogs/index.ts"],
+            "@common/*": ["src-common/*"]
         },
         "plugins": [
             {
@@ -40,6 +40,6 @@
             }
         ]
     },
-    "include": ["src-renderer", "src", "scripts", "common", "package.json"],
+    "include": ["src-renderer", "src", "src-common", "scripts", "common", "package.json"],
     "references": [{ "path": "./tsconfig.node.json" }]
 }

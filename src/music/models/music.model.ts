@@ -10,13 +10,13 @@ import {
     RelationId,
     UpdateDateColumn,
 } from "typeorm";
-import { Field, Int, ObjectType } from "type-graphql";
+import { Field, Int, ObjectType } from "@nestjs/graphql";
 
 import { Artist } from "@main/artist/models/artist.model";
 import { Album } from "@main/album/models/album.model";
 import { AlbumArt } from "@main/album-art/models/album-art.model";
 
-import type { Nullable } from "@main/utils/types";
+import type { Nullable } from "@common/types";
 
 @ObjectType("Music")
 @Entity({ name: "musics" })
@@ -77,10 +77,10 @@ export class Music extends BaseEntity {
     // Music[] => Album
     @Field(() => Album, { nullable: true })
     @ManyToOne(() => Album, item => item.musics)
-    public album?: Album;
+    public album?: Nullable<Album>;
 
     @RelationId((item: Music) => item.album)
-    public albumId?: Album["id"];
+    public albumId?: Nullable<Album["id"]>;
 
     // Music[] => AlbumArt[]
     @Field(() => [AlbumArt])

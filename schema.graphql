@@ -1,30 +1,22 @@
-type Query {
-  musics: [Music!]!
-  album(id: Int!): Album
-  albums: [Album!]!
-  artist(id: Int!): Artist
-  artists: [Artist!]!
-}
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
 
-type Music {
+type Album {
   id: Int!
   title: String!
-  albumArtist: String
-  genre: String
-  year: Int
-  track: Int
-  disc: Int
-  duration: Int!
-  path: String!
   createdAt: DateTime!
   updatedAt: DateTime!
+  musics: [Music!]!
   artists: [Artist!]!
-  album: Album
-  albumArts: [AlbumArt!]!
+  leadArtists: [Artist!]!
+  year: Int
+  genre: String
+  musicCount: Int!
 }
 
 """
-The javascript `Date` as string. Type represents date and time as the ISO Date string.
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
 scalar DateTime
 
@@ -38,25 +30,15 @@ type Artist {
   leadAlbums: [Album!]!
 }
 
-type Album {
-  id: Int!
-  title: String!
-  year: Int
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  musics(limit: Int): [Music!]!
-  artists: [Artist!]!
-  leadArtists: [Artist!]!
-}
-
 type AlbumArt {
   id: Int!
   type: AlbumArtType!
-  path: String!
   mimeType: String!
+  description: String!
   width: Int!
   height: Int!
   size: Int!
+  path: String!
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -86,6 +68,32 @@ enum AlbumArtType {
   Undefined
 }
 
+type Music {
+  id: Int!
+  title: String!
+  albumArtist: String
+  genre: String
+  year: Int
+  track: Int
+  disc: Int
+  duration: Int!
+  path: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  artists: [Artist!]!
+  album: Album
+  albumArts: [AlbumArt!]!
+}
+
+type Query {
+  music(id: Int!): Music
+  musics: [Music!]!
+  album(id: Int!): Album
+  albums: [Album!]!
+  artist(id: Int!): Artist
+  artists: [Artist!]!
+}
+
 type Mutation {
-  rescanLibrary: Boolean!
+  scan: Boolean!
 }

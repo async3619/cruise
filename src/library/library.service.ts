@@ -1,180 +1,128 @@
-import { Repository } from "typeorm";
-import { Service } from "typedi";
 import glob from "fast-glob";
 import * as path from "path";
-import * as fs from "fs-extra";
 
-import { Audio, AlbumArt as RawAlbumArt } from "@async3619/merry-go-round";
+import { Audio } from "@async3619/merry-go-round";
 
-import { Music } from "@main/music/models/music.model";
+import { Inject, Injectable, OnModuleInit } from "@nestjs/common";
+
+import { MusicService } from "@main/music/music.service";
+import { AlbumService } from "@main/album/album.service";
+import { ArtistService } from "@main/artist/artist.service";
+import { AlbumArtService } from "@main/album-art/album-art.service";
+
 import { Artist } from "@main/artist/models/artist.model";
 import { Album } from "@main/album/models/album.model";
-import { AlbumArt, AlbumArtType } from "@main/album-art/models/album-art.model";
+import { AlbumArt } from "@main/album-art/models/album-art.model";
 
 import { getConfig } from "@main/config";
-import { ALBUM_ART_PATH } from "@main/constants";
 
-import { InjectRepository } from "@main/utils/models";
-import { getImageSize, ImageSize } from "@main/utils/images";
-
-@Service()
-export class LibraryService {
+@Injectable()
+export class LibraryService implements OnModuleInit {
     public constructor(
-        @InjectRepository(Music) private readonly musicRepository: Repository<Music>,
-        @InjectRepository(Artist) private readonly artistRepository: Repository<Artist>,
-        @InjectRepository(Album) private readonly albumRepository: Repository<Album>,
-        @InjectRepository(AlbumArt) private readonly albumArtRepository: Repository<AlbumArt>,
+        @Inject(MusicService) private readonly musicService: MusicService,
+        @Inject(AlbumService) private readonly albumService: AlbumService,
+        @Inject(ArtistService) private readonly artistService: ArtistService,
+        @Inject(AlbumArtService) private readonly albumArtService: AlbumArtService,
     ) {}
 
-    private async generateAlbumArt(rawAlbumArt: RawAlbumArt, music: Music, index: number) {
-        const extension = rawAlbumArt.mimeType.split("/")[1];
-        const targetPath = path.join(ALBUM_ART_PATH, `${music.id}.${index}.${extension}`);
-        const buffer = rawAlbumArt.data();
-
-        await fs.ensureDir(path.dirname(targetPath));
-        await fs.writeFile(targetPath, buffer);
-
-        let imageSize: ImageSize;
-        try {
-            imageSize = await getImageSize(buffer);
-        } catch (e) {
-            await fs.rm(targetPath);
-
-            console.error(e);
-            return null;
-        }
-
-        let albumArtEntity = this.albumArtRepository.create();
-        albumArtEntity.path = targetPath;
-        albumArtEntity.mimeType = rawAlbumArt.mimeType;
-        albumArtEntity.size = buffer.length;
-        albumArtEntity.width = imageSize.width;
-        albumArtEntity.height = imageSize.height;
-        albumArtEntity.type = rawAlbumArt.type as unknown as AlbumArtType;
-        albumArtEntity.musics = [music];
-        albumArtEntity = await this.albumArtRepository.save(albumArtEntity);
-
-        return albumArtEntity;
+    public async onModuleInit() {
+        await this.scan();
     }
 
-    public async rescan() {
-        await this.musicRepository.clear();
-        await this.artistRepository.clear();
-        await this.albumRepository.clear();
+    private getAlbumData(audio: Audio) {
+        const albumName = audio.album;
+        const artistName = audio.albumArtist || audio.artists.join(", ");
+        const leadArtists: string[] = audio.albumArtist?.split("\0") || [];
+        const featuredArtists: string[] = audio.artists;
 
+        return {
+            key: albumName && artistName ? `${albumName}:${artistName}` : null,
+            name: albumName,
+            leadArtists,
+            artists: featuredArtists,
+            allArtists: [...leadArtists, ...featuredArtists],
+        };
+    }
+
+    public async scan() {
         const { libraryDirectories } = await getConfig();
-        const audioPaths: string[] = [];
-
+        const musicFilePaths: string[] = [];
         for (const directory of libraryDirectories) {
-            const targetPaths = await glob("./**/*.mp3", {
+            const paths = await glob("**/*.mp3", {
                 cwd: directory,
             });
 
-            audioPaths.push(...targetPaths.map(p => path.join(directory, p)));
+            const absolutePaths = paths.map(p => path.join(directory, p));
+            musicFilePaths.push(...absolutePaths);
         }
 
-        const audios = new Map<string, Audio>();
-        for (const audioPath of audioPaths) {
-            const audio = Audio.fromFile(audioPath);
-            audios.set(audioPath, audio);
-        }
-
-        const artists: Record<string, Artist> = {};
-        for (const [, audio] of audios) {
-            const targetArtistNames = [...(audio.artists || []), ...(audio.albumArtist ? [audio.albumArtist] : [])];
-            for (const artistName of targetArtistNames) {
-                if (!artists[artistName]) {
-                    let artist = this.artistRepository.create();
-                    artist.name = artistName;
-
-                    artist = await this.artistRepository.save(artist);
-                    artists[artistName] = artist;
-                }
-            }
-        }
-
-        const albums: Record<string, Album> = {};
-        for (const [, audio] of audios) {
-            const albumName = audio.album;
-            if (albumName && !albums[albumName]) {
-                let album = this.albumRepository.create();
-                album.title = albumName;
-
-                album = await this.albumRepository.save(album);
-                albums[albumName] = album;
-            }
-        }
-
-        const albumArtists: Record<string, Record<string, Artist>> = {};
-        const albumLeadArtists: Record<string, Record<string, Artist>> = {};
-        for (const [audioPath, audio] of audios) {
-            const fileName = path.basename(audioPath);
-            let music = this.musicRepository.create();
-            music.title = audio.title || fileName;
-            music.genre = audio.genre;
-            music.year = audio.year;
-            music.track = audio.track;
-            music.disc = audio.disc;
-            music.duration = audio.duration;
-            music.albumArtist = audio.albumArtist;
-            music.path = audioPath;
-
-            music.album = albums[audio.album || "Unknown Album"];
-            music.artists = audio.artists
-                .map(artist => {
-                    return artists[artist];
-                })
-                .filter((artist): artist is Artist => !!artist);
-
-            const albumName = audio.album;
-            if (albumName) {
-                albumArtists[albumName] ??= {};
-                for (const artist of music.artists) {
-                    albumArtists[albumName][artist.name] = artist;
-                }
-
-                const albumArtistName = audio.albumArtist;
-                if (albumArtistName) {
-                    albumLeadArtists[albumName] ??= {};
-                    albumLeadArtists[albumName][albumArtistName] = artists[albumArtistName];
-                }
-            }
-
-            music = await this.musicRepository.save(music);
-
-            const albumArts = audio.albumArts();
-            const albumArtEntities: AlbumArt[] = [];
-            for (let i = 0; i < albumArts.length; i++) {
-                const albumArt = albumArts[i];
-                const albumArtEntity = await this.generateAlbumArt(albumArt, music, i);
-                if (!albumArtEntity) {
-                    continue;
-                }
-
-                albumArtEntities.push(albumArtEntity);
-            }
-
-            music.albumArts = albumArtEntities;
-            music = await this.musicRepository.save(music);
-
-            // set album.year to the biggest music.year
-            if (music.album && music.year && (!music.album.year || music.album.year < music.year)) {
-                music.album.year = music.year;
-                await this.albumRepository.save(music.album);
-            }
-        }
-
-        for (const [albumName, artists] of Object.entries(albumArtists)) {
-            const album = albums[albumName];
-            if (!album) {
+        const audioMap: Record<string, Audio> = {};
+        for (const filePath of musicFilePaths) {
+            if (filePath in audioMap) {
                 continue;
             }
 
-            album.artists = Object.values(artists);
-            album.leadArtists = Object.values(albumLeadArtists[albumName] || {});
-            await this.albumRepository.save(album);
+            audioMap[filePath] = await Audio.fromFile(filePath);
         }
 
-        return true;
+        // register all artists
+        const allArtists: Record<string, Artist> = {};
+        for (const audio of Object.values(audioMap)) {
+            const artists = [...audio.artists, ...(audio.albumArtist?.split("\0") || [])];
+            if (artists.length <= 0) {
+                continue;
+            }
+
+            for (const artistName of artists) {
+                if (artistName in allArtists) {
+                    continue;
+                }
+
+                allArtists[artistName] = await this.artistService.create(artistName);
+            }
+        }
+
+        // register all albums
+        const allAlbums: Record<string, Album> = {};
+        for (const audio of Object.values(audioMap)) {
+            const albumData = this.getAlbumData(audio);
+            if (!albumData) {
+                continue;
+            }
+
+            const { key, name, leadArtists, artists } = albumData;
+            if (!key || !name || key in allAlbums) {
+                continue;
+            }
+
+            const featuredArtists = artists.map(artistName => allArtists[artistName]);
+            const albumArtists = leadArtists.map(artistName => allArtists[artistName]);
+
+            allAlbums[key] = await this.albumService.create(name, featuredArtists, albumArtists);
+        }
+
+        // register all album arts
+        const allAlbumArts: Record<string, AlbumArt[]> = {};
+        for (const [filePath, audio] of Object.entries(audioMap)) {
+            const albumArts = audio.albumArts();
+            if (albumArts.length <= 0) {
+                continue;
+            }
+
+            allAlbumArts[filePath] ??= [];
+            for (const rawAlbumArt of albumArts) {
+                const albumArt = await this.albumArtService.create(rawAlbumArt);
+                allAlbumArts[filePath].push(albumArt);
+            }
+        }
+
+        // register all musics
+        for (const [filePath, audio] of Object.entries(audioMap)) {
+            const { key: albumKey, artists } = this.getAlbumData(audio);
+            const album: Album | null = albumKey ? allAlbums[albumKey] : null;
+            const featuredArtists = artists.map(artistName => allArtists[artistName]);
+
+            await this.musicService.create(audio, filePath, allAlbumArts[filePath], album, featuredArtists);
+        }
     }
 }

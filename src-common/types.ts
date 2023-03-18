@@ -1,5 +1,7 @@
 import type { IpcRenderer } from "electron";
 
+export type Nullable<T> = T | null | undefined;
+
 export interface ApolloIpcLinkOptions<TContext = any> {
     channel?: string;
     ipc: IpcRenderer;

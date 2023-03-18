@@ -4,7 +4,7 @@ import { BrowserWindow, dialog, OpenDialogOptions } from "electron";
 import { initTRPC } from "@trpc/server";
 import { observable } from "@trpc/server/observable";
 
-import { Config, CONFIG_SCHEMA, getConfig, setConfig } from "./config";
+import { Config, CONFIG_SCHEMA, getConfig, setConfig } from "@main/config";
 
 interface Context {
     window: BrowserWindow | null;

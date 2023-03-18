@@ -6,7 +6,7 @@ query albums {
             id
             name
         }
-        musics(limit: 1) {
+        musics {
             id
             albumArts {
                 id
