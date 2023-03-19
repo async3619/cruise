@@ -50,8 +50,6 @@ export class IpcLink extends ApolloLink {
             console.error(`Missing observer for query id ${id}.`);
         }
 
-        console.log(data);
-
         const observer = this.observers.get(id);
         switch (type) {
             case "data":

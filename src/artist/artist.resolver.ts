@@ -23,6 +23,11 @@ export class ArtistResolver {
         return this.artistService.findAll();
     }
 
+    @ResolveField(() => Int)
+    public async musicCount(@Root() artist: Artist): Promise<number> {
+        return artist.musicIds.length;
+    }
+
     @ResolveField(() => [Music])
     public async musics(@Root() artist: Artist, @Context("loaders") loaders: GraphQLContext["loaders"]) {
         return loaders.music.loadMany(artist.musicIds);

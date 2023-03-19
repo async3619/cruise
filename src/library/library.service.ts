@@ -1,3 +1,4 @@
+import * as _ from "lodash";
 import glob from "fast-glob";
 import * as path from "path";
 
@@ -83,7 +84,9 @@ export class LibraryService implements OnModuleInit {
         }
 
         // register all albums
-        const allAlbums: Record<string, Album> = {};
+        const albumArtistMap: Record<string, Artist[]> = {};
+        const featuredArtistMap: Record<string, Artist[]> = {};
+        const albumKeys: [key: string, title: string][] = [];
         for (const audio of Object.values(audioMap)) {
             const albumData = this.getAlbumData(audio);
             if (!albumData) {
@@ -91,14 +94,34 @@ export class LibraryService implements OnModuleInit {
             }
 
             const { key, name, leadArtists, artists } = albumData;
-            if (!key || !name || key in allAlbums) {
+            if (!key || !name) {
                 continue;
             }
 
             const featuredArtists = artists.map(artistName => allArtists[artistName]);
             const albumArtists = leadArtists.map(artistName => allArtists[artistName]);
 
-            allAlbums[key] = await this.albumService.create(name, featuredArtists, albumArtists);
+            albumArtistMap[key] = [...(albumArtistMap[key] || []), ...albumArtists];
+            featuredArtistMap[key] = [...(featuredArtistMap[key] || []), ...featuredArtists];
+            albumKeys.push([key, name]);
+        }
+
+        const allAlbums: Record<string, Album> = {};
+        for (const [key, title] of albumKeys) {
+            if (key in allAlbums) {
+                continue;
+            }
+
+            let albumArtists = albumArtistMap[key];
+            let featuredArtists = featuredArtistMap[key];
+            if (!albumArtists || !featuredArtists) {
+                continue;
+            }
+
+            albumArtists = _.uniqBy(albumArtists, artist => artist.name);
+            featuredArtists = _.uniqBy(featuredArtists, artist => artist.name);
+
+            allAlbums[key] = await this.albumService.create(title, featuredArtists, albumArtists);
         }
 
         // register all album arts

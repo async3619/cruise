@@ -28,6 +28,7 @@ type Artist {
   musics: [Music!]!
   albums: [Album!]!
   leadAlbums: [Album!]!
+  musicCount: Int!
 }
 
 type AlbumArt {

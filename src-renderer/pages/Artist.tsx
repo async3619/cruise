@@ -58,7 +58,7 @@ class Artist extends React.Component<ArtistProps, ArtistStates> {
         const totalDuration = _.chain(allMusics).map("duration").sum().value();
         const subtitleItems: string[] = [
             `${data.artist.albums.length} Albums`,
-            `${allMusics.length} Musics`,
+            `${data.artist.musicCount} Musics`,
             formatDuration(totalDuration),
         ];
 

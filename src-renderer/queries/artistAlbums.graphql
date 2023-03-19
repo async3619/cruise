@@ -2,6 +2,7 @@ query artistAlbums($artistId: Int!) {
     artist(id: $artistId) {
         id
         name
+        musicCount
         albums {
             id
             title
