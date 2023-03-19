@@ -1,3 +1,5 @@
+import * as _ from "lodash";
+
 import { Inject } from "@nestjs/common";
 import { Args, Context, Int, Query, ResolveField, Resolver, Root } from "@nestjs/graphql";
 
@@ -65,7 +67,8 @@ export class AlbumResolver {
 
     @ResolveField(() => [Music])
     public async musics(@Root() album: Album, @Context("loaders") loaders: GraphQLContext["loaders"]) {
-        return loaders.music.loadMany(album.musicIds);
+        const musics = await loadMany(loaders.music, album.musicIds);
+        return _.orderBy(musics, m => m.track || Infinity, "asc");
     }
 
     @ResolveField(() => [Artist])
