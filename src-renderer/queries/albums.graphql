@@ -7,11 +7,7 @@ query albums {
             name
         }
         musics {
-            id
-            albumArts {
-                id
-                path
-            }
+            ...PlayableMusic
         }
     }
 }
