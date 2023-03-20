@@ -2,6 +2,8 @@ query album($id: Int!) {
     album(id: $id) {
         id
         title
+        genre
+        year
         leadArtists {
             id
             name

@@ -3,13 +3,14 @@ import {
     AlbumQuery,
     AlbumsQuery,
     ArtistAlbumsQuery,
+    ArtistNamesQuery,
     ArtistsQuery,
     MinimalAlbumArtFragment,
     MusicsQuery,
     PlayableMusicFragment,
 } from "@queries";
 
-export type SelectOnly<Record, Type extends Record[keyof Record]> = {
+export type SelectOnly<Record, Type> = {
     [Key in keyof Required<Record> as Required<Record>[Key] extends Type ? Key : never]: Required<Record>[Key];
 };
 
@@ -44,3 +45,4 @@ export type AlbumType = Required<AlbumQuery["album"]>;
 export type MinimumAlbumArt = MinimalAlbumArtFragment;
 export type ArtistPageData = Required<ArtistAlbumsQuery["artist"]>;
 export type ArtistAlbumListItem = ArtistPageData["albums"][0];
+export type ArtistNamesItem = ArtistNamesQuery["artists"][0];

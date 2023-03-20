@@ -1,0 +1,6 @@
+query artistNames {
+    artists {
+        id
+        name
+    }
+}

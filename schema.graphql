@@ -96,5 +96,13 @@ type Query {
 }
 
 type Mutation {
+  updateAlbum(id: Int!, data: UpdateAlbumInput!): Album!
   scan: Boolean!
+}
+
+input UpdateAlbumInput {
+  title: String!
+  albumArtists: [String!]!
+  genre: String
+  year: String
 }

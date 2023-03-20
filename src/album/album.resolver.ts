@@ -1,16 +1,17 @@
 import * as _ from "lodash";
 
 import { Inject } from "@nestjs/common";
-import { Args, Context, Int, Query, ResolveField, Resolver, Root } from "@nestjs/graphql";
+import { Args, Context, Int, Mutation, Query, ResolveField, Resolver, Root } from "@nestjs/graphql";
 
 import { GraphQLContext } from "@main/context";
 
 import { AlbumService } from "@main/album/album.service";
 import { MusicService } from "@main/music/music.service";
 
-import { Album } from "@main/album/models/album.model";
 import { Music } from "@main/music/models/music.model";
 import { Artist } from "@main/artist/models/artist.model";
+import { Album } from "@main/album/models/album.model";
+import { UpdateAlbumInput } from "@main/album/models/update-album.input";
 
 import loadMany from "@main/utils/loadMany";
 import common from "@main/utils/common";
@@ -32,6 +33,14 @@ export class AlbumResolver {
     @Query(() => [Album])
     public async albums(): Promise<Album[]> {
         return this.albumService.findAll();
+    }
+
+    @Mutation(() => Album)
+    public async updateAlbum(
+        @Args("id", { type: () => Int }) id: number,
+        @Args("data", { type: () => UpdateAlbumInput }) data: UpdateAlbumInput,
+    ): Promise<Album> {
+        return this.albumService.update(id, data);
     }
 
     @ResolveField(() => Int, { nullable: true })

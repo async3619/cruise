@@ -11,6 +11,7 @@ export const Root = styled.div<{ empty: boolean }>`
     align-items: center;
 
     flex: 0 0 auto;
+    aspect-ratio: 1 / 1;
 
     position: relative;
 

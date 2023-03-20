@@ -1,4 +1,5 @@
-import { Repository } from "typeorm";
+import * as _ from "lodash";
+import { In, Repository } from "typeorm";
 
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -18,5 +19,28 @@ export class ArtistService extends BaseService<Artist> {
         artist.name = name;
 
         return this.artistRepository.save(artist);
+    }
+
+    public async bulkEnsure(names: string[]) {
+        const items = await this.artistRepository.find({
+            where: {
+                name: In(names),
+            },
+        });
+
+        const itemMap: Record<string, Artist> = _.chain(items).keyBy("name").value();
+        for (const name of names) {
+            if (!itemMap[name]) {
+                itemMap[name] = await this.create(name);
+            }
+        }
+
+        return names.map(name => {
+            if (!itemMap[name]) {
+                throw new Error(`Failed to ensure artist '${name}'`);
+            }
+
+            return itemMap[name];
+        });
     }
 }

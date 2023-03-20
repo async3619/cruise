@@ -1,8 +1,9 @@
 import _ from "lodash";
-import { BaseEntity, In, Repository } from "typeorm";
-import { FindOptionsWhere } from "typeorm/find-options/FindOptionsWhere";
 import { Class } from "utility-types";
-import { FindOptionsOrder } from "typeorm/find-options/FindOptionsOrder";
+import { BaseEntity, In, Repository } from "typeorm";
+import type { FindOptionsWhere } from "typeorm/find-options/FindOptionsWhere";
+import type { FindOptionsOrder } from "typeorm/find-options/FindOptionsOrder";
+import type { QueryDeepPartialEntity } from "typeorm/query-builder/QueryPartialEntity";
 
 interface BaseEntityClass extends BaseEntity {
     id: number;
@@ -14,12 +15,12 @@ export class BaseService<T extends BaseEntityClass> {
     public async findAll() {
         return this.repository.find();
     }
-
-    public async findById(id: number) {
+    public async findById(id: number, relations?: Array<Exclude<keyof T, number | symbol>>) {
         const item = await this.repository.findOne({
             where: {
                 id,
             } as FindOptionsWhere<T>,
+            relations,
         });
 
         if (item == null) {
@@ -54,5 +55,9 @@ export class BaseService<T extends BaseEntityClass> {
         });
 
         return lastItem[0]?.id ?? 0;
+    }
+
+    public async bulkUpdate(ids: number[], data: QueryDeepPartialEntity<T>) {
+        await this.repository.update(ids, data);
     }
 }

@@ -11,24 +11,58 @@ import Button from "@components/UI/Button";
 import MusicList from "@components/UI/MusicList";
 import DotList from "@components/UI/DotList";
 
-import { AlbumArtType, AlbumComponent, AlbumQuery, AlbumQueryResult } from "@queries";
+import {
+    AlbumArtType,
+    AlbumComponent,
+    AlbumQuery,
+    AlbumQueryResult,
+    UpdateAlbumDocument,
+    UpdateAlbumMutation,
+    UpdateAlbumMutationVariables,
+} from "@queries";
+
+import withDialog, { WithDialogProps } from "@dialogs/withDialog";
+import withPlayer, { WithPlayerProps } from "@player/withPlayer";
+import withClient, { WithClientProps } from "@graphql/withClient";
 
 import withParams, { WithParamsProps } from "@utils/hocs/withParams";
-import withPlayer, { WithPlayerProps } from "@player/withPlayer";
 import { AlbumType, PlayableMusic } from "@utils/types";
 import formatDuration from "@utils/formatDuration";
+import AlbumUpdateDialog from "@dialogs/AlbumUpdate";
 
-export interface AlbumProps extends WithParamsProps<{ albumId: string }>, WithPlayerProps {}
+export interface AlbumProps
+    extends WithParamsProps<{ albumId: string }>,
+        WithPlayerProps,
+        WithDialogProps,
+        WithClientProps {}
 export interface AlbumStates {
     musics: PlayableMusic[] | null;
     metadata: string[];
+    albumId: number | null;
+    album: AlbumType | null;
 }
 
-class Album extends React.Component<AlbumProps> {
+class Album extends React.Component<AlbumProps, AlbumStates> {
     public state: AlbumStates = {
         musics: null,
         metadata: [],
+        albumId: null,
+        album: null,
     };
+
+    public componentDidMount() {
+        const { params } = this.props;
+        if (!params.albumId) {
+            throw new Error("Album ID is required");
+        }
+
+        const id = Number(params.albumId);
+        if (isNaN(id)) {
+            throw new Error("Album ID must be a number");
+        }
+
+        this.setState({ albumId: id });
+    }
 
     private getMusics = () => {
         const { musics } = this.state;
@@ -68,7 +102,7 @@ class Album extends React.Component<AlbumProps> {
 
         metadata.push(formatDuration(totalDuration));
 
-        this.setState({ musics: query.album.musics, metadata });
+        this.setState({ musics: query.album.musics, metadata, album: query.album });
     };
 
     private handlePlayMusic = (music: PlayableMusic) => {
@@ -82,6 +116,38 @@ class Album extends React.Component<AlbumProps> {
     private handleShuffleAll = () => {
         const musics = this.getMusics();
         this.props.player.playShuffled(musics).then();
+    };
+    private handleEditClick = async () => {
+        if (!this.state.album) {
+            throw new Error("Album data not found");
+        }
+
+        const result = await this.props.showDialog(AlbumUpdateDialog, "Edit Album Information", {
+            album: this.state.album,
+        });
+
+        if (result.reason !== "submit") {
+            return;
+        }
+
+        await this.props.client.mutate<UpdateAlbumMutation, UpdateAlbumMutationVariables>({
+            mutation: UpdateAlbumDocument,
+            variables: {
+                id: this.state.album.id,
+                data: {
+                    title: result.data.title,
+                    albumArtists: result.data.albumArtists.map(artist => {
+                        if (typeof artist === "string") {
+                            return artist;
+                        }
+
+                        return artist.name;
+                    }),
+                    year: result.data.year,
+                    genre: result.data.genre,
+                },
+            },
+        });
     };
 
     private renderContent = (album: AlbumType) => {
@@ -107,7 +173,9 @@ class Album extends React.Component<AlbumProps> {
                 <Button icon={ShuffleRoundedIcon} onClick={this.handleShuffleAll}>
                     Shuffle All
                 </Button>
-                <Button icon={EditRoundedIcon}>Edit Information</Button>
+                <Button icon={EditRoundedIcon} onClick={this.handleEditClick}>
+                    Edit Information
+                </Button>
             </>
         );
     };
@@ -139,22 +207,17 @@ class Album extends React.Component<AlbumProps> {
     };
 
     public render() {
-        const { params } = this.props;
-        if (!params.albumId) {
-            throw new Error("Album ID is required");
-        }
-
-        const id = Number(params.albumId);
-        if (isNaN(id)) {
-            throw new Error("Album ID must be a number");
+        const { albumId } = this.state;
+        if (!albumId) {
+            return <ShrinkHeaderPage loading />;
         }
 
         return (
-            <AlbumComponent onCompleted={this.handleQueryCompleted} variables={{ id }}>
+            <AlbumComponent onCompleted={this.handleQueryCompleted} variables={{ id: albumId }}>
                 {this.renderBody}
             </AlbumComponent>
         );
     }
 }
 
-export default withPlayer(withParams(Album));
+export default withClient(withDialog(withPlayer(withParams(Album))));

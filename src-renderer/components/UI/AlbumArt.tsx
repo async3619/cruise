@@ -15,7 +15,7 @@ const AlbumArt = React.forwardRef(
         const Component = shape === "circle" ? CircledRoot : Root;
 
         return (
-            <Component ref={ref} empty={!image} style={{ width: size, height: size }}>
+            <Component ref={ref} empty={!image} style={{ width: size }}>
                 {image && <Image src={image} alt="Album Art" />}
                 {!image && <ImageNotSupportedRoundedIcon />}
             </Component>

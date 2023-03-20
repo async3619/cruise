@@ -16,8 +16,9 @@ export const Button = styled.button<{ active: boolean }>`
     color: ${({ theme }) => theme.palette.text.primary};
     background: ${({ active }) => (active ? "#eaeaea" : "transparent")};
 
-    &:hover {
-        background: #eaeaea;
+    &:hover,
+    .Mui-focusVisible & {
+        background: rgba(0, 0, 0, 0.025);
     }
 
     &:active {
@@ -53,7 +54,13 @@ export const Button = styled.button<{ active: boolean }>`
     }
 `;
 
-export const Root = styled.div`
+export const Root = styled.div<{ withoutPadding?: boolean }>`
     margin: 0;
-    padding: ${({ theme }) => theme.spacing(0, 1)};
+    padding: ${({ theme, withoutPadding }) => theme.spacing(0, withoutPadding ? 0 : 1)};
+
+    &:last-child {
+        ${Button} {
+            margin-bottom: 0;
+        }
+    }
 `;

@@ -9,6 +9,7 @@ export interface ListProps {
     items: ListItemType[];
     selectedItem?: ListItemType;
     onClick?: (item: NormalListItem) => void;
+    withoutPadding?: boolean;
 }
 
 export default class List extends React.Component<ListProps> {
@@ -20,7 +21,7 @@ export default class List extends React.Component<ListProps> {
     };
 
     public renderItem = (item: ListItemType, index: number) => {
-        const { onClick, selectedItem } = this.props;
+        const { onClick, selectedItem, withoutPadding } = this.props;
         if (item === "gap") {
             return this.renderGap(index);
         }
@@ -29,7 +30,15 @@ export default class List extends React.Component<ListProps> {
             return this.renderSeparator(index);
         }
 
-        return <ListItem item={item} key={item.id} onClick={onClick} active={selectedItem === item} />;
+        return (
+            <ListItem
+                withoutPadding={withoutPadding}
+                item={item}
+                key={item.id}
+                onClick={onClick}
+                active={selectedItem === item}
+            />
+        );
     };
 
     public render() {
