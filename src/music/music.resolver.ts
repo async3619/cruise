@@ -5,10 +5,12 @@ import { MusicService } from "@main/music/music.service";
 
 import { Music } from "@main/music/models/music.model";
 import { Artist } from "@main/artist/models/artist.model";
-
-import { GraphQLContext } from "@main/context";
 import { Album } from "@main/album/models/album.model";
 import { AlbumArt } from "@main/album-art/models/album-art.model";
+
+import { GraphQLContext } from "@main/context";
+
+import { Nullable } from "@common/types";
 
 @Resolver(() => Music)
 export class MusicResolver {
@@ -22,6 +24,11 @@ export class MusicResolver {
     @Query(() => [Music])
     public async musics(): Promise<Music[]> {
         return this.musicService.findAll();
+    }
+
+    @ResolveField(() => String, { nullable: true })
+    public async genre(@Root() music: Music): Promise<Nullable<string>> {
+        return music.genre?.replace(/\0/g, "/");
     }
 
     @ResolveField(() => [Artist])

@@ -9,6 +9,7 @@ fragment PlayableMusic on Music {
     title
     path
     track
+    genre
     artists {
         id
         name

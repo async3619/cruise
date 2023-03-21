@@ -68,7 +68,7 @@ export class AlbumResolver {
         const musics = await loadMany(loaders.music, album.musicIds);
         const genres = musics.map(music => music.genre).filter((genre): genre is string => !!genre);
 
-        return common(genres);
+        return common(genres)?.replace(/\0/g, "/");
     }
 
     @ResolveField(() => [AlbumArt])
