@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 
 export const Root = styled.input`
     margin: 0;
-    padding: 0 calc(${({ theme }) => theme.spacing(1.5)});
+    padding: 0 ${({ theme }) => theme.spacing(1.5)};
     border: 0;
 
     flex: 1 1 auto;

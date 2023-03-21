@@ -3,14 +3,16 @@ import * as fs from "fs-extra";
 import sharp from "sharp";
 import { Repository } from "typeorm";
 import { AlbumArt as RawAlbumArt } from "@async3619/merry-go-round";
+import { fileTypeFromBuffer } from "file-type";
 
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 
-import { AlbumArt } from "@main/album-art/models/album-art.model";
+import { AlbumArt, AlbumArtType } from "@main/album-art/models/album-art.model";
 
 import { BaseService } from "@main/common/base.service";
 
+import checksum from "@main/utils/checksum";
 import { ALBUM_ART_DIR } from "@main/constants";
 
 @Injectable()
@@ -19,16 +21,28 @@ export class AlbumArtService extends BaseService<AlbumArt> {
         super(albumArtRepository, AlbumArt);
     }
 
-    public async create(rawAlbumArt: RawAlbumArt) {
+    public async ensure(rawAlbumArt: RawAlbumArt) {
         const { type, mimeType, description } = rawAlbumArt;
         const data = rawAlbumArt.data();
+        const checksumString = checksum(data);
+
+        let albumArt = await this.albumArtRepository.findOne({
+            where: {
+                checksum: checksumString,
+            },
+        });
+
+        if (albumArt) {
+            return albumArt;
+        }
+
         const id = (await this.getLastId()) + 1;
 
         const targetPath = path.join(ALBUM_ART_DIR, `${id}.${mimeType.split("/")[1]}`);
         await fs.ensureDir(ALBUM_ART_DIR);
         await fs.writeFile(targetPath, data);
 
-        const albumArt = this.albumArtRepository.create();
+        albumArt = this.albumArtRepository.create();
         albumArt.type = type as unknown as AlbumArt["type"];
         albumArt.mimeType = mimeType;
         albumArt.description = description;
@@ -38,8 +52,54 @@ export class AlbumArtService extends BaseService<AlbumArt> {
         albumArt.height = height;
         albumArt.size = data.length;
         albumArt.path = targetPath;
+        albumArt.checksum = checksumString;
 
         return this.albumArtRepository.save(albumArt);
+    }
+    public async ensureFromPath(path: string) {
+        let albumArt = await this.albumArtRepository.findOne({
+            where: {
+                path,
+            },
+        });
+
+        if (!albumArt) {
+            albumArt = await this.createFromPath(path);
+        }
+
+        return albumArt;
+    }
+
+    public async createFromPath(path: string, writeOnDatabase = true) {
+        const data = await fs.readFile(path);
+        const mimeType = await fileTypeFromBuffer(data);
+        if (!mimeType) {
+            throw new Error("Failed to get file type.");
+        }
+
+        if (!mimeType.mime.startsWith("image/")) {
+            throw new Error("Given file is not an image.");
+        }
+
+        const { width, height } = await this.getImageSize(data);
+        const checksumString = checksum(data);
+
+        const albumArt = this.albumArtRepository.create();
+        albumArt.id = (await this.getLastId()) + 1;
+        albumArt.type = AlbumArtType.CoverFront;
+        albumArt.mimeType = mimeType.mime;
+        albumArt.description = "";
+        albumArt.width = width;
+        albumArt.height = height;
+        albumArt.size = data.length;
+        albumArt.path = path;
+        albumArt.checksum = checksumString;
+
+        if (writeOnDatabase) {
+            return this.albumArtRepository.save(albumArt);
+        }
+
+        return albumArt;
     }
 
     private async getImageSize(data: Buffer) {

@@ -8,6 +8,7 @@ export interface ButtonProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonE
     children: string;
     icon?: React.ComponentType;
     color?: MuiButtonProps["color"];
+    fullWidth?: MuiButtonProps["fullWidth"];
 }
 
 export default function Button({ children, icon: Icon, ...props }: ButtonProps) {

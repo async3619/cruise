@@ -13,9 +13,7 @@ import { MusicListItem } from "@utils/types";
 export default function Musics() {
     const player = usePlayer();
     const { currentMusic, play } = player;
-    const { data } = useMusicsQuery({
-        fetchPolicy: "network-only",
-    });
+    const { data } = useMusicsQuery();
 
     const handlePlay = (item: MusicListItem) => {
         if (!data?.musics) {

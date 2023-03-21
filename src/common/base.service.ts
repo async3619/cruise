@@ -58,6 +58,25 @@ export class BaseService<T extends BaseEntityClass> {
     }
 
     public async bulkUpdate(ids: number[], data: QueryDeepPartialEntity<T>) {
-        await this.repository.update(ids, data);
+        const items = await this.findByIds(ids);
+        for (const item of items) {
+            for (const [key, value] of Object.entries(data) as [keyof T, T[keyof T]][]) {
+                item[key] = value;
+            }
+        }
+
+        return this.repository.save(items);
+    }
+    public async update(id: number, data: QueryDeepPartialEntity<T>) {
+        const item = await this.findById(id);
+        if (!item) {
+            throw new Error(`'${this.entityClass.name}' with id ${id} not found`);
+        }
+
+        for (const [key, value] of Object.entries(data) as [keyof T, T[keyof T]][]) {
+            item[key] = value;
+        }
+
+        return this.repository.save(item);
     }
 }

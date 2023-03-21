@@ -11,6 +11,9 @@ query artistAlbums($artistId: Int!) {
                 id
                 name
             }
+            albumArts {
+                ...AlbumArtItem
+            }
             musics {
                 ...PlayableMusic
                 genre

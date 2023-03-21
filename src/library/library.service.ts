@@ -66,6 +66,21 @@ export class LibraryService implements OnModuleInit {
             audioMap[filePath] = await Audio.fromFile(filePath);
         }
 
+        // register all album arts
+        const allAlbumArts: Record<string, AlbumArt[]> = {};
+        for (const [filePath, audio] of Object.entries(audioMap)) {
+            const albumArts = audio.albumArts();
+            if (albumArts.length <= 0) {
+                continue;
+            }
+
+            allAlbumArts[filePath] ??= [];
+            for (const rawAlbumArt of albumArts) {
+                const albumArt = await this.albumArtService.ensure(rawAlbumArt);
+                allAlbumArts[filePath].push(albumArt);
+            }
+        }
+
         // register all artists
         const allArtists: Record<string, Artist> = {};
         for (const audio of Object.values(audioMap)) {
@@ -124,28 +139,28 @@ export class LibraryService implements OnModuleInit {
             allAlbums[key] = await this.albumService.create(title, featuredArtists, albumArtists);
         }
 
-        // register all album arts
-        const allAlbumArts: Record<string, AlbumArt[]> = {};
-        for (const [filePath, audio] of Object.entries(audioMap)) {
-            const albumArts = audio.albumArts();
-            if (albumArts.length <= 0) {
-                continue;
-            }
-
-            allAlbumArts[filePath] ??= [];
-            for (const rawAlbumArt of albumArts) {
-                const albumArt = await this.albumArtService.create(rawAlbumArt);
-                allAlbumArts[filePath].push(albumArt);
-            }
-        }
-
         // register all musics
+        const albumArtMap = new Map<Album, AlbumArt[]>();
         for (const [filePath, audio] of Object.entries(audioMap)) {
             const { key: albumKey, artists } = this.getAlbumData(audio);
             const album: Album | null = albumKey ? allAlbums[albumKey] : null;
             const featuredArtists = artists.map(artistName => allArtists[artistName]);
 
             await this.musicService.create(audio, filePath, allAlbumArts[filePath], album, featuredArtists);
+
+            if (album) {
+                albumArtMap.set(album, [...(albumArtMap.get(album) || []), ...allAlbumArts[filePath]]);
+            }
+        }
+
+        // link all album arts to albums
+        for (const [album, albumArtsItem] of albumArtMap.entries()) {
+            const albumArts = _.chain(albumArtsItem)
+                .flatten()
+                .uniqBy(p => p.id)
+                .value();
+
+            await this.albumService.setAlbumArts(album.id, albumArts);
         }
     }
 }

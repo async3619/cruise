@@ -22,13 +22,14 @@ import {
 } from "@queries";
 
 import withDialog, { WithDialogProps } from "@dialogs/withDialog";
+import AlbumUpdateDialog from "@dialogs/AlbumUpdate";
+
 import withPlayer, { WithPlayerProps } from "@player/withPlayer";
 import withClient, { WithClientProps } from "@graphql/withClient";
 
 import withParams, { WithParamsProps } from "@utils/hocs/withParams";
-import { AlbumType, PlayableMusic } from "@utils/types";
 import formatDuration from "@utils/formatDuration";
-import AlbumUpdateDialog from "@dialogs/AlbumUpdate";
+import { AlbumType, PlayableMusic } from "@utils/types";
 
 export interface AlbumProps
     extends WithParamsProps<{ albumId: string }>,
@@ -43,6 +44,7 @@ export interface AlbumStates {
 }
 
 class Album extends React.Component<AlbumProps, AlbumStates> {
+    private refetch: AlbumQueryResult["refetch"] | null = null;
     public state: AlbumStates = {
         musics: null,
         metadata: [],
@@ -118,6 +120,10 @@ class Album extends React.Component<AlbumProps, AlbumStates> {
         this.props.player.playShuffled(musics).then();
     };
     private handleEditClick = async () => {
+        if (!this.refetch) {
+            throw new Error("Refetch not found");
+        }
+
         if (!this.state.album) {
             throw new Error("Album data not found");
         }
@@ -145,9 +151,18 @@ class Album extends React.Component<AlbumProps, AlbumStates> {
                     }),
                     year: result.data.year,
                     genre: result.data.genre,
+                    albumArts: result.data.albumArts.map(art => {
+                        return {
+                            type: art.type,
+                            path: art.path,
+                            description: art.description,
+                        };
+                    }),
                 },
             },
         });
+
+        await this.refetch();
     };
 
     private renderContent = (album: AlbumType) => {
@@ -179,7 +194,9 @@ class Album extends React.Component<AlbumProps, AlbumStates> {
             </>
         );
     };
-    private renderBody = ({ data, loading }: AlbumQueryResult) => {
+    private renderBody = ({ data, loading, refetch }: AlbumQueryResult) => {
+        this.refetch = refetch;
+
         if (loading) {
             return <ShrinkHeaderPage loading />;
         }
@@ -190,8 +207,7 @@ class Album extends React.Component<AlbumProps, AlbumStates> {
 
         const { player } = this.props;
         const album = data.album;
-        const albumArts = album.musics.flatMap(music => music.albumArts);
-        const albumArt = albumArts.find(art => art.type === AlbumArtType.CoverFront) || albumArts[0];
+        const albumArt = album.albumArts.find(art => art.type === AlbumArtType.CoverFront) || album.albumArts[0];
         const imagePath = albumArt ? `cruise://${albumArt.path}` : undefined;
 
         return (

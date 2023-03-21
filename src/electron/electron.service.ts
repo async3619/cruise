@@ -1,6 +1,6 @@
 import * as path from "path";
 import * as os from "os";
-import { app, BrowserWindow, protocol } from "electron";
+import { app, BrowserWindow, dialog, protocol, OpenDialogOptions } from "electron";
 import { createIPCHandler } from "electron-trpc/main";
 
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
@@ -11,6 +11,12 @@ import { router } from "@main/api";
 const mainDistPath = path.join(__dirname, "../");
 const distPath = path.join(mainDistPath, "../dist");
 const publicPath = process.env.VITE_DEV_SERVER_URL ? path.join(mainDistPath, "../public") : distPath;
+
+interface SelectPathOptions<TMultiple extends boolean> extends Omit<OpenDialogOptions, "properties"> {
+    multiple: TMultiple;
+    directory: boolean;
+}
+type SelectPathResult<TMultiple extends boolean> = TMultiple extends true ? string[] : string;
 
 @Injectable()
 export class ElectronService implements OnModuleInit {
@@ -33,7 +39,6 @@ export class ElectronService implements OnModuleInit {
         await app.whenReady();
         this.onAppReady();
     }
-
     private async onAppReady() {
         // Set app user model id for windows
         electronApp.setAppUserModelId("com.electron");
@@ -93,5 +98,34 @@ export class ElectronService implements OnModuleInit {
         });
 
         return window;
+    }
+
+    public async selectPath<TMultiple extends boolean>(
+        options: SelectPathOptions<TMultiple>,
+    ): Promise<SelectPathResult<TMultiple> | null> {
+        if (!this.mainWindow) {
+            throw new Error("Main window is not ready");
+        }
+
+        const { multiple, directory, ...rest } = options;
+        const openDialogOptions: OpenDialogOptions = {
+            properties: directory ? ["openDirectory"] : ["openFile"],
+            ...rest,
+        };
+
+        if (multiple) {
+            openDialogOptions.properties?.push("multiSelections");
+        }
+
+        const result = await dialog.showOpenDialog(this.mainWindow, openDialogOptions);
+        if (result.canceled) {
+            return null;
+        }
+
+        if (multiple) {
+            return result.filePaths as SelectPathResult<TMultiple>;
+        }
+
+        return result.filePaths[0] as SelectPathResult<TMultiple>;
     }
 }

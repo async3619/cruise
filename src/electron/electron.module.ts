@@ -3,5 +3,6 @@ import { ElectronService } from "./electron.service";
 
 @Module({
     providers: [ElectronService],
+    exports: [ElectronService],
 })
 export class ElectronModule {}

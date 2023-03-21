@@ -13,5 +13,8 @@ query album($id: Int!) {
             duration
             year
         }
+        albumArts {
+            ...AlbumArtItem
+        }
     }
 }

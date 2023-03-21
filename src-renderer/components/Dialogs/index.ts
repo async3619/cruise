@@ -42,10 +42,19 @@ export interface DialogContextValue {
         title: string,
         ...args: IsEmpty<Omit<TProps, keyof DialogPropBase<any>>, [], [data: Omit<TProps, keyof DialogPropBase<any>>]>
     ): Promise<DialogResult<Required<TProps["__data"]>>>;
+
+    showBackdrop(): void;
+    hideBackdrop(): void;
 }
 
 export const DialogContext = React.createContext<DialogContextValue>({
     showDialog() {
+        throw new Error("DialogContext not initialized");
+    },
+    showBackdrop() {
+        throw new Error("DialogContext not initialized");
+    },
+    hideBackdrop() {
         throw new Error("DialogContext not initialized");
     },
 });

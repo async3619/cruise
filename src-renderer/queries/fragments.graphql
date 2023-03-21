@@ -25,3 +25,14 @@ fragment PlayableMusic on Music {
         }
     }
 }
+
+fragment AlbumArtItem on AlbumArt {
+    id
+    type
+    mimeType
+    description
+    width
+    height
+    size
+    path
+}

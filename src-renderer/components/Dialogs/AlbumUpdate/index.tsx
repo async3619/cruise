@@ -3,12 +3,11 @@ import React from "react";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { Box, Grid } from "@mui/material";
+import { Grid } from "@mui/material";
 
 import TextField from "@components/UI/TextField";
-import AlbumArt from "@components/UI/AlbumArt";
 import Autocomplete from "@components/UI/Autocomplete";
-import AutoHeight from "@components/AutoHeight";
+import AlbumArtInput, { ALBUM_ART_ITEM_SCHEMA } from "@components/UI/AlbumArtInput";
 
 import { DialogPropBase } from "@dialogs";
 import FormDialog from "@dialogs/Form";
@@ -26,6 +25,7 @@ const ALBUM_UPDATE_VALUE_SCHEMA = z.object({
         .regex(/^(\d+)?$/, { message: "Year should be a number" })
         .optional(),
     albumArtists: z.array(z.union([z.string(), z.object({ id: z.number(), name: z.string() })])),
+    albumArts: z.array(ALBUM_ART_ITEM_SCHEMA),
 });
 
 export type AlbumUpdateValues = z.infer<typeof ALBUM_UPDATE_VALUE_SCHEMA>;
@@ -35,10 +35,14 @@ export interface AlbumUpdateDialogProps extends DialogPropBase<AlbumUpdateValues
 
 export default function AlbumUpdateDialog(props: AlbumUpdateDialogProps) {
     const { album } = props;
-
     const albumArtistDefaultValue: ArtistNamesItem[] = React.useMemo(() => {
         return album.leadArtists.map(artist => ({ id: artist.id, name: artist.name }));
     }, [album.leadArtists]);
+
+    const albumArtDefaultValue = React.useMemo(() => {
+        return album.albumArts;
+    }, [album]);
+
     const form = useForm<AlbumUpdateValues>({
         mode: "all",
         resolver: zodResolver(ALBUM_UPDATE_VALUE_SCHEMA),
@@ -47,6 +51,7 @@ export default function AlbumUpdateDialog(props: AlbumUpdateDialogProps) {
             albumArtists: albumArtistDefaultValue,
             genre: album.genre || "",
             year: `${album.year || ""}`,
+            albumArts: albumArtDefaultValue,
         },
     });
 
@@ -69,45 +74,26 @@ export default function AlbumUpdateDialog(props: AlbumUpdateDialogProps) {
         <FormDialog {...props} form={form} formId="album-update-form">
             <Grid container spacing={2}>
                 <Grid item xs={12}>
-                    <Box display="flex" alignItems="stretch">
-                        <Box flex="1 1 auto" mr={2}>
-                            <Box mb={2}>
-                                <TextField
-                                    type="text"
-                                    fullWidth
-                                    label="Title"
-                                    {...register("title")}
-                                    error={!!errors.title}
-                                />
-                            </Box>
-                            <Box mb={2}>
-                                <TextField
-                                    type="text"
-                                    fullWidth
-                                    label="Genre"
-                                    {...register("genre")}
-                                    error={!!errors.genre}
-                                />
-                            </Box>
-                            <Box>
-                                <TextField
-                                    type="text"
-                                    fullWidth
-                                    label="Year"
-                                    {...register("year")}
-                                    error={!!errors.year}
-                                />
-                            </Box>
-                        </Box>
-                        <Box>
-                            <AutoHeight>{height => <AlbumArt size={height} />}</AutoHeight>
-                        </Box>
-                    </Box>
+                    <Controller
+                        control={control}
+                        name={"albumArts"}
+                        defaultValue={albumArtDefaultValue}
+                        render={({ field }) => <AlbumArtInput {...field} />}
+                    />
+                </Grid>
+                <Grid item xs={12}>
+                    <TextField type="text" fullWidth label="Title" {...register("title")} error={!!errors.title} />
+                </Grid>
+                <Grid item xs={12}>
+                    <TextField type="text" fullWidth label="Genre" {...register("genre")} error={!!errors.genre} />
+                </Grid>
+                <Grid item xs={12}>
+                    <TextField type="text" fullWidth label="Year" {...register("year")} error={!!errors.year} />
                 </Grid>
                 <Grid item xs={12}>
                     <Controller
                         control={control}
-                        name={"albumArtists"}
+                        name="albumArtists"
                         defaultValue={albumArtistDefaultValue}
                         render={({ field: { onChange, ref, ...field }, fieldState }) => (
                             <Autocomplete

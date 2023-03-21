@@ -15,9 +15,7 @@ import { AlbumListItem } from "@utils/types";
 export default function Albums() {
     const player = usePlayer();
     const navigate = useNavigate();
-    const { data } = useAlbumsQuery({
-        fetchPolicy: "network-only",
-    });
+    const { data } = useAlbumsQuery();
 
     const handlePlay = async (album: AlbumListItem) => {
         const musics = _.orderBy(album.musics, m => m.track ?? m.id, "asc");

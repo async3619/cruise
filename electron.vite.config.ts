@@ -33,13 +33,16 @@ const moduleNames = modules
             return undefined;
         }
     })
-    .filter(name => Boolean(name));
+    .filter((name): name is string => Boolean(name));
+
+const exclude = ["file-type", "token-types", "peek-readable"];
 
 export default defineConfig({
     main: {
         plugins: [
             externalizeDepsPlugin({
-                include: [...moduleNames, "@as-integrations/fastify"],
+                include: [...moduleNames.filter(item => !exclude.includes(item)), "@as-integrations/fastify"],
+                exclude,
             }),
             swcPlugin(),
         ],

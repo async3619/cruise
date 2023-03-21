@@ -11,6 +11,7 @@ import {
 } from "typeorm";
 
 import { Music } from "@main/music/models/music.model";
+import { Album } from "@main/album/models/album.model";
 
 export enum AlbumArtType {
     Other = 0,
@@ -74,6 +75,10 @@ export class AlbumArt extends BaseEntity {
     @Column({ type: "text" })
     public path!: string;
 
+    @Field(() => String)
+    @Column({ type: "text" })
+    public checksum!: string;
+
     @Field(() => Date)
     @CreateDateColumn()
     public createdAt!: Date;
@@ -88,4 +93,11 @@ export class AlbumArt extends BaseEntity {
 
     @RelationId((item: AlbumArt) => item.musics)
     public musicIds!: Music["id"];
+
+    // AlbumArt[] => Album[]
+    @ManyToMany(() => Album, item => item.albumArts)
+    public albums!: Album[];
+
+    @RelationId((item: AlbumArt) => item.albums)
+    public albumIds!: Album["id"];
 }

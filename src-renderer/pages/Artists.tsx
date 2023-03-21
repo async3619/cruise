@@ -22,9 +22,7 @@ export default function Artists() {
     const player = usePlayer();
     const client = useApolloClient();
     const navigate = useNavigate();
-    const { data } = useArtistsQuery({
-        fetchPolicy: "network-only",
-    });
+    const { data } = useArtistsQuery();
 
     const handlePlay = async (item: ArtistListItemType) => {
         const { data } = await client.query<ArtistAlbumMusicsQuery, ArtistAlbumMusicsQueryVariables>({

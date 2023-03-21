@@ -1,4 +1,5 @@
 import {
+    AlbumArtItemFragment,
     AlbumArtType as AlbumArtTypeImpl,
     AlbumQuery,
     AlbumsQuery,
@@ -46,3 +47,4 @@ export type MinimumAlbumArt = MinimalAlbumArtFragment;
 export type ArtistPageData = Required<ArtistAlbumsQuery["artist"]>;
 export type ArtistAlbumListItem = ArtistPageData["albums"][0];
 export type ArtistNamesItem = ArtistNamesQuery["artists"][0];
+export type AlbumArtItem = AlbumArtItemFragment;

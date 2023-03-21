@@ -2,35 +2,6 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type Album {
-  id: Int!
-  title: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  musics: [Music!]!
-  artists: [Artist!]!
-  leadArtists: [Artist!]!
-  year: Int
-  genre: String
-  musicCount: Int!
-}
-
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
-
-type Artist {
-  id: Int!
-  name: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  musics: [Music!]!
-  albums: [Album!]!
-  leadAlbums: [Album!]!
-  musicCount: Int!
-}
-
 type AlbumArt {
   id: Int!
   type: AlbumArtType!
@@ -40,6 +11,7 @@ type AlbumArt {
   height: Int!
   size: Int!
   path: String!
+  checksum: String!
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -67,6 +39,36 @@ enum AlbumArtType {
   BandLogo
   PublisherLogo
   Undefined
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Album {
+  id: Int!
+  title: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  musics: [Music!]!
+  artists: [Artist!]!
+  leadArtists: [Artist!]!
+  albumArts: [AlbumArt!]!
+  year: Int
+  genre: String
+  musicCount: Int!
+}
+
+type Artist {
+  id: Int!
+  name: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  musics: [Music!]!
+  albums: [Album!]!
+  leadAlbums: [Album!]!
+  musicCount: Int!
 }
 
 type Music {
@@ -97,6 +99,7 @@ type Query {
 
 type Mutation {
   updateAlbum(id: Int!, data: UpdateAlbumInput!): Album!
+  selectAlbumArtFile: AlbumArt
   scan: Boolean!
 }
 
@@ -105,4 +108,11 @@ input UpdateAlbumInput {
   albumArtists: [String!]!
   genre: String
   year: String
+  albumArts: [AlbumArtInput!]!
+}
+
+input AlbumArtInput {
+  path: String!
+  type: AlbumArtType!
+  description: String
 }

@@ -27,6 +27,17 @@ declare global {
 }
 
 const apolloClient = new ApolloClient({
+    defaultOptions: {
+        query: {
+            fetchPolicy: "no-cache",
+        },
+        mutate: {
+            fetchPolicy: "no-cache",
+        },
+        watchQuery: {
+            fetchPolicy: "no-cache",
+        },
+    },
     cache: new InMemoryCache(),
     link: ApolloLink.from([
         onError(({ graphQLErrors, networkError }) => {

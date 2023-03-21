@@ -11,6 +11,8 @@ import { MusicService } from "@main/music/music.service";
 import { Music } from "@main/music/models/music.model";
 import { Artist } from "@main/artist/models/artist.model";
 import { Album } from "@main/album/models/album.model";
+import { AlbumArt } from "@main/album-art/models/album-art.model";
+
 import { UpdateAlbumInput } from "@main/album/models/update-album.input";
 
 import loadMany from "@main/utils/loadMany";
@@ -40,7 +42,7 @@ export class AlbumResolver {
         @Args("id", { type: () => Int }) id: number,
         @Args("data", { type: () => UpdateAlbumInput }) data: UpdateAlbumInput,
     ): Promise<Album> {
-        return this.albumService.update(id, data);
+        return this.albumService.updateAlbum(id, data);
     }
 
     @ResolveField(() => Int, { nullable: true })
@@ -67,6 +69,11 @@ export class AlbumResolver {
         const genres = musics.map(music => music.genre).filter((genre): genre is string => !!genre);
 
         return common(genres);
+    }
+
+    @ResolveField(() => [AlbumArt])
+    public async albumArts(@Root() album: Album, @Context("loaders") loaders: GraphQLContext["loaders"]) {
+        return loaders.albumArt.loadMany(album.albumArtIds);
     }
 
     @ResolveField(() => Int)

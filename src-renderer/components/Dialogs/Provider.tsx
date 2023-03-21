@@ -1,6 +1,7 @@
 import React from "react";
-
 import shortid from "shortid";
+
+import { Backdrop, CircularProgress } from "@mui/material";
 
 import { DialogContext, DialogContextValue, DialogPropBase, DialogResult } from "@dialogs";
 import { Fn, Required } from "@utils/types";
@@ -17,12 +18,14 @@ export interface DialogProviderProps {
 }
 export interface DialogProviderStates {
     instances: DialogInstance<any>[];
+    backdropVisible: boolean;
 }
 
 export default class DialogProvider extends React.Component<DialogProviderProps, DialogProviderStates> {
     private readonly contextValues: DialogContextValue;
     public state: DialogProviderStates = {
         instances: [],
+        backdropVisible: false,
     };
 
     constructor(props: DialogProviderProps) {
@@ -30,6 +33,8 @@ export default class DialogProvider extends React.Component<DialogProviderProps,
 
         this.contextValues = {
             showDialog: this.showDialog.bind(this),
+            showBackdrop: this.showBackdrop.bind(this),
+            hideBackdrop: this.hideBackdrop.bind(this),
         };
     }
 
@@ -87,18 +92,27 @@ export default class DialogProvider extends React.Component<DialogProviderProps,
             }));
         });
     }
+    private showBackdrop() {
+        this.setState({ backdropVisible: true });
+    }
+    private hideBackdrop() {
+        this.setState({ backdropVisible: false });
+    }
 
     private renderItems = (instance: DialogInstance<any>) => {
         return instance.renderer(this.state);
     };
     public render() {
         const { children } = this.props;
-        const { instances } = this.state;
+        const { instances, backdropVisible } = this.state;
 
         return (
             <DialogContext.Provider value={this.contextValues}>
                 {children}
                 {instances.map(this.renderItems)}
+                <Backdrop sx={{ zIndex: 3000, color: "#fff" }} open={backdropVisible}>
+                    <CircularProgress color="inherit" />
+                </Backdrop>
             </DialogContext.Provider>
         );
     }

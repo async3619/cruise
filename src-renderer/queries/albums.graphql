@@ -6,6 +6,9 @@ query albums {
             id
             name
         }
+        albumArts {
+            ...AlbumArtItem
+        }
         musics {
             ...PlayableMusic
         }
