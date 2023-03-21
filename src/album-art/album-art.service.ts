@@ -70,8 +70,8 @@ export class AlbumArtService extends BaseService<AlbumArt> {
         return albumArt;
     }
 
-    public async createFromPath(path: string, writeOnDatabase = true) {
-        const data = await fs.readFile(path);
+    public async createFromPath(targetPath: string, writeOnDatabase = true, copyToAlbumArtDir = true) {
+        const data = await fs.readFile(targetPath);
         const mimeType = await fileTypeFromBuffer(data);
         if (!mimeType) {
             throw new Error("Failed to get file type.");
@@ -83,16 +83,23 @@ export class AlbumArtService extends BaseService<AlbumArt> {
 
         const { width, height } = await this.getImageSize(data);
         const checksumString = checksum(data);
+        const id = (await this.getLastId()) + 1;
+
+        if (copyToAlbumArtDir) {
+            targetPath = path.join(ALBUM_ART_DIR, `${id}.${mimeType.mime.split("/")[1]}`);
+            await fs.ensureDir(ALBUM_ART_DIR);
+            await fs.writeFile(targetPath, data);
+        }
 
         const albumArt = this.albumArtRepository.create();
-        albumArt.id = (await this.getLastId()) + 1;
+        albumArt.id = id;
         albumArt.type = AlbumArtType.CoverFront;
         albumArt.mimeType = mimeType.mime;
         albumArt.description = "";
         albumArt.width = width;
         albumArt.height = height;
         albumArt.size = data.length;
-        albumArt.path = path;
+        albumArt.path = targetPath;
         albumArt.checksum = checksumString;
 
         if (writeOnDatabase) {
