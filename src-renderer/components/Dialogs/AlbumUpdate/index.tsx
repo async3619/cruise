@@ -78,7 +78,7 @@ export default function AlbumUpdateDialog(props: AlbumUpdateDialogProps) {
                         control={control}
                         name={"albumArts"}
                         defaultValue={albumArtDefaultValue}
-                        render={({ field }) => <AlbumArtInput {...field} />}
+                        render={({ field: { ref: _, ...field } }) => <AlbumArtInput {...field} />}
                     />
                 </Grid>
                 <Grid item xs={12}>
