@@ -6,24 +6,29 @@ import { ReactComponent as RestoreIcon } from "@res/restore.svg";
 
 import { Button, MinimizeIcon, Root } from "@components/WindowControl.styles";
 
-import { client, trpcReact } from "@/api";
+import { client } from "@/api";
 
 export default function WindowControl() {
     const [maximized, setMaximized] = React.useState(false);
 
-    trpcReact.onMaximizedStateChange.useSubscription(undefined, {
-        onData: setMaximized,
-    });
+    React.useEffect(() => {
+        const subscriber = client.onMaximizedStateChange.subscribe(undefined, {
+            onData: setMaximized,
+            onError: e => {
+                console.error(e);
+            },
+        });
+
+        return () => {
+            subscriber.unsubscribe();
+        };
+    }, []);
 
     const handleMinimize = () => {
         client.minimize.query().then();
     };
     const handleMaximize = () => {
-        if (maximized) {
-            client.minimize.query().then();
-        } else {
-            client.maximize.query().then();
-        }
+        client.toggleMaximize.query().then();
     };
     const handleClose = () => {
         client.close.query().then();

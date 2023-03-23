@@ -43,14 +43,18 @@ export const router = t.router({
             return filePaths;
         }),
 
-    maximize: t.procedure.query(({ ctx }) => {
-        ctx.window?.maximize();
-    }),
-    unmaximize: t.procedure.query(({ ctx }) => {
-        ctx.window?.unmaximize();
+    isMaximized: t.procedure.query(({ ctx }) => {
+        return ctx.window?.isMaximized();
     }),
     minimize: t.procedure.query(({ ctx }) => {
         ctx.window?.minimize();
+    }),
+    toggleMaximize: t.procedure.query(({ ctx }) => {
+        if (ctx.window?.isMaximized()) {
+            ctx.window?.unmaximize();
+        } else {
+            ctx.window?.maximize();
+        }
     }),
     close: t.procedure.query(({ ctx }) => {
         ctx.window?.close();
