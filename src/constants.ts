@@ -8,3 +8,7 @@ export const SQLITE_DATABASE_PATH = path.join(os.homedir(), ".cruise", "database
 export const SQLITE_DATABASE_DIR = path.join(os.homedir(), ".cruise");
 
 export const ALBUM_ART_DIR = path.join(os.homedir(), ".cruise", "album-arts");
+
+export const EXTENSIONS_DIR = path.join(process.cwd(), "extensions");
+export const REACT_DEVTOOLS_PATH = path.join(EXTENSIONS_DIR, "react-devtools.zip");
+export const REACT_DEVTOOLS_DIR = path.join(EXTENSIONS_DIR, "react-devtools");

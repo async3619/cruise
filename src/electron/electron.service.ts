@@ -1,12 +1,15 @@
 import * as path from "path";
 import * as os from "os";
-import { app, BrowserWindow, dialog, protocol, OpenDialogOptions } from "electron";
+import { app, BrowserWindow, dialog, OpenDialogOptions, protocol, session } from "electron";
 import { createIPCHandler } from "electron-trpc/main";
+import decompress from "decompress";
+import fs from "fs-extra";
 
-import { electronApp, optimizer, is } from "@electron-toolkit/utils";
+import { electronApp, is, optimizer } from "@electron-toolkit/utils";
 import { Injectable, OnModuleInit } from "@nestjs/common";
 
 import { router } from "@main/api";
+import { REACT_DEVTOOLS_DIR, REACT_DEVTOOLS_PATH } from "@main/constants";
 
 const mainDistPath = path.join(__dirname, "../");
 const distPath = path.join(mainDistPath, "../dist");
@@ -68,12 +71,26 @@ export class ElectronService implements OnModuleInit {
             });
         });
 
+        if (is.dev) {
+            if (!fs.existsSync(REACT_DEVTOOLS_DIR)) {
+                await decompress(REACT_DEVTOOLS_PATH, REACT_DEVTOOLS_DIR);
+            }
+
+            await session.defaultSession.loadExtension(REACT_DEVTOOLS_DIR);
+
+            // eslint-disable-next-line @typescript-eslint/no-var-requires
+            const devtools = require("electron-devtools-installer");
+
+            await devtools.default([devtools.APOLLO_DEVELOPER_TOOLS]);
+        }
+
         const window = new BrowserWindow({
             title: "Main window",
             icon: path.join(publicPath, "favicon.ico"),
             frame: false,
             width: 1300,
             height: 800,
+            minWidth: 500,
             webPreferences: {
                 preload: path.join(__dirname, "../../preload/index.js"),
                 nodeIntegration: true,
