@@ -18,14 +18,12 @@ for (const key in paths) {
     alias[key] = resolve(__dirname, value.replace("/*", ""));
 }
 
-// get all modules from node_modules
-const modules = glob.sync("node_modules/**/package.json", {
-    onlyFiles: true,
-    cwd: process.cwd(),
-});
-
 // get all names of modules
-const moduleNames = modules
+const include = glob
+    .sync("node_modules/**/package.json", {
+        onlyFiles: true,
+        cwd: process.cwd(),
+    })
     .map(module => {
         try {
             return fs.readJsonSync(module).name;
@@ -35,22 +33,30 @@ const moduleNames = modules
     })
     .filter((name): name is string => Boolean(name));
 
-const exclude = ["file-type", "token-types", "peek-readable"];
-
 export default defineConfig({
     main: {
+        esbuild: false,
         plugins: [
-            externalizeDepsPlugin({
-                include: [...moduleNames.filter(item => !exclude.includes(item)), "@as-integrations/fastify"],
-                exclude,
-            }),
             swcPlugin(),
+            externalizeDepsPlugin({
+                include: [
+                    ...include,
+                    "@trpc/server/observable",
+                    "electron-trpc/main",
+                    "@nestjs/apollo/dist/drivers/apollo-base.driver",
+                ],
+            }),
         ],
         build: {
+            sourcemap: true,
             rollupOptions: {
+                output: {
+                    preserveModules: true,
+                },
                 input: {
                     index: resolve(__dirname, "src/index.ts"),
                 },
+                preserveEntrySignatures: "strict",
             },
         },
         resolve: {

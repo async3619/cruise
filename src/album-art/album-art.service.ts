@@ -3,7 +3,7 @@ import * as fs from "fs-extra";
 import sharp from "sharp";
 import { Repository } from "typeorm";
 import { AlbumArt as RawAlbumArt } from "@async3619/merry-go-round";
-import { fileTypeFromBuffer } from "file-type";
+import { fromBuffer } from "file-type";
 
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -72,7 +72,7 @@ export class AlbumArtService extends BaseService<AlbumArt> {
 
     public async createFromPath(targetPath: string, writeOnDatabase = true, copyToAlbumArtDir = true) {
         const data = await fs.readFile(targetPath);
-        const mimeType = await fileTypeFromBuffer(data);
+        const mimeType = await fromBuffer(data);
         if (!mimeType) {
             throw new Error("Failed to get file type.");
         }

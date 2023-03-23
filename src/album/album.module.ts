@@ -1,9 +1,10 @@
-import { Module } from "@nestjs/common";
+import { forwardRef, Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
 import { MusicModule } from "@main/music/music.module";
 import { ArtistModule } from "@main/artist/artist.module";
 import { AlbumArtModule } from "@main/album-art/album-art.module";
+import { LibraryModule } from "@main/library/library.module";
 
 import { AlbumService } from "@main/album/album.service";
 import { AlbumResolver } from "@main/album/album.resolver";
@@ -11,7 +12,13 @@ import { AlbumResolver } from "@main/album/album.resolver";
 import { Album } from "@main/album/models/album.model";
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Album]), MusicModule, ArtistModule, AlbumArtModule],
+    imports: [
+        TypeOrmModule.forFeature([Album]),
+        MusicModule,
+        ArtistModule,
+        AlbumArtModule,
+        forwardRef(() => LibraryModule),
+    ],
     providers: [AlbumService, AlbumResolver],
     exports: [AlbumService],
 })

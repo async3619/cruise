@@ -11,5 +11,6 @@ import { AlbumArtModule } from "@main/album-art/album-art.module";
 @Module({
     imports: [MusicModule, AlbumModule, ArtistModule, AlbumArtModule],
     providers: [LibraryService, LibraryResolver],
+    exports: [LibraryService],
 })
 export class LibraryModule {}

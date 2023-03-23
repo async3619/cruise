@@ -1,8 +1,9 @@
 import * as _ from "lodash";
 import glob from "fast-glob";
 import * as path from "path";
+import fs from "fs-extra";
 
-import { Audio } from "@async3619/merry-go-round";
+import { Audio, AlbumArt as RawAlbumArt } from "@async3619/merry-go-round";
 
 import { Inject, Injectable, OnModuleInit } from "@nestjs/common";
 
@@ -14,6 +15,7 @@ import { AlbumArtService } from "@main/album-art/album-art.service";
 import { Artist } from "@main/artist/models/artist.model";
 import { Album } from "@main/album/models/album.model";
 import { AlbumArt } from "@main/album-art/models/album-art.model";
+import { Music } from "@main/music/models/music.model";
 
 import { getConfig } from "@main/config";
 
@@ -69,12 +71,13 @@ export class LibraryService implements OnModuleInit {
         // register all album arts
         const allAlbumArts: Record<string, AlbumArt[]> = {};
         for (const [filePath, audio] of Object.entries(audioMap)) {
+            allAlbumArts[filePath] ??= [];
+
             const albumArts = audio.albumArts();
             if (albumArts.length <= 0) {
                 continue;
             }
 
-            allAlbumArts[filePath] ??= [];
             for (const rawAlbumArt of albumArts) {
                 const albumArt = await this.albumArtService.ensure(rawAlbumArt);
                 allAlbumArts[filePath].push(albumArt);
@@ -161,6 +164,56 @@ export class LibraryService implements OnModuleInit {
                 .value();
 
             await this.albumService.setAlbumArts(album.id, albumArts);
+        }
+    }
+
+    public async updateTracks(target: Album): Promise<void>;
+    public async updateTracks(target: Album): Promise<void> {
+        let targetTracks: Music[] = [];
+        let albumTitle: string | null = null;
+        let albumArtists: Artist[] = [];
+        let albumArts: AlbumArt[] = [];
+        if (target instanceof Album) {
+            const album = await this.albumService.findById(target.id, ["musics", "leadArtists", "albumArts"]);
+            if (!album) {
+                throw new Error("Album not found");
+            }
+
+            albumTitle = album.title;
+            albumArtists = album.leadArtists;
+            albumArts = album.albumArts;
+            targetTracks = album.musics;
+        }
+
+        // check if all the track path is valid
+        for (const track of targetTracks) {
+            if (!fs.existsSync(track.path)) {
+                throw new Error(`Target audio file '${track.path}' does not exist`);
+            }
+
+            const audio = Audio.fromFile(track.path);
+            audio.genre = track.genre || "";
+            audio.year = track.year || 0;
+            audio.albumArtist = albumArtists.map(artist => artist.name).join("\0");
+
+            if (albumTitle) {
+                audio.album = albumTitle;
+            }
+
+            audio.clearAlbumArts();
+            for (const albumArt of albumArts) {
+                if (!fs.existsSync(albumArt.path)) {
+                    throw new Error(`Target album art file '${albumArt.path}' does not exist`);
+                }
+
+                const albumArtItem = await RawAlbumArt.fromFile(albumArt.path);
+                albumArtItem.type = albumArt.type as unknown as RawAlbumArt["type"];
+                albumArtItem.description = albumArt.description;
+
+                audio.addAlbumArt(albumArtItem);
+            }
+
+            audio.save(track.path);
         }
     }
 }

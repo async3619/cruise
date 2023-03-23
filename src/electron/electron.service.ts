@@ -75,7 +75,7 @@ export class ElectronService implements OnModuleInit {
             width: 1300,
             height: 800,
             webPreferences: {
-                preload: path.join(__dirname, "../preload/index.js"),
+                preload: path.join(__dirname, "../../preload/index.js"),
                 nodeIntegration: true,
                 contextIsolation: true,
             },

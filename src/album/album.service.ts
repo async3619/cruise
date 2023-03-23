@@ -1,6 +1,7 @@
+import fs from "fs-extra";
 import { Repository } from "typeorm";
 
-import { Inject, Injectable } from "@nestjs/common";
+import { forwardRef, Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 
 import { Artist } from "@main/artist/models/artist.model";
@@ -12,7 +13,7 @@ import { BaseService } from "@main/common/base.service";
 import { MusicService } from "@main/music/music.service";
 import { ArtistService } from "@main/artist/artist.service";
 import { AlbumArtService } from "@main/album-art/album-art.service";
-import fs from "fs-extra";
+import { LibraryService } from "@main/library/library.service";
 
 @Injectable()
 export class AlbumService extends BaseService<Album> {
@@ -21,6 +22,7 @@ export class AlbumService extends BaseService<Album> {
         @Inject(MusicService) private readonly musicService: MusicService,
         @Inject(ArtistService) private readonly artistService: ArtistService,
         @Inject(AlbumArtService) private readonly albumArtService: AlbumArtService,
+        @Inject(forwardRef(() => LibraryService)) private readonly libraryService: LibraryService,
     ) {
         super(albumRepository, Album);
     }
@@ -64,7 +66,10 @@ export class AlbumService extends BaseService<Album> {
             albumArts: album.albumArts,
         });
 
-        return this.albumRepository.save(album);
+        const result = await this.albumRepository.save(album);
+        this.libraryService.updateTracks(result);
+
+        return result;
     }
 
     public async setAlbumArts(id: number, albumArts: AlbumArt[]) {
