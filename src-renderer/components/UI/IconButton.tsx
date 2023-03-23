@@ -13,6 +13,7 @@ const IconButton = styled.button`
     align-items: center;
     justify-content: center;
 
+    color: ${({ theme }) => theme.palette.text.secondary};
     background: transparent;
 
     &:hover {

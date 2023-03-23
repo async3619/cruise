@@ -2,7 +2,7 @@ import React from "react";
 import useMeasure from "react-use-measure";
 
 import { Box, Typography } from "@mui/material";
-import { ChevronDown16Regular } from "@fluentui/react-icons";
+import ExpandMoreRoundedIcon from "@mui/icons-material/ExpandMoreRounded";
 
 import IconButton from "@components/UI/IconButton";
 import Button from "@components/UI/Button";
@@ -61,7 +61,7 @@ export default function BaseSettingsListItem(props: BaseSettingsListItemProps) {
                 {children && (
                     <Box ml={2.5}>
                         <IconButton>
-                            <ChevronDown16Regular />
+                            <ExpandMoreRoundedIcon />
                         </IconButton>
                     </Box>
                 )}

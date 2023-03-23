@@ -5,6 +5,7 @@ import { defineConfig, externalizeDepsPlugin, swcPlugin } from "electron-vite";
 import react from "@vitejs/plugin-react-swc";
 import tsconfigPaths from "vite-tsconfig-paths";
 import checker from "vite-plugin-checker";
+import svgr from "vite-plugin-svgr";
 
 import glob from "fast-glob";
 
@@ -88,6 +89,7 @@ export default defineConfig({
             react({
                 plugins: [["@swc/plugin-emotion", {}]],
             }),
+            svgr({}),
             tsconfigPaths(),
             ...(process.env.SURPRESS_ERRORS !== "true" ? [checker({ typescript: true })] : []),
         ],

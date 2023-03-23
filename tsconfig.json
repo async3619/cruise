@@ -33,7 +33,8 @@
             "@renderer/*": ["src-renderer/*"],
             "@dialogs/*": ["src-renderer/components/Dialogs/*"],
             "@dialogs": ["src-renderer/components/Dialogs/index.ts"],
-            "@common/*": ["src-common/*"]
+            "@common/*": ["src-common/*"],
+            "@res/*": ["src-renderer/res/*"]
         },
         "plugins": [
             {

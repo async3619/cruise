@@ -1,6 +1,8 @@
 import React from "react";
 
-import { Dismiss24Regular, MaximizeRegular, SquareMultiple20Regular } from "@fluentui/react-icons";
+import { ReactComponent as CloseIcon } from "@res/close.svg";
+import { ReactComponent as MaximizeIcon } from "@res/maximize.svg";
+import { ReactComponent as RestoreIcon } from "@res/restore.svg";
 
 import { Button, MinimizeIcon, Root } from "@components/WindowControl.styles";
 
@@ -32,9 +34,9 @@ export default function WindowControl() {
             <Button onClick={handleMinimize}>
                 <MinimizeIcon />
             </Button>
-            <Button onClick={handleMaximize}>{maximized ? <SquareMultiple20Regular /> : <MaximizeRegular />}</Button>
+            <Button onClick={handleMaximize}>{maximized ? <RestoreIcon /> : <MaximizeIcon />}</Button>
             <Button close onClick={handleClose}>
-                <Dismiss24Regular />
+                <CloseIcon />
             </Button>
         </Root>
     );
