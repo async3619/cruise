@@ -10,6 +10,7 @@ fragment PlayableMusic on Music {
     path
     track
     genre
+    duration
     artists {
         id
         name

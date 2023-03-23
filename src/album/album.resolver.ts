@@ -33,6 +33,11 @@ export class AlbumResolver {
     }
 
     @Query(() => [Album])
+    public async leadAlbumsByArtist(@Args("id", { type: () => Int }) id: number): Promise<Album[]> {
+        return this.albumService.findLeadAlbumsByArtist(id);
+    }
+
+    @Query(() => [Album])
     public async albums(): Promise<Album[]> {
         return this.albumService.findAll();
     }

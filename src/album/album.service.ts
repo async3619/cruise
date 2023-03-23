@@ -27,6 +27,12 @@ export class AlbumService extends BaseService<Album> {
         super(albumRepository, Album);
     }
 
+    public async findLeadAlbumsByArtist(artistId: number) {
+        const allAlbums = await this.findAll();
+
+        return allAlbums.filter(album => album.leadArtistIds.includes(artistId));
+    }
+
     public async create(title: string, artists: Artist[], leadArtists: Artist[]) {
         const album = this.albumRepository.create();
         album.title = title;
@@ -35,7 +41,6 @@ export class AlbumService extends BaseService<Album> {
 
         return this.albumRepository.save(album);
     }
-
     public async updateAlbum(id: number, data: UpdateAlbumInput) {
         const album = await this.findById(id, ["artists", "leadArtists", "musics"]);
         if (!album) {
@@ -71,7 +76,6 @@ export class AlbumService extends BaseService<Album> {
 
         return result;
     }
-
     public async setAlbumArts(id: number, albumArts: AlbumArt[]) {
         const album = await this.findById(id, ["albumArts"]);
         if (!album) {

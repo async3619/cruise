@@ -3,22 +3,20 @@ query artistAlbums($artistId: Int!) {
         id
         name
         musicCount
-        albums {
+    }
+    leadAlbumsByArtist(id: $artistId) {
+        id
+        title
+        year
+        leadArtists {
             id
-            title
-            year
-            leadArtists {
-                id
-                name
-            }
-            albumArts {
-                ...AlbumArtItem
-            }
-            musics {
-                ...PlayableMusic
-                genre
-                duration
-            }
+            name
+        }
+        albumArts {
+            ...AlbumArtItem
+        }
+        musics {
+            ...PlayableMusic
         }
     }
 }

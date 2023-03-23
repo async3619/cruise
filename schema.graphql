@@ -92,9 +92,11 @@ type Query {
   music(id: Int!): Music
   musics: [Music!]!
   album(id: Int!): Album
+  leadAlbumsByArtist(id: Int!): [Album!]!
   albums: [Album!]!
   artist(id: Int!): Artist
   artists: [Artist!]!
+  leadArtists: [Artist!]!
 }
 
 type Mutation {

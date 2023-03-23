@@ -44,7 +44,10 @@ export type PlayableMusic = PlayableMusicFragment;
 export type AlbumArtType = AlbumArtTypeImpl;
 export type AlbumType = Required<AlbumQuery["album"]>;
 export type MinimumAlbumArt = MinimalAlbumArtFragment;
-export type ArtistPageData = Required<ArtistAlbumsQuery["artist"]>;
-export type ArtistAlbumListItem = ArtistPageData["albums"][0];
+export type ArtistAlbumListItem = ArtistAlbumsQuery["leadAlbumsByArtist"][0];
+export type ArtistPageData = {
+    artist: Required<ArtistAlbumsQuery["artist"]>;
+    albums: ArtistAlbumListItem[];
+};
 export type ArtistNamesItem = ArtistNamesQuery["artists"][0];
 export type AlbumArtItem = AlbumArtItemFragment;

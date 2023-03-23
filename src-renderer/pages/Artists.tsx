@@ -10,7 +10,7 @@ import {
     ArtistAlbumMusicsDocument,
     ArtistAlbumMusicsQuery,
     ArtistAlbumMusicsQueryVariables,
-    useArtistsQuery,
+    useLeadArtistsQuery,
 } from "@queries";
 import { useApolloClient } from "@apollo/client";
 
@@ -22,7 +22,7 @@ export default function Artists() {
     const player = usePlayer();
     const client = useApolloClient();
     const navigate = useNavigate();
-    const { data } = useArtistsQuery();
+    const { data } = useLeadArtistsQuery();
 
     const handlePlay = async (item: ArtistListItemType) => {
         const { data } = await client.query<ArtistAlbumMusicsQuery, ArtistAlbumMusicsQueryVariables>({
@@ -48,7 +48,7 @@ export default function Artists() {
     return (
         <MusicsPage title="Artists" player={player}>
             <Root>
-                {data?.artists && <ArtistList items={data.artists} onPlay={handlePlay} onClick={handleClick} />}
+                {data?.leadArtists && <ArtistList items={data.leadArtists} onPlay={handlePlay} onClick={handleClick} />}
             </Root>
         </MusicsPage>
     );

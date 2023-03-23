@@ -45,8 +45,10 @@ class Artist extends React.Component<ArtistProps, ArtistStates> {
             throw new Error("Artist not found");
         }
 
+        console.log(data);
+
         const metadata: string[] = ["Artist"];
-        const allMusics = data.artist.albums.flatMap(a => a.musics);
+        const allMusics = data.leadAlbumsByArtist.flatMap(a => a.musics);
         const genres = _.chain(allMusics).map("genre").flatten().uniq().compact().value();
         const mostFrequentGenre = mode(genres);
         if (mostFrequentGenre) {
@@ -57,13 +59,16 @@ class Artist extends React.Component<ArtistProps, ArtistStates> {
 
         const totalDuration = _.chain(allMusics).map("duration").sum().value();
         const subtitleItems: string[] = [
-            `${data.artist.albums.length} Albums`,
+            `${data.leadAlbumsByArtist.length} Albums`,
             `${data.artist.musicCount} Musics`,
             formatDuration(totalDuration),
         ];
 
         this.setState({
-            data: data.artist,
+            data: {
+                artist: data.artist,
+                albums: data.leadAlbumsByArtist,
+            },
             metadata,
             subtitleItems,
         });
@@ -134,7 +139,7 @@ class Artist extends React.Component<ArtistProps, ArtistStates> {
             throw new Error("Artist not found");
         }
 
-        const albums = data.artist.albums;
+        const albums = data.leadAlbumsByArtist;
 
         return (
             <ShrinkHeaderPage

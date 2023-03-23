@@ -23,6 +23,11 @@ export class ArtistResolver {
         return this.artistService.findAll();
     }
 
+    @Query(() => [Artist])
+    public async leadArtists(): Promise<Artist[]> {
+        return this.artistService.findLeadArtists();
+    }
+
     @ResolveField(() => Int)
     public async musicCount(@Root() artist: Artist): Promise<number> {
         return artist.musicIds.length;

@@ -1,17 +1,28 @@
 import * as _ from "lodash";
 import { In, Repository } from "typeorm";
 
-import { Injectable } from "@nestjs/common";
+import { forwardRef, Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 
 import { Artist } from "@main/artist/models/artist.model";
 
 import { BaseService } from "@main/common/base.service";
+import { AlbumService } from "@main/album/album.service";
 
 @Injectable()
 export class ArtistService extends BaseService<Artist> {
-    public constructor(@InjectRepository(Artist) private readonly artistRepository: Repository<Artist>) {
+    public constructor(
+        @InjectRepository(Artist) private readonly artistRepository: Repository<Artist>,
+        @Inject(forwardRef(() => AlbumService)) private readonly albumService: AlbumService,
+    ) {
         super(artistRepository, Artist);
+    }
+
+    public async findLeadArtists() {
+        const albums = await this.albumService.findAll();
+        const artistIds = _.chain(albums).map("leadArtistIds").flatten().uniq().value();
+
+        return this.findByIds(artistIds);
     }
 
     public async create(name: string) {
