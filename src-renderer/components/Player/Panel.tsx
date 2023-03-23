@@ -3,6 +3,7 @@ import React from "react";
 import { Box, Typography } from "@mui/material";
 
 import withPlayer, { WithPlayerProps } from "@player/withPlayer";
+import withLayout, { WithLayoutProps } from "@components/Layout/withLayout";
 
 import PlayerControl from "@components/Player/Control";
 import PlayerOptions from "@components/Player/Options";
@@ -12,8 +13,9 @@ import Slider from "@components/UI/Slider";
 import { Content, PlayTime, ProgressWrapper, Root } from "@components/Player/Panel.styles";
 
 import formatDuration from "@utils/formatDuration";
+import Measure, { ContentRect, MeasuredComponentProps } from "react-measure";
 
-export interface PlayerPanelProps extends WithPlayerProps {}
+export interface PlayerPanelProps extends WithPlayerProps, WithLayoutProps {}
 export interface PlayerPanelStates {
     currentTime: number;
     duration: number;
@@ -46,6 +48,13 @@ class PlayerPanel extends React.Component<PlayerPanelProps, PlayerPanelStates> {
     private handleProgress = (currentTime: number, duration: number) => {
         this.setState({ currentTime, duration });
     };
+    private handleResize = ({ bounds }: ContentRect) => {
+        if (!bounds || bounds.height === this.props.layout.playerPanelHeight) {
+            return;
+        }
+
+        this.props.layout.setPlayerPanelHeight(bounds.height);
+    };
 
     private handleChange = (_: any, value: number | number[]) => {
         if (Array.isArray(value)) {
@@ -70,11 +79,11 @@ class PlayerPanel extends React.Component<PlayerPanelProps, PlayerPanelStates> {
         this.props.player.seekTo(value);
     };
 
-    public render() {
+    private renderContent = ({ measureRef }: MeasuredComponentProps) => {
         const { currentTime, duration, sliderDragging, sliderValue } = this.state;
 
         return (
-            <Root>
+            <Root ref={measureRef}>
                 <ProgressWrapper>
                     <PlayTime>
                         <Typography variant="body1" fontSize="0.85rem">
@@ -107,7 +116,14 @@ class PlayerPanel extends React.Component<PlayerPanelProps, PlayerPanelStates> {
                 </Content>
             </Root>
         );
+    };
+    public render() {
+        return (
+            <Measure bounds onResize={this.handleResize}>
+                {this.renderContent}
+            </Measure>
+        );
     }
 }
 
-export default withPlayer(PlayerPanel);
+export default withLayout(withPlayer(PlayerPanel));

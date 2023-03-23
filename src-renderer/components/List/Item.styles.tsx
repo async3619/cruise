@@ -27,11 +27,13 @@ export const Button = styled.button<{ active: boolean }>`
     }
 
     > svg {
-        margin-right: ${({ theme }) => theme.spacing(2)};
-
         display: block;
 
         color: rgba(0, 0, 0, 0.35);
+    }
+
+    > p {
+        margin-left: ${({ theme }) => theme.spacing(2)};
     }
 
     &:before {

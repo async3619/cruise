@@ -5,8 +5,10 @@ export const Root = styled.div`
     padding: 0;
     border-top: 1px solid #e5e5e5;
 
-    display: flex;
-    flex-direction: column;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    right: 0;
 
     z-index: 100;
 

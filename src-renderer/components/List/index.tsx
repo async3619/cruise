@@ -10,6 +10,7 @@ export interface ListProps {
     selectedItem?: ListItemType;
     onClick?: (item: NormalListItem) => void;
     withoutPadding?: boolean;
+    iconOnly?: boolean;
 }
 
 export default class List extends React.Component<ListProps> {
@@ -21,7 +22,7 @@ export default class List extends React.Component<ListProps> {
     };
 
     public renderItem = (item: ListItemType, index: number) => {
-        const { onClick, selectedItem, withoutPadding } = this.props;
+        const { onClick, selectedItem, withoutPadding, iconOnly } = this.props;
         if (item === "gap") {
             return this.renderGap(index);
         }
@@ -32,6 +33,7 @@ export default class List extends React.Component<ListProps> {
 
         return (
             <ListItem
+                iconOnly={iconOnly}
                 withoutPadding={withoutPadding}
                 item={item}
                 key={item.id}

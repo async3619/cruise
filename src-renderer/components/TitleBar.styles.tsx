@@ -23,6 +23,7 @@ export const Root = styled.div`
 
     > p {
         pointer-events: none;
+        -webkit-app-region: drag;
     }
 
     > * {
@@ -31,31 +32,30 @@ export const Root = styled.div`
 `;
 
 export const Icon = styled.img`
-    margin: ${({ theme }) => theme.spacing(0, 2, 0, 0)};
+    margin: ${({ theme }) => theme.spacing(0, 2, 0, 2)};
 
     width: ${({ theme }) => theme.spacing(2.5)};
     height: ${({ theme }) => theme.spacing(2.5)};
 
     display: block;
+
+    -webkit-app-region: drag;
 `;
 
 export const BackButton = styled.button`
     height: ${({ theme }) => theme.spacing(4)};
 
-    margin: ${({ theme }) => theme.spacing(0, 1, 0, 0)};
+    margin: ${({ theme }) => theme.spacing(0, 0.5, 0, 0)};
     padding: ${({ theme }) => theme.spacing(0.5, 1.5)};
     border: 0;
     border-radius: 4px;
 
     display: block;
 
-    color: ${({ theme }) => theme.palette.text.primary};
+    color: rgba(0, 0, 0, 0.35);
     background: transparent;
 
     > svg {
-        width: 16px;
-        height: 16px;
-
         display: block;
     }
 
@@ -70,6 +70,6 @@ export const BackButton = styled.button`
     }
 
     &:disabled {
-        color: ${({ theme }) => theme.palette.text.disabled};
+        color: rgba(0, 0, 0, 0.15);
     }
 `;

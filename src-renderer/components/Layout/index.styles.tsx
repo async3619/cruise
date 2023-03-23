@@ -33,22 +33,9 @@ export const Root = styled.div`
     margin: 0;
     padding: 0;
 
-    display: flex;
-    flex-direction: column;
+    position: relative;
 
     background: #f9f9f9;
-`;
-
-export const MainWrapper = styled.div`
-    width: 100vw;
-    max-width: 100vw;
-
-    min-height: 0;
-
-    overflow: hidden;
-
-    display: flex;
-    flex: 1 1 auto;
 `;
 
 export const Main = styled.main`
@@ -57,4 +44,13 @@ export const Main = styled.main`
     padding-top: ${TITLE_BAR_HEIGHT}px;
 
     flex: 1 1 auto;
+`;
+
+export const MainWrapper = styled.div`
+    display: flex;
+
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
 `;

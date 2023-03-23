@@ -14,6 +14,7 @@ export interface NormalListItemProps extends BaseListItemProps {
     item: NormalListItem;
     onClick?(item: NormalListItem): void;
     active: boolean;
+    iconOnly?: boolean;
 }
 export interface StandaloneListItemProps extends BaseListItemProps, React.HTMLAttributes<HTMLDivElement> {
     label: string | ReturnType<typeof parse>;
@@ -45,10 +46,12 @@ export default class ListItem extends React.Component<ListItemProps> {
         let active = false;
         let selected = false;
         let restProps: React.HTMLAttributes<HTMLDivElement> = {};
+        let iconOnly = false;
         if ("item" in this.props) {
             label = this.props.item.label;
             active = this.props.active;
             Icon = this.props.item.icon;
+            iconOnly = this.props.iconOnly || false;
         } else {
             const { label: _, icon: __, ...rest } = this.props;
 
@@ -76,9 +79,11 @@ export default class ListItem extends React.Component<ListItemProps> {
             <Root withoutPadding={withoutPadding} {...restProps}>
                 <Button onClick={this.handleClick} active={active || selected}>
                     {Icon && <Icon />}
-                    <Typography variant="body1" lineHeight={1}>
-                        {label}
-                    </Typography>
+                    {!iconOnly && (
+                        <Typography variant="body1" lineHeight={1}>
+                            {label}
+                        </Typography>
+                    )}
                 </Button>
             </Root>
         );

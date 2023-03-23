@@ -28,3 +28,4 @@ dist-ssr
 /src-renderer/queries/index.d.ts
 /src-renderer/queries/index.tsx
 /out
+/extensions/react-devtools

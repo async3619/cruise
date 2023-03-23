@@ -48,6 +48,10 @@ export const Header = styled.header`
     padding: ${({ theme }) => theme.spacing(0, 7)};
 
     flex: 0 0 auto;
+
+    ${({ theme }) => theme.breakpoints.down("md")} {
+        padding: ${({ theme }) => theme.spacing(0, 2)};
+    }
 `;
 
 export const FloatingHeader = styled(Header)`
@@ -65,4 +69,8 @@ export const Main = styled.main`
     overflow-y: auto;
 
     animation: ${MainAnimation} 0.35s ${({ theme }) => theme.transitions.easing.easeInOut} forwards;
+
+    ${({ theme }) => theme.breakpoints.down("md")} {
+        padding: ${({ theme }) => theme.spacing(0, 2)};
+    }
 `;
