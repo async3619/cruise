@@ -2,7 +2,6 @@ query artistAlbums($artistId: Int!) {
     artist(id: $artistId) {
         id
         name
-        musicCount
     }
     leadAlbumsByArtist(id: $artistId) {
         id

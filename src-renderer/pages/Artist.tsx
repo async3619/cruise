@@ -57,10 +57,14 @@ class Artist extends React.Component<ArtistProps, ArtistStates> {
             metadata.push("Unknown Genre");
         }
 
+        const musicCount = _.chain(data.leadAlbumsByArtist)
+            .map(a => a.musics.length)
+            .sum()
+            .value();
         const totalDuration = _.chain(allMusics).map("duration").sum().value();
         const subtitleItems: string[] = [
             `${data.leadAlbumsByArtist.length} Albums`,
-            `${data.artist.musicCount} Musics`,
+            `${musicCount} Musics`,
             formatDuration(totalDuration),
         ];
 
