@@ -4,7 +4,7 @@ import { ReactComponent as CloseIcon } from "@res/close.svg";
 import { ReactComponent as MaximizeIcon } from "@res/maximize.svg";
 import { ReactComponent as RestoreIcon } from "@res/restore.svg";
 
-import { Button, MinimizeIcon, Root } from "@components/WindowControl.styles";
+import { Button, MinimizeIcon, Root } from "@components/Layout/WindowControl.styles";
 
 import { client } from "@/api";
 

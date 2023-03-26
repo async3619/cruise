@@ -4,8 +4,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Global } from "@emotion/react";
 import { CssBaseline, useMediaQuery, useTheme } from "@mui/material";
 
-import TitleBar from "@components/TitleBar";
-import SideBar, { SideBarState } from "@components/SideBar";
+import TitleBar from "@components/Layout/TitleBar";
+import SideBar, { SideBarState } from "@components/Layout/SideBar";
 import PlayerControl from "@components/Player/Panel";
 
 import { GlobalStyles, Main, MainWrapper, Root } from "@components/Layout/index.styles";

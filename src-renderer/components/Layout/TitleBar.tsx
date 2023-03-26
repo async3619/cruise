@@ -5,9 +5,9 @@ import { Hidden, Typography } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 
+import WindowControl from "@components/Layout/WindowControl";
 import { useLayout } from "@components/Layout/useLayout";
-import WindowControl from "@components/WindowControl";
-import { BackButton, Icon, Root } from "@components/TitleBar.styles";
+import { BackButton, Icon, Root } from "@components/Layout/TitleBar.styles";
 
 import useHistoryStack from "@utils/useHistoryStack";
 

@@ -7,7 +7,7 @@ import List from "@components/List";
 
 import { ListItemType, NormalListItem } from "@components/List/index.types";
 
-import { Backdrop, Root, Wrapper } from "@components/SideBar.styles";
+import { Backdrop, Root, Wrapper } from "@components/Layout/SideBar.styles";
 
 import { NAVIGATION_ITEMS, SHRINK_NAVIGATION_ITEMS } from "@constants/navigation";
 
