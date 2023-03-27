@@ -16,14 +16,11 @@ export class LibraryResolver {
             scanningStateChanged: true,
         });
 
-        this.libraryService
-            .scan()
-            .then(() =>
-                pubSub.publish(SCANNING_STATE_CHANGED, {
-                    scanningStateChanged: false,
-                }),
-            )
-            .then();
+        await this.libraryService.scan().then(() =>
+            pubSub.publish(SCANNING_STATE_CHANGED, {
+                scanningStateChanged: false,
+            }),
+        );
 
         return true;
     }

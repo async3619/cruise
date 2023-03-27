@@ -9,13 +9,13 @@ import { LIBRARY_SETTINGS_ITEMS } from "@constants/settings";
 import { Config } from "@main/config";
 import { client } from "@/api";
 
-import { useRescanMutation } from "@queries";
+import useLibrary from "@library/useLibrary";
 
 import { Root } from "@pages/Settings.styles";
 
 export default function Settings() {
     const [config, setConfig] = React.useState<Config | null>(null);
-    const [rescan] = useRescanMutation();
+    const library = useLibrary();
 
     React.useEffect(() => {
         client.getConfig.query().then(setConfig);
@@ -28,7 +28,7 @@ export default function Settings() {
     const handleButtonClick = async (item: SettingsItem) => {
         switch (item.id) {
             case "rescanLibrary":
-                rescan().then();
+                await library.scan();
                 break;
         }
     };

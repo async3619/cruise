@@ -79,4 +79,8 @@ export class BaseService<T extends BaseEntityClass> {
 
         return this.repository.save(item);
     }
+
+    public async clear() {
+        return this.repository.clear();
+    }
 }

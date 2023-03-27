@@ -14,8 +14,7 @@ import { ThemeProvider } from "@mui/material";
 
 import DialogProvider from "@dialogs/Provider";
 import PlayerProvider from "@player/PlayerProvider";
-
-import LibraryMonitor from "@components/LibraryMonitor";
+import LibraryProvider from "@library/Provider";
 
 import { mainTheme } from "@styles/theme";
 
@@ -67,10 +66,11 @@ export default function App() {
                 <ThemeProvider theme={mainTheme}>
                     <PlayerProvider>
                         <DialogProvider>
-                            <HashRouter>
-                                <Router />
-                            </HashRouter>
-                            <LibraryMonitor />
+                            <LibraryProvider client={apolloClient}>
+                                <HashRouter>
+                                    <Router />
+                                </HashRouter>
+                            </LibraryProvider>
                         </DialogProvider>
                     </PlayerProvider>
                 </ThemeProvider>
