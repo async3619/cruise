@@ -3,9 +3,9 @@ import glob from "fast-glob";
 import * as path from "path";
 import fs from "fs-extra";
 
-import { Audio, AlbumArt as RawAlbumArt } from "@async3619/merry-go-round";
+import { AlbumArt as RawAlbumArt, Audio } from "@async3619/merry-go-round";
 
-import { Inject, Injectable, OnModuleInit } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 
 import { MusicService } from "@main/music/music.service";
 import { AlbumService } from "@main/album/album.service";
@@ -20,17 +20,13 @@ import { Music } from "@main/music/models/music.model";
 import { getConfig } from "@main/config";
 
 @Injectable()
-export class LibraryService implements OnModuleInit {
+export class LibraryService {
     public constructor(
         @Inject(MusicService) private readonly musicService: MusicService,
         @Inject(AlbumService) private readonly albumService: AlbumService,
         @Inject(ArtistService) private readonly artistService: ArtistService,
         @Inject(AlbumArtService) private readonly albumArtService: AlbumArtService,
     ) {}
-
-    public async onModuleInit() {
-        await this.scan();
-    }
 
     private getAlbumData(audio: Audio) {
         const albumName = audio.album;

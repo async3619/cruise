@@ -118,3 +118,7 @@ input AlbumArtInput {
   type: AlbumArtType!
   description: String
 }
+
+type Subscription {
+  scanningStateChanged: Boolean!
+}

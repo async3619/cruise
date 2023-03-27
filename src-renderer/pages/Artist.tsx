@@ -45,8 +45,6 @@ class Artist extends React.Component<ArtistProps, ArtistStates> {
             throw new Error("Artist not found");
         }
 
-        console.log(data);
-
         const metadata: string[] = ["Artist"];
         const allMusics = data.leadAlbumsByArtist.flatMap(a => a.musics);
         const genres = _.chain(allMusics).map("genre").flatten().uniq().compact().value();

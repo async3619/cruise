@@ -1,7 +1,10 @@
 import { Inject } from "@nestjs/common";
-import { Mutation, Resolver } from "@nestjs/graphql";
+import { Mutation, Resolver, Subscription } from "@nestjs/graphql";
 
 import { LibraryService } from "@main/library/library.service";
+import { SCANNING_STATE_CHANGED } from "@main/library/library.constants";
+
+import pubSub from "@main/pubsub";
 
 @Resolver()
 export class LibraryResolver {
@@ -9,8 +12,24 @@ export class LibraryResolver {
 
     @Mutation(() => Boolean)
     public async scan(): Promise<boolean> {
-        this.libraryService.scan().then();
+        await pubSub.publish(SCANNING_STATE_CHANGED, {
+            scanningStateChanged: true,
+        });
+
+        this.libraryService
+            .scan()
+            .then(() =>
+                pubSub.publish(SCANNING_STATE_CHANGED, {
+                    scanningStateChanged: false,
+                }),
+            )
+            .then();
 
         return true;
+    }
+
+    @Subscription(() => Boolean)
+    public scanningStateChanged() {
+        return pubSub.asyncIterator(SCANNING_STATE_CHANGED);
     }
 }

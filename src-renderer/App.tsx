@@ -15,6 +15,8 @@ import { ThemeProvider } from "@mui/material";
 import DialogProvider from "@dialogs/Provider";
 import PlayerProvider from "@player/PlayerProvider";
 
+import LibraryMonitor from "@components/LibraryMonitor";
+
 import { mainTheme } from "@styles/theme";
 
 import Router from "@renderer/Router";
@@ -68,6 +70,7 @@ export default function App() {
                             <HashRouter>
                                 <Router />
                             </HashRouter>
+                            <LibraryMonitor />
                         </DialogProvider>
                     </PlayerProvider>
                 </ThemeProvider>

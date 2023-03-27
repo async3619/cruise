@@ -1,8 +1,9 @@
+import shortid from "shortid";
 import type { IpcRenderer, IpcRendererEvent } from "electron";
 import { print } from "graphql";
 import { deserializeError } from "serialize-error";
 
-import { ApolloLink, Observable, Operation, FetchResult } from "@apollo/client/core";
+import { ApolloLink, FetchResult, Observable, Operation } from "@apollo/client/core";
 
 import { ApolloIpcLinkOptions, SerializableGraphQLRequest } from "@common/types";
 
@@ -12,8 +13,6 @@ export class IpcLink extends ApolloLink {
     private readonly ipc: IpcRenderer;
 
     private observers = new Map<string, ZenObservable.SubscriptionObserver<FetchResult>>();
-
-    private counter = 0;
 
     constructor(options: ApolloIpcLinkOptions) {
         super();
@@ -32,7 +31,7 @@ export class IpcLink extends ApolloLink {
 
     public request(operation: Operation) {
         return new Observable((observer: ZenObservable.SubscriptionObserver<FetchResult>) => {
-            const id = `${++this.counter}`;
+            const id = shortid();
             const request: SerializableGraphQLRequest = {
                 operationName: operation.operationName,
                 variables: operation.variables,
