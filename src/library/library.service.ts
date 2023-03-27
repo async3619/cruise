@@ -44,6 +44,11 @@ export class LibraryService {
     }
 
     public async scan() {
+        await this.musicService.clear();
+        await this.albumService.clear();
+        await this.albumArtService.clear();
+        await this.artistService.clear();
+
         const { libraryDirectories } = await getConfig();
         const musicFilePaths: string[] = [];
         for (const directory of libraryDirectories) {
