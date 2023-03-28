@@ -1,9 +1,4 @@
 import { contextBridge, ipcRenderer } from "electron";
-import { exposeElectronTRPC } from "electron-trpc/main";
-
-process.once("loaded", async () => {
-    exposeElectronTRPC();
-});
 
 contextBridge.exposeInMainWorld("ipcRenderer", {
     on: (channel: string, listener: (...args: any[]) => void) => {

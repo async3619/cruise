@@ -1,0 +1,5 @@
+mutation updateConfig($config: ConfigInput!) {
+    updateConfig(config: $config) {
+        libraryDirectories
+    }
+}

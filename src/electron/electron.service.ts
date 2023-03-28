@@ -1,25 +1,22 @@
 import * as path from "path";
 import * as os from "os";
 import { app, BrowserWindow, dialog, OpenDialogOptions, protocol, session } from "electron";
-import { createIPCHandler } from "electron-trpc/main";
 import decompress from "decompress";
 import fs from "fs-extra";
 
 import { electronApp, is, optimizer } from "@electron-toolkit/utils";
 import { Injectable, OnModuleInit } from "@nestjs/common";
 
-import { router } from "@main/api";
+import { MAXIMIZED_STATE_CHANGED } from "@main/electron/electron.constants";
+
 import { REACT_DEVTOOLS_DIR, REACT_DEVTOOLS_PATH } from "@main/constants";
+import pubSub from "@main/pubsub";
+import { Nullable } from "@common/types";
+import { SelectPathInput } from "@main/electron/models/select-path.dto";
 
 const mainDistPath = path.join(__dirname, "../");
 const distPath = path.join(mainDistPath, "../dist");
 const publicPath = process.env.VITE_DEV_SERVER_URL ? path.join(mainDistPath, "../public") : distPath;
-
-interface SelectPathOptions<TMultiple extends boolean> extends Omit<OpenDialogOptions, "properties"> {
-    multiple: TMultiple;
-    directory: boolean;
-}
-type SelectPathResult<TMultiple extends boolean> = TMultiple extends true ? string[] : string;
 
 @Injectable()
 export class ElectronService implements OnModuleInit {
@@ -54,6 +51,17 @@ export class ElectronService implements OnModuleInit {
         });
 
         this.mainWindow = await this.createWindow();
+        this.mainWindow.on("maximize", () => {
+            pubSub.publish(MAXIMIZED_STATE_CHANGED, {
+                maximizedStateChanged: true,
+            });
+        });
+
+        this.mainWindow.on("unmaximize", () => {
+            pubSub.publish(MAXIMIZED_STATE_CHANGED, {
+                maximizedStateChanged: false,
+            });
+        });
 
         app.on("activate", async () => {
             // On macOS it's common to re-create a window in the app when the
@@ -62,6 +70,44 @@ export class ElectronService implements OnModuleInit {
                 this.mainWindow = await this.createWindow();
             }
         });
+    }
+
+    public isMaximized() {
+        if (!this.mainWindow) {
+            throw new Error("Main window is not ready");
+        }
+
+        return this.mainWindow.isMaximized();
+    }
+
+    public maximize() {
+        if (!this.mainWindow) {
+            throw new Error("Main window is not ready");
+        }
+
+        if (this.mainWindow.isMaximized()) {
+            this.mainWindow.unmaximize();
+        } else {
+            this.mainWindow.maximize();
+        }
+
+        return true;
+    }
+    public minimize() {
+        if (!this.mainWindow) {
+            throw new Error("Main window is not ready");
+        }
+
+        this.mainWindow.minimize();
+        return true;
+    }
+    public close() {
+        if (!this.mainWindow) {
+            throw new Error("Main window is not ready");
+        }
+
+        this.mainWindow.close();
+        return true;
     }
 
     private async createWindow() {
@@ -104,30 +150,18 @@ export class ElectronService implements OnModuleInit {
             await window.loadFile(path.join(__dirname, "../renderer/index.html"));
         }
 
-        createIPCHandler({
-            router,
-            windows: [window],
-            createContext: async ({ event }) => {
-                return {
-                    window: BrowserWindow.fromWebContents(event.sender),
-                };
-            },
-        });
-
         return window;
     }
 
-    public async selectPath<TMultiple extends boolean>(
-        options: SelectPathOptions<TMultiple>,
-    ): Promise<SelectPathResult<TMultiple> | null> {
+    public async selectPath(options: Nullable<SelectPathInput>): Promise<Nullable<string[]>> {
         if (!this.mainWindow) {
             throw new Error("Main window is not ready");
         }
 
-        const { multiple, directory, ...rest } = options;
+        const { directory, filters, multiple } = options || {};
         const openDialogOptions: OpenDialogOptions = {
             properties: directory ? ["openDirectory"] : ["openFile"],
-            ...rest,
+            filters: filters || [],
         };
 
         if (multiple) {
@@ -139,10 +173,6 @@ export class ElectronService implements OnModuleInit {
             return null;
         }
 
-        if (multiple) {
-            return result.filePaths as SelectPathResult<TMultiple>;
-        }
-
-        return result.filePaths[0] as SelectPathResult<TMultiple>;
+        return result.filePaths;
     }
 }

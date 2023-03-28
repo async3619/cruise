@@ -11,13 +11,12 @@ import { MusicService } from "@main/music/music.service";
 import { AlbumService } from "@main/album/album.service";
 import { ArtistService } from "@main/artist/artist.service";
 import { AlbumArtService } from "@main/album-art/album-art.service";
+import { ConfigService } from "@main/config/config.service";
 
 import { Artist } from "@main/artist/models/artist.model";
 import { Album } from "@main/album/models/album.model";
 import { AlbumArt } from "@main/album-art/models/album-art.model";
 import { Music } from "@main/music/models/music.model";
-
-import { getConfig } from "@main/config";
 
 @Injectable()
 export class LibraryService {
@@ -26,6 +25,7 @@ export class LibraryService {
         @Inject(AlbumService) private readonly albumService: AlbumService,
         @Inject(ArtistService) private readonly artistService: ArtistService,
         @Inject(AlbumArtService) private readonly albumArtService: AlbumArtService,
+        @Inject(ConfigService) private readonly configService: ConfigService,
     ) {}
 
     private getAlbumData(audio: Audio) {
@@ -49,7 +49,7 @@ export class LibraryService {
         const albumArtCount = await this.albumArtService.count();
         const artistCount = await this.artistService.count();
 
-        const { libraryDirectories } = await getConfig();
+        const { libraryDirectories } = await this.configService.getConfig();
         const musicFilePaths: string[] = [];
         for (const directory of libraryDirectories) {
             const paths = await glob("**/*.mp3", {
@@ -74,7 +74,7 @@ export class LibraryService {
         await this.albumArtService.clear();
         await this.artistService.clear();
 
-        const { libraryDirectories } = await getConfig();
+        const { libraryDirectories } = await this.configService.getConfig();
         const musicFilePaths: string[] = [];
         for (const directory of libraryDirectories) {
             const paths = await glob("**/*.mp3", {

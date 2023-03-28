@@ -1,8 +1,10 @@
 import { Module } from "@nestjs/common";
-import { ElectronService } from "./electron.service";
+
+import { ElectronService } from "@main/electron/electron.service";
+import { ElectronResolver } from "@main/electron/electron.resolver";
 
 @Module({
-    providers: [ElectronService],
+    providers: [ElectronService, ElectronResolver],
     exports: [ElectronService],
 })
 export class ElectronModule {}

@@ -2,7 +2,6 @@ import React from "react";
 
 import ButtonSettingsListItem from "@components/Settings/ListItem/Button";
 import PathListSettingsListItem from "@components/Settings/ListItem/PathList";
-import RadioSettingsListItem from "@components/Settings/ListItem/Radio";
 import { SettingsItem, SettingsItemValue, SettingsListItemProps } from "@components/Settings/types";
 
 type ComponentMap = {
@@ -12,7 +11,6 @@ type ComponentMap = {
 export const SETTINGS_COMPONENT_MAP: ComponentMap = {
     button: ButtonSettingsListItem,
     path_list: PathListSettingsListItem,
-    radio: RadioSettingsListItem,
 };
 
 export function getSettingsComponent<TItem extends SettingsItem>(

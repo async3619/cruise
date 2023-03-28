@@ -88,6 +88,10 @@ type Music {
   albumArts: [AlbumArt!]!
 }
 
+type Config {
+  libraryDirectories: [String!]!
+}
+
 type Query {
   music(id: Int!): Music
   musics: [Music!]!
@@ -97,13 +101,20 @@ type Query {
   artist(id: Int!): Artist
   artists: [Artist!]!
   leadArtists: [Artist!]!
+  isMaximized: Boolean!
   needScan: Boolean!
+  config: Config!
 }
 
 type Mutation {
   updateAlbum(id: Int!, data: UpdateAlbumInput!): Album!
   selectAlbumArtFile: AlbumArt
+  maximize: Boolean!
+  minimize: Boolean!
+  close: Boolean!
+  selectPath(options: SelectPathInput!): [String!]!
   scan: Boolean!
+  updateConfig(config: ConfigInput!): Config!
 }
 
 input UpdateAlbumInput {
@@ -120,6 +131,22 @@ input AlbumArtInput {
   description: String
 }
 
+input SelectPathInput {
+  directory: Boolean
+  multiple: Boolean
+  filters: [SelectPathFilterInput!]
+}
+
+input SelectPathFilterInput {
+  name: String!
+  extensions: [String!]!
+}
+
+input ConfigInput {
+  libraryDirectories: [String!]!
+}
+
 type Subscription {
+  maximizedStateChanged: Boolean!
   scanningStateChanged: Boolean!
 }

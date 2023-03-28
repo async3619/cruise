@@ -32,7 +32,7 @@ export default function Page(props: PageProps) {
     return (
         <Root>
             <HeaderComponent>{headerNode}</HeaderComponent>
-            <Scrollbars autoHide onScroll={onScroll}>
+            <Scrollbars height="100%" autoHide onScroll={onScroll}>
                 <Main>{children}</Main>
             </Scrollbars>
         </Root>

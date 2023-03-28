@@ -5,9 +5,7 @@ import SettingsContext from "@components/Settings/context";
 import { SettingsItem } from "@components/Settings/types";
 import { Root } from "@components/Settings/SettingsList.styles";
 
-import type { Config } from "@main/config";
-
-import { ValueOf } from "@utils/types";
+import { Config, ValueOf } from "@utils/types";
 
 export interface SettingsListProps {
     items: SettingsItem[];

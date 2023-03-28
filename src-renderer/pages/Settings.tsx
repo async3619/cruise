@@ -1,28 +1,43 @@
 import React from "react";
 
+import { Box, CircularProgress } from "@mui/material";
+
 import Page from "@components/Page";
 import SettingsSection from "@components/Settings/SettingsSection";
 import { SettingsItem } from "@components/Settings/types";
 
+import useLibrary from "@library/useLibrary";
+import { useConfigQuery, useUpdateConfigMutation } from "@queries";
+
 import { LIBRARY_SETTINGS_ITEMS } from "@constants/settings";
 
-import { Config } from "@main/config";
-import { client } from "@/api";
-
-import useLibrary from "@library/useLibrary";
-
 import { Root } from "@pages/Settings.styles";
+import { Config } from "@utils/types";
 
 export default function Settings() {
     const [config, setConfig] = React.useState<Config | null>(null);
     const library = useLibrary();
+    const { data, refetch } = useConfigQuery();
+    const [updateConfig] = useUpdateConfigMutation();
 
     React.useEffect(() => {
-        client.getConfig.query().then(setConfig);
-    }, []);
+        if (!data) {
+            return;
+        }
 
-    const handleChange = (config: Config) => {
-        client.setConfig.mutate(config).then(setConfig);
+        setConfig(data.config);
+    }, [data]);
+
+    const handleChange = async (config: Config) => {
+        await updateConfig({
+            variables: {
+                config: {
+                    libraryDirectories: config.libraryDirectories,
+                },
+            },
+        });
+
+        await refetch();
     };
 
     const handleButtonClick = async (item: SettingsItem) => {
@@ -44,6 +59,11 @@ export default function Settings() {
                         config={config}
                         items={LIBRARY_SETTINGS_ITEMS}
                     />
+                )}
+                {!config && (
+                    <Box py={2} display="flex" justifyContent="center">
+                        <CircularProgress size={36} />
+                    </Box>
                 )}
             </Root>
         </Page>

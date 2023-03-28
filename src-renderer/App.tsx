@@ -1,9 +1,6 @@
 import React from "react";
 import { HashRouter } from "react-router-dom";
 import type { ipcRenderer } from "electron";
-import { ipcLink } from "electron-trpc/renderer";
-
-import { QueryClient } from "@tanstack/react-query";
 
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 import { onError } from "@apollo/client/link/error";
@@ -19,7 +16,6 @@ import LibraryProvider from "@library/Provider";
 import { mainTheme } from "@styles/theme";
 
 import Router from "@renderer/Router";
-import { trpcReact } from "@renderer/api";
 
 declare global {
     interface Window {
@@ -53,28 +49,19 @@ const apolloClient = new ApolloClient({
 });
 
 export default function App() {
-    const [queryClient] = React.useState(() => new QueryClient());
-    const [trpcClient] = React.useState(() =>
-        trpcReact.createClient({
-            links: [ipcLink()],
-        }),
-    );
-
     return (
         <ApolloProvider client={apolloClient}>
-            <trpcReact.Provider client={trpcClient} queryClient={queryClient}>
-                <ThemeProvider theme={mainTheme}>
-                    <PlayerProvider>
-                        <DialogProvider>
-                            <LibraryProvider client={apolloClient}>
-                                <HashRouter>
-                                    <Router />
-                                </HashRouter>
-                            </LibraryProvider>
-                        </DialogProvider>
-                    </PlayerProvider>
-                </ThemeProvider>
-            </trpcReact.Provider>
+            <ThemeProvider theme={mainTheme}>
+                <PlayerProvider>
+                    <DialogProvider>
+                        <LibraryProvider client={apolloClient}>
+                            <HashRouter>
+                                <Router />
+                            </HashRouter>
+                        </LibraryProvider>
+                    </DialogProvider>
+                </PlayerProvider>
+            </ThemeProvider>
         </ApolloProvider>
     );
 }

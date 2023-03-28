@@ -1,0 +1,3 @@
+mutation selectPath($options: SelectPathInput!) {
+    selectPath(options: $options)
+}

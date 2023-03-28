@@ -1,11 +1,9 @@
 import React from "react";
 
-import type { Config } from "@main/config";
+import { Config, SelectOnly, ValueOf } from "@utils/types";
 
-import { ReplaceUnions, SelectOnly, UnionOnly, ValueOf } from "@utils/types";
-
-export interface BaseSettingsItem<TValueType extends null | ValueOf<ReplaceUnions<Config>>> {
-    id: TValueType extends null ? string : keyof SelectOnly<ReplaceUnions<Config>, Exclude<TValueType, null>>;
+export interface BaseSettingsItem<TValueType extends null | ValueOf<Config>> {
+    id: TValueType extends null ? string : keyof SelectOnly<Config, Exclude<TValueType, null>>;
     title: string;
     icon?: React.ComponentType;
     button?: {
@@ -25,15 +23,7 @@ export interface ButtonSettingsItem extends BaseSettingsItem<null> {
     description?: React.ReactNode | (() => React.ReactNode);
 }
 
-export interface RadioSettingsItem extends BaseSettingsItem<ValueOf<UnionOnly<Config>>> {
-    type: "radio";
-    options: Array<{
-        label: string;
-        value: string;
-    }>;
-}
-
-export type SettingsItem = ButtonSettingsItem | PathListSettingsItem | RadioSettingsItem;
+export type SettingsItem = ButtonSettingsItem | PathListSettingsItem;
 export type SettingsItemValue<TItem extends SettingsItem> = Exclude<TItem["__value_type"], undefined>;
 
 export interface SettingsListItemProps<TItem extends SettingsItem> {

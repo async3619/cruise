@@ -5,30 +5,34 @@ import StringList from "@components/UI/StringList";
 import BaseSettingsListItem from "@components/Settings/ListItem/Base";
 import { PathListSettingsItem, SettingsListItemProps } from "@components/Settings/types";
 
-import { client } from "@/api";
+import { useApolloClient } from "@apollo/client";
+import { SelectPathDocument, SelectPathMutation, SelectPathMutationVariables } from "@queries";
 
 export interface PathListSettingsListItemProps extends SettingsListItemProps<PathListSettingsItem> {}
-export interface PathListSettingsListItemStates {}
 
-export default class PathListSettingsListItem extends React.Component<
-    PathListSettingsListItemProps,
-    PathListSettingsListItemStates
-> {
-    private handleChange = (items: string[]) => {
-        this.props.onChange(this.props.item, items);
+export default function PathListSettingsListItem(props: PathListSettingsListItemProps) {
+    const { item, value, onChange } = props;
+    const client = useApolloClient();
+
+    const handleChange = (items: string[]) => {
+        onChange(item, items);
     };
 
-    private handleAddPathClick = async () => {
-        const { item, value, onChange } = this.props;
-        const targetPath = await client.selectPath.query({
-            directory: true,
-            multiple: true,
+    const handleAddPathClick = async () => {
+        const { data } = await client.mutate<SelectPathMutation, SelectPathMutationVariables>({
+            mutation: SelectPathDocument,
+            variables: {
+                options: {
+                    directory: true,
+                },
+            },
         });
 
-        if (!targetPath || targetPath.length === 0) {
+        if (!data?.selectPath || data.selectPath.length === 0) {
             return;
         }
 
+        const targetPath = data.selectPath.length === 1 ? data.selectPath[0] : data.selectPath;
         let newValues = value;
         if (Array.isArray(targetPath)) {
             newValues = [...newValues, ...targetPath];
@@ -39,13 +43,9 @@ export default class PathListSettingsListItem extends React.Component<
         onChange(item, newValues);
     };
 
-    public render() {
-        const { item, value } = this.props;
-
-        return (
-            <BaseSettingsListItem item={item} onButtonClick={this.handleAddPathClick}>
-                <StringList items={value} onChange={this.handleChange} />
-            </BaseSettingsListItem>
-        );
-    }
+    return (
+        <BaseSettingsListItem item={item} onButtonClick={handleAddPathClick}>
+            <StringList items={value} onChange={handleChange} />
+        </BaseSettingsListItem>
+    );
 }

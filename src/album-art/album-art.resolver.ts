@@ -27,6 +27,6 @@ export class AlbumArtResolver {
             return null;
         }
 
-        return this.albumArtService.createFromPath(targetPath, false);
+        return this.albumArtService.createFromPath(targetPath[0], false);
     }
 }
