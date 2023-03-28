@@ -17,15 +17,7 @@ export class LibraryResolver {
 
     @Mutation(() => Boolean)
     public async scan(): Promise<boolean> {
-        await pubSub.publish(SCANNING_STATE_CHANGED, {
-            scanningStateChanged: true,
-        });
-
-        await this.libraryService.scan().then(() =>
-            pubSub.publish(SCANNING_STATE_CHANGED, {
-                scanningStateChanged: false,
-            }),
-        );
+        this.libraryService.scan().then();
 
         return true;
     }

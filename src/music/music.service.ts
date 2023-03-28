@@ -1,4 +1,5 @@
-import { Repository } from "typeorm";
+import _ from "lodash";
+import { In, Repository } from "typeorm";
 import * as path from "path";
 
 import { Audio } from "@async3619/merry-go-round";
@@ -43,5 +44,26 @@ export class MusicService extends BaseService<Music> {
         music.artists = featuredArtists;
 
         return this.musicRepository.save(music);
+    }
+
+    public async getMusicsByPaths<AllowEmpty extends boolean>(
+        targetPaths: string[],
+        allowEmpty: AllowEmpty,
+    ): Promise<AllowEmpty extends true ? Array<Music | undefined> : Music[]> {
+        const musics = await this.musicRepository.find({
+            where: {
+                path: In(targetPaths),
+            },
+        });
+
+        const musicMap = _.keyBy(musics, "path");
+        return targetPaths.map(path => {
+            const music = musicMap[path];
+            if (!music && !allowEmpty) {
+                throw new Error(`Music with path '${path}' not found`);
+            }
+
+            return music;
+        });
     }
 }

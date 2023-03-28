@@ -45,13 +45,11 @@ export class IpcLink extends ApolloLink {
     }
 
     protected listener = (_: IpcRendererEvent, id: string, type: string, data: Record<string, any>) => {
-        if (!this.observers.has(id)) {
-            console.error(`Missing observer for query id ${id}.`);
-        }
-
         const observer = this.observers.get(id);
         if (!observer) {
-            throw new Error(`Missing observer for query id ${id}.`);
+            // we should ignore when observer is not found since it would only happen in unusual cases
+            // such as reloading the page or hot-reloading the renderer process
+            return;
         }
 
         switch (type) {

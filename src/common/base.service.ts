@@ -83,6 +83,10 @@ export class BaseService<T extends BaseEntityClass> {
         return this.repository.save(item);
     }
 
+    public async delete(id: number) {
+        await this.repository.delete(id);
+    }
+
     public async clear() {
         return this.repository.clear();
     }

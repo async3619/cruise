@@ -161,8 +161,6 @@ class Album extends React.Component<AlbumProps, AlbumStates> {
                 },
             },
         });
-
-        await this.refetch();
     };
 
     private renderContent = (album: AlbumType) => {

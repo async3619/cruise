@@ -21,6 +21,14 @@ export class AlbumArtService extends BaseService<AlbumArt> {
         super(albumArtRepository, AlbumArt);
     }
 
+    public async bulkEnsure(rawAlbumArts: RawAlbumArt[]) {
+        const result: AlbumArt[] = [];
+        for (const rawAlbumArt of rawAlbumArts) {
+            result.push(await this.ensure(rawAlbumArt));
+        }
+
+        return result;
+    }
     public async ensure(rawAlbumArt: RawAlbumArt) {
         const { type, mimeType, description } = rawAlbumArt;
         const data = rawAlbumArt.data();

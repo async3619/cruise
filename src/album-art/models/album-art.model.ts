@@ -92,7 +92,7 @@ export class AlbumArt extends BaseEntity {
     public musics!: Music[];
 
     @RelationId((item: AlbumArt) => item.musics)
-    public musicIds!: Music["id"];
+    public musicIds!: Music["id"][];
 
     // AlbumArt[] => Album[]
     @ManyToMany(() => Album, item => item.albumArts)

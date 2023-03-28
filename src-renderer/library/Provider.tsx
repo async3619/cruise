@@ -1,11 +1,13 @@
 import React from "react";
 
-import { ApolloClient } from "@apollo/client";
-import { NeedScanDocument, NeedScanQuery, RescanDocument } from "@queries";
+import { ApolloClient, OnDataOptions } from "@apollo/client";
+import { RescanDocument, ScanningStateChangedComponent, ScanningStateChangedSubscription } from "@queries";
 
+import { LoadingSnackbarInstance } from "@components/Dialogs";
 import withDialog, { WithDialogProps } from "@components/Dialogs/withDialog";
 
 import LibraryContext, { LibraryContextValue } from "@library/context";
+import _ from "lodash";
 
 export interface LibraryProviderProps extends WithDialogProps {
     children: React.ReactNode;
@@ -15,6 +17,7 @@ export interface LibraryProviderStates {}
 
 class LibraryProvider extends React.Component<LibraryProviderProps, LibraryProviderStates> {
     private readonly contextValue: LibraryContextValue;
+    private scanningSnackbar: LoadingSnackbarInstance | null = null;
 
     public constructor(props: LibraryProviderProps) {
         super(props);
@@ -24,46 +27,41 @@ class LibraryProvider extends React.Component<LibraryProviderProps, LibraryProvi
         };
     }
 
-    public async componentDidMount() {
-        const needScan = await this.needScan();
-        if (!needScan) {
-            return;
-        }
-
-        this.scan().then();
-    }
-
-    private needScan = async () => {
-        const { data } = await this.props.client.query<NeedScanQuery>({
-            query: NeedScanDocument,
-        });
-
-        return data.needScan;
-    };
-    private scan = async () => {
-        const instance = await this.props.pushSnackbar({
-            type: "loading",
-            message: "Scanning library...",
-        });
-
-        try {
-            await this.props.client.mutate({
-                mutation: RescanDocument,
-            });
-
-            instance.success("Library scan completed");
-        } catch (e) {
-            if (!(e instanceof Error)) {
-                throw e;
+    private handleScanningStateChanged = _.throttle(
+        async ({ data: { data } }: OnDataOptions<ScanningStateChangedSubscription>) => {
+            if (!data) {
+                return;
             }
 
-            instance.error(`Library scan failed: ${e.message}`);
-            throw e;
-        }
+            if (data.scanningStateChanged) {
+                if (!!this.scanningSnackbar) {
+                    return;
+                }
+
+                this.scanningSnackbar = await this.props.pushSnackbar({
+                    type: "loading",
+                    message: "Scanning library...",
+                });
+            } else if (this.scanningSnackbar) {
+                this.scanningSnackbar.success("Library scanned successfully");
+            }
+        },
+        500,
+    );
+
+    private scan = async () => {
+        await this.props.client.mutate({
+            mutation: RescanDocument,
+        });
     };
 
     public render() {
-        return <LibraryContext.Provider value={this.contextValue}>{this.props.children}</LibraryContext.Provider>;
+        return (
+            <>
+                <ScanningStateChangedComponent onData={this.handleScanningStateChanged} />
+                <LibraryContext.Provider value={this.contextValue}>{this.props.children}</LibraryContext.Provider>
+            </>
+        );
     }
 }
 

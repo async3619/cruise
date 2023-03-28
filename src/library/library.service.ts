@@ -2,10 +2,11 @@ import * as _ from "lodash";
 import glob from "fast-glob";
 import * as path from "path";
 import fs from "fs-extra";
+import * as chokidar from "chokidar";
 
 import { AlbumArt as RawAlbumArt, Audio } from "@async3619/merry-go-round";
 
-import { Inject, Injectable } from "@nestjs/common";
+import { Inject, Injectable, OnModuleDestroy, OnModuleInit } from "@nestjs/common";
 
 import { MusicService } from "@main/music/music.service";
 import { AlbumService } from "@main/album/album.service";
@@ -18,8 +19,16 @@ import { Album } from "@main/album/models/album.model";
 import { AlbumArt } from "@main/album-art/models/album-art.model";
 import { Music } from "@main/music/models/music.model";
 
+import { SCANNING_STATE_CHANGED } from "@main/library/library.constants";
+import { FileEvent, Scanner } from "@main/library/utils/scanner.model";
+
+import pubSub from "@main/pubsub";
+
 @Injectable()
-export class LibraryService {
+export class LibraryService implements OnModuleInit, OnModuleDestroy {
+    private readonly watchers: chokidar.FSWatcher[] = [];
+    private readonly eventBuffer: FileEvent[] = [];
+
     public constructor(
         @Inject(MusicService) private readonly musicService: MusicService,
         @Inject(AlbumService) private readonly albumService: AlbumService,
@@ -28,20 +37,50 @@ export class LibraryService {
         @Inject(ConfigService) private readonly configService: ConfigService,
     ) {}
 
-    private getAlbumData(audio: Audio) {
-        const albumName = audio.album;
-        const artistName = audio.albumArtist || audio.artists.join(", ");
-        const leadArtists: string[] = audio.albumArtist?.split("\0") || [];
-        const featuredArtists: string[] = audio.artists;
+    public async onModuleInit() {
+        const { libraryDirectories } = await this.configService.getConfig();
+        for (const directoryPath of libraryDirectories) {
+            const watcher = chokidar.watch("./**/*.mp3", {
+                cwd: directoryPath,
+            });
 
-        return {
-            key: albumName && artistName ? `${albumName}:${artistName}` : null,
-            name: albumName,
-            leadArtists,
-            artists: featuredArtists,
-            allArtists: [...leadArtists, ...featuredArtists],
-        };
+            watcher.on("all", this.onFileEvent.bind(this, directoryPath));
+            this.watchers.push(watcher);
+        }
     }
+    public async onModuleDestroy() {
+        for (const watcher of this.watchers) {
+            await watcher.close();
+        }
+    }
+    private onFileEvent(
+        basePath: string,
+        type: "add" | "addDir" | "change" | "unlink" | "unlinkDir",
+        filePath: string,
+    ) {
+        this.eventBuffer.push({ type, path: path.join(basePath, filePath) });
+        this.flushEventBuffer();
+    }
+
+    private flushEventBuffer = _.debounce(async () => {
+        await pubSub.publish(SCANNING_STATE_CHANGED, {
+            scanningStateChanged: true,
+        });
+
+        const scanner = new Scanner(
+            this.eventBuffer,
+            this.musicService,
+            this.albumService,
+            this.artistService,
+            this.albumArtService,
+        );
+
+        await scanner.start();
+
+        await pubSub.publish(SCANNING_STATE_CHANGED, {
+            scanningStateChanged: false,
+        });
+    }, 500);
 
     public async needScan() {
         const musicCount = await this.musicService.count();
@@ -69,6 +108,10 @@ export class LibraryService {
         );
     }
     public async scan() {
+        await pubSub.publish(SCANNING_STATE_CHANGED, {
+            scanningStateChanged: true,
+        });
+
         await this.musicService.clear();
         await this.albumService.clear();
         await this.albumArtService.clear();
@@ -85,112 +128,14 @@ export class LibraryService {
             musicFilePaths.push(...absolutePaths);
         }
 
-        const audioMap: Record<string, Audio> = {};
-        for (const filePath of musicFilePaths) {
-            if (filePath in audioMap) {
-                continue;
-            }
+        this.eventBuffer.push(
+            ...musicFilePaths.map<FileEvent>(path => ({
+                type: "add",
+                path,
+            })),
+        );
 
-            audioMap[filePath] = await Audio.fromFile(filePath);
-        }
-
-        // register all album arts
-        const allAlbumArts: Record<string, AlbumArt[]> = {};
-        for (const [filePath, audio] of Object.entries(audioMap)) {
-            allAlbumArts[filePath] ??= [];
-
-            const albumArts = audio.albumArts();
-            if (albumArts.length <= 0) {
-                continue;
-            }
-
-            for (const rawAlbumArt of albumArts) {
-                const albumArt = await this.albumArtService.ensure(rawAlbumArt);
-                allAlbumArts[filePath].push(albumArt);
-            }
-        }
-
-        // register all artists
-        const allArtists: Record<string, Artist> = {};
-        for (const audio of Object.values(audioMap)) {
-            const artists = [...audio.artists, ...(audio.albumArtist?.split("\0") || [])];
-            if (artists.length <= 0) {
-                continue;
-            }
-
-            for (const artistName of artists) {
-                if (artistName in allArtists) {
-                    continue;
-                }
-
-                allArtists[artistName] = await this.artistService.create(artistName);
-            }
-        }
-
-        // register all albums
-        const albumArtistMap: Record<string, Artist[]> = {};
-        const featuredArtistMap: Record<string, Artist[]> = {};
-        const albumKeys: [key: string, title: string][] = [];
-        for (const audio of Object.values(audioMap)) {
-            const albumData = this.getAlbumData(audio);
-            if (!albumData) {
-                continue;
-            }
-
-            const { key, name, leadArtists, artists } = albumData;
-            if (!key || !name) {
-                continue;
-            }
-
-            const featuredArtists = artists.map(artistName => allArtists[artistName]);
-            const albumArtists = leadArtists.map(artistName => allArtists[artistName]);
-
-            albumArtistMap[key] = [...(albumArtistMap[key] || []), ...albumArtists];
-            featuredArtistMap[key] = [...(featuredArtistMap[key] || []), ...featuredArtists];
-            albumKeys.push([key, name]);
-        }
-
-        const allAlbums: Record<string, Album> = {};
-        for (const [key, title] of albumKeys) {
-            if (key in allAlbums) {
-                continue;
-            }
-
-            let albumArtists = albumArtistMap[key];
-            let featuredArtists = featuredArtistMap[key];
-            if (!albumArtists || !featuredArtists) {
-                continue;
-            }
-
-            albumArtists = _.uniqBy(albumArtists, artist => artist.name);
-            featuredArtists = _.uniqBy(featuredArtists, artist => artist.name);
-
-            allAlbums[key] = await this.albumService.create(title, featuredArtists, albumArtists);
-        }
-
-        // register all musics
-        const albumArtMap = new Map<Album, AlbumArt[]>();
-        for (const [filePath, audio] of Object.entries(audioMap)) {
-            const { key: albumKey, artists } = this.getAlbumData(audio);
-            const album: Album | null = albumKey ? allAlbums[albumKey] : null;
-            const featuredArtists = artists.map(artistName => allArtists[artistName]);
-
-            await this.musicService.create(audio, filePath, allAlbumArts[filePath], album, featuredArtists);
-
-            if (album) {
-                albumArtMap.set(album, [...(albumArtMap.get(album) || []), ...allAlbumArts[filePath]]);
-            }
-        }
-
-        // link all album arts to albums
-        for (const [album, albumArtsItem] of albumArtMap.entries()) {
-            const albumArts = _.chain(albumArtsItem)
-                .flatten()
-                .uniqBy(p => p.id)
-                .value();
-
-            await this.albumService.setAlbumArts(album.id, albumArts);
-        }
+        await this.flushEventBuffer();
     }
 
     public async updateTracks(target: Album): Promise<void>;

@@ -4,9 +4,7 @@ import { Repository } from "typeorm";
 import { forwardRef, Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 
-import { Artist } from "@main/artist/models/artist.model";
 import { Album } from "@main/album/models/album.model";
-import { AlbumArt } from "@main/album-art/models/album-art.model";
 import { UpdateAlbumInput } from "@main/album/models/update-album.input";
 
 import { BaseService } from "@main/common/base.service";
@@ -33,14 +31,29 @@ export class AlbumService extends BaseService<Album> {
         return allAlbums.filter(album => album.leadArtistIds.includes(artistId));
     }
 
-    public async create(title: string, artists: Artist[], leadArtists: Artist[]) {
-        const album = this.albumRepository.create();
-        album.title = title;
-        album.artists = artists;
-        album.leadArtists = leadArtists;
+    public async ensure(albumName: string) {
+        let album = await this.albumRepository.findOne({
+            where: {
+                title: albumName,
+            },
+            relations: {
+                albumArts: true,
+                leadArtists: true,
+                artists: true,
+            },
+        });
 
-        return this.albumRepository.save(album);
+        if (!album) {
+            album = this.albumRepository.create({
+                title: albumName,
+            });
+
+            album = await this.albumRepository.save(album);
+        }
+
+        return album;
     }
+
     public async updateAlbum(id: number, data: UpdateAlbumInput) {
         const album = await this.findById(id, ["artists", "leadArtists", "musics"]);
         if (!album) {
@@ -72,18 +85,8 @@ export class AlbumService extends BaseService<Album> {
         });
 
         const result = await this.albumRepository.save(album);
-        this.libraryService.updateTracks(result);
+        await this.libraryService.updateTracks(result);
 
         return result;
-    }
-    public async setAlbumArts(id: number, albumArts: AlbumArt[]) {
-        const album = await this.findById(id, ["albumArts"]);
-        if (!album) {
-            throw new Error(`Album with id '${id}' not found`);
-        }
-
-        album.albumArts = albumArts;
-
-        return this.albumRepository.save(album);
     }
 }
