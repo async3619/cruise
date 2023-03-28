@@ -50,18 +50,22 @@ export class IpcLink extends ApolloLink {
         }
 
         const observer = this.observers.get(id);
+        if (!observer) {
+            throw new Error(`Missing observer for query id ${id}.`);
+        }
+
         switch (type) {
             case "data":
-                return observer && observer.next(data);
+                return observer.next(data);
 
             case "error": {
                 this.observers.delete(id);
-                return observer && observer.error(deserializeError(data));
+                return observer.error(deserializeError(data));
             }
 
             case "complete": {
                 this.observers.delete(id);
-                return observer && observer.complete();
+                return observer.complete();
             }
         }
     };

@@ -77,6 +77,7 @@ export class ElectronApolloDriver extends ApolloBaseDriver {
 
         if (result.body.kind === "single") {
             e.sender.send("graphql", id, "data", result.body.singleResult);
+            e.sender.send("graphql", id, "complete");
         }
     }
     private async handleSubscription(
