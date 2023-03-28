@@ -43,6 +43,31 @@ export class LibraryService {
         };
     }
 
+    public async needScan() {
+        const musicCount = await this.musicService.count();
+        const albumCount = await this.albumService.count();
+        const albumArtCount = await this.albumArtService.count();
+        const artistCount = await this.artistService.count();
+
+        const { libraryDirectories } = await getConfig();
+        const musicFilePaths: string[] = [];
+        for (const directory of libraryDirectories) {
+            const paths = await glob("**/*.mp3", {
+                cwd: directory,
+            });
+
+            const absolutePaths = paths.map(p => path.join(directory, p));
+            musicFilePaths.push(...absolutePaths);
+        }
+
+        return (
+            musicFilePaths.length > 0 &&
+            musicCount === 0 &&
+            albumCount === 0 &&
+            albumArtCount === 0 &&
+            artistCount === 0
+        );
+    }
     public async scan() {
         await this.musicService.clear();
         await this.albumService.clear();

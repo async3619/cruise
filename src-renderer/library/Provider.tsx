@@ -1,7 +1,7 @@
 import React from "react";
 
 import { ApolloClient } from "@apollo/client";
-import { RescanDocument } from "@queries";
+import { NeedScanDocument, NeedScanQuery, RescanDocument } from "@queries";
 
 import withDialog, { WithDialogProps } from "@components/Dialogs/withDialog";
 
@@ -24,6 +24,22 @@ class LibraryProvider extends React.Component<LibraryProviderProps, LibraryProvi
         };
     }
 
+    public async componentDidMount() {
+        const needScan = await this.needScan();
+        if (!needScan) {
+            return;
+        }
+
+        this.scan().then();
+    }
+
+    private needScan = async () => {
+        const { data } = await this.props.client.query<NeedScanQuery>({
+            query: NeedScanDocument,
+        });
+
+        return data.needScan;
+    };
     private scan = async () => {
         const instance = await this.props.pushSnackbar({
             type: "loading",

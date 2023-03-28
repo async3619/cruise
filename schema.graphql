@@ -97,6 +97,7 @@ type Query {
   artist(id: Int!): Artist
   artists: [Artist!]!
   leadArtists: [Artist!]!
+  needScan: Boolean!
 }
 
 type Mutation {

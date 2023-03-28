@@ -47,6 +47,9 @@ export class BaseService<T extends BaseEntityClass> {
         });
     }
 
+    public async count() {
+        return this.repository.count();
+    }
     public async getLastId() {
         const lastItem = await this.repository.find({
             order: {
