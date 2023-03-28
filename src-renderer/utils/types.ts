@@ -1,3 +1,8 @@
+import type { NavigateFunction } from "react-router-dom";
+import { PlayerContextValue } from "@player/context";
+import { LibraryContextValue } from "@library/context";
+import { DialogContextValue } from "@dialogs";
+import { ApolloClient } from "@apollo/client";
 import {
     AlbumArtItemFragment,
     AlbumArtType as AlbumArtTypeImpl,
@@ -42,3 +47,12 @@ export type ArtistPageData = {
 export type ArtistNamesItem = ArtistNamesQuery["artists"][0];
 export type AlbumArtItem = AlbumArtItemFragment;
 export type Config = ConfigQuery["config"];
+
+export interface BasePageProps<TParams extends Record<string, string> = Record<string, never>> {
+    client: ApolloClient<object>;
+    player: PlayerContextValue;
+    dialog: DialogContextValue;
+    params: TParams;
+    navigate: NavigateFunction;
+    library: LibraryContextValue;
+}

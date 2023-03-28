@@ -6,17 +6,15 @@ import Page from "@components/Page";
 import SettingsSection from "@components/Settings/SettingsSection";
 import { SettingsItem } from "@components/Settings/types";
 
-import useLibrary from "@library/useLibrary";
 import { useConfigQuery, useUpdateConfigMutation } from "@queries";
 
 import { LIBRARY_SETTINGS_ITEMS } from "@constants/settings";
 
 import { Root } from "@pages/Settings.styles";
-import { Config } from "@utils/types";
+import { BasePageProps, Config } from "@utils/types";
 
-export default function Settings() {
+export default function Settings({ library }: BasePageProps) {
     const [config, setConfig] = React.useState<Config | null>(null);
-    const library = useLibrary();
     const { data, refetch } = useConfigQuery();
     const [updateConfig] = useUpdateConfigMutation();
 

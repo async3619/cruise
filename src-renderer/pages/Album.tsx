@@ -11,6 +11,8 @@ import Button from "@components/UI/Button";
 import MusicList from "@components/UI/MusicList";
 import DotList from "@components/UI/DotList";
 
+import AlbumUpdateDialog from "@components/Dialogs/AlbumUpdate";
+
 import {
     AlbumArtType,
     AlbumComponent,
@@ -21,21 +23,10 @@ import {
     UpdateAlbumMutationVariables,
 } from "@queries";
 
-import withDialog, { WithDialogProps } from "@dialogs/withDialog";
-import AlbumUpdateDialog from "@dialogs/AlbumUpdate";
-
-import withPlayer, { WithPlayerProps } from "@player/withPlayer";
-import withClient, { WithClientProps } from "@graphql/withClient";
-
-import withParams, { WithParamsProps } from "@utils/hocs/withParams";
 import formatDuration from "@utils/formatDuration";
-import { AlbumType, PlayableMusic } from "@utils/types";
+import { AlbumType, BasePageProps, PlayableMusic } from "@utils/types";
 
-export interface AlbumProps
-    extends WithParamsProps<{ albumId: string }>,
-        WithPlayerProps,
-        WithDialogProps,
-        WithClientProps {}
+export interface AlbumProps extends BasePageProps {}
 export interface AlbumStates {
     musics: PlayableMusic[] | null;
     metadata: string[];
@@ -43,7 +34,7 @@ export interface AlbumStates {
     album: AlbumType | null;
 }
 
-class Album extends React.Component<AlbumProps, AlbumStates> {
+export default class Album extends React.Component<AlbumProps, AlbumStates> {
     private refetch: AlbumQueryResult["refetch"] | null = null;
     public state: AlbumStates = {
         musics: null,
@@ -128,7 +119,7 @@ class Album extends React.Component<AlbumProps, AlbumStates> {
             throw new Error("Album data not found");
         }
 
-        const result = await this.props.showDialog(AlbumUpdateDialog, "Edit Album Information", {
+        const result = await this.props.dialog.showDialog(AlbumUpdateDialog, "Edit Album Information", {
             album: this.state.album,
         });
 
@@ -233,5 +224,3 @@ class Album extends React.Component<AlbumProps, AlbumStates> {
         );
     }
 }
-
-export default withClient(withDialog(withPlayer(withParams(Album))));

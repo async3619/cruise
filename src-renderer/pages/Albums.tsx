@@ -1,20 +1,16 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import * as _ from "lodash";
 
 import MusicsPage from "@components/Page/Musics";
 import AlbumList from "@components/UI/AlbumList";
 
-import usePlayer from "@player/usePlayer";
 import { useAlbumsQuery } from "@queries";
 
 import { Root } from "@pages/Albums.styles";
 
-import { AlbumListItem } from "@utils/types";
+import { AlbumListItem, BasePageProps } from "@utils/types";
 
-export default function Albums() {
-    const player = usePlayer();
-    const navigate = useNavigate();
+export default function Albums({ player, navigate }: BasePageProps) {
     const { data } = useAlbumsQuery();
 
     const handlePlay = async (album: AlbumListItem) => {

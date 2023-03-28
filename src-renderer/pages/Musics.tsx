@@ -4,14 +4,12 @@ import MusicsPage from "@components/Page/Musics";
 import MusicList from "@components/UI/MusicList";
 
 import { useMusicsQuery } from "@queries";
-import usePlayer from "@player/usePlayer";
 
 import { Root } from "@pages/Musics.styles";
 
-import { MusicListItem } from "@utils/types";
+import { BasePageProps, MusicListItem } from "@utils/types";
 
-export default function Musics() {
-    const player = usePlayer();
+export default function Musics({ player }: BasePageProps) {
     const { currentMusic, play } = player;
     const { data } = useMusicsQuery();
 

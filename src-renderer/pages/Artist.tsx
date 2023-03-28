@@ -7,24 +7,22 @@ import ShuffleRoundedIcon from "@mui/icons-material/ShuffleRounded";
 import ShrinkHeaderPage from "@components/Page/ShrinkHeader";
 import AlbumList from "@components/UI/AlbumList";
 import Button from "@components/UI/Button";
+import DotList from "@components/UI/DotList";
 
-import withPlayer, { WithPlayerProps } from "@player/withPlayer";
 import { ArtistAlbumsComponent, ArtistAlbumsQuery, ArtistAlbumsQueryResult } from "@queries";
 
-import withParams, { WithParamsProps } from "@utils/hocs/withParams";
-import { AlbumListItem, ArtistPageData } from "@utils/types";
-import DotList from "@components/UI/DotList";
-import mode from "@utils/mode";
 import formatDuration from "@utils/formatDuration";
+import mode from "@utils/mode";
+import { AlbumListItem, ArtistPageData, BasePageProps } from "@utils/types";
 
-export interface ArtistProps extends WithParamsProps<{ artistId: string }>, WithPlayerProps {}
+export interface ArtistProps extends BasePageProps {}
 export interface ArtistStates {
     data: ArtistPageData | null;
     subtitleItems: string[];
     metadata: string[];
 }
 
-class Artist extends React.Component<ArtistProps, ArtistStates> {
+export default class Artist extends React.Component<ArtistProps, ArtistStates> {
     public state: ArtistStates = {
         data: null,
         metadata: [],
@@ -177,5 +175,3 @@ class Artist extends React.Component<ArtistProps, ArtistStates> {
         );
     }
 }
-
-export default withParams(withPlayer(Artist));
