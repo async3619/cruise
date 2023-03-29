@@ -35,7 +35,7 @@ const include = glob
     .filter((name): name is string => Boolean(name));
 
 export default defineConfig({
-    main: {
+    main: env => ({
         esbuild: false,
         plugins: [
             swcPlugin(),
@@ -49,7 +49,7 @@ export default defineConfig({
             }),
         ],
         build: {
-            sourcemap: true,
+            sourcemap: env.command === "serve",
             rollupOptions: {
                 output: {
                     preserveModules: true,
@@ -65,7 +65,7 @@ export default defineConfig({
                 "@main": resolve(__dirname, "src"),
             },
         },
-    },
+    }),
     preload: {
         plugins: [externalizeDepsPlugin()],
         build: {
