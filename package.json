@@ -7,9 +7,11 @@
     "scripts": {
         "start": "electron-vite preview",
         "dev": "electron-vite dev",
-        "build": "electron-vite build",
+        "build": "yarn type-check && electron-vite build",
         "codegen": "graphql-codegen --config codegen.yml",
-        "postinstall": "electron-rebuild"
+        "postinstall": "electron-rebuild",
+        "lint": "eslint \"./src/**/*.{tsx,ts}\" \"./src-renderer/**/*.{tsx,ts}\" \"./src-common/**/*.{tsx,ts}\"",
+        "type-check": "tsc --noEmit"
     },
     "dependencies": {
         "@apollo/client": "^3.7.9",
