@@ -38,3 +38,38 @@ fragment AlbumArtItem on AlbumArt {
     size
     path
 }
+
+fragment AlbumPageInformation on Album {
+    id
+    title
+    genre
+    year
+    leadArtists {
+        id
+        name
+    }
+    musics {
+        ...PlayableMusic
+        duration
+        year
+    }
+    albumArts {
+        ...AlbumArtItem
+    }
+}
+
+fragment AlbumListItem on Album {
+    id
+    title
+    year
+    leadArtists {
+        id
+        name
+    }
+    albumArts {
+        ...AlbumArtItem
+    }
+    musics {
+        ...PlayableMusic
+    }
+}

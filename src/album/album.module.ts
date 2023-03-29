@@ -14,7 +14,7 @@ import { Album } from "@main/album/models/album.model";
 @Module({
     imports: [
         TypeOrmModule.forFeature([Album]),
-        MusicModule,
+        forwardRef(() => MusicModule),
         ArtistModule,
         AlbumArtModule,
         forwardRef(() => LibraryModule),

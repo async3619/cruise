@@ -9,6 +9,7 @@ import Placeholder from "@components/Placeholder";
 import { AlbumArt, AlbumArtWrapper, Button, Controls, Root } from "@components/UI/AlbumList/Item.styles";
 
 import { AlbumListItem as AlbumListItemType, ArtistAlbumListItem } from "@utils/types";
+import { AlbumArtType } from "@queries";
 
 export interface AlbumListItemProps {
     subtitleType?: "artist" | "year";
@@ -19,7 +20,7 @@ export interface AlbumListItemProps {
 
 export default function AlbumListItem(props: AlbumListItemProps) {
     const { item, onPlay, onClick, subtitleType = "artist" } = props;
-    const albumArt = item.musics[0]?.albumArts[0];
+    const albumArt = item.albumArts.find(a => a.type === AlbumArtType.CoverFront) || item.albumArts[0];
 
     const handlePlayButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         onPlay(item);

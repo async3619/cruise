@@ -4,18 +4,6 @@ query artistAlbums($artistId: Int!) {
         name
     }
     leadAlbumsByArtist(id: $artistId) {
-        id
-        title
-        year
-        leadArtists {
-            id
-            name
-        }
-        albumArts {
-            ...AlbumArtItem
-        }
-        musics {
-            ...PlayableMusic
-        }
+        ...AlbumListItem
     }
 }

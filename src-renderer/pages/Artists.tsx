@@ -7,6 +7,8 @@ import {
     ArtistAlbumMusicsDocument,
     ArtistAlbumMusicsQuery,
     ArtistAlbumMusicsQueryVariables,
+    useLeadArtistAddedSubscription,
+    useLeadArtistRemovedSubscription,
     useLeadArtistsQuery,
 } from "@queries";
 
@@ -16,6 +18,47 @@ import { Root } from "@pages/Artists.styles";
 
 export default function Artists({ player, client, navigate }: BasePageProps) {
     const { data } = useLeadArtistsQuery();
+    const [leadArtists, setLeadArtists] = React.useState<ArtistListItemType[] | null>(null);
+
+    React.useEffect(() => {
+        if (data?.leadArtists) {
+            setLeadArtists(data.leadArtists);
+        }
+    }, [data]);
+
+    useLeadArtistAddedSubscription({
+        fetchPolicy: "no-cache",
+        onData: ({ data: { data } }) => {
+            if (!data) {
+                return;
+            }
+
+            setLeadArtists(leadArtists => {
+                if (!leadArtists) {
+                    return null;
+                }
+
+                return [...leadArtists, data.leadArtistAdded];
+            });
+        },
+    });
+
+    useLeadArtistRemovedSubscription({
+        fetchPolicy: "no-cache",
+        onData: ({ data: { data } }) => {
+            if (!data) {
+                return;
+            }
+
+            setLeadArtists(leadArtists => {
+                if (!leadArtists) {
+                    return null;
+                }
+
+                return leadArtists.filter(artist => artist.id !== data.leadArtistRemoved);
+            });
+        },
+    });
 
     const handlePlay = async (item: ArtistListItemType) => {
         const { data } = await client.query<ArtistAlbumMusicsQuery, ArtistAlbumMusicsQueryVariables>({
@@ -40,9 +83,7 @@ export default function Artists({ player, client, navigate }: BasePageProps) {
 
     return (
         <MusicsPage title="Artists" player={player}>
-            <Root>
-                {data?.leadArtists && <ArtistList items={data.leadArtists} onPlay={handlePlay} onClick={handleClick} />}
-            </Root>
+            <Root>{leadArtists && <ArtistList items={leadArtists} onPlay={handlePlay} onClick={handleClick} />}</Root>
         </MusicsPage>
     );
 }

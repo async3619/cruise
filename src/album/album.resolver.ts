@@ -1,24 +1,27 @@
 import * as _ from "lodash";
 
 import { Inject } from "@nestjs/common";
-import { Args, Context, Int, Mutation, Query, ResolveField, Resolver, Root } from "@nestjs/graphql";
+import { Args, Context, Int, Mutation, Query, ResolveField, Resolver, Root, Subscription } from "@nestjs/graphql";
 
 import { GraphQLContext } from "@main/context";
 
+import { ALBUM_ADDED, ALBUM_REMOVED, ALBUM_UPDATED, ALBUMS_UPDATED } from "@main/album/album.constants";
 import { AlbumService } from "@main/album/album.service";
-import { MusicService } from "@main/music/music.service";
+import { UpdateAlbumInput } from "@main/album/models/update-album.input";
 
+import { MusicService } from "@main/music/music.service";
 import { Music } from "@main/music/models/music.model";
+
 import { Artist } from "@main/artist/models/artist.model";
 import { Album } from "@main/album/models/album.model";
 import { AlbumArt } from "@main/album-art/models/album-art.model";
-
-import { UpdateAlbumInput } from "@main/album/models/update-album.input";
 
 import loadMany from "@main/utils/loadMany";
 import common from "@main/utils/common";
 
 import { Nullable } from "@common/types";
+
+import pubSub from "@main/pubsub";
 
 @Resolver(() => Album)
 export class AlbumResolver {
@@ -48,6 +51,28 @@ export class AlbumResolver {
         @Args("data", { type: () => UpdateAlbumInput }) data: UpdateAlbumInput,
     ): Promise<Album> {
         return this.albumService.updateAlbum(id, data);
+    }
+
+    @Subscription(() => Album)
+    public async albumAdded() {
+        return pubSub.asyncIterator(ALBUM_ADDED);
+    }
+
+    @Subscription(() => Int)
+    public async albumRemoved() {
+        return pubSub.asyncIterator(ALBUM_REMOVED);
+    }
+
+    @Subscription(() => [Album])
+    public async albumsUpdated() {
+        return pubSub.asyncIterator(ALBUMS_UPDATED);
+    }
+
+    @Subscription(() => Album, {
+        filter: (payload, variables) => payload.albumUpdated.id === variables.id,
+    })
+    public async albumUpdated(@Args("id", { type: () => Int }) _: number) {
+        return pubSub.asyncIterator(ALBUM_UPDATED);
     }
 
     @ResolveField(() => Int, { nullable: true })
@@ -99,6 +124,6 @@ export class AlbumResolver {
 
     @ResolveField(() => [Artist])
     public async leadArtists(@Root() album: Album, @Context("loaders") loaders: GraphQLContext["loaders"]) {
-        return loaders.artist.loadMany(album.leadArtistIds);
+        return await loaders.artist.loadMany(album.leadArtistIds);
     }
 }

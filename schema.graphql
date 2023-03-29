@@ -147,6 +147,16 @@ input ConfigInput {
 }
 
 type Subscription {
+  musicAdded: Music!
+  musicUpdated: Music!
+  musicsUpdated: [Music!]!
+  musicRemoved: Int!
+  albumAdded: Album!
+  albumRemoved: Int!
+  albumsUpdated: [Album!]!
+  albumUpdated(id: Int!): Album!
+  leadArtistAdded: Artist!
+  leadArtistRemoved: Int!
   maximizedStateChanged: Boolean!
   scanningStateChanged: Boolean!
 }

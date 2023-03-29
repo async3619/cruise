@@ -1,13 +1,15 @@
 import { Inject } from "@nestjs/common";
-import { Args, Context, Int, Query, ResolveField, Resolver, Root } from "@nestjs/graphql";
+import { Args, Context, Int, Query, ResolveField, Resolver, Root, Subscription } from "@nestjs/graphql";
 
 import { ArtistService } from "@main/artist/artist.service";
+import { LEAD_ARTIST_ADDED, LEAD_ARTIST_REMOVED } from "@main/artist/artist.constants";
 
 import { Artist } from "@main/artist/models/artist.model";
 import { Music } from "@main/music/models/music.model";
 import { Album } from "@main/album/models/album.model";
 
 import { GraphQLContext } from "@main/context";
+import pubSub from "@main/pubsub";
 
 @Resolver(() => Artist)
 export class ArtistResolver {
@@ -26,6 +28,16 @@ export class ArtistResolver {
     @Query(() => [Artist])
     public async leadArtists(): Promise<Artist[]> {
         return this.artistService.findLeadArtists();
+    }
+
+    @Subscription(() => Artist)
+    public async leadArtistAdded(): Promise<AsyncIterator<Artist>> {
+        return pubSub.asyncIterator(LEAD_ARTIST_ADDED);
+    }
+
+    @Subscription(() => Int)
+    public async leadArtistRemoved() {
+        return pubSub.asyncIterator(LEAD_ARTIST_REMOVED);
     }
 
     @ResolveField(() => Int)

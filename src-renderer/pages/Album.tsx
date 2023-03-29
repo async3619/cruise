@@ -18,6 +18,12 @@ import {
     AlbumComponent,
     AlbumQuery,
     AlbumQueryResult,
+    AlbumRemovedComponent,
+    AlbumRemovedSubscription,
+    AlbumUpdatedComponent,
+    AlbumUpdatedSubscription,
+    MusicsUpdatedComponent,
+    MusicsUpdatedSubscription,
     UpdateAlbumDocument,
     UpdateAlbumMutation,
     UpdateAlbumMutationVariables,
@@ -25,6 +31,7 @@ import {
 
 import formatDuration from "@utils/formatDuration";
 import { AlbumType, BasePageProps, PlayableMusic } from "@utils/types";
+import { OnDataOptions } from "@apollo/client";
 
 export interface AlbumProps extends BasePageProps {}
 export interface AlbumStates {
@@ -96,6 +103,46 @@ export default class Album extends React.Component<AlbumProps, AlbumStates> {
         metadata.push(formatDuration(totalDuration));
 
         this.setState({ musics: query.album.musics, metadata, album: query.album });
+    };
+    private handleAlbumUpdated = ({ data: { data } }: OnDataOptions<AlbumUpdatedSubscription>) => {
+        if (!data || data.albumUpdated.id !== this.state.albumId) {
+            return;
+        }
+
+        if (!this.refetch) {
+            throw new Error("Refetch not found");
+        }
+
+        this.refetch();
+    };
+    private handleMusicsUpdated = ({ data: { data } }: OnDataOptions<MusicsUpdatedSubscription>) => {
+        if (!data || !this.refetch) {
+            return;
+        }
+
+        const { musics } = this.state;
+        if (!musics) {
+            return;
+        }
+
+        const updatedMusics = data.musicsUpdated;
+        const isUpdated = updatedMusics.some(music => {
+            return musics.some(m => m.id === music.id);
+        });
+        if (!isUpdated) {
+            return;
+        }
+
+        this.refetch();
+    };
+    private handleAlbumRemoved = ({ data: { data } }: OnDataOptions<AlbumRemovedSubscription>) => {
+        if (!data || data.albumRemoved !== this.state.albumId) {
+            return;
+        }
+
+        this.props.navigate("/", {
+            replace: true,
+        });
     };
 
     private handlePlayMusic = (music: PlayableMusic) => {
@@ -218,9 +265,14 @@ export default class Album extends React.Component<AlbumProps, AlbumStates> {
         }
 
         return (
-            <AlbumComponent onCompleted={this.handleQueryCompleted} variables={{ id: albumId }}>
-                {this.renderBody}
-            </AlbumComponent>
+            <>
+                <MusicsUpdatedComponent onData={this.handleMusicsUpdated} />
+                <AlbumRemovedComponent onData={this.handleAlbumRemoved} />
+                <AlbumUpdatedComponent variables={{ id: albumId }} onData={this.handleAlbumUpdated} />
+                <AlbumComponent onCompleted={this.handleQueryCompleted} variables={{ id: albumId }}>
+                    {this.renderBody}
+                </AlbumComponent>
+            </>
         );
     }
 }

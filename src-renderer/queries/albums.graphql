@@ -1,16 +1,5 @@
 query albums {
     albums {
-        id
-        title
-        leadArtists {
-            id
-            name
-        }
-        albumArts {
-            ...AlbumArtItem
-        }
-        musics {
-            ...PlayableMusic
-        }
+        ...AlbumListItem
     }
 }

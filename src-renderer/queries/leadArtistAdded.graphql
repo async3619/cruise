@@ -1,0 +1,6 @@
+subscription leadArtistAdded {
+    leadArtistAdded {
+        id
+        name
+    }
+}

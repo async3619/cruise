@@ -3566,6 +3566,11 @@ anymatch@^3.0.3, anymatch@~3.1.2:
     normalize-path "^3.0.0"
     picomatch "^2.0.4"
 
+apollo-link-logger@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/apollo-link-logger/-/apollo-link-logger-2.0.1.tgz#63d86b4fe550c147c5a52108710075675694905c"
+  integrity sha512-4KkdwCqWtlOc0vx0W/5o+UfotyZtcJZicraKNyo2KTaCmAGSJ8vDnNRyDlv6o5XtSgdv4NA36cSe6dt49OkGWA==
+
 app-root-path@^3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/app-root-path/-/app-root-path-3.1.0.tgz#5971a2fc12ba170369a7a1ef018c71e6e47c2e86"

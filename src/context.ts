@@ -35,18 +35,30 @@ export async function createGraphQLContext(
     return {
         window,
         loaders: {
-            music: new DataLoader<number, Music>(ids => {
-                return musicService.findByIds(ids);
-            }),
-            album: new DataLoader<number, Album>(ids => {
-                return albumService.findByIds(ids);
-            }),
-            artist: new DataLoader<number, Artist>(ids => {
-                return artistService.findByIds(ids);
-            }),
-            albumArt: new DataLoader<number, AlbumArt>(ids => {
-                return albumArtService.findByIds(ids);
-            }),
+            music: new DataLoader<number, Music>(
+                ids => {
+                    return musicService.findByIds(ids);
+                },
+                { cache: false },
+            ),
+            album: new DataLoader<number, Album>(
+                ids => {
+                    return albumService.findByIds(ids);
+                },
+                { cache: false },
+            ),
+            artist: new DataLoader<number, Artist>(
+                ids => {
+                    return artistService.findByIds(ids);
+                },
+                { cache: false },
+            ),
+            albumArt: new DataLoader<number, AlbumArt>(
+                ids => {
+                    return albumArtService.findByIds(ids);
+                },
+                { cache: false },
+            ),
         },
     };
 }

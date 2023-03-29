@@ -9,11 +9,22 @@ import AlbumList from "@components/UI/AlbumList";
 import Button from "@components/UI/Button";
 import DotList from "@components/UI/DotList";
 
-import { ArtistAlbumsComponent, ArtistAlbumsQuery, ArtistAlbumsQueryResult } from "@queries";
+import {
+    AlbumAddedComponent,
+    AlbumAddedSubscription,
+    AlbumRemovedComponent,
+    AlbumRemovedSubscription,
+    AlbumsUpdatedComponent,
+    AlbumsUpdatedSubscription,
+    ArtistAlbumsComponent,
+    ArtistAlbumsQuery,
+    ArtistAlbumsQueryResult,
+} from "@queries";
 
 import formatDuration from "@utils/formatDuration";
 import mode from "@utils/mode";
 import { AlbumListItem, ArtistPageData, BasePageProps } from "@utils/types";
+import { OnDataOptions } from "@apollo/client";
 
 export interface ArtistProps extends BasePageProps {}
 export interface ArtistStates {
@@ -23,6 +34,7 @@ export interface ArtistStates {
 }
 
 export default class Artist extends React.Component<ArtistProps, ArtistStates> {
+    private refetch: ArtistAlbumsQueryResult["refetch"] | null = null;
     public state: ArtistStates = {
         data: null,
         metadata: [],
@@ -71,6 +83,43 @@ export default class Artist extends React.Component<ArtistProps, ArtistStates> {
             },
             metadata,
             subtitleItems,
+        });
+    };
+
+    private handleAlbumRemoved = async ({ data: { data } }: OnDataOptions<AlbumRemovedSubscription>) => {
+        const { data: prevState } = this.state;
+        if (!prevState || !data) {
+            return;
+        }
+
+        this.handleQueryCompleted({
+            artist: prevState.artist,
+            leadAlbumsByArtist: prevState.albums.filter(a => a.id !== data.albumRemoved),
+        });
+    };
+    private handleAlbumAdded = async ({ data: { data } }: OnDataOptions<AlbumAddedSubscription>) => {
+        const { data: prevState } = this.state;
+        if (!prevState || !data) {
+            return;
+        }
+
+        this.handleQueryCompleted({
+            artist: prevState.artist,
+            leadAlbumsByArtist: [...prevState.albums, data.albumAdded],
+        });
+    };
+    private handleAlbumsUpdated = async ({ data: { data } }: OnDataOptions<AlbumsUpdatedSubscription>) => {
+        const { data: prevState } = this.state;
+        if (!prevState || !data) {
+            return;
+        }
+
+        const updatedAlbumMap = _.keyBy(data.albumsUpdated, "id");
+        const updatedAlbums = prevState.albums.map(a => updatedAlbumMap[a.id] || a);
+
+        this.handleQueryCompleted({
+            artist: prevState.artist,
+            leadAlbumsByArtist: updatedAlbums,
         });
     };
 
@@ -130,16 +179,17 @@ export default class Artist extends React.Component<ArtistProps, ArtistStates> {
             </>
         );
     };
-    private renderBody = ({ data, loading }: ArtistAlbumsQueryResult) => {
+    private renderBody = ({ loading, refetch }: ArtistAlbumsQueryResult) => {
         if (loading) {
             return <ShrinkHeaderPage loading />;
         }
 
+        const { data } = this.state;
         if (!data || !data.artist) {
             throw new Error("Artist not found");
         }
 
-        const albums = data.leadAlbumsByArtist;
+        this.refetch = refetch;
 
         return (
             <ShrinkHeaderPage
@@ -149,7 +199,7 @@ export default class Artist extends React.Component<ArtistProps, ArtistStates> {
                 content={this.renderContent()}
             >
                 <AlbumList
-                    items={albums}
+                    items={data.albums}
                     onPlay={this.handleAlbumPlay}
                     onClick={this.handleAlbumClick}
                     subtitleType="year"
@@ -169,9 +219,14 @@ export default class Artist extends React.Component<ArtistProps, ArtistStates> {
         }
 
         return (
-            <ArtistAlbumsComponent onCompleted={this.handleQueryCompleted} variables={{ artistId }}>
-                {this.renderBody}
-            </ArtistAlbumsComponent>
+            <>
+                <AlbumAddedComponent onData={this.handleAlbumAdded} />
+                <AlbumRemovedComponent onData={this.handleAlbumRemoved} />
+                <AlbumsUpdatedComponent onData={this.handleAlbumsUpdated} />
+                <ArtistAlbumsComponent onCompleted={this.handleQueryCompleted} variables={{ artistId }}>
+                    {this.renderBody}
+                </ArtistAlbumsComponent>
+            </>
         );
     }
 }

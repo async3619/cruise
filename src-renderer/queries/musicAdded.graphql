@@ -1,0 +1,9 @@
+subscription musicAdded {
+    musicAdded {
+        ...PlayableMusic
+        genre
+        year
+        disc
+        duration
+    }
+}

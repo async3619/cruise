@@ -1,0 +1,5 @@
+subscription albumsUpdated {
+    albumsUpdated {
+        ...AlbumListItem
+    }
+}

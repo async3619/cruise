@@ -31,7 +31,8 @@ export class AlbumService extends BaseService<Album> {
         return allAlbums.filter(album => album.leadArtistIds.includes(artistId));
     }
 
-    public async ensure(albumName: string) {
+    public async ensure(albumName: string): Promise<[Album, boolean]> {
+        let created = false;
         let album = await this.albumRepository.findOne({
             where: {
                 title: albumName,
@@ -49,9 +50,10 @@ export class AlbumService extends BaseService<Album> {
             });
 
             album = await this.albumRepository.save(album);
+            created = true;
         }
 
-        return album;
+        return [album, created];
     }
 
     public async updateAlbum(id: number, data: UpdateAlbumInput) {

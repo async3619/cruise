@@ -27,27 +27,38 @@ class LibraryProvider extends React.Component<LibraryProviderProps, LibraryProvi
         };
     }
 
-    private handleScanningStateChanged = _.throttle(
-        async ({ data: { data } }: OnDataOptions<ScanningStateChangedSubscription>) => {
-            if (!data) {
+    private handleScanningStateChanged = async ({
+        data: { data },
+    }: OnDataOptions<ScanningStateChangedSubscription>) => {
+        if (!data) {
+            return;
+        }
+
+        if (data.scanningStateChanged) {
+            if (!!this.scanningSnackbar) {
                 return;
             }
 
-            if (data.scanningStateChanged) {
-                if (!!this.scanningSnackbar) {
-                    return;
-                }
-
-                this.scanningSnackbar = await this.props.pushSnackbar({
-                    type: "loading",
-                    message: "Scanning library...",
-                });
-            } else if (this.scanningSnackbar) {
+            this.scanningSnackbar = await this.props.pushSnackbar({
+                type: "loading",
+                message: "Scanning library...",
+            });
+        } else if (this.scanningSnackbar) {
+            try {
                 this.scanningSnackbar.success("Library scanned successfully");
+            } catch {
+                await this.props.pushSnackbar({
+                    type: "success",
+                    message: "Library scanned successfully",
+                });
             }
-        },
-        500,
-    );
+        } else {
+            await this.props.pushSnackbar({
+                type: "success",
+                message: "Library scanned successfully",
+            });
+        }
+    };
 
     private scan = async () => {
         await this.props.client.mutate({
