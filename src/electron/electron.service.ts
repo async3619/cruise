@@ -141,13 +141,20 @@ export class ElectronService implements OnModuleInit {
                 preload: path.join(__dirname, "../../preload/index.js"),
                 nodeIntegration: true,
                 contextIsolation: true,
+                devTools: true,
             },
         });
+
+        if (is.dev) {
+            window.webContents.openDevTools({
+                mode: "undocked",
+            });
+        }
 
         if (is.dev && process.env["ELECTRON_RENDERER_URL"]) {
             await window.loadURL(process.env["ELECTRON_RENDERER_URL"]);
         } else {
-            await window.loadFile(path.join(__dirname, "../renderer/index.html"));
+            await window.loadFile("./out/renderer/index.html");
         }
 
         return window;

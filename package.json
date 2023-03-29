@@ -11,7 +11,8 @@
         "codegen": "graphql-codegen --config codegen.yml",
         "postinstall": "electron-rebuild",
         "lint": "eslint \"./src/**/*.{tsx,ts}\" \"./src-renderer/**/*.{tsx,ts}\" \"./src-common/**/*.{tsx,ts}\"",
-        "type-check": "tsc --noEmit"
+        "type-check": "tsc --noEmit",
+        "package": "yarn build && electron-builder build --publish never"
     },
     "dependencies": {
         "@apollo/client": "^3.7.9",
@@ -20,6 +21,7 @@
         "@apollo/subgraph": "^2.0.0",
         "@as-integrations/fastify": "^1.3.2",
         "@async3619/merry-go-round": "^1.4.0",
+        "@electron-toolkit/utils": "^1.0.2",
         "@electron/rebuild": "^3.2.10",
         "@emotion/react": "^11.10.6",
         "@emotion/styled": "^11.10.6",
@@ -43,7 +45,6 @@
         "class-validator": "^0.14.0",
         "dataloader": "^2.2.2",
         "decompress": "^4.2.1",
-        "electron": "^23.1.2",
         "electron-devtools-installer": "^3.2.0",
         "express": "^4.18.2",
         "fast-glob": "^3.2.12",
@@ -82,7 +83,6 @@
         "zod": "^3.21.4"
     },
     "devDependencies": {
-        "@electron-toolkit/utils": "^1.0.2",
         "@graphql-codegen/cli": "^3.2.1",
         "@graphql-codegen/typescript": "^3.0.1",
         "@graphql-codegen/typescript-graphql-files-modules": "^2.2.1",
@@ -111,6 +111,8 @@
         "@typescript-eslint/eslint-plugin": "^5.54.0",
         "@typescript-eslint/parser": "^5.54.0",
         "@vitejs/plugin-react-swc": "^3.2.0",
+        "electron": "^23.2.0",
+        "electron-builder": "^23.6.0",
         "electron-vite": "^1.0.20",
         "esbuild": "^0.17.10",
         "eslint": "^8.35.0",

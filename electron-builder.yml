@@ -1,0 +1,8 @@
+appId: "io.sophia-dev.cruise"
+productName: "Cruise"
+asar: false
+asarUnpack: "**\\*.{node,dll}"
+files:
+  - out
+  - node_modules
+  - package.json
