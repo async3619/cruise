@@ -33,7 +33,7 @@ fs.ensureDirSync(SQLITE_DATABASE_DIR);
 @Module({
     imports: [
         TypeOrmModule.forRoot({
-            type: "sqlite",
+            type: "better-sqlite3",
             database: SQLITE_DATABASE_PATH,
             entities: getMetadataArgsStorage().tables.map(t => t.target),
             autoLoadEntities: true,
