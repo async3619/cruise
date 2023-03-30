@@ -1,5 +1,11 @@
 {
     "name": "cruise",
+    "description": "next-gen media player for various platforms",
+    "author": {
+        "name": "Sophia",
+        "email": "me@sophia-dev.io",
+        "url": "https://sophia-dev.io"
+    },
     "private": true,
     "version": "0.0.0",
     "type": "commonjs",
