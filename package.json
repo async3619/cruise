@@ -15,6 +15,7 @@
         "package": "yarn build && electron-builder build --publish never"
     },
     "dependencies": {
+        "@apollo/client": "^3.7.9",
         "@apollo/server": "^4.3.2",
         "@apollo/server-plugin-landing-page-graphql-playground": "^4.0.0",
         "@apollo/subgraph": "^2.0.0",
@@ -62,7 +63,6 @@
         "zod": "^3.21.4"
     },
     "devDependencies": {
-        "@apollo/client": "^3.7.9",
         "@emotion/react": "^11.10.6",
         "@fluentui/react-icons": "^2.0.195",
         "@graphql-codegen/cli": "^3.2.1",
