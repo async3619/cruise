@@ -6,11 +6,21 @@ import * as mgr from "@async3619/merry-go-round";
 import { Injectable } from "@nestjs/common";
 
 import { CONFIG_FILE_DIR, CONFIG_FILE_PATH } from "@main/constants";
-import { Config, ConfigInput } from "@main/config/models/config.dto";
+import { AsyncFn, Fn } from "@common/types";
 
 export const CONFIG_SCHEMA = z.object({
     libraryDirectories: z.array(z.string()),
+    lastPosition: z
+        .object({
+            x: z.number(),
+            y: z.number(),
+            width: z.number(),
+            height: z.number(),
+        })
+        .optional(),
 });
+
+type Config = z.infer<typeof CONFIG_SCHEMA>;
 
 export function isConfig(value: unknown): value is Config {
     return CONFIG_SCHEMA.safeParse(value).success;
@@ -29,7 +39,6 @@ const DEFAULT_CONFIG: Config = (() => {
 
     return {
         libraryDirectories,
-        appTheme: "System",
     };
 })();
 
@@ -54,7 +63,11 @@ export class ConfigService {
         return config;
     }
 
-    public async setConfig(config: ConfigInput) {
+    public async setConfig(config: Config | AsyncFn<Config, Config> | Fn<Config, Config>) {
+        if (typeof config === "function") {
+            config = await config(await this.getConfig());
+        }
+
         assertConfig(config);
         await fs.writeJson(CONFIG_FILE_PATH, config, { spaces: 4 });
     }

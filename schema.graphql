@@ -102,8 +102,8 @@ type Query {
   artists: [Artist!]!
   leadArtists: [Artist!]!
   isMaximized: Boolean!
-  needScan: Boolean!
   config: Config!
+  needScan: Boolean!
 }
 
 type Mutation {
@@ -113,8 +113,8 @@ type Mutation {
   minimize: Boolean!
   close: Boolean!
   selectPath(options: SelectPathInput!): [String!]!
-  scan: Boolean!
   updateConfig(config: ConfigInput!): Config!
+  scan: Boolean!
 }
 
 input UpdateAlbumInput {

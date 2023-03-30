@@ -5,14 +5,17 @@ import decompress from "decompress";
 import fs from "fs-extra";
 
 import { electronApp, is, optimizer } from "@electron-toolkit/utils";
-import { Injectable, OnModuleInit } from "@nestjs/common";
+import { Inject, Injectable, OnModuleInit } from "@nestjs/common";
 
 import { MAXIMIZED_STATE_CHANGED } from "@main/electron/electron.constants";
+import { SelectPathInput } from "@main/electron/models/select-path.dto";
+
+import { ConfigService } from "@main/config/config.service";
 
 import { REACT_DEVTOOLS_DIR, REACT_DEVTOOLS_PATH } from "@main/constants";
 import pubSub from "@main/pubsub";
+
 import { Nullable } from "@common/types";
-import { SelectPathInput } from "@main/electron/models/select-path.dto";
 
 const mainDistPath = path.join(__dirname, "../");
 const distPath = path.join(mainDistPath, "../dist");
@@ -21,6 +24,8 @@ const publicPath = process.env.VITE_DEV_SERVER_URL ? path.join(mainDistPath, "..
 @Injectable()
 export class ElectronService implements OnModuleInit {
     private mainWindow: BrowserWindow | null = null;
+
+    public constructor(@Inject(ConfigService) private readonly configService: ConfigService) {}
 
     public async onModuleInit() {
         if (os.release().startsWith("6.1")) {
@@ -101,12 +106,26 @@ export class ElectronService implements OnModuleInit {
         this.mainWindow.minimize();
         return true;
     }
-    public close() {
+    public async close() {
         if (!this.mainWindow) {
             throw new Error("Main window is not ready");
         }
 
+        const [x, y] = this.mainWindow.getPosition();
+        const [width, height] = this.mainWindow.getSize();
+
+        await this.configService.setConfig(config => ({
+            ...config,
+            lastPosition: {
+                x,
+                y,
+                width,
+                height,
+            },
+        }));
+
         this.mainWindow.close();
+
         return true;
     }
 
@@ -130,10 +149,12 @@ export class ElectronService implements OnModuleInit {
             await devtools.default([devtools.APOLLO_DEVELOPER_TOOLS]);
         }
 
+        const config = await this.configService.getConfig();
         const window = new BrowserWindow({
             title: "Main window",
             icon: path.join(publicPath, "favicon.ico"),
             frame: false,
+            ...config.lastPosition,
             width: 1300,
             height: 800,
             minWidth: 500,
