@@ -1,8 +1,23 @@
-appId: "io.sophia-dev.cruise"
-productName: "Cruise"
-asar: false
-asarUnpack: "**\\*.{node,dll}"
+productName: Cruise
+appId: io.sophia-dev.cruise
+asar: true
+directories:
+    output: package
 files:
-  - out
-  - node_modules
-  - package.json
+    - "out"
+    - "node_modules"
+    - "package.json"
+    - "!**/node_modules/**/*.{iobj,ipdb,ipch,c,h,cpp,hpp,js.map,ts,ts.map,cjs.map,md}"
+    - "!**/node_modules/**/docs/**/*"
+    - "!**/node_modules/typeorm/browser/**/*"
+    - "!**/node_modules/*/{CHANGELOG.md,README.md,README,readme.md,readme}"
+    - "!**/node_modules/*/{test,__tests__,tests,powered-test,example,examples}"
+    - "!**/node_modules/*.d.ts"
+    - "!**/node_modules/.bin"
+    - "!**/*.{iml,o,hprof,orig,pyc,pyo,rbc,swp,csproj,sln,xproj}"
+    - "!.editorconfig"
+    - "!**/._*"
+    - "!**/{.DS_Store,.git,.hg,.svn,CVS,RCS,SCCS,.gitignore,.gitattributes}"
+    - "!**/{__pycache__,thumbs.db,.flowconfig,.idea,.vs,.nyc_output}"
+    - "!**/{appveyor.yml,.travis.yml,circle.yml}"
+    - "!**/{npm-debug.log,yarn.lock,.yarn-integrity,.yarn-metadata.json}"
