@@ -1,9 +1,9 @@
 import * as path from "path";
 import * as fs from "fs-extra";
-import sharp from "sharp";
 import { Repository } from "typeorm";
 import { AlbumArt as RawAlbumArt } from "@async3619/merry-go-round";
 import { fromBuffer } from "file-type";
+import sizeOf from "image-size";
 
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -55,7 +55,11 @@ export class AlbumArtService extends BaseService<AlbumArt> {
         albumArt.mimeType = mimeType;
         albumArt.description = description;
 
-        const { width, height } = await this.getImageSize(data);
+        const { width, height } = this.getImageSize(data);
+        if (typeof width !== "number" || typeof height !== "number") {
+            throw new Error("Failed to get image size.");
+        }
+
         albumArt.width = width;
         albumArt.height = height;
         albumArt.size = data.length;
@@ -89,7 +93,11 @@ export class AlbumArtService extends BaseService<AlbumArt> {
             throw new Error("Given file is not an image.");
         }
 
-        const { width, height } = await this.getImageSize(data);
+        const { width, height } = this.getImageSize(data);
+        if (typeof width !== "number" || typeof height !== "number") {
+            throw new Error("Failed to get image size.");
+        }
+
         const checksumString = checksum(data);
         const id = (await this.getLastId()) + 1;
 
@@ -117,15 +125,7 @@ export class AlbumArtService extends BaseService<AlbumArt> {
         return albumArt;
     }
 
-    private async getImageSize(data: Buffer) {
-        const metadata = await sharp(data).metadata();
-        if (!metadata.width || !metadata.height) {
-            throw new Error("Failed to get image size.");
-        }
-
-        return {
-            width: metadata.width,
-            height: metadata.height,
-        };
+    private getImageSize(data: Buffer) {
+        return sizeOf(data);
     }
 }
