@@ -1,6 +1,7 @@
 productName: Cruise
 appId: io.sophia-dev.cruise
 asar: true
+icon: "./res/icon.png"
 directories:
     output: package
 files:
