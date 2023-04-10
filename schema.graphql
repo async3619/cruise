@@ -115,6 +115,7 @@ type Mutation {
   selectPath(options: SelectPathInput!): [String!]!
   updateConfig(config: ConfigInput!): Config!
   scan: Boolean!
+  syncAlbumData(albumId: Int!, targetId: String!, locale: String): Boolean!
 }
 
 input UpdateAlbumInput {

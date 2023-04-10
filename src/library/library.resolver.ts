@@ -1,10 +1,12 @@
 import { Inject } from "@nestjs/common";
-import { Mutation, Query, Resolver, Subscription } from "@nestjs/graphql";
+import { Args, Int, Mutation, Query, Resolver, Subscription } from "@nestjs/graphql";
 
 import { LibraryService } from "@main/library/library.service";
 import { SCANNING_STATE_CHANGED } from "@main/library/library.constants";
 
 import pubSub from "@main/pubsub";
+
+import type { Nullable } from "@common/types";
 
 @Resolver()
 export class LibraryResolver {
@@ -20,6 +22,15 @@ export class LibraryResolver {
         this.libraryService.scan().then();
 
         return true;
+    }
+
+    @Mutation(() => Boolean)
+    public async syncAlbumData(
+        @Args("albumId", { type: () => Int }) albumId: number,
+        @Args("targetId", { type: () => String }) hauntedId: string,
+        @Args("locale", { type: () => String, nullable: true }) locale: Nullable<string>,
+    ): Promise<boolean> {
+        return this.libraryService.syncAlbumData(albumId, hauntedId, locale);
     }
 
     @Subscription(() => Boolean)

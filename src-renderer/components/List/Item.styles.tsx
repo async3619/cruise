@@ -32,7 +32,7 @@ export const Button = styled.button<{ active: boolean }>`
         color: rgba(0, 0, 0, 0.35);
     }
 
-    > p {
+    > p:not(:first-child) {
         margin-left: ${({ theme }) => theme.spacing(2)};
     }
 

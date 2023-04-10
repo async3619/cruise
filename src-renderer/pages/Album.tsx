@@ -5,9 +5,10 @@ import { Typography } from "@mui/material";
 import PlayArrowRoundedIcon from "@mui/icons-material/PlayArrowRounded";
 import ShuffleRoundedIcon from "@mui/icons-material/ShuffleRounded";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
+import CloudSyncRoundedIcon from "@mui/icons-material/CloudSyncRounded";
 
 import ShrinkHeaderPage from "@components/Page/ShrinkHeader";
-import Button from "@components/UI/Button";
+import Button, { ButtonOptionItem } from "@components/UI/Button";
 import MusicList from "@components/UI/MusicList";
 import DotList from "@components/UI/DotList";
 
@@ -24,6 +25,9 @@ import {
     AlbumUpdatedSubscription,
     MusicsUpdatedComponent,
     MusicsUpdatedSubscription,
+    SyncAlbumDataDocument,
+    SyncAlbumDataMutation,
+    SyncAlbumDataMutationVariables,
     UpdateAlbumDocument,
     UpdateAlbumMutation,
     UpdateAlbumMutationVariables,
@@ -32,6 +36,7 @@ import {
 import formatDuration from "@utils/formatDuration";
 import { AlbumType, BasePageProps, PlayableMusic } from "@utils/types";
 import { OnDataOptions } from "@apollo/client";
+import AlbumSyncDialog from "@dialogs/Sync/Album";
 
 export interface AlbumProps extends BasePageProps {}
 export interface AlbumStates {
@@ -201,6 +206,45 @@ export default class Album extends React.Component<AlbumProps, AlbumStates> {
         });
     };
 
+    private handleSync = async () => {
+        if (!this.state.album) {
+            throw new Error("Album not found");
+        }
+
+        const result = await this.props.dialog.showDialog(AlbumSyncDialog, "Sync with Online", {
+            albumName: this.state.album.title,
+            leadArtistNames: this.state.album.leadArtists.map(artist => artist.name),
+        });
+
+        if (result.reason !== "submit") {
+            return;
+        }
+
+        const {
+            data: {
+                selectedAlbum: { album, locale },
+            },
+        } = result;
+
+        const { data } = await this.props.client.mutate<SyncAlbumDataMutation, SyncAlbumDataMutationVariables>({
+            mutation: SyncAlbumDataDocument,
+            variables: {
+                albumId: this.state.album.id,
+                hauntedId: album.id,
+                locale: locale,
+            },
+        });
+
+        console.log(data);
+    };
+
+    private handleOptionClick = ({ value }: ButtonOptionItem) => {
+        switch (value) {
+            case "sync":
+                return this.handleSync();
+        }
+    };
+
     private renderContent = (album: AlbumType) => {
         const { metadata } = this.state;
 
@@ -224,7 +268,18 @@ export default class Album extends React.Component<AlbumProps, AlbumStates> {
                 <Button icon={ShuffleRoundedIcon} onClick={this.handleShuffleAll}>
                     Shuffle All
                 </Button>
-                <Button icon={EditRoundedIcon} onClick={this.handleEditClick}>
+                <Button
+                    icon={EditRoundedIcon}
+                    onClick={this.handleEditClick}
+                    onOptionClick={this.handleOptionClick}
+                    options={[
+                        {
+                            icon: CloudSyncRoundedIcon,
+                            value: "sync",
+                            label: "Sync Information",
+                        },
+                    ]}
+                >
                     Edit Information
                 </Button>
             </>

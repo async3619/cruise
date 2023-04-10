@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { Button } from "@mui/material";
+import { Button, ButtonProps } from "@mui/material";
 
 import { getBackColor, getTextColor } from "@utils/styles";
 
@@ -42,4 +42,47 @@ export const Root = styled(Button)`
 
         display: block;
     }
+`;
+
+export const OptionButton = styled(Root)`
+    min-width: auto;
+
+    padding: ${({ theme }) => theme.spacing(0, 0.5)};
+
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    border-left: 0;
+
+    > svg {
+        width: ${({ theme }) => theme.spacing(3)};
+        height: ${({ theme }) => theme.spacing(3)};
+
+        margin: 0;
+
+        display: block;
+    }
+`;
+
+export const Wrapper = styled.div<{ color?: ButtonProps["color"] }>`
+    display: flex;
+    position: relative;
+
+    > ${Root} {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+
+        border-right-color: ${({ theme, color }) => getBackColor(theme, color, { darken: 0.16 }, { darken: 0.06 })};
+    }
+`;
+
+export const OptionWrapper = styled.div`
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+
+    background: #f9f9f9;
+    box-shadow: 0 12px 6px -3px rgb(0 0 0 / 5%), 0px 20px 14px 1px rgb(0 0 0 / 3.5%), 0px 8px 18px 3px rgb(0 0 0 / 4%);
+`;
+
+export const OptionContainer = styled.div`
+    padding: ${({ theme }) => theme.spacing(0.5)};
 `;

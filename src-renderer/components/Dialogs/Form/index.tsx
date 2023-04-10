@@ -53,6 +53,7 @@ export default class FormDialog<TData extends FieldValues> extends React.Compone
                         type: DialogButtonType.Submit,
                         label: "Submit",
                         props: {
+                            disabled: !!errorMessage,
                             color: "primary",
                             type: "submit",
                             form: formId,

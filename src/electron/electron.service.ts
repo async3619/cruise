@@ -1,6 +1,6 @@
 import * as path from "path";
 import * as os from "os";
-import { app, BrowserWindow, dialog, OpenDialogOptions, protocol, session } from "electron";
+import { app, BrowserWindow, dialog, ipcMain, IpcMainEvent, OpenDialogOptions, protocol, session } from "electron";
 import decompress from "decompress";
 import fs from "fs-extra";
 
@@ -43,6 +43,8 @@ export class ElectronService implements OnModuleInit {
 
         await app.whenReady();
         this.onAppReady();
+
+        ipcMain.on("getPreferredSystemLanguages", this.onGetPreferredSystemLanguages);
     }
     private async onAppReady() {
         // Set app user model id for windows
@@ -179,6 +181,11 @@ export class ElectronService implements OnModuleInit {
         }
 
         return window;
+    }
+
+    private onGetPreferredSystemLanguages(e: IpcMainEvent) {
+        const locales = app.getPreferredSystemLanguages();
+        e.reply("getPreferredSystemLanguages", locales);
     }
 
     public async selectPath(options: Nullable<SelectPathInput>): Promise<Nullable<string[]>> {

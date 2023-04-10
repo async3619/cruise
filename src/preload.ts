@@ -13,3 +13,15 @@ contextBridge.exposeInMainWorld("ipcRenderer", {
         ipcRenderer.removeListener(channel, listener);
     },
 });
+
+contextBridge.exposeInMainWorld("app", {
+    getPreferredSystemLanguages: () => {
+        return new Promise(res => {
+            ipcRenderer.once("getPreferredSystemLanguages", (event, languages) => {
+                res(languages);
+            });
+
+            ipcRenderer.send("getPreferredSystemLanguages");
+        });
+    },
+});

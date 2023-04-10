@@ -24,6 +24,7 @@ import { AlbumArtModule } from "@main/album-art/album-art.module";
 import { AlbumArtService } from "@main/album-art/album-art.service";
 
 import { ConfigModule } from "@main/config/config.module";
+import { HauntedModule } from "@main/haunted/haunted.module";
 
 import { createGraphQLContext } from "@main/context";
 import { SQLITE_DATABASE_DIR, SQLITE_DATABASE_PATH } from "@main/constants";
@@ -32,6 +33,9 @@ fs.ensureDirSync(SQLITE_DATABASE_DIR);
 
 @Module({
     imports: [
+        HauntedModule.forRoot({
+            url: "http://localhost:3000/trpc",
+        }),
         TypeOrmModule.forRoot({
             type: "better-sqlite3",
             database: SQLITE_DATABASE_PATH,

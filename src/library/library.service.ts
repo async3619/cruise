@@ -3,6 +3,7 @@ import glob from "fast-glob";
 import * as path from "path";
 import fs from "fs-extra";
 import * as chokidar from "chokidar";
+import dayjs from "dayjs";
 
 import { AlbumArt as RawAlbumArt, Audio } from "@async3619/merry-go-round";
 
@@ -19,10 +20,15 @@ import { Album } from "@main/album/models/album.model";
 import { AlbumArt } from "@main/album-art/models/album-art.model";
 import { Music } from "@main/music/models/music.model";
 
+import { InjectHauntedClient } from "@main/haunted/haunted.decorator";
+import type { HauntedClient } from "@main/haunted/haunted.module";
+
 import { SCANNING_STATE_CHANGED } from "@main/library/library.constants";
 import { FileEvent, Scanner } from "@main/library/utils/scanner.model";
 
 import pubSub from "@main/pubsub";
+import { Nullable } from "@common/types";
+import { fetchUrlToBuffer } from "@main/utils/fetchUrlToBuffer";
 
 @Injectable()
 export class LibraryService implements OnModuleInit, OnModuleDestroy {
@@ -35,6 +41,7 @@ export class LibraryService implements OnModuleInit, OnModuleDestroy {
         @Inject(ArtistService) private readonly artistService: ArtistService,
         @Inject(AlbumArtService) private readonly albumArtService: AlbumArtService,
         @Inject(ConfigService) private readonly configService: ConfigService,
+        @InjectHauntedClient() private readonly client: HauntedClient,
     ) {}
 
     public async onModuleInit() {
@@ -186,5 +193,54 @@ export class LibraryService implements OnModuleInit, OnModuleDestroy {
 
             audio.save(track.path);
         }
+    }
+
+    public async syncAlbumData(albumId: number, hauntedId: string, locale: Nullable<string>) {
+        const client = this.client();
+        const album = await client.album.query({
+            id: hauntedId,
+            locale: locale || undefined,
+        });
+
+        if (!album) {
+            throw new Error(`Album information with the given id (${hauntedId}) does not exist`);
+        }
+
+        const targetAlbum = await this.albumService.findById(albumId, ["musics", "leadArtists", "albumArts"]);
+        if (!targetAlbum) {
+            throw new Error(`Target album with the given id (${albumId}) not found`);
+        }
+
+        let albumArt: RawAlbumArt | null = null;
+        const largestAlbumArt = _.maxBy(album.albumArts, art => art.width || 0) || album.albumArts[0];
+        if (largestAlbumArt) {
+            const buffer = await fetchUrlToBuffer(largestAlbumArt.url);
+            albumArt = await RawAlbumArt.fromBuffer(buffer);
+        }
+
+        for (const music of targetAlbum.musics) {
+            const matchedTrack = album.tracks.find(track => track.track === music.track);
+            if (!matchedTrack) {
+                continue;
+            }
+
+            const audio = Audio.fromFile(music.path);
+            audio.title = matchedTrack.title;
+            audio.album = album.title;
+            audio.track = matchedTrack.track;
+            audio.disc = matchedTrack.disc;
+            audio.year = dayjs(album.releaseDate, "YYYY-MM-DD").year();
+            audio.artist = matchedTrack.artists.map(artist => artist.name).join("\0");
+            audio.albumArtist = album.artists.map(artist => artist.name).join("\0");
+
+            if (albumArt) {
+                audio.clearAlbumArts();
+                audio.addAlbumArt(albumArt);
+            }
+
+            audio.save(music.path);
+        }
+
+        return true;
     }
 }
