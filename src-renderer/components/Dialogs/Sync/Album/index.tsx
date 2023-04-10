@@ -36,7 +36,7 @@ export default function AlbumSyncDialog(props: AlbumSyncDialogProps) {
         ),
     });
 
-    const searchAlbums = useSearchAlbums(locales, `${leadArtistNames.join(", ")} ${albumName}`);
+    const searchAlbums = useSearchAlbums(locales, albumName, leadArtistNames.join(", "));
 
     return (
         <FormDialog {...rest} form={form} formId="album-update-form">

@@ -205,7 +205,6 @@ export default class Album extends React.Component<AlbumProps, AlbumStates> {
             },
         });
     };
-
     private handleSync = async () => {
         if (!this.state.album) {
             throw new Error("Album not found");
@@ -226,7 +225,7 @@ export default class Album extends React.Component<AlbumProps, AlbumStates> {
             },
         } = result;
 
-        const { data } = await this.props.client.mutate<SyncAlbumDataMutation, SyncAlbumDataMutationVariables>({
+        await this.props.client.mutate<SyncAlbumDataMutation, SyncAlbumDataMutationVariables>({
             mutation: SyncAlbumDataDocument,
             variables: {
                 albumId: this.state.album.id,
@@ -234,10 +233,7 @@ export default class Album extends React.Component<AlbumProps, AlbumStates> {
                 locale: locale,
             },
         });
-
-        console.log(data);
     };
-
     private handleOptionClick = ({ value }: ButtonOptionItem) => {
         switch (value) {
             case "sync":
