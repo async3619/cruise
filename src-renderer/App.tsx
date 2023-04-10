@@ -26,7 +26,16 @@ declare global {
 }
 
 export default function App() {
-    const [queryClient] = React.useState(() => new QueryClient());
+    const [queryClient] = React.useState(
+        () =>
+            new QueryClient({
+                defaultOptions: {
+                    queries: {
+                        cacheTime: 0,
+                    },
+                },
+            }),
+    );
     const [trpcClient] = React.useState(() =>
         haunted.createClient({
             links: [

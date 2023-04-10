@@ -6,8 +6,9 @@ import { yupResolver } from "@hookform/resolvers/yup";
 
 import { Box, CircularProgress, Typography } from "@mui/material";
 
-import { DialogPropBase } from "@dialogs";
+import { DialogButtonType, DialogPropBase } from "@dialogs";
 import FormDialog from "@dialogs/Form";
+import useDialog from "@dialogs/useDialog";
 
 import { Root } from "@dialogs/Sync/Album/index.styles";
 import AlbumSyncView from "@dialogs/Sync/Album/View";
@@ -25,8 +26,9 @@ export interface AlbumSyncDialogProps extends DialogPropBase<AlbumSyncFormValues
 }
 
 export default function AlbumSyncDialog(props: AlbumSyncDialogProps) {
-    const { albumName, leadArtistNames, ...rest } = props;
+    const { albumName, leadArtistNames, onClose, ...rest } = props;
     const locales = useLocales();
+    const dialog = useDialog();
     const form = useForm<AlbumSyncFormValues>({
         mode: "all",
         resolver: yupResolver(
@@ -36,18 +38,34 @@ export default function AlbumSyncDialog(props: AlbumSyncDialogProps) {
         ),
     });
 
-    const searchAlbums = useSearchAlbums(locales, albumName, leadArtistNames.join(", "));
+    const { data, isError, error, isLoading } = useSearchAlbums(locales, albumName, leadArtistNames.join(", "));
+
+    React.useEffect(() => {
+        if (!error || !isError) {
+            return;
+        }
+
+        onClose({
+            reason: "button-clicked",
+            buttonType: DialogButtonType.Cancel,
+        });
+
+        dialog.pushSnackbar({
+            message: `Failed to search albums: ${error.message}`,
+            type: "error",
+        });
+    }, [error, isError, onClose, dialog]);
 
     return (
-        <FormDialog {...rest} form={form} formId="album-update-form">
-            {searchAlbums.isLoading && (
+        <FormDialog {...rest} onClose={onClose} form={form} formId="album-update-form">
+            {(isLoading || isError) && (
                 <Root>
                     <Box display="flex" justifyContent="center">
                         <CircularProgress size={36} />
                     </Box>
                 </Root>
             )}
-            {!searchAlbums.isLoading && searchAlbums.data && (
+            {!isLoading && data && (
                 <Root>
                     <Typography variant="body1" fontSize="1.1rem" sx={{ mb: 2 }}>
                         These are the albums that we found for you. Please select an album that you want to sync with.
@@ -59,7 +77,7 @@ export default function AlbumSyncDialog(props: AlbumSyncDialogProps) {
                                 innerRef={ref}
                                 value={value}
                                 onChange={onChange}
-                                searchedAlbums={searchAlbums.data}
+                                searchedAlbums={data}
                                 {...rest}
                             />
                         )}

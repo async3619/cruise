@@ -32,6 +32,10 @@ export function useSearchAlbums(locales: string[] | null, albumName: string, lea
     const error = searchAlbums.error ?? searchLocalAlbums.error ?? null;
 
     const result = React.useMemo(() => {
+        if (isLoading || isError) {
+            return null;
+        }
+
         let data = [
             ...(searchLocalAlbums.data?.map(album => ({ locale: locales?.[0], album })) || []),
             ...(searchAlbums.data?.map(album => ({ locale: null, album })) || []),
@@ -54,7 +58,7 @@ export function useSearchAlbums(locales: string[] | null, albumName: string, lea
 
         // get unique items by deep equality
         return _.uniqWith(data, (a, b) => _.isEqual(a.album, b.album));
-    }, [albumName, searchLocalAlbums.data, searchAlbums.data, locales]);
+    }, [albumName, searchLocalAlbums.data, searchAlbums.data, locales, isLoading, isError]);
 
     return {
         isLoading,
@@ -64,4 +68,4 @@ export function useSearchAlbums(locales: string[] | null, albumName: string, lea
     };
 }
 
-export type SearchedAlbum = ReturnType<typeof useSearchAlbums>["data"][0];
+export type SearchedAlbum = Exclude<ReturnType<typeof useSearchAlbums>["data"], null>[0];
