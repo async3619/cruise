@@ -60,7 +60,7 @@ export const Root = styled.div<{ withoutPadding?: boolean }>`
     margin: 0;
     padding: ${({ theme, withoutPadding }) => theme.spacing(0, withoutPadding ? 0 : 1)};
 
-    &:last-child {
+    &:last-of-type {
         ${Button} {
             margin-bottom: 0;
         }

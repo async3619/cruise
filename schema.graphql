@@ -88,6 +88,18 @@ type Music {
   albumArts: [AlbumArt!]!
 }
 
+type SearchSuggestion {
+  id: Int!
+  type: SearchSuggestionType!
+  name: String!
+}
+
+enum SearchSuggestionType {
+  Artist
+  Album
+  Music
+}
+
 type SearchResult {
   musics: [Music!]!
   albums: [Album!]!
@@ -112,6 +124,7 @@ type Query {
   config: Config!
   needScan: Boolean!
   search(query: String!): SearchResult!
+  searchSuggestions(query: String!, limit: Int!): [SearchSuggestion!]!
 }
 
 type Mutation {

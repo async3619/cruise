@@ -4,6 +4,7 @@ import { Args, Int, Mutation, Query, Resolver, Subscription } from "@nestjs/grap
 import { LibraryService } from "@main/library/library.service";
 import { SCANNING_STATE_CHANGED } from "@main/library/library.constants";
 import { SearchResult } from "@main/library/models/search-result.dto";
+import { SearchSuggestion } from "@main/library/models/search-suggestion.dto";
 
 import pubSub from "@main/pubsub";
 
@@ -21,6 +22,14 @@ export class LibraryResolver {
     @Query(() => SearchResult)
     public async search(@Args("query", { type: () => String }) query: string): Promise<SearchResult> {
         return this.libraryService.search(query);
+    }
+
+    @Query(() => [SearchSuggestion])
+    public async searchSuggestions(
+        @Args("query", { type: () => String }) query: string,
+        @Args("limit", { type: () => Int }) limit: number,
+    ): Promise<SearchSuggestion[]> {
+        return this.libraryService.getSearchSuggestions(query, limit);
     }
 
     @Mutation(() => Boolean)

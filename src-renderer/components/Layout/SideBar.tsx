@@ -9,11 +9,14 @@ import Autocomplete from "@components/UI/Autocomplete";
 import { ListItemType, NormalListItem } from "@components/List/index.types";
 import { Backdrop, Root, SearchWrapper, Wrapper } from "@components/Layout/SideBar.styles";
 
+import { SearchSuggestionsDocument, SearchSuggestionsQuery, SearchSuggestionsQueryVariables } from "@queries";
+import withClient, { WithClientProps } from "@graphql/withClient";
+
 import { NAVIGATION_ITEMS, SHRINK_NAVIGATION_ITEMS } from "@constants/navigation";
 
 export type SideBarState = "default" | "shrink" | "hidden";
 
-interface SideBarProps extends WithLayoutProps {
+interface SideBarProps extends WithLayoutProps, WithClientProps {
     navigate: ReturnType<typeof useNavigate>;
     location: ReturnType<typeof useLocation>;
     state: SideBarState;
@@ -46,8 +49,31 @@ class SideBar extends React.Component<SideBarProps> {
         }
     }
 
-    private handleSearchChange = (_: any, value: string) => {
-        this.setState({ searchValue: value });
+    private getSearchOptions = async (query: string) => {
+        const { client } = this.props;
+        const { data } = await client.query<SearchSuggestionsQuery, SearchSuggestionsQueryVariables>({
+            query: SearchSuggestionsDocument,
+            variables: {
+                query,
+            },
+        });
+
+        return data.searchSuggestions.map(item => ({
+            label: item.name,
+            value: `${item.id}-${item.name}-${item.type}`,
+        }));
+    };
+
+    private handleSearchChange = (_: any, value: SearchOption | string) => {
+        let searchValue;
+        if (typeof value === "string") {
+            searchValue = value;
+        } else {
+            searchValue = value.label;
+        }
+
+        this.props.navigate(`/search/${encodeURIComponent(searchValue)}`);
+        this.setState({ searchValue: "" });
     };
     private handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         const { searchValue } = this.state;
@@ -105,14 +131,15 @@ class SideBar extends React.Component<SideBarProps> {
             >
                 <SearchWrapper>
                     <Autocomplete<SearchOption>
+                        autoComplete
                         value={searchValue}
                         multiple={false}
                         idField="value"
                         labelField="label"
-                        options={[]}
+                        options={this.getSearchOptions}
                         inputProps={{ placeholder: "Search" }}
                         onKeyDown={this.handleSearchKeyDown}
-                        onChange={this.handleSearchChange}
+                        onSelect={this.handleSearchChange}
                     />
                 </SearchWrapper>
                 <List
@@ -139,4 +166,4 @@ class SideBar extends React.Component<SideBarProps> {
     }
 }
 
-export default withLayout(SideBar);
+export default withClient(withLayout(SideBar));

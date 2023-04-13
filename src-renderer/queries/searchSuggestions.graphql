@@ -1,0 +1,7 @@
+query searchSuggestions($query: String!) {
+    searchSuggestions(query: $query, limit: 15) {
+        id
+        type
+        name
+    }
+}

@@ -5,6 +5,8 @@ import { Typography } from "@mui/material";
 import SearchPage from "@components/Page/SearchPage";
 import MusicList from "@components/UI/MusicList";
 import AlbumList from "@components/UI/AlbumList";
+import LinkButton from "@components/UI/LinkButton";
+import ArtistList from "@components/UI/ArtistList";
 
 import {
     ArtistAlbumMusicsDocument,
@@ -21,8 +23,6 @@ import {
 } from "@utils/types";
 
 import { Root, Section, SectionTitle } from "@pages/Search.styles";
-import ArtistList from "@components/UI/ArtistList";
-import Button from "@components/UI/Button";
 
 export default function Search({ client, params, navigate, player }: BasePageProps<{ query: string }>) {
     if (!params.query) {
@@ -69,9 +69,9 @@ export default function Search({ client, params, navigate, player }: BasePagePro
                                     Musics ({musics.length})
                                 </Typography>
                                 {musics.length > 5 && (
-                                    <Button href={`/search/${params.query}/musics`} variant="text" color="primary">
+                                    <LinkButton href={`/search/${params.query}/musics`} variant="text" color="primary">
                                         Show All
-                                    </Button>
+                                    </LinkButton>
                                 )}
                             </SectionTitle>
                             <MusicList items={musics.slice(0, 5)} onPlay={handlePlayMusic} />
@@ -84,9 +84,9 @@ export default function Search({ client, params, navigate, player }: BasePagePro
                                     Albums ({albums.length})
                                 </Typography>
                                 {albums.length > 5 && (
-                                    <Button href={`/search/${params.query}/albums`} variant="text" color="primary">
+                                    <LinkButton href={`/search/${params.query}/albums`} variant="text" color="primary">
                                         Show All
-                                    </Button>
+                                    </LinkButton>
                                 )}
                             </SectionTitle>
                             <AlbumList items={albums.slice(0, 5)} onPlay={handlePlayAlbum} onClick={handleClickAlbum} />
@@ -99,9 +99,9 @@ export default function Search({ client, params, navigate, player }: BasePagePro
                                     Artists ({artists.length})
                                 </Typography>
                                 {artists.length > 5 && (
-                                    <Button href={`/search/${params.query}/artists`} variant="text" color="primary">
+                                    <LinkButton href={`/search/${params.query}/artists`} variant="text" color="primary">
                                         Show All
-                                    </Button>
+                                    </LinkButton>
                                 )}
                             </SectionTitle>
                             <ArtistList

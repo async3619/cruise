@@ -28,6 +28,7 @@ export interface BaseAutocompleteProps<TItem extends BaseObject> {
     options: TItem[] | ((query: string) => Promise<TItem[]>);
     labelField: FieldPath<TItem>;
     idField: FieldPath<TItem>;
+    autoComplete?: boolean;
     onChange?(e: React.SyntheticEvent, value: string): void;
     label?: string;
     inputRef?: React.Ref<HTMLInputElement>;
@@ -85,7 +86,8 @@ export default class Autocomplete<TItem extends BaseObject> extends React.Compon
         const { open, inputValue } = this.state;
         const needFetch =
             typeof options === "function" &&
-            ((open && !prevState.open) || (inputValue !== prevState.inputValue && inputValue));
+            ((open && !prevState.open) || (inputValue !== prevState.inputValue && inputValue)) &&
+            inputValue;
 
         if (needFetch) {
             this.loadData();
@@ -152,6 +154,14 @@ export default class Autocomplete<TItem extends BaseObject> extends React.Compon
         });
     };
 
+    private handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        const { open } = this.state;
+        if (open) {
+            return;
+        }
+
+        this.props.onKeyDown?.(e);
+    };
     private handleOpen = () => {
         this.setState({ open: true });
     };
@@ -211,6 +221,7 @@ export default class Autocomplete<TItem extends BaseObject> extends React.Compon
         return (
             <AutocompleteItem
                 {...props}
+                key={props.id}
                 option={option}
                 labelField={this.props.labelField}
                 state={state}
@@ -244,7 +255,7 @@ export default class Autocomplete<TItem extends BaseObject> extends React.Compon
     };
 
     public render() {
-        const { multiple, value, onKeyDown } = this.props;
+        const { multiple, value, autoComplete } = this.props;
         const { open, items, inputValue, loading } = this.state;
 
         return (
@@ -253,6 +264,7 @@ export default class Autocomplete<TItem extends BaseObject> extends React.Compon
                     disableClearable
                     freeSolo
                     handleHomeEndKeys
+                    autoComplete={autoComplete}
                     value={value}
                     options={items || []}
                     open={open}
@@ -264,7 +276,7 @@ export default class Autocomplete<TItem extends BaseObject> extends React.Compon
                     onClose={this.handleClose}
                     onChange={this.handleChange}
                     onInputChange={this.handleInputChange}
-                    onKeyDown={onKeyDown}
+                    onKeyDown={this.handleKeyDown}
                     isOptionEqualToValue={this.isOptionEqualToValue}
                     getOptionLabel={this.getOptionLabel}
                     renderInput={this.renderInput}

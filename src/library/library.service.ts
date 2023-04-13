@@ -4,6 +4,7 @@ import * as path from "path";
 import fs from "fs-extra";
 import * as chokidar from "chokidar";
 import dayjs from "dayjs";
+import stringSimilarity from "string-similarity";
 
 import { AlbumArt as RawAlbumArt, Audio } from "@async3619/merry-go-round";
 
@@ -30,6 +31,7 @@ import pubSub from "@main/pubsub";
 import { Nullable } from "@common/types";
 import { fetchUrlToBuffer } from "@main/utils/fetchUrlToBuffer";
 import { SearchResult } from "@main/library/models/search-result.dto";
+import { SearchSuggestion, SearchSuggestionType } from "@main/library/models/search-suggestion.dto";
 
 @Injectable()
 export class LibraryService implements OnModuleInit, OnModuleDestroy {
@@ -245,7 +247,7 @@ export class LibraryService implements OnModuleInit, OnModuleDestroy {
         return true;
     }
 
-    public async search(query: string): Promise<SearchResult> {
+    private async getMatchedMedia(query: string): Promise<[Music[], Album[], Artist[]]> {
         const musics = await this.musicService.findAll();
         const albums = await this.albumService.findAll();
         const artists = await this.artistService.findLeadArtists();
@@ -256,11 +258,47 @@ export class LibraryService implements OnModuleInit, OnModuleDestroy {
         const matchedAlbums = albums.filter(album => album.title.toLowerCase().includes(query));
         const matchedArtists = artists.filter(artist => artist.name.toLowerCase().includes(query));
 
+        return [matchedMusics, matchedAlbums, matchedArtists];
+    }
+
+    public async search(query: string): Promise<SearchResult> {
+        const [matchedMusics, matchedAlbums, matchedArtists] = await this.getMatchedMedia(query);
+
         return {
             total: matchedMusics.length + matchedAlbums.length + matchedArtists.length,
             artists: matchedArtists,
             albums: matchedAlbums,
             musics: matchedMusics,
         };
+    }
+    public async getSearchSuggestions(query: string, limit: number): Promise<SearchSuggestion[]> {
+        const [matchedMusics, matchedAlbums, matchedArtists] = await this.getMatchedMedia(query);
+        const allItems = [...matchedMusics, ...matchedAlbums, ...matchedArtists];
+        const similarities = allItems.map<SearchSuggestion & { similarity: number }>(item => {
+            let name: string;
+            if ("name" in item) {
+                name = item.name;
+            } else {
+                name = item.title;
+            }
+
+            let type: SearchSuggestionType;
+            if (item instanceof Music) {
+                type = SearchSuggestionType.Music;
+            } else if (item instanceof Album) {
+                type = SearchSuggestionType.Album;
+            } else {
+                type = SearchSuggestionType.Artist;
+            }
+
+            return {
+                id: item.id,
+                type,
+                name,
+                similarity: stringSimilarity.compareTwoStrings(query, name),
+            };
+        });
+
+        return _.orderBy(similarities, ["similarity"], ["desc"]).slice(0, limit);
     }
 }
