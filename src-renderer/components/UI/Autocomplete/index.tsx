@@ -20,7 +20,7 @@ import AutocompletePaper from "@components/UI/Autocomplete/Paper";
 import AutocompleteListbox from "@components/UI/Autocomplete/Listbox";
 import AutocompleteItem from "@components/UI/Autocomplete/Item";
 
-import { Root } from "@components/UI/Autocomplete/index.styles";
+import { EndAdornmentIcon, Root } from "@components/UI/Autocomplete/index.styles";
 
 import { BaseObject, FieldPath, getFromPath } from "@utils/fieldPath";
 
@@ -35,6 +35,7 @@ export interface BaseAutocompleteProps<TItem extends BaseObject> {
     error?: boolean;
     inputProps?: TextFieldProps;
     onKeyDown?(e: React.KeyboardEvent<HTMLInputElement>): void;
+    endAdornment?: React.ReactNode;
 }
 export interface SingularAutocompleteProps<TItem extends BaseObject> extends BaseAutocompleteProps<TItem> {
     multiple?: false;
@@ -195,7 +196,7 @@ export default class Autocomplete<TItem extends BaseObject> extends React.Compon
 
     private renderInput = (params: AutocompleteRenderInputParams) => {
         const { open, loading } = this.state;
-        const { label, inputRef, error, inputProps } = this.props;
+        const { label, inputRef, error, inputProps, endAdornment } = this.props;
 
         return (
             <TextField
@@ -207,7 +208,12 @@ export default class Autocomplete<TItem extends BaseObject> extends React.Compon
                 open={open}
                 error={error}
                 startAdornment={params.InputProps.startAdornment}
-                endAdornment={loading && <CircularProgress size={16} sx={{ display: "block" }} />}
+                endAdornment={
+                    <>
+                        {loading && <CircularProgress size={16} sx={{ display: "block" }} />}
+                        {endAdornment && <EndAdornmentIcon>{endAdornment}</EndAdornmentIcon>}
+                    </>
+                }
             />
         );
     };

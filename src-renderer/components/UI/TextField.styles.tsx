@@ -91,5 +91,10 @@ export const InputWrapper = styled.div`
 `;
 
 export const EndAdornment = styled.div`
+    height: 32px;
+
     padding: ${({ theme }) => theme.spacing(0, 1.5)};
+
+    display: flex;
+    align-items: center;
 `;

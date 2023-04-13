@@ -2,9 +2,11 @@ import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Measure, { ContentRect, MeasuredComponentProps } from "react-measure";
 
+import SearchIcon from "@mui/icons-material/Search";
+
 import withLayout, { WithLayoutProps } from "@components/Layout/withLayout";
-import List from "@components/List";
 import Autocomplete from "@components/UI/Autocomplete";
+import List from "@components/List";
 
 import { ListItemType, NormalListItem } from "@components/List/index.types";
 import { Backdrop, Root, SearchWrapper, Wrapper } from "@components/Layout/SideBar.styles";
@@ -140,6 +142,7 @@ class SideBar extends React.Component<SideBarProps> {
                         inputProps={{ placeholder: "Search" }}
                         onKeyDown={this.handleSearchKeyDown}
                         onSelect={this.handleSearchChange}
+                        endAdornment={<SearchIcon />}
                     />
                 </SearchWrapper>
                 <List
