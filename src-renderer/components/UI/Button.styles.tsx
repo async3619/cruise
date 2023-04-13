@@ -1,7 +1,20 @@
 import styled from "@emotion/styled";
-import { Button, ButtonProps } from "@mui/material";
+import { alpha, Button, ButtonProps } from "@mui/material";
 
 import { getBackColor, getTextColor } from "@utils/styles";
+
+export const TextRoot = styled(Button)`
+    height: ${({ theme }) => theme.spacing(4)};
+
+    padding: ${({ theme }) => theme.spacing(0, 1.5)};
+
+    text-transform: none;
+
+    &:active {
+        background-color: ${({ theme, color }) =>
+            alpha(getBackColor(theme, color, { darken: 0.03 }, { lighten: 0.2 }), 0.1)};
+    }
+`;
 
 export const Root = styled(Button)`
     text-transform: none;

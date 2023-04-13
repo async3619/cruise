@@ -29,6 +29,7 @@ import { FileEvent, Scanner } from "@main/library/utils/scanner.model";
 import pubSub from "@main/pubsub";
 import { Nullable } from "@common/types";
 import { fetchUrlToBuffer } from "@main/utils/fetchUrlToBuffer";
+import { SearchResult } from "@main/library/models/search-result.dto";
 
 @Injectable()
 export class LibraryService implements OnModuleInit, OnModuleDestroy {
@@ -242,5 +243,24 @@ export class LibraryService implements OnModuleInit, OnModuleDestroy {
         }
 
         return true;
+    }
+
+    public async search(query: string): Promise<SearchResult> {
+        const musics = await this.musicService.findAll();
+        const albums = await this.albumService.findAll();
+        const artists = await this.artistService.findLeadArtists();
+
+        query = query.toLowerCase();
+
+        const matchedMusics = musics.filter(music => music.title.toLowerCase().includes(query));
+        const matchedAlbums = albums.filter(album => album.title.toLowerCase().includes(query));
+        const matchedArtists = artists.filter(artist => artist.name.toLowerCase().includes(query));
+
+        return {
+            total: matchedMusics.length + matchedAlbums.length + matchedArtists.length,
+            artists: matchedArtists,
+            albums: matchedAlbums,
+            musics: matchedMusics,
+        };
     }
 }

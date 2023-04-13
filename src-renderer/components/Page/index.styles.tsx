@@ -45,12 +45,12 @@ export const Root = styled.div`
 
 export const Header = styled.header`
     margin: ${({ theme }) => theme.spacing(0)};
-    padding: ${({ theme }) => theme.spacing(0, 7)};
+    padding: ${({ theme }) => theme.spacing(0, 7, 2)};
 
     flex: 0 0 auto;
 
     ${({ theme }) => theme.breakpoints.down("md")} {
-        padding: ${({ theme }) => theme.spacing(0, 2)};
+        padding: ${({ theme }) => theme.spacing(0, 2, 2)};
     }
 `;
 
@@ -71,6 +71,6 @@ export const Main = styled.main`
     animation: ${MainAnimation} 0.35s ${({ theme }) => theme.transitions.easing.easeInOut} forwards;
 
     ${({ theme }) => theme.breakpoints.down("md")} {
-        padding: ${({ theme }) => theme.spacing(0, 2)};
+        padding: ${({ theme }) => theme.spacing(0, 2, 2)};
     }
 `;

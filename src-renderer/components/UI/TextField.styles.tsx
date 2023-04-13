@@ -24,6 +24,7 @@ export const Wrapper = styled.div<{ withAdornment: boolean }>`
 
     padding: ${({ theme, withAdornment }) => theme.spacing(withAdornment ? 0.75 : 0, 0)};
     margin: ${({ theme }) => theme.spacing(0.5, 0, 0)};
+    border-radius: 4px;
 
     display: flex;
     align-items: center;
@@ -71,7 +72,7 @@ export const Label = styled.label<{ error?: boolean; open?: boolean }>`
 
     ${Graphics} {
         border: 1px solid;
-        border-color: ${({ error, theme }) => (error ? `${theme.palette.error.light} !important` : "#f0f0f0")};
+        border-color: ${({ error, theme }) => (error ? `${theme.palette.error.light} !important` : "#e5e5e5")};
         border-bottom-color: ${({ error, theme }) => (error ? `${theme.palette.error.dark} !important` : "#8d8d8d")};
         border-radius: 4px 4px ${({ open }) => (open ? "0" : "4px")} ${({ open }) => (open ? "0" : "4px")};
     }

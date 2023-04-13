@@ -45,7 +45,7 @@ class MusicsPage extends React.Component<MusicsPageProps, MusicsPageStates> {
                 <Typography variant="h4" lineHeight={1}>
                     {title}
                 </Typography>
-                <Box mt={4} mb={2}>
+                <Box mt={4}>
                     <Button
                         color="primary"
                         icon={ShuffleIcon}

@@ -4,7 +4,7 @@ import shortid from "shortid";
 import { ButtonProps as MuiButtonProps, ClickAwayListener, Grow, Popper, Typography } from "@mui/material";
 import ArrowDropDownRoundedIcon from "@mui/icons-material/ArrowDropDownRounded";
 
-import { OptionButton, OptionContainer, OptionWrapper, Root, Wrapper } from "@components/UI/Button.styles";
+import { OptionButton, OptionContainer, OptionWrapper, Root, TextRoot, Wrapper } from "@components/UI/Button.styles";
 import ListItem from "@components/List/Item";
 
 export interface ButtonOptionItem {
@@ -14,6 +14,7 @@ export interface ButtonOptionItem {
 }
 
 export interface ButtonProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "children"> {
+    variant?: "contained" | "text";
     children: string;
     icon?: React.ComponentType;
     color?: MuiButtonProps["color"];
@@ -22,7 +23,14 @@ export interface ButtonProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonE
     onOptionClick?(option: ButtonOptionItem): void;
 }
 
-export default function Button({ children, icon: Icon, options, onOptionClick, ...props }: ButtonProps) {
+export default function Button({
+    variant = "contained",
+    children,
+    icon: Icon,
+    options,
+    onOptionClick,
+    ...props
+}: ButtonProps) {
     const [open, setOpen] = React.useState(false);
     const anchorRef = React.useRef<HTMLDivElement>(null);
     const internalOptions = React.useMemo(() => {
@@ -48,11 +56,13 @@ export default function Button({ children, icon: Icon, options, onOptionClick, .
         setOpen(false);
     };
 
+    const RootComponent = variant === "text" ? TextRoot : Root;
+
     const content = (
-        <Root {...props}>
+        <RootComponent {...props}>
             {Icon && <Icon />}
             <Typography lineHeight={1}>{children}</Typography>
-        </Root>
+        </RootComponent>
     );
 
     if (!internalOptions) {

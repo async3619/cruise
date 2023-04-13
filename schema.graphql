@@ -88,6 +88,13 @@ type Music {
   albumArts: [AlbumArt!]!
 }
 
+type SearchResult {
+  musics: [Music!]!
+  albums: [Album!]!
+  artists: [Artist!]!
+  total: Int!
+}
+
 type Config {
   libraryDirectories: [String!]!
 }
@@ -104,6 +111,7 @@ type Query {
   isMaximized: Boolean!
   config: Config!
   needScan: Boolean!
+  search(query: String!): SearchResult!
 }
 
 type Mutation {

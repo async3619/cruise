@@ -14,7 +14,7 @@ import {
     createFilterOptions,
 } from "@mui/material";
 
-import TextField from "@components/UI/TextField";
+import TextField, { TextFieldProps } from "@components/UI/TextField";
 
 import AutocompletePaper from "@components/UI/Autocomplete/Paper";
 import AutocompleteListbox from "@components/UI/Autocomplete/Listbox";
@@ -25,22 +25,25 @@ import { Root } from "@components/UI/Autocomplete/index.styles";
 import { BaseObject, FieldPath, getFromPath } from "@utils/fieldPath";
 
 export interface BaseAutocompleteProps<TItem extends BaseObject> {
-    options: TItem[] | (() => Promise<TItem[]>);
+    options: TItem[] | ((query: string) => Promise<TItem[]>);
     labelField: FieldPath<TItem>;
     idField: FieldPath<TItem>;
     onChange?(e: React.SyntheticEvent, value: string): void;
     label?: string;
-    value: Array<string | TItem>;
     inputRef?: React.Ref<HTMLInputElement>;
     error?: boolean;
+    inputProps?: TextFieldProps;
+    onKeyDown?(e: React.KeyboardEvent<HTMLInputElement>): void;
 }
 export interface SingularAutocompleteProps<TItem extends BaseObject> extends BaseAutocompleteProps<TItem> {
     multiple?: false;
     onSelect?(e: React.SyntheticEvent, value: TItem | string): void;
+    value: string;
 }
 export interface MultipleAutocompleteProps<TItem extends BaseObject> extends BaseAutocompleteProps<TItem> {
     multiple: true;
     onSelect?(e: React.SyntheticEvent, value: Array<TItem | string>): void;
+    value: Array<string | TItem>;
 }
 
 export type AutocompleteProps<TItem extends BaseObject> =
@@ -51,7 +54,7 @@ export interface AutocompleteStates<TItem extends BaseObject> {
     open: boolean;
     items: Array<TItem | string> | null;
     inputValue: string;
-    fetchOptions(callback: (items: TItem[]) => void): void;
+    fetchOptions(query: string, callback: (items: TItem[]) => void): void;
     loading: boolean;
 }
 
@@ -66,11 +69,11 @@ export default class Autocomplete<TItem extends BaseObject> extends React.Compon
         open: false,
         items: typeof this.props.options === "function" ? null : this.props.options,
         inputValue: "",
-        fetchOptions: _.debounce((callback: (items: TItem[]) => void) => {
+        fetchOptions: _.debounce((query: string, callback: (items: TItem[]) => void) => {
             if (typeof this.props.options === "function") {
-                this.props.options().then(callback);
+                this.props.options(query).then(callback);
             }
-        }, 400),
+        }, 500),
         loading: false,
     };
 
@@ -79,8 +82,10 @@ export default class Autocomplete<TItem extends BaseObject> extends React.Compon
         prevState: Readonly<AutocompleteStates<TItem>>,
     ) {
         const { options } = this.props;
-        const { open, loading, items } = this.state;
-        const needFetch = typeof options === "function" && !loading && open && !prevState.open && !items;
+        const { open, inputValue } = this.state;
+        const needFetch =
+            typeof options === "function" &&
+            ((open && !prevState.open) || (inputValue !== prevState.inputValue && inputValue));
 
         if (needFetch) {
             this.loadData();
@@ -132,13 +137,13 @@ export default class Autocomplete<TItem extends BaseObject> extends React.Compon
     };
     private loadData = () => {
         const { options } = this.props;
-        const { fetchOptions } = this.state;
+        const { fetchOptions, inputValue } = this.state;
         if (typeof options !== "function") {
             return undefined;
         }
 
         this.setState({ loading: true });
-        fetchOptions(items => {
+        fetchOptions(inputValue, items => {
             if (this.unmounted) {
                 return;
             }
@@ -180,11 +185,12 @@ export default class Autocomplete<TItem extends BaseObject> extends React.Compon
 
     private renderInput = (params: AutocompleteRenderInputParams) => {
         const { open, loading } = this.state;
-        const { label, inputRef, error } = this.props;
+        const { label, inputRef, error, inputProps } = this.props;
 
         return (
             <TextField
                 {...params.inputProps}
+                {...inputProps}
                 ref={mergeRefs([(params.inputProps as any).ref, inputRef])}
                 wrapperRef={params.InputProps.ref}
                 label={label}
@@ -238,7 +244,7 @@ export default class Autocomplete<TItem extends BaseObject> extends React.Compon
     };
 
     public render() {
-        const { multiple, value } = this.props;
+        const { multiple, value, onKeyDown } = this.props;
         const { open, items, inputValue, loading } = this.state;
 
         return (
@@ -258,6 +264,7 @@ export default class Autocomplete<TItem extends BaseObject> extends React.Compon
                     onClose={this.handleClose}
                     onChange={this.handleChange}
                     onInputChange={this.handleInputChange}
+                    onKeyDown={onKeyDown}
                     isOptionEqualToValue={this.isOptionEqualToValue}
                     getOptionLabel={this.getOptionLabel}
                     renderInput={this.renderInput}

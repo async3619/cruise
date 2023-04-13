@@ -4,10 +4,10 @@ import Measure, { ContentRect, MeasuredComponentProps } from "react-measure";
 
 import withLayout, { WithLayoutProps } from "@components/Layout/withLayout";
 import List from "@components/List";
+import Autocomplete from "@components/UI/Autocomplete";
 
 import { ListItemType, NormalListItem } from "@components/List/index.types";
-
-import { Backdrop, Root, Wrapper } from "@components/Layout/SideBar.styles";
+import { Backdrop, Root, SearchWrapper, Wrapper } from "@components/Layout/SideBar.styles";
 
 import { NAVIGATION_ITEMS, SHRINK_NAVIGATION_ITEMS } from "@constants/navigation";
 
@@ -20,6 +20,12 @@ interface SideBarProps extends WithLayoutProps {
 }
 interface SideBarStates {
     selectedItem: ListItemType | undefined;
+    searchValue: string;
+}
+
+interface SearchOption {
+    label: string;
+    value: string;
 }
 
 class SideBar extends React.Component<SideBarProps> {
@@ -27,6 +33,7 @@ class SideBar extends React.Component<SideBarProps> {
         selectedItem: NAVIGATION_ITEMS.find(
             item => typeof item !== "string" && item.id === this.props.location.pathname,
         ),
+        searchValue: "",
     };
 
     public componentDidUpdate(prevProps: Readonly<SideBarProps>) {
@@ -39,6 +46,18 @@ class SideBar extends React.Component<SideBarProps> {
         }
     }
 
+    private handleSearchChange = (_: any, value: string) => {
+        this.setState({ searchValue: value });
+    };
+    private handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        const { searchValue } = this.state;
+        if (e.key !== "Enter" || !searchValue) {
+            return;
+        }
+
+        this.props.navigate(`/search/${encodeURIComponent(searchValue)}`);
+        this.setState({ searchValue: "" });
+    };
     private handleClick = (item: NormalListItem) => {
         if (item.id === "expand") {
             this.props.layout.setSideBarOpen(!this.props.layout.sideBarOpen);
@@ -74,7 +93,7 @@ class SideBar extends React.Component<SideBarProps> {
 
     private renderContent = ({ measureRef }: MeasuredComponentProps) => {
         const { state, layout } = this.props;
-        const { selectedItem } = this.state;
+        const { selectedItem, searchValue } = this.state;
         const items = state === "shrink" ? SHRINK_NAVIGATION_ITEMS : NAVIGATION_ITEMS;
 
         return (
@@ -84,6 +103,18 @@ class SideBar extends React.Component<SideBarProps> {
                 isHidden={state === "hidden"}
                 isOpen={layout.sideBarOpen}
             >
+                <SearchWrapper>
+                    <Autocomplete<SearchOption>
+                        value={searchValue}
+                        multiple={false}
+                        idField="value"
+                        labelField="label"
+                        options={[]}
+                        inputProps={{ placeholder: "Search" }}
+                        onKeyDown={this.handleSearchKeyDown}
+                        onChange={this.handleSearchChange}
+                    />
+                </SearchWrapper>
                 <List
                     iconOnly={state === "shrink" && !layout.sideBarOpen}
                     items={items}

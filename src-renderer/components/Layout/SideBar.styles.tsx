@@ -36,3 +36,7 @@ export const Backdrop = styled.div`
     bottom: 0;
     z-index: 8;
 `;
+
+export const SearchWrapper = styled.div`
+    padding: ${({ theme }) => theme.spacing(0, 2, 2)};
+`;

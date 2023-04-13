@@ -1,6 +1,6 @@
 import _ from "lodash";
 import { Class } from "utility-types";
-import { BaseEntity, In, Repository } from "typeorm";
+import { BaseEntity, In, Repository, FindOptionsRelations } from "typeorm";
 import type { FindOptionsWhere } from "typeorm/find-options/FindOptionsWhere";
 import type { FindOptionsOrder } from "typeorm/find-options/FindOptionsOrder";
 import type { QueryDeepPartialEntity } from "typeorm/query-builder/QueryPartialEntity";
@@ -12,8 +12,10 @@ interface BaseEntityClass extends BaseEntity {
 export class BaseService<T extends BaseEntityClass> {
     protected constructor(private readonly repository: Repository<T>, private readonly entityClass: Class<T>) {}
 
-    public async findAll() {
-        return this.repository.find();
+    public async findAll(relations?: FindOptionsRelations<T> | Array<Exclude<keyof T, number | symbol>>) {
+        return this.repository.find({
+            relations,
+        });
     }
     public async findById(id: number, relations?: Array<Exclude<keyof T, number | symbol>>) {
         const item = await this.repository.findOne({
