@@ -2,13 +2,9 @@ import React from "react";
 
 import { Typography } from "@mui/material";
 
-import Page from "@components/Page";
+import SearchPage from "@components/Page/SearchPage";
 import MusicList from "@components/UI/MusicList";
 import AlbumList from "@components/UI/AlbumList";
-import ArtistList from "@components/UI/ArtistList";
-import Button from "@components/UI/Button";
-
-import { Root, Section, SectionTitle } from "@pages/Search.styles";
 
 import {
     ArtistAlbumMusicsDocument,
@@ -24,24 +20,14 @@ import {
     MusicListItem,
 } from "@utils/types";
 
+import { Root, Section, SectionTitle } from "@pages/Search.styles";
+import ArtistList from "@components/UI/ArtistList";
+import Button from "@components/UI/Button";
+
 export default function Search({ client, params, navigate, player }: BasePageProps<{ query: string }>) {
     if (!params.query) {
         throw new Error("Query is not provided");
     }
-
-    const { data } = useSearchQuery({
-        variables: {
-            query: params.query,
-        },
-    });
-
-    if (!data) {
-        return <Page title={`"${params.query}" Search Result`} />;
-    }
-
-    const {
-        search: { musics, artists, albums },
-    } = data;
 
     const handlePlayMusic = (item: MusicListItem) => {
         player.play([item], item);
@@ -72,65 +58,61 @@ export default function Search({ client, params, navigate, player }: BasePagePro
         navigate(`/artists/${item.id}`);
     };
 
-    const handleMusicShowAllClick = () => {
-        navigate(`/search/${params.query}/musics`);
-    };
-    const handleArtistShowAllClick = () => {
-        navigate(`/search/${params.query}/artists`);
-    };
-    const handleAlbumShowAllClick = () => {
-        navigate(`/search/${params.query}/albums`);
-    };
-
     return (
-        <Page title={`Search results of "${params.query}"`}>
-            <Root>
-                {musics.length > 0 && (
-                    <Section>
-                        <SectionTitle>
-                            <Typography fontWeight={800} variant="h6">
-                                Tracks ({musics.length})
-                            </Typography>
-                            {musics.length > 5 && (
-                                <Button variant="text" color="primary" onClick={handleMusicShowAllClick}>
-                                    Show All
-                                </Button>
-                            )}
-                        </SectionTitle>
-                        <MusicList items={musics.slice(0, 5)} onPlay={handlePlayMusic} />
-                    </Section>
-                )}
-                {data.search.artists.length > 0 && (
-                    <Section>
-                        <SectionTitle>
-                            <Typography fontWeight={800} variant="h6">
-                                Artists ({artists.length})
-                            </Typography>
-                            {artists.length > 5 && (
-                                <Button variant="text" color="primary" onClick={handleArtistShowAllClick}>
-                                    Show All
-                                </Button>
-                            )}
-                        </SectionTitle>
-                        <ArtistList items={artists.slice(0, 5)} onPlay={handlePlayArtist} onClick={handleClickArtist} />
-                    </Section>
-                )}
-                {data.search.albums.length > 0 && (
-                    <Section>
-                        <SectionTitle>
-                            <Typography fontWeight={800} variant="h6">
-                                Albums ({albums.length})
-                            </Typography>
-                            {albums.length > 5 && (
-                                <Button variant="text" color="primary" onClick={handleAlbumShowAllClick}>
-                                    Show All
-                                </Button>
-                            )}
-                        </SectionTitle>
-                        <AlbumList items={albums.slice(0, 5)} onPlay={handlePlayAlbum} onClick={handleClickAlbum} />
-                    </Section>
-                )}
-            </Root>
-        </Page>
+        <SearchPage useQuery={useSearchQuery} query={params.query}>
+            {({ search: { musics, artists, albums } }) => (
+                <Root>
+                    {musics.length > 0 && (
+                        <Section>
+                            <SectionTitle>
+                                <Typography variant="h6" fontWeight={700}>
+                                    Musics ({musics.length})
+                                </Typography>
+                                {musics.length > 5 && (
+                                    <Button href={`/search/${params.query}/musics`} variant="text" color="primary">
+                                        Show All
+                                    </Button>
+                                )}
+                            </SectionTitle>
+                            <MusicList items={musics.slice(0, 5)} onPlay={handlePlayMusic} />
+                        </Section>
+                    )}
+                    {albums.length > 0 && (
+                        <Section>
+                            <SectionTitle>
+                                <Typography variant="h6" fontWeight={700}>
+                                    Albums ({albums.length})
+                                </Typography>
+                                {albums.length > 5 && (
+                                    <Button href={`/search/${params.query}/albums`} variant="text" color="primary">
+                                        Show All
+                                    </Button>
+                                )}
+                            </SectionTitle>
+                            <AlbumList items={albums.slice(0, 5)} onPlay={handlePlayAlbum} onClick={handleClickAlbum} />
+                        </Section>
+                    )}
+                    {artists.length > 0 && (
+                        <Section>
+                            <SectionTitle>
+                                <Typography variant="h6" fontWeight={700}>
+                                    Artists ({artists.length})
+                                </Typography>
+                                {artists.length > 5 && (
+                                    <Button href={`/search/${params.query}/artists`} variant="text" color="primary">
+                                        Show All
+                                    </Button>
+                                )}
+                            </SectionTitle>
+                            <ArtistList
+                                items={artists.slice(0, 5)}
+                                onPlay={handlePlayArtist}
+                                onClick={handleClickArtist}
+                            />
+                        </Section>
+                    )}
+                </Root>
+            )}
+        </SearchPage>
     );
 }

@@ -2,7 +2,7 @@ import React from "react";
 
 import { Typography } from "@mui/material";
 
-import Page from "@components/Page";
+import SearchPage from "@components/Page/SearchPage";
 import ArtistList from "@components/UI/ArtistList";
 
 import { Section, SectionTitle } from "@pages/Search.styles";
@@ -17,24 +17,6 @@ import {
 } from "@queries";
 
 export default function ArtistSearch({ params, player, client, navigate }: BasePageProps<{ query: string }>) {
-    if (!params.query) {
-        throw new Error("Query is not provided");
-    }
-
-    const { data } = useSearchArtistsQuery({
-        variables: {
-            query: params.query,
-        },
-    });
-
-    if (!data) {
-        return <Page title={`"${params.query}" Search Result`} />;
-    }
-
-    const {
-        search: { artists },
-    } = data;
-
     const handlePlayArtist = async (item: ArtistListItemType) => {
         const { data } = await client.query<ArtistAlbumMusicsQuery, ArtistAlbumMusicsQueryVariables>({
             query: ArtistAlbumMusicsDocument,
@@ -56,15 +38,21 @@ export default function ArtistSearch({ params, player, client, navigate }: BaseP
     };
 
     return (
-        <Page title={`Artist search results of "${params.query}"`}>
-            <Section>
-                <SectionTitle>
-                    <Typography fontWeight={800} variant="h6">
-                        Results ({artists.length})
-                    </Typography>
-                </SectionTitle>
-                <ArtistList items={artists} onPlay={handlePlayArtist} onClick={handleClickArtist} />
-            </Section>
-        </Page>
+        <SearchPage
+            useQuery={useSearchArtistsQuery}
+            query={params.query}
+            title={`Artist search results for "${params.query}"`}
+        >
+            {({ search: { artists } }) => (
+                <Section>
+                    <SectionTitle>
+                        <Typography fontWeight={800} variant="h6">
+                            Results ({artists.length})
+                        </Typography>
+                    </SectionTitle>
+                    <ArtistList items={artists} onPlay={handlePlayArtist} onClick={handleClickArtist} />
+                </Section>
+            )}
+        </SearchPage>
     );
 }

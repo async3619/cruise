@@ -13,6 +13,7 @@ import Artist from "@pages/Artist";
 import Search from "@pages/Search";
 import MusicSearch from "@pages/MusicSearch";
 import AlbumSearch from "@pages/AlbumSearch";
+import ArtistSearch from "@pages/ArtistSearch";
 
 import { useApolloClient } from "@apollo/client";
 import usePlayer from "@player/usePlayer";
@@ -66,7 +67,7 @@ export default function Router() {
                 <Route path="/search/:query" element={<PageWrapper component={Search} />} />
                 <Route path="/search/:query/musics" element={<PageWrapper component={MusicSearch} />} />
                 <Route path="/search/:query/albums" element={<PageWrapper component={AlbumSearch} />} />
-                <Route path="/search/:query/artists" element={<PageWrapper component={Search} />} />
+                <Route path="/search/:query/artists" element={<PageWrapper component={ArtistSearch} />} />
             </Route>
         </Routes>
     );

@@ -1,14 +1,16 @@
 import styled from "@emotion/styled";
 
 export const Root = styled.div`
+    height: 100%;
+
     margin: 0;
-    padding: ${({ theme }) => theme.spacing(2, 0, 0)};
+    padding: ${({ theme }) => theme.spacing(2, 0)};
 `;
 
 export const Section = styled.section`
     margin: ${({ theme }) => theme.spacing(0, 0, 4)};
 
-    &:last-of-type {
+    &:not(:first-of-type) {
         margin-bottom: 0;
     }
 `;

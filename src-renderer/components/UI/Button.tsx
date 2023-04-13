@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import shortid from "shortid";
 
 import { ButtonProps as MuiButtonProps, ClickAwayListener, Grow, Popper, Typography } from "@mui/material";
@@ -15,6 +16,7 @@ export interface ButtonOptionItem {
 
 export interface ButtonProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "children"> {
     variant?: "contained" | "text";
+    href?: string;
     children: string;
     icon?: React.ComponentType;
     color?: MuiButtonProps["color"];
@@ -25,12 +27,15 @@ export interface ButtonProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonE
 
 export default function Button({
     variant = "contained",
+    href,
     children,
     icon: Icon,
     options,
     onOptionClick,
+    onClick,
     ...props
 }: ButtonProps) {
+    const navigate = useNavigate();
     const [open, setOpen] = React.useState(false);
     const anchorRef = React.useRef<HTMLDivElement>(null);
     const internalOptions = React.useMemo(() => {
@@ -48,6 +53,20 @@ export default function Button({
         setOpen(prev => !prev);
     };
 
+    const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+        if (onClick) {
+            onClick(e);
+        }
+
+        if (e.defaultPrevented) {
+            return;
+        }
+
+        if (href) {
+            navigate(href);
+        }
+    };
+
     const handleClose = (event: Event) => {
         if (anchorRef.current && anchorRef.current.contains(event.target as HTMLElement)) {
             return;
@@ -59,7 +78,7 @@ export default function Button({
     const RootComponent = variant === "text" ? TextRoot : Root;
 
     const content = (
-        <RootComponent {...props}>
+        <RootComponent {...props} onClick={handleClick}>
             {Icon && <Icon />}
             <Typography lineHeight={1}>{children}</Typography>
         </RootComponent>
