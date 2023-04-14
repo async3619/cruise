@@ -60,7 +60,9 @@ export const Profile = styled.div<{ empty: boolean }>`
 
     position: relative;
 
-    background: ${({ theme, empty }) => (empty ? "#eeeeee" : theme.palette.background.default)};
+    background-size: cover;
+    background-position: center;
+    background-color: ${({ theme, empty }) => (empty ? "#eeeeee" : theme.palette.background.default)};
 
     > svg {
         width: 30%;

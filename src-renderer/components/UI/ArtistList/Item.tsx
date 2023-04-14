@@ -29,8 +29,15 @@ export default function ArtistListItem(props: ArtistListItemProps) {
 
     return (
         <Root onClick={handleClick}>
-            <Profile empty>
-                <PersonOutlineRoundedIcon />
+            <Profile
+                empty
+                style={{
+                    backgroundImage: item.portrait
+                        ? `url(cruise://${item.portrait.path.replace(/\\/g, "/")})`
+                        : undefined,
+                }}
+            >
+                {!item.portrait && <PersonOutlineRoundedIcon />}
                 <Controls>
                     <Box flex="1 1 auto" />
                     <Button onClick={handlePlayClick}>

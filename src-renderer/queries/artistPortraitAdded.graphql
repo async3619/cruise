@@ -1,0 +1,9 @@
+subscription artistPortraitAdded($artistId: Int!) {
+    artistPortraitAdded(artistId: $artistId) {
+        id
+        portrait {
+            id
+            path
+        }
+    }
+}

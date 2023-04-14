@@ -9,8 +9,8 @@ import {
     AlbumQuery,
     AlbumsQuery,
     ArtistAlbumsQuery,
+    ArtistListItemFragment,
     ArtistNamesQuery,
-    ArtistsQuery,
     ConfigQuery,
     MinimalAlbumArtFragment,
     MusicsQuery,
@@ -34,7 +34,7 @@ export type IsEmpty<TRecord, TTrue, TFalse> = keyof TRecord extends never ? TTru
 
 export type MusicListItem = MusicsQuery["musics"][0];
 export type AlbumListItem = AlbumsQuery["albums"][0];
-export type ArtistListItem = ArtistsQuery["artists"][0];
+export type ArtistListItem = ArtistListItemFragment;
 export type PlayableMusic = PlayableMusicFragment;
 export type AlbumArtType = AlbumArtTypeImpl;
 export type AlbumType = Required<AlbumQuery["album"]>;

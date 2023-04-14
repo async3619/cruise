@@ -1,6 +1,5 @@
 query artists {
     artists {
-        id
-        name
+        ...ArtistListItem
     }
 }

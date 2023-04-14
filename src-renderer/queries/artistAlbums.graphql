@@ -2,6 +2,10 @@ query artistAlbums($artistId: Int!) {
     artist(id: $artistId) {
         id
         name
+        portrait(fetch: true) {
+            id
+            path
+        }
     }
     leadAlbumsByArtist(id: $artistId) {
         ...AlbumListItem

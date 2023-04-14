@@ -2,14 +2,17 @@ import { Inject } from "@nestjs/common";
 import { Args, Context, Int, Query, ResolveField, Resolver, Root, Subscription } from "@nestjs/graphql";
 
 import { ArtistService } from "@main/artist/artist.service";
-import { LEAD_ARTIST_ADDED, LEAD_ARTIST_REMOVED } from "@main/artist/artist.constants";
+import { ARTIST_PORTRAIT_ADDED, LEAD_ARTIST_ADDED, LEAD_ARTIST_REMOVED } from "@main/artist/artist.constants";
 
 import { Artist } from "@main/artist/models/artist.model";
 import { Music } from "@main/music/models/music.model";
 import { Album } from "@main/album/models/album.model";
+import { AlbumArt } from "@main/album-art/models/album-art.model";
 
 import { GraphQLContext } from "@main/context";
 import pubSub from "@main/pubsub";
+
+import type { Nullable } from "@common/types";
 
 @Resolver(() => Artist)
 export class ArtistResolver {
@@ -38,6 +41,29 @@ export class ArtistResolver {
     @Subscription(() => Int)
     public async leadArtistRemoved() {
         return pubSub.asyncIterator(LEAD_ARTIST_REMOVED);
+    }
+
+    @Subscription(() => Artist, {
+        filter: (payload, variables) => payload.artistPortraitAdded.id === variables.artistId,
+    })
+    public async artistPortraitAdded(@Args("artistId", { type: () => Int }) _: number) {
+        return pubSub.asyncIterator(ARTIST_PORTRAIT_ADDED);
+    }
+
+    @ResolveField(() => AlbumArt, { nullable: true })
+    public async portrait(
+        @Root() artist: Artist,
+        @Args("fetch", { type: () => Boolean, nullable: true }) fetch: Nullable<boolean>,
+        @Context("loaders") loaders: GraphQLContext["loaders"],
+    ) {
+        const portrait = artist.portraitId ? await loaders.albumArt.load(artist.portraitId) : null;
+        if (fetch) {
+            if (!portrait) {
+                this.artistService.fetchPortrait(artist).then();
+            }
+        }
+
+        return portrait;
     }
 
     @ResolveField(() => Int)

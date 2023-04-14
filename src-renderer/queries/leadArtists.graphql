@@ -1,6 +1,5 @@
 query leadArtists {
     leadArtists {
-        id
-        name
+        ...ArtistListItem
     }
 }

@@ -8,8 +8,7 @@ query search($query: String!) {
             ...AlbumListItem
         }
         artists {
-            id
-            name
+            ...ArtistListItem
         }
     }
 }

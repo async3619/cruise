@@ -19,6 +19,8 @@ import {
     ArtistAlbumsComponent,
     ArtistAlbumsQuery,
     ArtistAlbumsQueryResult,
+    ArtistPortraitAddedComponent,
+    ArtistPortraitAddedSubscription,
 } from "@queries";
 
 import formatDuration from "@utils/formatDuration";
@@ -122,6 +124,20 @@ export default class Artist extends React.Component<ArtistProps, ArtistStates> {
             leadAlbumsByArtist: updatedAlbums,
         });
     };
+    private handlePortraitAdded = async ({ data: { data } }: OnDataOptions<ArtistPortraitAddedSubscription>) => {
+        const { data: prevState } = this.state;
+        if (!prevState || !data) {
+            return;
+        }
+
+        this.handleQueryCompleted({
+            artist: {
+                ...prevState.artist,
+                portrait: data.artistPortraitAdded.portrait,
+            },
+            leadAlbumsByArtist: prevState.albums,
+        });
+    };
 
     private handlePlayAll = () => {
         const data = this.getData();
@@ -191,12 +207,15 @@ export default class Artist extends React.Component<ArtistProps, ArtistStates> {
 
         this.refetch = refetch;
 
+        const imageUrl = data.artist.portrait ? `cruise://${data.artist.portrait.path}` : undefined;
+
         return (
             <ShrinkHeaderPage
                 shape="circle"
                 title={data.artist.name}
                 buttons={this.renderButtons()}
                 content={this.renderContent()}
+                image={imageUrl}
             >
                 <AlbumList
                     items={data.albums}
@@ -220,6 +239,7 @@ export default class Artist extends React.Component<ArtistProps, ArtistStates> {
 
         return (
             <>
+                <ArtistPortraitAddedComponent variables={{ artistId }} onData={this.handlePortraitAdded} />
                 <AlbumAddedComponent onData={this.handleAlbumAdded} />
                 <AlbumRemovedComponent onData={this.handleAlbumRemoved} />
                 <AlbumsUpdatedComponent onData={this.handleAlbumsUpdated} />

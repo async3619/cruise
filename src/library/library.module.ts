@@ -8,9 +8,10 @@ import { AlbumModule } from "@main/album/album.module";
 import { ArtistModule } from "@main/artist/artist.module";
 import { AlbumArtModule } from "@main/album-art/album-art.module";
 import { ConfigModule } from "@main/config/config.module";
+import { ElectronModule } from "@main/electron/electron.module";
 
 @Module({
-    imports: [MusicModule, AlbumModule, ArtistModule, AlbumArtModule, ConfigModule],
+    imports: [MusicModule, AlbumModule, ArtistModule, AlbumArtModule, ConfigModule, ElectronModule],
     providers: [LibraryService, LibraryResolver],
     exports: [LibraryService],
 })

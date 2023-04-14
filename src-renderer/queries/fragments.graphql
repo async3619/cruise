@@ -73,3 +73,11 @@ fragment AlbumListItem on Album {
         ...PlayableMusic
     }
 }
+
+fragment ArtistListItem on Artist {
+    id
+    name
+    portrait {
+        ...AlbumArtItem
+    }
+}

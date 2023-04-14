@@ -68,6 +68,7 @@ type Artist {
   musics: [Music!]!
   albums: [Album!]!
   leadAlbums: [Album!]!
+  portrait(fetch: Boolean): AlbumArt
   musicCount: Int!
 }
 
@@ -179,6 +180,7 @@ type Subscription {
   albumUpdated(id: Int!): Album!
   leadArtistAdded: Artist!
   leadArtistRemoved: Int!
+  artistPortraitAdded(artistId: Int!): Artist!
   maximizedStateChanged: Boolean!
   scanningStateChanged: Boolean!
 }

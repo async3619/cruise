@@ -13,6 +13,8 @@ import { AlbumArt, AlbumArtType } from "@main/album-art/models/album-art.model";
 import { BaseService } from "@main/common/base.service";
 
 import checksum from "@main/utils/checksum";
+import { fetchUrlToBuffer } from "@main/utils/fetchUrlToBuffer";
+
 import { ALBUM_ART_DIR } from "@main/constants";
 
 @Injectable()
@@ -82,8 +84,8 @@ export class AlbumArtService extends BaseService<AlbumArt> {
         return albumArt;
     }
 
-    public async createFromPath(targetPath: string, writeOnDatabase = true, copyToAlbumArtDir = true) {
-        const data = await fs.readFile(targetPath);
+    public async createFromBuffer(data: Buffer, writeOnDatabase = true, copyToAlbumArtDir = true) {
+        let targetPath = "";
         const mimeType = await fromBuffer(data);
         if (!mimeType) {
             throw new Error("Failed to get file type.");
@@ -123,6 +125,16 @@ export class AlbumArtService extends BaseService<AlbumArt> {
         }
 
         return albumArt;
+    }
+    public async createFromUrl(url: string, writeOnDatabase = true, copyToAlbumArtDir = true) {
+        const data = await fetchUrlToBuffer(url);
+
+        return this.createFromBuffer(data, writeOnDatabase, copyToAlbumArtDir);
+    }
+    public async createFromPath(targetPath: string, writeOnDatabase = true, copyToAlbumArtDir = true) {
+        const data = await fs.readFile(targetPath);
+
+        return this.createFromBuffer(data, writeOnDatabase, copyToAlbumArtDir);
     }
 
     private getImageSize(data: Buffer) {

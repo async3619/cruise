@@ -1,8 +1,7 @@
 query searchArtists($query: String!) {
     search(query: $query) {
         artists {
-            id
-            name
+            ...ArtistListItem
         }
     }
 }

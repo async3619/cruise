@@ -15,6 +15,7 @@ import { AlbumService } from "@main/album/album.service";
 import { ArtistService } from "@main/artist/artist.service";
 import { AlbumArtService } from "@main/album-art/album-art.service";
 import { ConfigService } from "@main/config/config.service";
+import { ElectronService } from "@main/electron/electron.service";
 
 import { Artist } from "@main/artist/models/artist.model";
 import { Album } from "@main/album/models/album.model";
@@ -25,13 +26,15 @@ import { InjectHauntedClient } from "@main/haunted/haunted.decorator";
 import type { HauntedClient } from "@main/haunted/haunted.module";
 
 import { SCANNING_STATE_CHANGED } from "@main/library/library.constants";
+import { SearchResult } from "@main/library/models/search-result.dto";
+import { SearchSuggestion, SearchSuggestionType } from "@main/library/models/search-suggestion.dto";
+
 import { FileEvent, Scanner } from "@main/library/utils/scanner.model";
+
+import { fetchUrlToBuffer } from "@main/utils/fetchUrlToBuffer";
 
 import pubSub from "@main/pubsub";
 import { Nullable } from "@common/types";
-import { fetchUrlToBuffer } from "@main/utils/fetchUrlToBuffer";
-import { SearchResult } from "@main/library/models/search-result.dto";
-import { SearchSuggestion, SearchSuggestionType } from "@main/library/models/search-suggestion.dto";
 
 @Injectable()
 export class LibraryService implements OnModuleInit, OnModuleDestroy {
@@ -44,6 +47,7 @@ export class LibraryService implements OnModuleInit, OnModuleDestroy {
         @Inject(ArtistService) private readonly artistService: ArtistService,
         @Inject(AlbumArtService) private readonly albumArtService: AlbumArtService,
         @Inject(ConfigService) private readonly configService: ConfigService,
+        @Inject(ElectronService) private readonly electronService: ElectronService,
         @InjectHauntedClient() private readonly client: HauntedClient,
     ) {}
 
@@ -247,18 +251,25 @@ export class LibraryService implements OnModuleInit, OnModuleDestroy {
         return true;
     }
 
-    private async getMatchedMedia(query: string): Promise<[Music[], Album[], Artist[]]> {
-        const musics = await this.musicService.findAll();
-        const albums = await this.albumService.findAll();
-        const artists = await this.artistService.findLeadArtists();
+    public async searchArtistPortrait(artist: Artist) {
+        const artists = [
+            ...(await this.client().searchArtists.query({
+                query: artist.name,
+                limit: 5,
+            })),
+            ...(await this.client().searchArtists.query({
+                query: artist.name,
+                limit: 5,
+                locale: this.electronService.getLocales()[0],
+            })),
+        ];
 
-        query = query.toLowerCase();
+        const matchedArtist = _.filter(artists, artist => artist.name === artist.name)[0];
+        if (!matchedArtist) {
+            return null;
+        }
 
-        const matchedMusics = musics.filter(music => music.title.toLowerCase().includes(query));
-        const matchedAlbums = albums.filter(album => album.title.toLowerCase().includes(query));
-        const matchedArtists = artists.filter(artist => artist.name.toLowerCase().includes(query));
-
-        return [matchedMusics, matchedAlbums, matchedArtists];
+        return matchedArtist.artistImages;
     }
 
     public async search(query: string): Promise<SearchResult> {
@@ -300,5 +311,19 @@ export class LibraryService implements OnModuleInit, OnModuleDestroy {
         });
 
         return _.orderBy(similarities, ["similarity"], ["desc"]).slice(0, limit);
+    }
+
+    private async getMatchedMedia(query: string): Promise<[Music[], Album[], Artist[]]> {
+        const musics = await this.musicService.findAll();
+        const albums = await this.albumService.findAll();
+        const artists = await this.artistService.findLeadArtists();
+
+        query = query.toLowerCase();
+
+        const matchedMusics = musics.filter(music => music.title.toLowerCase().includes(query));
+        const matchedAlbums = albums.filter(album => album.title.toLowerCase().includes(query));
+        const matchedArtists = artists.filter(artist => artist.name.toLowerCase().includes(query));
+
+        return [matchedMusics, matchedAlbums, matchedArtists];
     }
 }

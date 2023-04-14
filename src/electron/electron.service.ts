@@ -210,4 +210,8 @@ export class ElectronService implements OnModuleInit {
 
         return result.filePaths;
     }
+
+    public getLocales() {
+        return app.getPreferredSystemLanguages();
+    }
 }
