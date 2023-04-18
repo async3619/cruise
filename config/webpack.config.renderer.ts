@@ -27,7 +27,7 @@ const rendererConfig: (dev: boolean, analyze: boolean, port: number) => webpack.
     output: {
         path: path.join(process.cwd(), "out", "renderer"),
         publicPath: "/",
-        filename: "renderer.dev.js",
+        filename: !dev ? "renderer.js" : "renderer.dev.js",
         library: {
             type: "window",
         },
@@ -120,6 +120,7 @@ const rendererConfig: (dev: boolean, analyze: boolean, port: number) => webpack.
             env: process.env.NODE_ENV,
             isDevelopment: process.env.NODE_ENV !== "production",
             nodeModules: path.join(process.cwd(), "node_modules"),
+            publicPath: dev ? "/" : "./",
         }),
 
         new ForkTsCheckerWebpackPlugin({
