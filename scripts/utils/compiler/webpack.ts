@@ -81,6 +81,22 @@ export class WebpackCompiler extends BaseCompiler {
         return this.watching;
     }
 
+    public run() {
+        return new Promise<boolean>(resolve => {
+            this.on("typeCheckResult", errors => {
+                if (errors.length > 0) {
+                    resolve(false);
+                } else {
+                    resolve(true);
+                }
+            });
+
+            this.compiler.run(() => {
+                return;
+            });
+        });
+    }
+
     public getPort() {
         return this.port;
     }

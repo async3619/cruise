@@ -75,4 +75,6 @@ export abstract class BaseCompiler {
 
     public abstract start(): Promise<void>;
     public abstract isStarted(): boolean;
+
+    public abstract run(): Promise<boolean>;
 }

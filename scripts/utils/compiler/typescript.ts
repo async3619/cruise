@@ -68,6 +68,41 @@ export class TypescriptCompiler extends BaseCompiler {
         return !!this.program && !!this.host;
     }
 
+    public async run() {
+        const parsedCmd = tts.getParsedCommandLineOfConfigFile(
+            this.configPath,
+            undefined,
+            ts.sys as unknown as ts.ParseConfigFileHost,
+        );
+
+        if (!parsedCmd) {
+            throw new Error("Can't parse config file");
+        }
+
+        const { options, fileNames, projectReferences } = parsedCmd;
+        const createProgram = tts.createIncrementalProgram || tts.createProgram;
+        const program = createProgram.call(tts, {
+            rootNames: fileNames,
+            projectReferences,
+            options,
+        });
+
+        this.emit("start");
+
+        const emitResult = program.emit();
+        const formattedMessages = emitResult.diagnostics.map(formatDiagnostic);
+
+        if (formattedMessages.length > 0) {
+            this.emit("failed", formattedMessages);
+            return false;
+        } else {
+            await this.replacePaths(options);
+
+            this.emit("success");
+            return true;
+        }
+    }
+
     private flushDiagnostics() {
         const diagnostics = [...this.diagnostics];
         this.diagnostics.length = 0;

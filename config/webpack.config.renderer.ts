@@ -4,19 +4,23 @@ import TsconfigPathsPlugins from "tsconfig-paths-webpack-plugin";
 import HtmlWebpackPlugin from "html-webpack-plugin";
 import ReactRefreshWebpackPlugin from "@pmmmwh/react-refresh-webpack-plugin";
 import ForkTsCheckerWebpackPlugin from "fork-ts-checker-webpack-plugin";
+import { BundleAnalyzerPlugin } from "webpack-bundle-analyzer";
 
 export const getRootUrl = (port: number) => `http://localhost:${port}/`;
 
-const rendererConfig: (dev: boolean, port: number) => webpack.Configuration = (dev, port) => ({
+const rendererConfig: (dev: boolean, analyze: boolean, port: number) => webpack.Configuration = (
+    dev,
+    analyze,
+    port,
+) => ({
     name: "renderer",
 
     target: ["web", "electron-renderer"],
     mode: !dev ? "production" : "development",
-    devtool: "inline-source-map",
+    devtool: !dev ? "source-map" : "inline-source-map",
 
     entry: [
-        `webpack-dev-server/client?${getRootUrl(port)}`,
-        "webpack/hot/only-dev-server",
+        ...(dev ? [`webpack-dev-server/client?${getRootUrl(port)}`, "webpack/hot/only-dev-server"] : []),
         path.join(process.cwd(), "src-renderer", "index"),
     ],
 
@@ -38,7 +42,16 @@ const rendererConfig: (dev: boolean, port: number) => webpack.Configuration = (d
                     // `.swcrc` can be used to configure swc
                     loader: "swc-loader",
                     options: {
+                        minify: !dev,
                         jsc: {
+                            minify: !dev
+                                ? {
+                                      mangle: true,
+                                      compress: {
+                                          unused: true,
+                                      },
+                                  }
+                                : undefined,
                             parser: {
                                 syntax: "typescript",
                                 tsx: true,
@@ -117,6 +130,7 @@ const rendererConfig: (dev: boolean, port: number) => webpack.Configuration = (d
         }),
 
         ...(dev ? [new ReactRefreshWebpackPlugin({ esModule: true, overlay: { sockProtocol: "ws" } })] : []),
+        ...(analyze && !dev ? [new BundleAnalyzerPlugin({ analyzerMode: "static" })] : []),
     ],
 
     node: {

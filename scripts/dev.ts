@@ -1,6 +1,7 @@
 import * as fs from "fs-extra";
 import path from "path";
 import { ChildProcess } from "child_process";
+import { getPortPromise } from "portfinder";
 
 import mainConfig from "../config/tsconfig.main.json";
 import rendererConfig from "../config/webpack.config.renderer";
@@ -9,7 +10,8 @@ import { TypescriptCompiler } from "./utils/compiler/typescript";
 import { treeKillSync, spawnProcess } from "./utils/process";
 import { logger } from "./utils/logger";
 import { WebpackCompiler } from "./utils/compiler/webpack";
-import { getPortPromise } from "portfinder";
+
+import { clean } from "./clean";
 
 let childProcessRef: ChildProcess | undefined = undefined;
 process.on("exit", () => childProcessRef?.pid && treeKillSync(childProcessRef.pid));
@@ -37,10 +39,14 @@ function startElectronApp(port: number) {
     }
 }
 
+const ANALYZE = process.argv.includes("--analyze");
+
 async function watchApp() {
+    await clean();
+
     const freePort = await getPortPromise({ port: 4500 });
     const mainCompiler = new TypescriptCompiler("main", path.join(process.cwd(), "config", "tsconfig.main.json"));
-    const rendererCompiler = new WebpackCompiler(rendererConfig.bind(null, true), freePort);
+    const rendererCompiler = new WebpackCompiler(rendererConfig.bind(null, true, ANALYZE), freePort);
     let isFirstCompilation = true;
 
     mainCompiler.on("start", () => {
