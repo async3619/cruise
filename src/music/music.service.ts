@@ -14,7 +14,7 @@ import { Artist } from "@main/artist/models/artist.model";
 
 import { BaseService } from "@main/common/base.service";
 
-import { Nullable } from "@common/types";
+import type { Nullable } from "@common/types";
 
 @Injectable()
 export class MusicService extends BaseService<Music> {

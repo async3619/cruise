@@ -19,7 +19,7 @@ import { AlbumArt } from "@main/album-art/models/album-art.model";
 import loadMany from "@main/utils/loadMany";
 import common from "@main/utils/common";
 
-import { Nullable } from "@common/types";
+import type { Nullable } from "@common/types";
 
 import pubSub from "@main/pubsub";
 

@@ -6,7 +6,7 @@ import { AlbumArtService } from "@main/album-art/album-art.service";
 
 import { AlbumArt } from "@main/album-art/models/album-art.model";
 
-import { Nullable } from "@common/types";
+import type { Nullable } from "@common/types";
 
 @Resolver(() => AlbumArt)
 export class AlbumArtResolver {

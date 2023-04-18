@@ -1,0 +1,13 @@
+{
+    "extends": "../tsconfig.json",
+    "compilerOptions": {
+        "rootDir": "..",
+        "target": "es6",
+        "module": "commonjs",
+        "outDir": "../out/main",
+        "sourceMap": true,
+        "esModuleInterop": true
+    },
+    "include": ["../src"],
+    "exclude": ["../src-common"]
+}

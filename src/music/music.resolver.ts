@@ -14,7 +14,7 @@ import { AlbumArt } from "@main/album-art/models/album-art.model";
 import { GraphQLContext } from "@main/context";
 import pubSub from "@main/pubsub";
 
-import { Nullable } from "@common/types";
+import type { Nullable } from "@common/types";
 
 @Resolver(() => Music)
 export class MusicResolver {

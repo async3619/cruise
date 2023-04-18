@@ -1,12 +1,13 @@
 {
-  "compilerOptions": {
-    "composite": true,
-    "module": "esnext",
-    "moduleResolution": "Node",
-    "allowSyntheticDefaultImports": true,
-    "resolveJsonModule": true,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-  },
-  "include": ["vite.config.ts", "package.json", "tsconfig.json"]
+    "compilerOptions": {
+        "composite": true,
+        "module": "esnext",
+        "moduleResolution": "Node",
+        "allowSyntheticDefaultImports": true,
+        "resolveJsonModule": true,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "esModuleInterop": true
+    },
+    "include": ["package.json", "tsconfig.json", "scripts", "config"]
 }

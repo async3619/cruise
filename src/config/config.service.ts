@@ -6,7 +6,7 @@ import * as mgr from "@async3619/merry-go-round";
 import { Injectable } from "@nestjs/common";
 
 import { CONFIG_FILE_DIR, CONFIG_FILE_PATH } from "@main/constants";
-import { AsyncFn, Fn } from "@common/types";
+import type { AsyncFn, Fn } from "@common/types";
 
 export const CONFIG_SCHEMA = z.object({
     libraryDirectories: z.array(z.string()),

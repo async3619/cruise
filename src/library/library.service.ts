@@ -34,7 +34,7 @@ import { FileEvent, Scanner } from "@main/library/utils/scanner.model";
 import { fetchUrlToBuffer } from "@main/utils/fetchUrlToBuffer";
 
 import pubSub from "@main/pubsub";
-import { Nullable } from "@common/types";
+import type { Nullable } from "@common/types";
 
 @Injectable()
 export class LibraryService implements OnModuleInit, OnModuleDestroy {

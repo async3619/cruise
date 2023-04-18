@@ -20,7 +20,7 @@ import { ApolloServerPluginLandingPageGraphQLPlayground } from "@apollo/server-p
 
 import { GraphQLContext } from "@main/context";
 
-import { SerializableGraphQLRequest } from "@common/types";
+import type { SerializableGraphQLRequest } from "@common/types";
 import { FetchResult } from "@apollo/client";
 
 export interface ElectronApolloDriverConfig extends ApolloDriverConfig {

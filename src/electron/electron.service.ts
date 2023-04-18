@@ -1,8 +1,8 @@
 import * as path from "path";
 import * as os from "os";
+import fs from "fs-extra";
 import { app, BrowserWindow, dialog, ipcMain, IpcMainEvent, OpenDialogOptions, protocol, session } from "electron";
 import decompress from "decompress";
-import fs from "fs-extra";
 
 import { electronApp, is, optimizer } from "@electron-toolkit/utils";
 import { Inject, Injectable, OnModuleInit } from "@nestjs/common";
@@ -15,7 +15,7 @@ import { ConfigService } from "@main/config/config.service";
 import { REACT_DEVTOOLS_DIR, REACT_DEVTOOLS_PATH } from "@main/constants";
 import pubSub from "@main/pubsub";
 
-import { Nullable } from "@common/types";
+import type { Nullable } from "@common/types";
 
 const mainDistPath = path.join(__dirname, "../");
 const distPath = path.join(mainDistPath, "../dist");
@@ -161,7 +161,7 @@ export class ElectronService implements OnModuleInit {
             height: 800,
             minWidth: 500,
             webPreferences: {
-                preload: path.join(__dirname, "../../preload/index.js"),
+                preload: path.join(__dirname, "../preload.js"),
                 nodeIntegration: true,
                 contextIsolation: true,
                 devTools: true,
