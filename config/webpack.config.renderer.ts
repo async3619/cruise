@@ -5,6 +5,7 @@ import HtmlWebpackPlugin from "html-webpack-plugin";
 import ReactRefreshWebpackPlugin from "@pmmmwh/react-refresh-webpack-plugin";
 import ForkTsCheckerWebpackPlugin from "fork-ts-checker-webpack-plugin";
 import { BundleAnalyzerPlugin } from "webpack-bundle-analyzer";
+import CopyPlugin from "copy-webpack-plugin";
 
 export const getRootUrl = (port: number) => `http://localhost:${port}/`;
 
@@ -17,7 +18,7 @@ const rendererConfig: (dev: boolean, analyze: boolean, port: number) => webpack.
 
     target: ["web", "electron-renderer"],
     mode: !dev ? "production" : "development",
-    devtool: !dev ? "source-map" : "inline-source-map",
+    devtool: !dev ? false : "inline-source-map",
 
     entry: [
         ...(dev ? [`webpack-dev-server/client?${getRootUrl(port)}`, "webpack/hot/only-dev-server"] : []),
@@ -130,7 +131,13 @@ const rendererConfig: (dev: boolean, analyze: boolean, port: number) => webpack.
             },
         }),
 
-        ...(dev ? [new ReactRefreshWebpackPlugin({ esModule: true, overlay: { sockProtocol: "ws" } })] : []),
+        ...(dev
+            ? [new ReactRefreshWebpackPlugin({ esModule: true, overlay: { sockProtocol: "ws" } })]
+            : [
+                  new CopyPlugin({
+                      patterns: [{ from: "public", to: "" }],
+                  }),
+              ]),
         ...(analyze && !dev ? [new BundleAnalyzerPlugin({ analyzerMode: "static" })] : []),
     ],
 
