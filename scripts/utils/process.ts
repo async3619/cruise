@@ -14,7 +14,7 @@ function isSourceMapSupportInstalled(): boolean {
 export function spawnProcess(port: number) {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const electronPath = require("electron") as unknown as string;
-    const args = ["."];
+    const args = ["--log-level=3", "."];
 
     if (isSourceMapSupportInstalled()) {
         args.unshift("-r", "source-map-support/register");
@@ -27,7 +27,6 @@ export function spawnProcess(port: number) {
         env: {
             ...process.env,
             NODE_ENV: "development",
-            ELECTRON_NO_ATTACH_CONSOLE: "1",
             ELECTRON_RENDERER_URL: getRootUrl(port),
         },
     });
