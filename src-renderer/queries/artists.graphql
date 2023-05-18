@@ -1,5 +1,0 @@
-query artists {
-    artists {
-        ...ArtistListItem
-    }
-}

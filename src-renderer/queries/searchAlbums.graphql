@@ -1,7 +1,0 @@
-query searchAlbums($query: String!) {
-    search(query: $query) {
-        albums {
-            ...AlbumListItem
-        }
-    }
-}

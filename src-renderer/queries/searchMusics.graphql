@@ -1,7 +1,0 @@
-query searchMusics($query: String!) {
-    search(query: $query) {
-        musics {
-            ...PlayableMusic
-        }
-    }
-}

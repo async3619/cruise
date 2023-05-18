@@ -1,5 +1,0 @@
-query album($id: Int!) {
-    album(id: $id) {
-        ...AlbumPageInformation
-    }
-}

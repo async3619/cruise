@@ -1,9 +1,0 @@
-subscription musicsUpdated {
-    musicsUpdated {
-        ...PlayableMusic
-        genre
-        year
-        disc
-        duration
-    }
-}

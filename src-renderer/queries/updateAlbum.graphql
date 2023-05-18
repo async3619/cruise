@@ -1,5 +1,0 @@
-mutation updateAlbum($id: Int!, $data: UpdateAlbumInput!) {
-    updateAlbum(id: $id, data: $data) {
-        id
-    }
-}

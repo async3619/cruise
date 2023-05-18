@@ -1,12 +1,7 @@
-declare module "apollo-link-logger" {
-    import { ApolloLink } from "@apollo/client/core";
-    declare const apolloLogger: ApolloLink;
+import "@emotion/react";
 
-    export = apolloLogger;
-}
+import { experimental_extendTheme as extendTheme } from "@mui/material/styles";
 
-declare module "*.svg" {
-    const ReactComponent: React.FunctionComponent<React.SVGProps<SVGSVGElement>>;
-
-    export default ReactComponent;
+declare module "@emotion/react" {
+    export interface Theme extends ReturnType<typeof extendTheme> {}
 }

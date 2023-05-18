@@ -1,24 +1,24 @@
-import { createTheme } from "@mui/material";
+import { experimental_extendTheme as extendTheme } from "@mui/material/styles";
 
-export const mainTheme = createTheme({
-    palette: {
-        text: {
-            primary: "rgba(0, 0, 0, 0.8956)",
-            secondary: "rgba(0, 0, 0, 0.6063)",
-            disabled: "rgba(0, 0, 0, 0.3614)",
-        },
-        background: {
-            default: "#f9f9f9",
+export const theme = extendTheme({
+    colorSchemes: {
+        light: {},
+        dark: {
+            palette: {
+                background: {
+                    default: "#313338",
+                },
+            },
         },
     },
     typography: {
-        fontFamily: ["SUIT Variable", "sans-serif"].join(","),
+        fontFamily: "SUIT Variable, sans-serif",
         fontWeightRegular: 600,
     },
     components: {
-        MuiButtonBase: {
+        MuiButton: {
             defaultProps: {
-                disableRipple: true,
+                disableElevation: true,
             },
         },
     },

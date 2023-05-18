@@ -1,5 +1,0 @@
-mutation selectAlbumArtFile {
-    selectAlbumArtFile {
-        ...AlbumArtItem
-    }
-}

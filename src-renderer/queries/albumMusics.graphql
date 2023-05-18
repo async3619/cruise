@@ -1,8 +1,0 @@
-query albumMusics($id: Int!) {
-    album(id: $id) {
-        id
-        musics {
-            ...PlayableMusic
-        }
-    }
-}

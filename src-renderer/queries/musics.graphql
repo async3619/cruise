@@ -1,9 +1,0 @@
-query musics {
-    musics {
-        ...PlayableMusic
-        genre
-        year
-        disc
-        duration
-    }
-}

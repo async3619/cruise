@@ -1,5 +1,0 @@
-query leadArtists {
-    leadArtists {
-        ...ArtistListItem
-    }
-}
