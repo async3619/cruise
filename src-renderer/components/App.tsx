@@ -1,5 +1,6 @@
 import React from "react";
 import { createMemoryRouter, createRoutesFromElements, Route, RouterProvider } from "react-router-dom";
+import { I18nextProvider } from "react-i18next";
 
 import { Experimental_CssVarsProvider as CssVarsProvider } from "@mui/material/styles";
 
@@ -9,6 +10,8 @@ import { Home } from "@pages/Home";
 import { Library } from "@pages/Library";
 import { Settings } from "@pages/Settings";
 import { Search } from "@pages/Search";
+
+import i18n from "@/i18n.config";
 
 import { theme } from "@styles/theme";
 
@@ -33,8 +36,10 @@ export function App({}: AppProps) {
     }, []);
 
     return (
-        <CssVarsProvider theme={theme}>
-            <RouterProvider router={router} />
-        </CssVarsProvider>
+        <I18nextProvider i18n={i18n}>
+            <CssVarsProvider theme={theme}>
+                <RouterProvider router={router} />
+            </CssVarsProvider>
+        </I18nextProvider>
     );
 }

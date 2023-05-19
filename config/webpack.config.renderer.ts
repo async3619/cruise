@@ -106,6 +106,9 @@ const rendererConfig: (dev: boolean, analyze: boolean, port: number) => webpack.
     resolve: {
         extensions: [".ts", ".tsx", ".js"],
         plugins: [new TsconfigPathsPlugins()],
+        fallback: {
+            path: false,
+        },
     },
 
     plugins: [

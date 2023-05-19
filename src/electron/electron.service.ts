@@ -3,6 +3,7 @@ import * as os from "os";
 import fs from "fs-extra";
 import { app, BrowserWindow, dialog, ipcMain, IpcMainEvent, OpenDialogOptions, protocol, session } from "electron";
 import decompress from "decompress";
+import { mainBindings } from "i18next-electron-fs-backend";
 
 import { electronApp, is, optimizer } from "@electron-toolkit/utils";
 import { Inject, Injectable, OnModuleInit } from "@nestjs/common";
@@ -179,6 +180,8 @@ export class ElectronService implements OnModuleInit {
         } else {
             await window.loadFile("./out/renderer/index.html");
         }
+
+        mainBindings(ipcMain, window, fs);
 
         return window;
     }

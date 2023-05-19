@@ -3,5 +3,5 @@
     "compilerOptions": {
         "rootDir": ".."
     },
-    "include": ["../src-renderer", "../src-common"]
+    "include": ["../src-renderer", "../src-common", "../locales"]
 }

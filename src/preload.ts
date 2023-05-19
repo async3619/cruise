@@ -1,4 +1,5 @@
 import { contextBridge, ipcRenderer } from "electron";
+import { preloadBindings } from "i18next-electron-fs-backend";
 
 contextBridge.exposeInMainWorld("ipcRenderer", {
     on: (channel: string, listener: (...args: any[]) => void) => {
@@ -24,4 +25,8 @@ contextBridge.exposeInMainWorld("app", {
             ipcRenderer.send("getPreferredSystemLanguages");
         });
     },
+});
+
+contextBridge.exposeInMainWorld("api", {
+    i18nextElectronBackend: preloadBindings(ipcRenderer, process),
 });
