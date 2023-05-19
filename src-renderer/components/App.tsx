@@ -1,5 +1,5 @@
 import React from "react";
-import { createMemoryRouter, createRoutesFromElements, Route, RouterProvider } from "react-router-dom";
+import { createHashRouter, createRoutesFromElements, Route, RouterProvider } from "react-router-dom";
 import { I18nextProvider } from "react-i18next";
 
 import { Experimental_CssVarsProvider as CssVarsProvider } from "@mui/material/styles";
@@ -19,7 +19,7 @@ export interface AppProps {}
 
 export function App({}: AppProps) {
     const router = React.useMemo(() => {
-        return createMemoryRouter(
+        return createHashRouter(
             createRoutesFromElements(
                 <Route path="/" element={<Layout />}>
                     <Route path="" element={<Home />} />
@@ -28,10 +28,6 @@ export function App({}: AppProps) {
                     <Route path="settings" element={<Settings />} />
                 </Route>,
             ),
-            {
-                initialEntries: ["/"],
-                initialIndex: 0,
-            },
         );
     }, []);
 
