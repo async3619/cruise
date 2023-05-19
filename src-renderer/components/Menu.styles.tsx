@@ -25,13 +25,24 @@ export const Item = styled(ButtonBase)<ItemProps>`
     color: ${({ theme, selected }) => (selected ? theme.vars.palette.text.primary : theme.vars.palette.text.secondary)};
     background: ${({ theme, selected }) => (selected ? theme.vars.palette.action.hover : "transparent")};
 
+    transition: ${({ theme }) => theme.transitions.create(["color", "background"])};
+
     > svg {
         margin-right: ${({ theme }) => theme.spacing(1)};
 
         display: block;
 
-        color: ${({ theme, selected }) =>
-            selected ? theme.vars.palette.primary.light : theme.vars.palette.text.secondary};
+        transition: ${({ theme }) => theme.transitions.create(["color"])};
+
+        ${({ theme }) => theme.getColorSchemeSelector("dark")} {
+            color: ${({ theme, selected }) =>
+                selected ? theme.vars.palette.primary.light : theme.vars.palette.text.secondary};
+        }
+
+        ${({ theme }) => theme.getColorSchemeSelector("light")} {
+            color: ${({ theme, selected }) =>
+                selected ? theme.vars.palette.primary.dark : theme.vars.palette.text.secondary};
+        }
     }
 
     &:hover,
@@ -40,8 +51,15 @@ export const Item = styled(ButtonBase)<ItemProps>`
         background: ${({ theme }) => theme.vars.palette.action.hover};
 
         > svg {
-            color: ${({ theme, selected }) =>
-                selected ? theme.vars.palette.primary.light : theme.vars.palette.text.primary};
+            ${({ theme }) => theme.getColorSchemeSelector("dark")} {
+                color: ${({ theme, selected }) =>
+                    selected ? theme.vars.palette.primary.light : theme.vars.palette.text.primary};
+            }
+
+            ${({ theme }) => theme.getColorSchemeSelector("light")} {
+                color: ${({ theme, selected }) =>
+                    selected ? theme.vars.palette.primary.dark : theme.vars.palette.text.primary};
+            }
         }
     }
 `;

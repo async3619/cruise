@@ -1,11 +1,5 @@
 import React from "react";
-import {
-    createBrowserRouter,
-    createMemoryRouter,
-    createRoutesFromElements,
-    Route,
-    RouterProvider,
-} from "react-router-dom";
+import { createMemoryRouter, createRoutesFromElements, Route, RouterProvider } from "react-router-dom";
 
 import { Experimental_CssVarsProvider as CssVarsProvider } from "@mui/material/styles";
 

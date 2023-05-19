@@ -1,13 +1,13 @@
 import React from "react";
 
-import { Root } from "./Settings.styles";
+import { Page } from "@components/Page";
 
 export interface SettingsProps {}
 
 export function Settings({}: SettingsProps) {
     return (
-        <Root>
+        <Page title="Settings">
             <span>Settings</span>
-        </Root>
+        </Page>
     );
 }

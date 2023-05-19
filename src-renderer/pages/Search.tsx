@@ -1,13 +1,13 @@
 import React from "react";
 
-import { Root } from "./Search.styles";
+import { Page } from "@components/Page";
 
 export interface SearchProps {}
 
 export function Search({}: SearchProps) {
     return (
-        <Root>
+        <Page title="Search">
             <span>Search</span>
-        </Root>
+        </Page>
     );
 }

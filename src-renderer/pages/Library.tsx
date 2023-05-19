@@ -1,13 +1,13 @@
 import React from "react";
 
-import { Root } from "./Library.styles";
+import { Page } from "@components/Page";
 
 export interface LibraryProps {}
 
 export function Library({}: LibraryProps) {
     return (
-        <Root>
+        <Page title="Library">
             <span>Library</span>
-        </Root>
+        </Page>
     );
 }

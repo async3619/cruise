@@ -20,7 +20,6 @@ export interface MenuProps {
 
 export function Menu({ items, title }: MenuProps) {
     const location = useLocation();
-    console.log(location);
 
     return (
         <Stack spacing={0.75}>

@@ -30,6 +30,7 @@ export const Root = styled.div`
 
 export const Content = styled.main`
     padding: ${({ theme }) => theme.spacing(2)};
+    border-top-left-radius: 4px;
 
     flex: 1 1 auto;
 
