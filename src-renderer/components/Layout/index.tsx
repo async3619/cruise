@@ -5,8 +5,9 @@ import { CssBaseline } from "@mui/material";
 import { Global } from "@emotion/react";
 
 import { Header } from "@components/Layout/Header";
+import { Navigation } from "@components/Layout/Navigation";
 
-import { Content, GlobalStyles, Root } from "@components/Layout/index.styles";
+import { Body, Content, GlobalStyles, Root } from "@components/Layout/index.styles";
 
 export interface LayoutProps {}
 
@@ -16,9 +17,12 @@ export function Layout({}: LayoutProps) {
             <CssBaseline />
             <Global styles={GlobalStyles} />
             <Header />
-            <Content>
-                <Outlet />
-            </Content>
+            <Body>
+                <Navigation />
+                <Content>
+                    <Outlet />
+                </Content>
+            </Body>
         </Root>
     );
 }

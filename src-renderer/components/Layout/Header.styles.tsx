@@ -1,4 +1,5 @@
 import styled from "@emotion/styled";
+import { backgroundColors } from "@styles/theme";
 
 export const Root = styled.div`
     margin: 0;
@@ -8,12 +9,12 @@ export const Root = styled.div`
 
     ${({ theme }) => theme.getColorSchemeSelector("dark")} {
         color: white;
-        background: #1e1f22;
+        background: ${backgroundColors["950"]};
     }
 
     ${({ theme }) => theme.getColorSchemeSelector("light")} {
         color: black;
-        background: #e3e5e8;
+        background: ${backgroundColors["100"]};
     }
 `;
 
