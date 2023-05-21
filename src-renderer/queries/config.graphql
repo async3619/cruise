@@ -1,5 +1,13 @@
 query config {
     config {
         libraryDirectories
+        appTheme
+    }
+}
+
+mutation updateConfig($config: ConfigInput!) {
+    updateConfig(config: $config) {
+        libraryDirectories
+        appTheme
     }
 }

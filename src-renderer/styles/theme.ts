@@ -30,12 +30,17 @@ export const theme = extendTheme({
     },
     typography: {
         fontFamily: "SUIT Variable, sans-serif",
-        fontWeightRegular: 600,
+        fontWeightRegular: 400,
     },
     components: {
         MuiButton: {
             defaultProps: {
                 disableElevation: true,
+            },
+            styleOverrides: {
+                root: {
+                    textTransform: "none",
+                },
             },
         },
     },

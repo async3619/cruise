@@ -2,17 +2,6 @@ import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 import i18nBackend from "i18next-electron-fs-backend";
 
-declare global {
-    interface Window {
-        api: {
-            i18nextElectronBackend: any;
-        };
-        app: {
-            getPreferredSystemLanguages: () => Promise<string[]>;
-        };
-    }
-}
-
 (async () => {
     const languages = await window.app.getPreferredSystemLanguages();
 

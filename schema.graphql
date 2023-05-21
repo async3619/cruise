@@ -89,6 +89,17 @@ type Music {
   albumArts: [AlbumArt!]!
 }
 
+type Config {
+  libraryDirectories: [String!]!
+  appTheme: AppTheme!
+}
+
+enum AppTheme {
+  Light
+  Dark
+  System
+}
+
 type SearchSuggestion {
   id: Int!
   type: SearchSuggestionType!
@@ -106,10 +117,6 @@ type SearchResult {
   albums: [Album!]!
   artists: [Artist!]!
   total: Int!
-}
-
-type Config {
-  libraryDirectories: [String!]!
 }
 
 type Query {
@@ -134,7 +141,7 @@ type Mutation {
   maximize: Boolean!
   minimize: Boolean!
   close: Boolean!
-  selectPath(options: SelectPathInput!): [String!]!
+  selectPath(options: SelectPathInput!): [String!]
   updateConfig(config: ConfigInput!): Config!
   scan: Boolean!
   syncAlbumData(albumId: Int!, targetId: String!, locale: String): Boolean!
@@ -167,6 +174,7 @@ input SelectPathFilterInput {
 
 input ConfigInput {
   libraryDirectories: [String!]!
+  appTheme: AppTheme!
 }
 
 type Subscription {

@@ -46,6 +46,7 @@ export class ElectronService implements OnModuleInit {
         this.onAppReady();
 
         ipcMain.on("getPreferredSystemLanguages", this.onGetPreferredSystemLanguages);
+        ipcMain.on("getConfig", this.onGetConfig);
     }
     private async onAppReady() {
         // Set app user model id for windows
@@ -186,10 +187,15 @@ export class ElectronService implements OnModuleInit {
         return window;
     }
 
-    private onGetPreferredSystemLanguages(e: IpcMainEvent) {
+    private onGetPreferredSystemLanguages = (e: IpcMainEvent) => {
         const locales = app.getPreferredSystemLanguages();
         e.reply("getPreferredSystemLanguages", locales);
-    }
+    };
+
+    private onGetConfig = async (e: IpcMainEvent) => {
+        const config = await this.configService.getConfig();
+        e.reply("getConfig", config);
+    };
 
     public async selectPath(options: Nullable<SelectPathInput>): Promise<Nullable<string[]>> {
         if (!this.mainWindow) {

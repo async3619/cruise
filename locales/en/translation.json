@@ -4,5 +4,22 @@
     "Search": "Search",
     "Library": "Library",
     "Settings": "Settings",
-    "Playlists": "Playlists"
+    "Playlists": "Playlists",
+    "configs": {
+        "library": "Library",
+        "personalization": "Personalization",
+        "libraryDirectories": {
+            "title": "Library Directories",
+            "action": "Add Directory"
+        },
+        "refreshLibrary": {
+            "title": "Refresh Library",
+            "action": "Refresh",
+            "description": "Force to refresh the library by scanning the library directories for new music."
+        },
+        "appTheme": {
+            "title": "App Theme"
+        }
+    },
+    "delete": "Delete"
 }

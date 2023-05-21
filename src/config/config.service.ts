@@ -5,11 +5,14 @@ import * as mgr from "@async3619/merry-go-round";
 
 import { Injectable } from "@nestjs/common";
 
+import { AppTheme } from "@main/config/models/config.dto";
+
 import { CONFIG_FILE_DIR, CONFIG_FILE_PATH } from "@main/constants";
 import type { AsyncFn, Fn } from "@common/types";
 
 export const CONFIG_SCHEMA = z.object({
     libraryDirectories: z.array(z.string()),
+    appTheme: z.nativeEnum(AppTheme),
     lastPosition: z
         .object({
             x: z.number(),
@@ -39,6 +42,7 @@ const DEFAULT_CONFIG: Config = (() => {
 
     return {
         libraryDirectories,
+        appTheme: AppTheme.System,
     };
 })();
 

@@ -34,7 +34,7 @@ export class ElectronResolver {
         return this.electronService.close();
     }
 
-    @Mutation(() => [String])
+    @Mutation(() => [String], { nullable: true })
     public async selectPath(
         @Args("options", { type: () => SelectPathInput }) options: Nullable<SelectPathInput>,
     ): Promise<Nullable<string[]>> {

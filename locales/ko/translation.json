@@ -4,5 +4,22 @@
     "Library": "라이브러리",
     "Search": "검색",
     "Settings": "설정",
-    "Playlists": "재생목록"
+    "Playlists": "재생목록",
+    "configs": {
+        "library": "라이브러리",
+        "personalization": "개인화",
+        "libraryDirectories": {
+            "title": "라이브러리 디렉터리",
+            "action": "디렉터리 추가"
+        },
+        "refreshLibrary": {
+            "title": "라이브러리 새로고침",
+            "action": "새로고침",
+            "description": "라이브러리 위치에서 모든 미디어가 표시되지 않는 경우 지금 라이브러리를 다시 인덱싱할 수 있습니다."
+        },
+        "appTheme": {
+            "title": "앱 테마"
+        }
+    },
+    "delete": "삭제"
 }

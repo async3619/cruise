@@ -2,7 +2,6 @@ import { Inject } from "@nestjs/common";
 import { Args, Mutation, Query, Resolver } from "@nestjs/graphql";
 
 import { ConfigService } from "@main/config/config.service";
-
 import { Config, ConfigInput } from "@main/config/models/config.dto";
 
 @Resolver()
