@@ -19,7 +19,7 @@ interface Props<TConfigItem extends ConfigItem> extends ConfigPanelProps<TConfig
     toolbar?: ConfigPanelToolbar;
 }
 
-export function BaseConfigPanel<TValue>({ children, item, toolbar }: Props<ConfigItem>) {
+export function BaseConfigPanel({ children, item, toolbar }: Props<ConfigItem>) {
     const [open, setOpen] = React.useState(false);
     const [measureRef, bound] = useMeasure();
     const Icon = item.icon;

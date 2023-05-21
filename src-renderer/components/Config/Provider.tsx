@@ -14,7 +14,9 @@ interface ConfigContextValue {
 }
 
 export const ConfigContext = React.createContext<ConfigContextValue>({
-    setConfig: () => {},
+    setConfig: () => {
+        throw new Error("ConfigProvider not initialized");
+    },
     config: null,
 });
 
@@ -25,26 +27,29 @@ export function useConfig() {
 export const ConfigProvider: React.FC<ConfigProviderProps> = ({ children }: ConfigProviderProps) => {
     const { setMode } = useColorScheme();
     const [config, setConfig] = React.useState<Config | null>(null);
-    const handleChange = (config: Config) => {
-        switch (config.appTheme) {
-            case AppTheme.Light:
-                setMode("light");
-                break;
-
-            case AppTheme.Dark:
-                setMode("dark");
-                break;
-
-            case AppTheme.System:
-                setMode("system");
-                break;
-        }
-
-        setConfig(config);
-    };
-
     const { data: initialConfig, loading } = useConfigQuery();
     const [updateConfig] = useUpdateConfigMutation();
+
+    const handleChange = React.useCallback(
+        (config: Config) => {
+            switch (config.appTheme) {
+                case AppTheme.Light:
+                    setMode("light");
+                    break;
+
+                case AppTheme.Dark:
+                    setMode("dark");
+                    break;
+
+                case AppTheme.System:
+                    setMode("system");
+                    break;
+            }
+
+            setConfig(config);
+        },
+        [setMode],
+    );
 
     React.useEffect(() => {
         if (!initialConfig) {
@@ -52,7 +57,7 @@ export const ConfigProvider: React.FC<ConfigProviderProps> = ({ children }: Conf
         }
 
         handleChange(initialConfig.config);
-    }, [initialConfig]);
+    }, [initialConfig, handleChange]);
 
     React.useEffect(() => {
         if (!config) {
@@ -65,7 +70,7 @@ export const ConfigProvider: React.FC<ConfigProviderProps> = ({ children }: Conf
         updateConfig({
             variables: { config: newConfig },
         });
-    }, [config]);
+    }, [config, updateConfig]);
 
     if (!initialConfig || loading) {
         return null;
