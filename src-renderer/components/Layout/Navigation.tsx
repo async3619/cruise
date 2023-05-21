@@ -5,7 +5,9 @@ import { Stack } from "@mui/material";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
-import LibraryMusicRoundedIcon from "@mui/icons-material/LibraryMusicRounded";
+import Person2RoundedIcon from "@mui/icons-material/Person2Rounded";
+import MusicNoteIcon from "@mui/icons-material/MusicNote";
+import AlbumRoundedIcon from "@mui/icons-material/AlbumRounded";
 
 import { Menu } from "@components/Menu";
 import { Root } from "@components/Layout/Navigation.styles";
@@ -33,18 +35,35 @@ export function Navigation({}: NavigationProps) {
                             href: "/search",
                         },
                         {
-                            id: "library",
-                            label: t("Library"),
-                            icon: LibraryMusicRoundedIcon,
-                            href: "/library",
-                        },
-                        {
                             id: "settings",
                             label: t("Settings"),
                             icon: SettingsRoundedIcon,
                             href: "/settings",
                         },
                     ]}
+                />
+                <Menu
+                    items={[
+                        {
+                            id: "musics",
+                            label: t("pageTitle.musics"),
+                            icon: MusicNoteIcon,
+                            href: "/musics",
+                        },
+                        {
+                            id: "artists",
+                            label: t("pageTitle.artists"),
+                            icon: Person2RoundedIcon,
+                            href: "/artists",
+                        },
+                        {
+                            id: "albums",
+                            label: t("pageTitle.albums"),
+                            icon: AlbumRoundedIcon,
+                            href: "/albums",
+                        },
+                    ]}
+                    title={t("Library")}
                 />
                 <Menu items={[]} title={t("Playlists")} />
             </Stack>

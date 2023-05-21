@@ -21,5 +21,20 @@
             "title": "App Theme"
         }
     },
-    "delete": "Delete"
+    "pageTitle": {
+        "home": "Home",
+        "search": "Search",
+        "settings": "Settings",
+        "musics": "Musics",
+        "artists": "Artists",
+        "albums": "Albums"
+    },
+    "delete": "Delete",
+    "tableColumn": {
+        "music": {
+            "title": "Title",
+            "artist": "Artist",
+            "album": "Album"
+        }
+    }
 }

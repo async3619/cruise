@@ -12,6 +12,9 @@ import { Home } from "@pages/Home";
 import { Library } from "@pages/Library";
 import { Settings } from "@pages/Settings";
 import { Search } from "@pages/Search";
+import { Artists } from "@pages/Artists";
+import { Albums } from "@pages/Albums";
+import { Musics } from "@pages/Musics";
 
 import { ApolloProvider } from "@apollo/client";
 import apolloClient from "@graphql/client";
@@ -19,6 +22,7 @@ import apolloClient from "@graphql/client";
 import i18n from "@/i18n.config";
 
 import { theme } from "@styles/theme";
+import { LibraryProvider } from "@components/Library/Provider";
 
 export interface AppProps {}
 
@@ -32,6 +36,9 @@ export function App({}: AppProps) {
                     <Route path="search" element={<Search />} />
                     <Route path="library" element={<Library />} />
                     <Route path="settings" element={<Settings />} />
+                    <Route path="musics" element={<Musics />} />
+                    <Route path="artists" element={<Artists />} />
+                    <Route path="albums" element={<Albums />} />
                 </Route>,
             ),
         );
@@ -42,7 +49,9 @@ export function App({}: AppProps) {
             <I18nextProvider i18n={i18n}>
                 <CssVarsProvider theme={theme} defaultMode={defaultMode}>
                     <ConfigProvider>
-                        <RouterProvider router={router} />
+                        <LibraryProvider>
+                            <RouterProvider router={router} />
+                        </LibraryProvider>
                     </ConfigProvider>
                 </CssVarsProvider>
             </I18nextProvider>

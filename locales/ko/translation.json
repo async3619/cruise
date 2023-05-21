@@ -21,5 +21,20 @@
             "title": "앱 테마"
         }
     },
-    "delete": "삭제"
+    "pageTitle": {
+        "home": "홈",
+        "search": "검색",
+        "settings": "설정",
+        "musics": "음악",
+        "artists": "아티스트",
+        "albums": "앨범"
+    },
+    "delete": "삭제",
+    "tableColumn": {
+        "music": {
+            "title": "제목",
+            "artist": "아티스트",
+            "album": "앨범"
+        }
+    }
 }

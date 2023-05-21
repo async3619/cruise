@@ -29,7 +29,9 @@ export const Root = styled.div`
 `;
 
 export const Content = styled.main`
-    padding: ${({ theme }) => theme.spacing(2)};
+    height: 100%;
+
+    padding: 0;
     border-top-left-radius: 4px;
 
     flex: 1 1 auto;
@@ -41,4 +43,8 @@ export const Content = styled.main`
 export const Body = styled.div`
     display: flex;
     flex: 1 1 auto;
+`;
+
+export const ContentWrapper = styled.div`
+    padding: ${({ theme }) => theme.spacing(2)};
 `;

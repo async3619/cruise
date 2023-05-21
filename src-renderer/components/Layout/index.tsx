@@ -1,5 +1,6 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
+import Scrollbars from "react-custom-scrollbars-2";
 
 import { CssBaseline } from "@mui/material";
 import { Global } from "@emotion/react";
@@ -7,7 +8,7 @@ import { Global } from "@emotion/react";
 import { Header } from "@components/Layout/Header";
 import { Navigation } from "@components/Layout/Navigation";
 
-import { Body, Content, GlobalStyles, Root } from "@components/Layout/index.styles";
+import { Body, Content, ContentWrapper, GlobalStyles, Root } from "@components/Layout/index.styles";
 
 export interface LayoutProps {}
 
@@ -20,7 +21,11 @@ export function Layout({}: LayoutProps) {
             <Body>
                 <Navigation />
                 <Content>
-                    <Outlet />
+                    <Scrollbars>
+                        <ContentWrapper>
+                            <Outlet />
+                        </ContentWrapper>
+                    </Scrollbars>
                 </Content>
             </Body>
         </Root>

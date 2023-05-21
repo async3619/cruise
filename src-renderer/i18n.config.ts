@@ -2,6 +2,8 @@ import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 import i18nBackend from "i18next-electron-fs-backend";
 
+import "locales/ko/translation.json";
+
 (async () => {
     const languages = await window.app.getPreferredSystemLanguages();
 

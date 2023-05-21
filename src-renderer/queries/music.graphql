@@ -1,0 +1,28 @@
+fragment MinimalMusic on Music {
+    id
+    title
+    albumArtist
+    duration
+    year
+    genre
+    album {
+        id
+        title
+    }
+    albumArts {
+        id
+        path
+    }
+}
+
+query musics {
+    musics {
+        ...MinimalMusic
+    }
+}
+
+subscription musicAdded {
+    musicAdded {
+        ...MinimalMusic
+    }
+}

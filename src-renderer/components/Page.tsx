@@ -1,14 +1,15 @@
 import React from "react";
 
 import { Content, Header, Root } from "./Page.styles";
-import { Typography } from "@mui/material";
+import { Box, CircularProgress, Typography } from "@mui/material";
 
 export interface PageProps {
     title?: string;
-    children: React.ReactNode;
+    children?: React.ReactNode;
+    loading?: boolean;
 }
 
-export function Page({ title, children }: PageProps) {
+export function Page({ title, children, loading }: PageProps) {
     return (
         <Root>
             <Header>
@@ -18,7 +19,14 @@ export function Page({ title, children }: PageProps) {
                     </Typography>
                 )}
             </Header>
-            <Content>{children}</Content>
+            <Content>
+                {!loading && children}
+                {loading && (
+                    <Box display="flex" justifyContent="center">
+                        <CircularProgress size={36} />
+                    </Box>
+                )}
+            </Content>
         </Root>
     );
 }
