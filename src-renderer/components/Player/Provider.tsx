@@ -1,37 +1,16 @@
 import React from "react";
 
+import {
+    PlayerProviderContext,
+    PlayerProviderProps,
+    PlayerProviderStates,
+    PlayerEventMap,
+} from "@components/Player/types";
+
 import { MinimalMusicFragment } from "@queries";
 
 import { noop } from "@utils/noop";
-
-export interface PlayerProviderProps {
-    children: React.ReactNode;
-}
-export interface PlayerProviderStates {
-    playlist: MinimalMusicFragment[] | null;
-    playlistIndex: number;
-    playing: boolean;
-}
-
-export interface PlayerEventMap {
-    timeUpdate(position: number): void;
-}
-
-export interface PlayerProviderContext {
-    playPlaylist(playlist: MinimalMusicFragment[], index: number): void;
-    play(): void;
-    pause(): void;
-    stop(): void;
-    forward(): void;
-    backward(): void;
-    seek(position: number): void;
-    addEventListener<TKey extends keyof PlayerEventMap>(type: TKey, listener: PlayerEventMap[TKey]): void;
-    removeEventListener<TKey extends keyof PlayerEventMap>(type: TKey, listener: PlayerEventMap[TKey]): void;
-    playing: boolean;
-    playlist: ReadonlyArray<MinimalMusicFragment> | null;
-    playlistIndex: number;
-    playingMusic: MinimalMusicFragment | null;
-}
+import { loadImageAsBlob } from "@utils/loadImage";
 
 export const PlayerContext = React.createContext<PlayerProviderContext>({
     playPlaylist: noop,
@@ -48,6 +27,17 @@ export const PlayerContext = React.createContext<PlayerProviderContext>({
     playlistIndex: -1,
     playingMusic: null,
 });
+
+const MEDIASESSION_ACTIONS: MediaSessionAction[] = [
+    "nexttrack",
+    "pause",
+    "play",
+    "previoustrack",
+    "seekbackward",
+    "seekforward",
+    "seekto",
+    "stop",
+];
 
 export class PlayerProvider extends React.Component<PlayerProviderProps, PlayerProviderStates> {
     private readonly eventListeners = new Map<keyof PlayerEventMap, Set<PlayerEventMap[keyof PlayerEventMap]>>();
@@ -74,6 +64,17 @@ export class PlayerProvider extends React.Component<PlayerProviderProps, PlayerP
         playlistIndex: -1,
     };
 
+    public componentDidMount() {
+        for (const targetAction of MEDIASESSION_ACTIONS) {
+            navigator.mediaSession.setActionHandler(targetAction, this.handleMediaSessionAction.bind(this));
+        }
+    }
+    public componentWillUnmount() {
+        for (const targetAction of MEDIASESSION_ACTIONS) {
+            navigator.mediaSession.setActionHandler(targetAction, null);
+        }
+    }
+
     private handlePlay = () => {
         this.setState({ playing: true });
     };
@@ -91,6 +92,48 @@ export class PlayerProvider extends React.Component<PlayerProviderProps, PlayerP
     };
     private handleEnded = () => {
         this.forward();
+    };
+    private handleCanPlay = async () => {
+        const { playlist, playlistIndex } = this.state;
+        if (!playlist) {
+            return;
+        }
+
+        const music = playlist[playlistIndex];
+        const albumArtUrl = await loadImageAsBlob(`cruise://${music.albumArts[0].path}`);
+
+        navigator.mediaSession.metadata = new MediaMetadata({
+            title: music.title,
+            artist: music.albumArtist || "Unknown Artist",
+            album: music.album?.title || "Unknown Album",
+            artwork: [
+                {
+                    src: albumArtUrl,
+                    sizes: `${music.albumArts[0].width}x${music.albumArts[0].height}`,
+                    type: music.albumArts[0].mimeType,
+                },
+            ],
+        });
+    };
+    private handleMediaSessionAction = (details: MediaSessionActionDetails) => {
+        console.log(details);
+        switch (details.action) {
+            case "nexttrack":
+                this.forward();
+                return;
+
+            case "previoustrack":
+                this.backward();
+                return;
+
+            case "pause":
+                this.pause();
+                return;
+
+            case "play":
+                this.play();
+                return;
+        }
     };
 
     public playPlaylist(playlist: MinimalMusicFragment[], index: number) {
@@ -194,6 +237,7 @@ export class PlayerProvider extends React.Component<PlayerProviderProps, PlayerP
                 <audio
                     ref={this.audioRef}
                     style={{ display: "none" }}
+                    onCanPlay={this.handleCanPlay}
                     onPlay={this.handlePlay}
                     onPause={this.handlePause}
                     onTimeUpdate={this.handleTimeUpdate}

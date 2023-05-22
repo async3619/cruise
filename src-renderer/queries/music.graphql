@@ -12,6 +12,9 @@ fragment MinimalMusic on Music {
     albumArts {
         id
         path
+        width
+        height
+        mimeType
     }
     path
     duration
