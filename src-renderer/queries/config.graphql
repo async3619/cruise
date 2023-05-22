@@ -2,6 +2,8 @@ query config {
     config {
         libraryDirectories
         appTheme
+        volume
+        muted
     }
 }
 
@@ -9,5 +11,7 @@ mutation updateConfig($config: ConfigInput!) {
     updateConfig(config: $config) {
         libraryDirectories
         appTheme
+        volume
+        muted
     }
 }

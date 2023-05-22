@@ -1,4 +1,5 @@
 import React from "react";
+import _ from "lodash";
 
 import {
     PlayerEventMap,
@@ -12,7 +13,7 @@ import { MinimalMusicFragment } from "@queries";
 
 import { PickFn } from "@common/types";
 import { loadImageAsBlob } from "@utils/loadImage";
-import _ from "lodash";
+import { withConfig } from "@components/Config/withConfig";
 
 export const PlayerContext = React.createContext<PlayerProviderContext>({} as any);
 
@@ -27,7 +28,7 @@ const MEDIASESSION_ACTIONS: MediaSessionAction[] = [
     "stop",
 ];
 
-export class PlayerProvider extends React.Component<PlayerProviderProps, PlayerProviderStates> {
+class PlayerProviderImpl extends React.Component<PlayerProviderProps, PlayerProviderStates> {
     private readonly eventListeners = new Map<keyof PlayerEventMap, Set<PlayerEventMap[keyof PlayerEventMap]>>();
     private readonly audioRef = React.createRef<HTMLAudioElement>();
     private readonly contextValue: PickFn<PlayerProviderContext> = {
@@ -43,6 +44,9 @@ export class PlayerProvider extends React.Component<PlayerProviderProps, PlayerP
         setRepeatMode: this.setRepeatMode.bind(this),
         toggleRepeatMode: this.toggleRepeatMode.bind(this),
         shuffle: this.shuffle.bind(this),
+        setVolume: this.setVolume.bind(this),
+        toggleMute: this.toggleMute.bind(this),
+        setMuted: this.setMuted.bind(this),
     };
 
     public state: PlayerProviderStates = {
@@ -50,6 +54,8 @@ export class PlayerProvider extends React.Component<PlayerProviderProps, PlayerP
         playing: false,
         playlistIndex: -1,
         repeatMode: RepeatMode.None,
+        volume: this.props.config.volume,
+        muted: this.props.config.muted,
     };
 
     public get canSeekForward() {
@@ -72,6 +78,17 @@ export class PlayerProvider extends React.Component<PlayerProviderProps, PlayerP
     public componentDidMount() {
         for (const targetAction of MEDIASESSION_ACTIONS) {
             navigator.mediaSession.setActionHandler(targetAction, this.handleMediaSessionAction.bind(this));
+        }
+    }
+    public componentDidUpdate(prevProps: Readonly<PlayerProviderProps>, prevState: Readonly<PlayerProviderStates>) {
+        if (prevState.muted !== this.state.muted) {
+            if (!this.state.muted) {
+                this.setVolume(this.state.volume);
+            }
+
+            this.props.setConfig({
+                muted: this.state.muted,
+            });
         }
     }
     public componentWillUnmount() {
@@ -200,7 +217,6 @@ export class PlayerProvider extends React.Component<PlayerProviderProps, PlayerP
             this.play();
         });
     }
-
     public seekForward() {
         this.seekPlaylist(this.state.playlistIndex + 1);
     }
@@ -218,7 +234,6 @@ export class PlayerProvider extends React.Component<PlayerProviderProps, PlayerP
 
         this.seekPlaylist(this.state.playlistIndex - 1);
     }
-
     public seek(position: number) {
         const { current: audio } = this.audioRef;
         if (!audio) {
@@ -259,6 +274,40 @@ export class PlayerProvider extends React.Component<PlayerProviderProps, PlayerP
         this.setState({ playlist: shuffledPlaylist });
     }
 
+    public setVolume(volume: number, save = false) {
+        const { current: audio } = this.audioRef;
+        if (!audio) {
+            return;
+        }
+
+        if (volume <= 0) {
+            volume = 0;
+
+            if (save) {
+                this.setMuted(true);
+            }
+        }
+
+        audio.volume = volume;
+        if (save && volume) {
+            this.setState({ volume });
+            this.props.setConfig({
+                volume,
+            });
+        }
+    }
+    public toggleMute() {
+        const { current: audio } = this.audioRef;
+        if (!audio) {
+            return;
+        }
+
+        this.setState(prevState => ({ muted: !prevState.muted }));
+    }
+    public setMuted(muted: boolean) {
+        this.setState({ muted });
+    }
+
     public addEventListener<TKey extends keyof PlayerEventMap>(type: TKey, listener: PlayerEventMap[TKey]) {
         const listeners = this.eventListeners.get(type) ?? new Set();
         listeners.add(listener);
@@ -280,7 +329,7 @@ export class PlayerProvider extends React.Component<PlayerProviderProps, PlayerP
 
     public render() {
         const { children } = this.props;
-        const { playing, playlist, playlistIndex, repeatMode } = this.state;
+        const { playing, playlist, playlistIndex, repeatMode, muted, volume } = this.state;
         const currentMusic = playlist?.[playlistIndex] ?? null;
 
         return (
@@ -294,9 +343,12 @@ export class PlayerProvider extends React.Component<PlayerProviderProps, PlayerP
                     repeatMode,
                     canSeekForward: this.canSeekForward,
                     canSeekBackward: this.canSeekBackward,
+                    volume,
+                    muted,
                 }}
             >
                 <audio
+                    muted={muted}
                     ref={this.audioRef}
                     style={{ display: "none" }}
                     onCanPlay={this.handleCanPlay}
@@ -315,3 +367,5 @@ export class PlayerProvider extends React.Component<PlayerProviderProps, PlayerP
 export function usePlayer() {
     return React.useContext(PlayerContext);
 }
+
+export const PlayerProvider = withConfig(PlayerProviderImpl);

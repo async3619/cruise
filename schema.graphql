@@ -92,6 +92,8 @@ type Music {
 type Config {
   libraryDirectories: [String!]!
   appTheme: AppTheme!
+  volume: Float!
+  muted: Boolean!
 }
 
 enum AppTheme {
@@ -175,6 +177,8 @@ input SelectPathFilterInput {
 input ConfigInput {
   libraryDirectories: [String!]!
   appTheme: AppTheme!
+  volume: Float!
+  muted: Boolean!
 }
 
 type Subscription {

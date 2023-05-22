@@ -1,5 +1,8 @@
 import React from "react";
+
 import { MinimalMusicFragment } from "@queries";
+
+import { WithConfigProps } from "@components/Config/withConfig";
 
 export enum RepeatMode {
     None,
@@ -7,7 +10,7 @@ export enum RepeatMode {
     All,
 }
 
-export interface PlayerProviderProps {
+export interface PlayerProviderProps extends WithConfigProps {
     children: React.ReactNode;
 }
 export interface PlayerProviderStates {
@@ -15,6 +18,8 @@ export interface PlayerProviderStates {
     playlistIndex: number;
     playing: boolean;
     repeatMode: RepeatMode;
+    volume: number;
+    muted: boolean;
 }
 export interface PlayerEventMap {
     timeUpdate(position: number): void;
@@ -33,6 +38,11 @@ export interface PlayerProviderContext {
     setRepeatMode(mode: RepeatMode): void;
     toggleRepeatMode(): void;
     shuffle(): void;
+    setVolume(volume: number, save?: boolean): void;
+    toggleMute(): void;
+    setMuted(muted: boolean): void;
+    volume: number;
+    muted: boolean;
     repeatMode: RepeatMode;
     playing: boolean;
     playlist: ReadonlyArray<MinimalMusicFragment> | null;

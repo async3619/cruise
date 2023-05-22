@@ -1,5 +1,6 @@
 import { z } from "zod";
 import * as fs from "fs-extra";
+import * as _ from "lodash";
 
 import * as mgr from "@async3619/merry-go-round";
 
@@ -13,6 +14,8 @@ import type { AsyncFn, Fn } from "@common/types";
 export const CONFIG_SCHEMA = z.object({
     libraryDirectories: z.array(z.string()),
     appTheme: z.nativeEnum(AppTheme),
+    volume: z.number().min(0).max(1),
+    muted: z.boolean(),
     lastPosition: z
         .object({
             x: z.number(),
@@ -43,6 +46,8 @@ const DEFAULT_CONFIG: Config = (() => {
     return {
         libraryDirectories,
         appTheme: AppTheme.System,
+        volume: 0.5,
+        muted: false,
     };
 })();
 
@@ -58,13 +63,15 @@ export class ConfigService {
         const data = await fs.readFile(CONFIG_FILE_PATH, "utf8");
         const config = JSON.parse(data);
         if (!isConfig(config)) {
-            await fs.unlink(CONFIG_FILE_PATH);
-            await this.setConfig(DEFAULT_CONFIG);
+            if (fs.existsSync(CONFIG_FILE_PATH)) {
+                await fs.unlink(CONFIG_FILE_PATH);
+            }
 
+            await this.setConfig(DEFAULT_CONFIG);
             return DEFAULT_CONFIG;
         }
 
-        return config;
+        return _.merge({}, DEFAULT_CONFIG, config);
     }
 
     public async setConfig(config: Config | AsyncFn<Config, Config> | Fn<Config, Config>) {

@@ -172,7 +172,7 @@ export class ElectronService implements OnModuleInit {
 
         if (is.dev) {
             window.webContents.openDevTools({
-                mode: "undocked",
+                mode: "bottom",
             });
         }
 

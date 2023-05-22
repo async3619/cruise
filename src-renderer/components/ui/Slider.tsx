@@ -24,7 +24,7 @@ export class Slider extends React.PureComponent<SliderProps, SliderStates> {
     private trackBoundingRect: DOMRect | null = null;
     private mouseX = 0;
     private mouseY = 0;
-    private value = 0;
+    private value = this.props.value || 0;
 
     public state: SliderStates = {
         dragging: false,
@@ -69,6 +69,8 @@ export class Slider extends React.PureComponent<SliderProps, SliderStates> {
         const { mouseX } = this;
 
         this.value = Math.min(Math.max((mouseX - left) / width, 0), 1);
+
+        this.props.onValueChange?.(this.value * (this.props.max - this.props.min) + this.props.min);
     }
 
     private handleFrame = () => {

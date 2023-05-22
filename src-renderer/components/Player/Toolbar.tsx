@@ -8,6 +8,8 @@ import FastRewindRounded from "@mui/icons-material/FastRewindRounded";
 import RepeatRoundedIcon from "@mui/icons-material/RepeatRounded";
 import RepeatOneRoundedIcon from "@mui/icons-material/RepeatOneRounded";
 import ShuffleRoundedIcon from "@mui/icons-material/ShuffleRounded";
+import VolumeUpIcon from "@mui/icons-material/VolumeUp";
+import VolumeOffIcon from "@mui/icons-material/VolumeOff";
 
 import { usePlayer } from "@components/Player/Provider";
 import { RepeatMode } from "@components/Player/types";
@@ -24,6 +26,7 @@ export function PlayerToolbar({}: PlayerToolbarProps) {
     const theme = useTheme();
     const player = usePlayer();
     const shuffleIconRef = React.useRef<SVGSVGElement>(null);
+
     const handlePlayPause = () => {
         if (player.playing) {
             player.pause();
@@ -50,6 +53,16 @@ export function PlayerToolbar({}: PlayerToolbarProps) {
 
         player.shuffle();
     };
+    const handleVolumeChange = (volume: number) => {
+        if (player.muted && volume > 0) {
+            player.setMuted(false);
+        }
+
+        player.setVolume(volume);
+    };
+    const handleVolumeChangeEnd = (volume: number) => {
+        player.setVolume(volume, true);
+    };
 
     React.useEffect(() => {
         const handleTimeUpdate = (time: number) => {
@@ -71,6 +84,11 @@ export function PlayerToolbar({}: PlayerToolbarProps) {
     let isRepeatDisabled = false;
     if (player.repeatMode === RepeatMode.None) {
         isRepeatDisabled = true;
+    }
+
+    let muteIcon = <VolumeUpIcon fontSize="small" />;
+    if (player.muted) {
+        muteIcon = <VolumeOffIcon fontSize="small" />;
     }
 
     const duration = player.playingMusic?.duration ?? 0;
@@ -149,7 +167,20 @@ export function PlayerToolbar({}: PlayerToolbarProps) {
                     </Typography>
                 </Box>
             </Box>
-            <Box flex="1 1 auto" />
+            <Box flex="1 1" display="flex" justifyContent="flex-end" alignItems="center">
+                <IconButton onClick={player.toggleMute} size="small">
+                    {muteIcon}
+                </IconButton>
+                <Box width={75} ml={1}>
+                    <Slider
+                        min={0}
+                        max={1}
+                        value={player.muted ? 0 : player.volume}
+                        onValueChange={handleVolumeChange}
+                        onValueChangeEnd={handleVolumeChangeEnd}
+                    />
+                </Box>
+            </Box>
         </Root>
     );
 }

@@ -1,4 +1,4 @@
-import { Field, InputType, ObjectType, registerEnumType } from "@nestjs/graphql";
+import { Field, Float, InputType, ObjectType, registerEnumType } from "@nestjs/graphql";
 
 export enum AppTheme {
     Light = "light",
@@ -15,6 +15,12 @@ export class ConfigInput {
 
     @Field(() => AppTheme)
     public appTheme!: AppTheme;
+
+    @Field(() => Float)
+    public volume!: number;
+
+    @Field(() => Boolean)
+    public muted!: boolean;
 }
 
 @ObjectType()
@@ -24,4 +30,10 @@ export class Config {
 
     @Field(() => AppTheme)
     public appTheme!: AppTheme;
+
+    @Field(() => Float)
+    public volume!: number;
+
+    @Field(() => Boolean)
+    public muted!: boolean;
 }

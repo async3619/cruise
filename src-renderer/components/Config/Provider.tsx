@@ -8,16 +8,16 @@ export interface ConfigProviderProps {
     children: React.ReactNode;
 }
 
-interface ConfigContextValue {
-    config: Config | null;
-    setConfig: (config: Config) => void;
+export interface ConfigContextValue {
+    config: Config;
+    setConfig: (config: Partial<Config>) => void;
 }
 
 export const ConfigContext = React.createContext<ConfigContextValue>({
     setConfig: () => {
         throw new Error("ConfigProvider not initialized");
     },
-    config: null,
+    config: {} as any,
 });
 
 export function useConfig() {
@@ -51,6 +51,17 @@ export const ConfigProvider: React.FC<ConfigProviderProps> = ({ children }: Conf
         [setMode],
     );
 
+    const setConfigValue = React.useCallback(
+        (partialConfig: Partial<Config>) => {
+            if (!config) {
+                return;
+            }
+
+            handleChange({ ...config, ...partialConfig });
+        },
+        [config, handleChange],
+    );
+
     React.useEffect(() => {
         if (!initialConfig) {
             return;
@@ -72,9 +83,9 @@ export const ConfigProvider: React.FC<ConfigProviderProps> = ({ children }: Conf
         });
     }, [config, updateConfig]);
 
-    if (!initialConfig || loading) {
+    if (!config || loading) {
         return null;
     }
 
-    return <ConfigContext.Provider value={{ config, setConfig: handleChange }}>{children}</ConfigContext.Provider>;
+    return <ConfigContext.Provider value={{ config, setConfig: setConfigValue }}>{children}</ConfigContext.Provider>;
 };
