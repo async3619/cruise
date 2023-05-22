@@ -79,6 +79,10 @@ class PlayerProviderImpl extends React.Component<PlayerProviderProps, PlayerProv
         for (const targetAction of MEDIASESSION_ACTIONS) {
             navigator.mediaSession.setActionHandler(targetAction, this.handleMediaSessionAction.bind(this));
         }
+
+        if (this.audioRef.current) {
+            this.audioRef.current.volume = this.state.volume;
+        }
     }
     public componentDidUpdate(prevProps: Readonly<PlayerProviderProps>, prevState: Readonly<PlayerProviderStates>) {
         if (prevState.muted !== this.state.muted) {
