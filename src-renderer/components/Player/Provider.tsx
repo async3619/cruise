@@ -1,32 +1,20 @@
 import React from "react";
 
 import {
+    PlayerEventMap,
     PlayerProviderContext,
     PlayerProviderProps,
     PlayerProviderStates,
-    PlayerEventMap,
+    RepeatMode,
 } from "@components/Player/types";
 
 import { MinimalMusicFragment } from "@queries";
 
-import { noop } from "@utils/noop";
+import { PickFn } from "@common/types";
 import { loadImageAsBlob } from "@utils/loadImage";
+import _ from "lodash";
 
-export const PlayerContext = React.createContext<PlayerProviderContext>({
-    playPlaylist: noop,
-    play: noop,
-    pause: noop,
-    stop: noop,
-    forward: noop,
-    backward: noop,
-    seek: noop,
-    addEventListener: noop,
-    removeEventListener: noop,
-    playing: false,
-    playlist: null,
-    playlistIndex: -1,
-    playingMusic: null,
-});
+export const PlayerContext = React.createContext<PlayerProviderContext>({} as any);
 
 const MEDIASESSION_ACTIONS: MediaSessionAction[] = [
     "nexttrack",
@@ -42,27 +30,44 @@ const MEDIASESSION_ACTIONS: MediaSessionAction[] = [
 export class PlayerProvider extends React.Component<PlayerProviderProps, PlayerProviderStates> {
     private readonly eventListeners = new Map<keyof PlayerEventMap, Set<PlayerEventMap[keyof PlayerEventMap]>>();
     private readonly audioRef = React.createRef<HTMLAudioElement>();
-    private readonly contextValue: PlayerProviderContext = {
+    private readonly contextValue: PickFn<PlayerProviderContext> = {
         playPlaylist: this.playPlaylist.bind(this),
         play: this.play.bind(this),
         pause: this.pause.bind(this),
         stop: this.stop.bind(this),
-        forward: this.forward.bind(this),
-        backward: this.backward.bind(this),
+        seekForward: this.seekForward.bind(this),
+        seekBackward: this.seekBackward.bind(this),
         seek: this.seek.bind(this),
         addEventListener: this.addEventListener.bind(this),
         removeEventListener: this.removeEventListener.bind(this),
-        playing: false,
-        playlist: null,
-        playlistIndex: -1,
-        playingMusic: null,
+        setRepeatMode: this.setRepeatMode.bind(this),
+        toggleRepeatMode: this.toggleRepeatMode.bind(this),
+        shuffle: this.shuffle.bind(this),
     };
 
     public state: PlayerProviderStates = {
-        playlist: [],
+        playlist: null,
         playing: false,
         playlistIndex: -1,
+        repeatMode: RepeatMode.None,
     };
+
+    public get canSeekForward() {
+        const { playlist, playlistIndex, repeatMode } = this.state;
+        if (!playlist) {
+            return false;
+        }
+
+        return !(repeatMode === RepeatMode.None && playlistIndex === playlist.length - 1);
+    }
+    public get canSeekBackward() {
+        const { playlist, playlistIndex, repeatMode } = this.state;
+        if (!playlist) {
+            return false;
+        }
+
+        return !(repeatMode === RepeatMode.None && playlistIndex === 0);
+    }
 
     public componentDidMount() {
         for (const targetAction of MEDIASESSION_ACTIONS) {
@@ -91,7 +96,14 @@ export class PlayerProvider extends React.Component<PlayerProviderProps, PlayerP
         this.dispatchEvent("timeUpdate", position);
     };
     private handleEnded = () => {
-        this.forward();
+        const { repeatMode } = this.state;
+
+        if (repeatMode !== RepeatMode.One) {
+            this.seekForward();
+        } else {
+            this.seek(0);
+            this.play();
+        }
     };
     private handleCanPlay = async () => {
         const { playlist, playlistIndex } = this.state;
@@ -116,14 +128,13 @@ export class PlayerProvider extends React.Component<PlayerProviderProps, PlayerP
         });
     };
     private handleMediaSessionAction = (details: MediaSessionActionDetails) => {
-        console.log(details);
         switch (details.action) {
             case "nexttrack":
-                this.forward();
+                this.seekForward();
                 return;
 
             case "previoustrack":
-                this.backward();
+                this.seekBackward();
                 return;
 
             case "pause":
@@ -170,13 +181,19 @@ export class PlayerProvider extends React.Component<PlayerProviderProps, PlayerP
     }
 
     public seekPlaylist(index: number) {
-        const { playlist } = this.state;
+        const { playlist, repeatMode } = this.state;
         if (!playlist) {
             return;
         }
 
-        if (index < 0 || index >= playlist.length) {
+        if (repeatMode === RepeatMode.None && (index < 0 || index >= playlist.length)) {
             return;
+        }
+
+        if (index < 0) {
+            index = playlist.length - 1;
+        } else if (index >= playlist.length) {
+            index = 0;
         }
 
         this.setState({ playlistIndex: index }, () => {
@@ -184,10 +201,21 @@ export class PlayerProvider extends React.Component<PlayerProviderProps, PlayerP
         });
     }
 
-    public forward() {
+    public seekForward() {
         this.seekPlaylist(this.state.playlistIndex + 1);
     }
-    public backward() {
+    public seekBackward() {
+        // check if audio position is elapsed 3 seconds
+        const { current: audio } = this.audioRef;
+        if (!audio) {
+            return;
+        }
+
+        if (audio.currentTime > 2) {
+            audio.currentTime = 0;
+            return;
+        }
+
         this.seekPlaylist(this.state.playlistIndex - 1);
     }
 
@@ -198,6 +226,37 @@ export class PlayerProvider extends React.Component<PlayerProviderProps, PlayerP
         }
 
         audio.currentTime = position;
+    }
+
+    public setRepeatMode(mode: RepeatMode) {
+        this.setState({ repeatMode: mode });
+    }
+    public toggleRepeatMode() {
+        const { repeatMode } = this.state;
+        if (repeatMode === RepeatMode.None) {
+            this.setRepeatMode(RepeatMode.All);
+        } else if (repeatMode === RepeatMode.All) {
+            this.setRepeatMode(RepeatMode.One);
+        } else {
+            this.setRepeatMode(RepeatMode.None);
+        }
+    }
+
+    public shuffle() {
+        // splice current music from playlist array and shuffle it.
+        // and then insert it into playlist array at current index.
+
+        const { playlist, playlistIndex } = this.state;
+        if (!playlist) {
+            return;
+        }
+
+        const newPlaylist = [...playlist];
+        const currentMusic = newPlaylist.splice(playlistIndex, 1)[0];
+        const shuffledPlaylist = _.shuffle(newPlaylist);
+        shuffledPlaylist.splice(playlistIndex, 0, currentMusic);
+
+        this.setState({ playlist: shuffledPlaylist });
     }
 
     public addEventListener<TKey extends keyof PlayerEventMap>(type: TKey, listener: PlayerEventMap[TKey]) {
@@ -221,7 +280,7 @@ export class PlayerProvider extends React.Component<PlayerProviderProps, PlayerP
 
     public render() {
         const { children } = this.props;
-        const { playing, playlist, playlistIndex } = this.state;
+        const { playing, playlist, playlistIndex, repeatMode } = this.state;
         const currentMusic = playlist?.[playlistIndex] ?? null;
 
         return (
@@ -232,6 +291,9 @@ export class PlayerProvider extends React.Component<PlayerProviderProps, PlayerP
                     playlist,
                     playlistIndex,
                     playingMusic: currentMusic,
+                    repeatMode,
+                    canSeekForward: this.canSeekForward,
+                    canSeekBackward: this.canSeekBackward,
                 }}
             >
                 <audio

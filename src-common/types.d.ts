@@ -21,3 +21,7 @@ export interface SerializableGraphQLRequest<TContext = any, TVariables = any, TE
     context?: TContext;
     extensions?: TExtensions;
 }
+
+export type PickFn<T> = {
+    [K in keyof T as T[K] extends (...args: any[]) => any ? K : never]: T[K];
+};
