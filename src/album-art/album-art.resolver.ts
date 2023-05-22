@@ -1,5 +1,5 @@
 import { Inject } from "@nestjs/common";
-import { Mutation, Resolver } from "@nestjs/graphql";
+import { Mutation, ResolveField, Resolver } from "@nestjs/graphql";
 
 import { ElectronService } from "@main/electron/electron.service";
 import { AlbumArtService } from "@main/album-art/album-art.service";
@@ -28,5 +28,10 @@ export class AlbumArtResolver {
         }
 
         return this.albumArtService.createFromPath(targetPath[0], false);
+    }
+
+    @ResolveField(() => String)
+    public async path(@Inject("parent") albumArt: AlbumArt): Promise<string> {
+        return albumArt.path.replace(/\\/g, "/");
     }
 }

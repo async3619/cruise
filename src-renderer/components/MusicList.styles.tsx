@@ -1,7 +1,14 @@
-import styled from "@emotion/styled";
+import React from "react";
+
 import { ButtonBase } from "@mui/material";
 
-export const AlbumArt = styled(ButtonBase)`
+import styled from "@emotion/styled";
+
+export interface AlbumArtProps extends React.ComponentProps<typeof ButtonBase> {
+    active?: boolean;
+}
+
+export const AlbumArt = styled(({ active: _, ...rest }: AlbumArtProps) => <ButtonBase {...rest} />)<AlbumArtProps>`
     width: ${({ theme }) => theme.spacing(5.5)};
     height: ${({ theme }) => theme.spacing(5.5)};
 
@@ -22,11 +29,27 @@ export const AlbumArt = styled(ButtonBase)`
         width: ${({ theme }) => theme.spacing(3.5)};
         height: ${({ theme }) => theme.spacing(3.5)};
 
-        opacity: 0;
+        position: relative;
+        z-index: 2;
+
+        opacity: ${({ active }) => (active ? 1 : 0)};
     }
 
     .MuiTouchRipple-root {
         z-index: 3;
+    }
+
+    &:before {
+        content: "";
+
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 1;
+
+        background: ${({ active }) => (active ? "rgba(0, 0, 0, 0.5)" : "transparent")};
     }
 `;
 
@@ -93,22 +116,10 @@ export const Root = styled.table`
 
                 ${AlbumArt} {
                     &:before {
-                        content: "";
-
-                        position: absolute;
-                        top: 0;
-                        left: 0;
-                        right: 0;
-                        bottom: 0;
-                        z-index: 1;
-
                         background: rgba(0, 0, 0, 0.5);
                     }
 
                     svg {
-                        position: relative;
-                        z-index: 2;
-
                         opacity: 1;
                     }
                 }

@@ -6,7 +6,7 @@ export const ContentAnimation = keyframes`
         opacity: 0;
         transform: translateY(16px);
     }
-    
+
     to {
         opacity: 1;
         transform: translateY(0px);
@@ -19,10 +19,19 @@ export const Root = styled.div`
 `;
 
 export const Content = styled.div`
-    margin-top: ${({ theme }) => theme.spacing(2)};
+    padding: ${({ theme }) => theme.spacing(0, 2, 2)};
 
     animation: ${ContentAnimation} ${({ theme }) => theme.transitions.duration.standard}ms
         ${({ theme }) => theme.transitions.easing.easeInOut};
 `;
 
-export const Header = styled.header``;
+export const Header = styled.header`
+    padding: ${({ theme }) => theme.spacing(2)};
+
+    position: sticky;
+    top: 0;
+
+    z-index: 100;
+
+    background: ${({ theme }) => theme.vars.palette.background.default};
+`;

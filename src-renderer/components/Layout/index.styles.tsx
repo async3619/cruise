@@ -8,6 +8,10 @@ export const GlobalStyles = css`
         font-weight: 100 900;
         src: local("SUIT Variable Regular"), url("/suit.woff2") format("woff2-variations");
     }
+
+    * {
+        user-select: none;
+    }
 `;
 
 export const Root = styled.div`
@@ -34,6 +38,8 @@ export const Content = styled.main`
     padding: 0;
     border-top-left-radius: 4px;
 
+    overflow: hidden;
+
     flex: 1 1 auto;
 
     color: ${({ theme }) => theme.vars.palette.text.primary};
@@ -45,6 +51,4 @@ export const Body = styled.div`
     flex: 1 1 auto;
 `;
 
-export const ContentWrapper = styled.div`
-    padding: ${({ theme }) => theme.spacing(2)};
-`;
+export const ContentWrapper = styled.div``;

@@ -7,6 +7,7 @@ import { Global } from "@emotion/react";
 
 import { Header } from "@components/Layout/Header";
 import { Navigation } from "@components/Layout/Navigation";
+import { PlayerToolbar } from "@components/Player/Toolbar";
 
 import { Body, Content, ContentWrapper, GlobalStyles, Root } from "@components/Layout/index.styles";
 
@@ -28,6 +29,7 @@ export function Layout({}: LayoutProps) {
                     </Scrollbars>
                 </Content>
             </Body>
+            <PlayerToolbar />
         </Root>
     );
 }

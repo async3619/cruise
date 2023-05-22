@@ -13,6 +13,8 @@ fragment MinimalMusic on Music {
         id
         path
     }
+    path
+    duration
 }
 
 query musics {

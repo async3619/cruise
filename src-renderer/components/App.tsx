@@ -7,6 +7,8 @@ import type { Mode } from "@mui/system/cssVars/useCurrentColorScheme";
 
 import { Layout } from "@components/Layout";
 import { ConfigProvider } from "@components/Config/Provider";
+import { LibraryProvider } from "@components/Library/Provider";
+import { PlayerProvider } from "@components/Player/Provider";
 
 import { Home } from "@pages/Home";
 import { Library } from "@pages/Library";
@@ -22,7 +24,6 @@ import apolloClient from "@graphql/client";
 import i18n from "@/i18n.config";
 
 import { theme } from "@styles/theme";
-import { LibraryProvider } from "@components/Library/Provider";
 
 export interface AppProps {}
 
@@ -50,7 +51,9 @@ export function App({}: AppProps) {
                 <CssVarsProvider theme={theme} defaultMode={defaultMode}>
                     <ConfigProvider>
                         <LibraryProvider>
-                            <RouterProvider router={router} />
+                            <PlayerProvider>
+                                <RouterProvider router={router} />
+                            </PlayerProvider>
                         </LibraryProvider>
                     </ConfigProvider>
                 </CssVarsProvider>
