@@ -1,14 +1,8 @@
 import React from "react";
 
-import { MinimalMusicFragment } from "@queries";
+import { MinimalMusicFragment, RepeatMode } from "@queries";
 
 import { WithConfigProps } from "@components/Config/withConfig";
-
-export enum RepeatMode {
-    None,
-    One,
-    All,
-}
 
 export interface PlayerProviderProps extends WithConfigProps {
     children: React.ReactNode;
@@ -17,7 +11,6 @@ export interface PlayerProviderStates {
     playlist: MinimalMusicFragment[] | null;
     playlistIndex: number;
     playing: boolean;
-    repeatMode: RepeatMode;
     volume: number;
     muted: boolean;
 }

@@ -6,7 +6,14 @@ export enum AppTheme {
     System = "system",
 }
 
+export enum RepeatMode {
+    None = "none",
+    One = "one",
+    All = "all",
+}
+
 registerEnumType(AppTheme, { name: "AppTheme" });
+registerEnumType(RepeatMode, { name: "RepeatMode" });
 
 @InputType()
 export class ConfigInput {
@@ -21,6 +28,9 @@ export class ConfigInput {
 
     @Field(() => Boolean)
     public muted!: boolean;
+
+    @Field(() => RepeatMode)
+    public repeatMode!: RepeatMode;
 }
 
 @ObjectType()
@@ -36,4 +46,7 @@ export class Config {
 
     @Field(() => Boolean)
     public muted!: boolean;
+
+    @Field(() => RepeatMode)
+    public repeatMode!: RepeatMode;
 }

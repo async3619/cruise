@@ -4,6 +4,7 @@ query config {
         appTheme
         volume
         muted
+        repeatMode
     }
 }
 
@@ -13,5 +14,6 @@ mutation updateConfig($config: ConfigInput!) {
         appTheme
         volume
         muted
+        repeatMode
     }
 }

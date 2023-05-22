@@ -6,10 +6,9 @@ import {
     PlayerProviderContext,
     PlayerProviderProps,
     PlayerProviderStates,
-    RepeatMode,
 } from "@components/Player/types";
 
-import { MinimalMusicFragment } from "@queries";
+import { MinimalMusicFragment, RepeatMode } from "@queries";
 
 import { PickFn } from "@common/types";
 import { loadImageAsBlob } from "@utils/loadImage";
@@ -53,26 +52,28 @@ class PlayerProviderImpl extends React.Component<PlayerProviderProps, PlayerProv
         playlist: null,
         playing: false,
         playlistIndex: -1,
-        repeatMode: RepeatMode.None,
         volume: this.props.config.volume,
         muted: this.props.config.muted,
     };
 
     public get canSeekForward() {
-        const { playlist, playlistIndex, repeatMode } = this.state;
+        const { playlist, playlistIndex } = this.state;
         if (!playlist) {
             return false;
         }
 
-        return !(repeatMode === RepeatMode.None && playlistIndex === playlist.length - 1);
+        return !(this.repeatMode === RepeatMode.None && playlistIndex === playlist.length - 1);
     }
     public get canSeekBackward() {
-        const { playlist, playlistIndex, repeatMode } = this.state;
+        const { playlist, playlistIndex } = this.state;
         if (!playlist) {
             return false;
         }
 
-        return !(repeatMode === RepeatMode.None && playlistIndex === 0);
+        return !(this.repeatMode === RepeatMode.None && playlistIndex === 0);
+    }
+    public get repeatMode() {
+        return this.props.config.repeatMode;
     }
 
     public componentDidMount() {
@@ -117,9 +118,7 @@ class PlayerProviderImpl extends React.Component<PlayerProviderProps, PlayerProv
         this.dispatchEvent("timeUpdate", position);
     };
     private handleEnded = () => {
-        const { repeatMode } = this.state;
-
-        if (repeatMode !== RepeatMode.One) {
+        if (this.repeatMode !== RepeatMode.One) {
             this.seekForward();
         } else {
             this.seek(0);
@@ -202,12 +201,12 @@ class PlayerProviderImpl extends React.Component<PlayerProviderProps, PlayerProv
     }
 
     public seekPlaylist(index: number) {
-        const { playlist, repeatMode } = this.state;
+        const { playlist } = this.state;
         if (!playlist) {
             return;
         }
 
-        if (repeatMode === RepeatMode.None && (index < 0 || index >= playlist.length)) {
+        if (this.repeatMode === RepeatMode.None && (index < 0 || index >= playlist.length)) {
             return;
         }
 
@@ -248,13 +247,12 @@ class PlayerProviderImpl extends React.Component<PlayerProviderProps, PlayerProv
     }
 
     public setRepeatMode(mode: RepeatMode) {
-        this.setState({ repeatMode: mode });
+        this.props.setConfig({ repeatMode: mode });
     }
     public toggleRepeatMode() {
-        const { repeatMode } = this.state;
-        if (repeatMode === RepeatMode.None) {
+        if (this.repeatMode === RepeatMode.None) {
             this.setRepeatMode(RepeatMode.All);
-        } else if (repeatMode === RepeatMode.All) {
+        } else if (this.repeatMode === RepeatMode.All) {
             this.setRepeatMode(RepeatMode.One);
         } else {
             this.setRepeatMode(RepeatMode.None);
@@ -333,7 +331,7 @@ class PlayerProviderImpl extends React.Component<PlayerProviderProps, PlayerProv
 
     public render() {
         const { children } = this.props;
-        const { playing, playlist, playlistIndex, repeatMode, muted, volume } = this.state;
+        const { playing, playlist, playlistIndex, muted, volume } = this.state;
         const currentMusic = playlist?.[playlistIndex] ?? null;
 
         return (
@@ -344,7 +342,7 @@ class PlayerProviderImpl extends React.Component<PlayerProviderProps, PlayerProv
                     playlist,
                     playlistIndex,
                     playingMusic: currentMusic,
-                    repeatMode,
+                    repeatMode: this.repeatMode,
                     canSeekForward: this.canSeekForward,
                     canSeekBackward: this.canSeekBackward,
                     volume,

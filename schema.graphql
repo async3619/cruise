@@ -94,12 +94,19 @@ type Config {
   appTheme: AppTheme!
   volume: Float!
   muted: Boolean!
+  repeatMode: RepeatMode!
 }
 
 enum AppTheme {
   Light
   Dark
   System
+}
+
+enum RepeatMode {
+  None
+  One
+  All
 }
 
 type SearchSuggestion {
@@ -179,6 +186,7 @@ input ConfigInput {
   appTheme: AppTheme!
   volume: Float!
   muted: Boolean!
+  repeatMode: RepeatMode!
 }
 
 type Subscription {

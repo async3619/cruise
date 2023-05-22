@@ -12,12 +12,12 @@ import VolumeUpIcon from "@mui/icons-material/VolumeUp";
 import VolumeOffIcon from "@mui/icons-material/VolumeOff";
 
 import { usePlayer } from "@components/Player/Provider";
-import { RepeatMode } from "@components/Player/types";
-
 import { Slider } from "@components/ui/Slider";
 
 import { AlbumArt, Controls, Information, NowPlaying, Root } from "@components/Player/Toolbar.styles";
 import { formatSeconds } from "@utils/formatTime";
+
+import { RepeatMode } from "@queries";
 
 export interface PlayerToolbarProps {}
 
