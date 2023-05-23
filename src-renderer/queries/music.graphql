@@ -26,8 +26,8 @@ query musics {
     }
 }
 
-subscription musicAdded {
-    musicAdded {
+subscription musicsAdded {
+    musicsAdded {
         ...MinimalMusic
     }
 }

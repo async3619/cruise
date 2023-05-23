@@ -2,7 +2,7 @@ import { forwardRef, Inject } from "@nestjs/common";
 import { Args, Context, Int, Query, ResolveField, Resolver, Root, Subscription } from "@nestjs/graphql";
 
 import { MusicService } from "@main/music/music.service";
-import { MUSICS_UPDATED, MUSIC_ADDED, MUSIC_REMOVED, MUSIC_UPDATED } from "@main/music/music.constants";
+import { MUSICS_UPDATED, MUSIC_ADDED, MUSIC_REMOVED, MUSIC_UPDATED, MUSICS_ADDED } from "@main/music/music.constants";
 
 import { AlbumService } from "@main/album/album.service";
 
@@ -41,6 +41,11 @@ export class MusicResolver {
     @Subscription(() => Music)
     public async musicUpdated() {
         return pubSub.asyncIterator(MUSIC_UPDATED);
+    }
+
+    @Subscription(() => [Music])
+    public async musicsAdded() {
+        return pubSub.asyncIterator(MUSICS_ADDED);
     }
 
     @Subscription(() => [Music])

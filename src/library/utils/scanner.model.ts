@@ -5,7 +5,7 @@ import { DeepPartial } from "typeorm";
 
 import { MusicService } from "@main/music/music.service";
 import { Music } from "@main/music/models/music.model";
-import { MUSIC_ADDED, MUSIC_REMOVED, MUSICS_UPDATED } from "@main/music/music.constants";
+import { MUSIC_ADDED, MUSIC_REMOVED, MUSICS_ADDED, MUSICS_UPDATED } from "@main/music/music.constants";
 
 import { ArtistService } from "@main/artist/artist.service";
 import { Artist } from "@main/artist/models/artist.model";
@@ -81,8 +81,10 @@ export class Scanner {
             eventMap[event.type].push({ ...event, music });
         }
 
+        const addedMusics: Music[] = [];
         for (const event of eventMap.add) {
-            await this.onFileAdded(event);
+            const addedMusic = await this.onFileAdded(event);
+            addedMusics.push(addedMusic);
         }
 
         for (const event of eventMap.unlink) {
@@ -129,8 +131,13 @@ export class Scanner {
         await pubSub.publish(ALBUMS_UPDATED, {
             albumsUpdated: updatedAlbums,
         });
+
         await pubSub.publish(MUSICS_UPDATED, {
             musicsUpdated: this.musicService.findByIds(this.updatedMusics.map(m => m.id)),
+        });
+
+        await pubSub.publish(MUSICS_ADDED, {
+            musicsAdded: addedMusics,
         });
 
         allAlbums = await this.albumService.findAll();
@@ -210,7 +217,7 @@ export class Scanner {
         if (album) {
             await this.attachAlbumData(album, audio, featuredArtists, albumArts);
             if (!created) {
-                return;
+                return music;
             }
 
             await pubSub.publish(ALBUM_ADDED, {
@@ -219,6 +226,8 @@ export class Scanner {
 
             this.addUpdatedMusic(music);
         }
+
+        return music;
     };
     private onFileChanged = async ({ music, path: targetPath }: ExistingFileEvent) => {
         const audio = Audio.fromFile(targetPath);

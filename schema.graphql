@@ -192,6 +192,7 @@ input ConfigInput {
 type Subscription {
   musicAdded: Music!
   musicUpdated: Music!
+  musicsAdded: [Music!]!
   musicsUpdated: [Music!]!
   musicRemoved: Int!
   albumAdded: Album!
