@@ -31,3 +31,13 @@ subscription musicsAdded {
         ...MinimalMusic
     }
 }
+
+subscription musicsUpdated {
+    musicsUpdated {
+        ...MinimalMusic
+    }
+}
+
+subscription musicsRemoved {
+    musicsRemoved
+}

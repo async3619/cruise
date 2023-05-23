@@ -5,7 +5,7 @@ import { DeepPartial } from "typeorm";
 
 import { MusicService } from "@main/music/music.service";
 import { Music } from "@main/music/models/music.model";
-import { MUSIC_ADDED, MUSIC_REMOVED, MUSICS_ADDED, MUSICS_UPDATED } from "@main/music/music.constants";
+import { MUSIC_ADDED, MUSIC_REMOVED, MUSICS_ADDED, MUSICS_REMOVED, MUSICS_UPDATED } from "@main/music/music.constants";
 
 import { ArtistService } from "@main/artist/artist.service";
 import { Artist } from "@main/artist/models/artist.model";
@@ -87,8 +87,12 @@ export class Scanner {
             addedMusics.push(addedMusic);
         }
 
+        const removedMusicIds: Music["id"][] = [];
         for (const event of eventMap.unlink) {
-            await this.onFileRemoved(event);
+            const musicId = await this.onFileRemoved(event);
+            if (musicId) {
+                removedMusicIds.push(musicId);
+            }
         }
 
         for (const event of eventMap.change) {
@@ -128,16 +132,20 @@ export class Scanner {
             });
         }
 
-        await pubSub.publish(ALBUMS_UPDATED, {
-            albumsUpdated: updatedAlbums,
-        });
-
         await pubSub.publish(MUSICS_UPDATED, {
             musicsUpdated: this.musicService.findByIds(this.updatedMusics.map(m => m.id)),
         });
 
+        await pubSub.publish(MUSICS_REMOVED, {
+            musicRemoved: removedMusicIds,
+        });
+
         await pubSub.publish(MUSICS_ADDED, {
             musicsAdded: addedMusics,
+        });
+
+        await pubSub.publish(ALBUMS_UPDATED, {
+            albumsUpdated: updatedAlbums,
         });
 
         allAlbums = await this.albumService.findAll();
@@ -295,5 +303,7 @@ export class Scanner {
                 }
             }
         }
+
+        return music.id;
     };
 }

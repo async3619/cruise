@@ -43,6 +43,11 @@ export class MusicResolver {
         return pubSub.asyncIterator(MUSIC_UPDATED);
     }
 
+    @Subscription(() => Int)
+    public async musicRemoved() {
+        return pubSub.asyncIterator(MUSIC_REMOVED);
+    }
+
     @Subscription(() => [Music])
     public async musicsAdded() {
         return pubSub.asyncIterator(MUSICS_ADDED);
@@ -53,8 +58,8 @@ export class MusicResolver {
         return pubSub.asyncIterator(MUSICS_UPDATED);
     }
 
-    @Subscription(() => Int)
-    public async musicRemoved() {
+    @Subscription(() => [Int])
+    public async musicsRemoved() {
         return pubSub.asyncIterator(MUSIC_REMOVED);
     }
 
