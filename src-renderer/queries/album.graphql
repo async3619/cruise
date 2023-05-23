@@ -1,0 +1,24 @@
+fragment MinimalAlbum on Album {
+    id
+    title
+    musics {
+        ...MinimalMusic
+    }
+    albumArts {
+        id
+        width
+        height
+        path
+        type
+    }
+    leadArtists {
+        id
+        name
+    }
+}
+
+query albums {
+    albums {
+        ...MinimalAlbum
+    }
+}

@@ -21,5 +21,7 @@ export function LibraryProvider(props: LibraryProviderProps) {
 }
 
 export function useLibrary() {
-    return React.useContext(LibraryContext);
+    const { library } = React.useContext(LibraryContext);
+
+    return library;
 }

@@ -12,7 +12,8 @@ export function Button({ beforeIcon, children, ...props }: ButtonProps) {
     return (
         <Root {...props}>
             {beforeIcon}
-            <span>{children}</span>
+            {typeof children === "string" && <span>{children}</span>}
+            {typeof children !== "string" && children}
         </Root>
     );
 }

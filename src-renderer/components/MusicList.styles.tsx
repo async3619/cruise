@@ -13,6 +13,7 @@ export const AlbumArt = styled(({ active: _, ...rest }: AlbumArtProps) => <Butto
     width: ${({ theme }) => theme.spacing(5.5)};
     height: ${({ theme }) => theme.spacing(5.5)};
 
+    margin: ${({ theme }) => theme.spacing(0, 1.5, 0, 0.5)};
     border-radius: 4px;
 
     display: flex;
@@ -99,7 +100,7 @@ export const Item = styled.div<{ odd?: boolean; active?: boolean }>`
 `;
 
 export const Cell = styled.div<{ width?: string; grow?: boolean; withoutPadding?: boolean }>`
-    padding: ${({ withoutPadding, theme }) => (withoutPadding ? 0 : theme.spacing(0, 0.5))};
+    min-width: 0;
 
     flex-basis: ${({ width }) => width || "auto"};
     flex-grow: ${({ grow }) => (grow ? 1 : 0)};
@@ -107,4 +108,38 @@ export const Cell = styled.div<{ width?: string; grow?: boolean; withoutPadding?
 
     display: flex;
     align-items: center;
+`;
+
+export const Label = styled.span`
+    margin: 0;
+
+    max-width: 100%;
+
+    display: block;
+
+    font-size: 0.9rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+`;
+
+export const LinkLabel = styled(ButtonBase)`
+    max-width: 100%;
+
+    padding: ${({ theme }) => theme.spacing(0.75)};
+    border-radius: 2px;
+
+    font-size: 0.9rem;
+    font-family: ${({ theme }) => theme.typography.fontFamily};
+    line-height: 1;
+
+    span {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    &:hover {
+        background: ${({ theme }) => theme.vars.palette.action.hover};
+    }
 `;

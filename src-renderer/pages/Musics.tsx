@@ -10,7 +10,7 @@ export interface MusicsProps {}
 
 export function Musics({}: MusicsProps) {
     const { t } = useTranslation();
-    const { library } = useLibrary();
+    const library = useLibrary();
     const { musics, loading } = library.useMusics();
     const player = usePlayer();
 
