@@ -23,7 +23,7 @@ export function LibraryPage({ children, title, loading, onShuffleAll }: LibraryP
         (title?: string) => {
             return (
                 <Root>
-                    <Typography variant="h2" fontSize="2rem" lineHeight={1} sx={{ mb: 4 }}>
+                    <Typography variant="h2" fontSize="2rem" lineHeight={1} sx={{ mb: 3 }}>
                         <span>{title}</span>
                     </Typography>
                     <Button

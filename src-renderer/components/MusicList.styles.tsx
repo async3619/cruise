@@ -3,6 +3,7 @@ import React from "react";
 import { ButtonBase } from "@mui/material";
 
 import styled from "@emotion/styled";
+import { css } from "@emotion/react";
 
 export interface AlbumArtProps extends React.ComponentProps<typeof ButtonBase> {
     active?: boolean;
@@ -53,79 +54,57 @@ export const AlbumArt = styled(({ active: _, ...rest }: AlbumArtProps) => <Butto
     }
 `;
 
-export const Root = styled.table`
-    width: 100%;
+export const Item = styled.div<{ odd?: boolean; active?: boolean }>`
+    height: 100%;
+    border-radius: 4px;
 
-    margin: 0;
-    padding: 0;
-    border-spacing: 0;
+    display: flex;
 
-    table-layout: fixed;
+    overflow: hidden;
 
-    td,
-    th {
-        padding: ${({ theme }) => theme.spacing(1, 1.5)};
-        border-spacing: 0;
+    color: ${({ theme, active }) => (active ? theme.vars.palette.primary.main : theme.vars.palette.text.primary)};
 
-        &:first-of-type {
-            width: ${({ theme }) => theme.spacing(5.5)};
+    ${({ theme, odd }) =>
+        odd
+            ? css`
+                  ${theme.getColorSchemeSelector("dark")} {
+                      background: rgba(255, 255, 255, 0.025);
+                  }
+
+                  ${theme.getColorSchemeSelector("light")} {
+                      background: rgba(0, 0, 0, 0.025);
+                  }
+              `
+            : ``}
+
+    &:hover {
+        ${({ theme }) => theme.getColorSchemeSelector("dark")} {
+            background: rgba(255, 255, 255, 0.075);
         }
-    }
 
-    td {
-        &:first-of-type {
-            border-top-left-radius: 4px;
-            border-bottom-left-radius: 4px;
-
-            padding: ${({ theme }) => theme.spacing(0.75, 0, 0.75, 0.75)};
+        ${({ theme }) => theme.getColorSchemeSelector("light")} {
+            background: rgba(0, 0, 0, 0.075);
         }
 
-        &:last-of-type {
-            border-top-right-radius: 4px;
-            border-bottom-right-radius: 4px;
-        }
-    }
-
-    th {
-        text-align: left;
-        font-weight: inherit;
-    }
-
-    tbody {
-        tr {
-            &:nth-of-type(odd) {
-                td {
-                    ${({ theme }) => theme.getColorSchemeSelector("dark")} {
-                        background: rgba(255, 255, 255, 0.025);
-                    }
-
-                    ${({ theme }) => theme.getColorSchemeSelector("light")} {
-                        background: rgba(0, 0, 0, 0.025);
-                    }
-                }
+        ${AlbumArt} {
+            &:before {
+                background: rgba(0, 0, 0, 0.5);
             }
 
-            &:hover {
-                td {
-                    ${({ theme }) => theme.getColorSchemeSelector("dark")} {
-                        background: rgba(255, 255, 255, 0.075);
-                    }
-
-                    ${({ theme }) => theme.getColorSchemeSelector("light")} {
-                        background: rgba(0, 0, 0, 0.075);
-                    }
-                }
-
-                ${AlbumArt} {
-                    &:before {
-                        background: rgba(0, 0, 0, 0.5);
-                    }
-
-                    svg {
-                        opacity: 1;
-                    }
-                }
+            svg {
+                opacity: 1;
             }
         }
     }
+`;
+
+export const Cell = styled.div<{ width?: string; grow?: boolean; withoutPadding?: boolean }>`
+    padding: ${({ withoutPadding, theme }) => (withoutPadding ? 0 : theme.spacing(0, 0.5))};
+
+    flex-basis: ${({ width }) => width || "auto"};
+    flex-grow: ${({ grow }) => (grow ? 1 : 0)};
+    flex-shrink: 1;
+
+    display: flex;
+    align-items: center;
 `;
