@@ -17,6 +17,7 @@ import { Search } from "@pages/Search";
 import { Artists } from "@pages/Artists";
 import { Albums } from "@pages/Albums";
 import { Musics } from "@pages/Musics";
+import { Album } from "@pages/Album";
 
 import { ApolloProvider } from "@apollo/client";
 import apolloClient from "@graphql/client";
@@ -39,7 +40,10 @@ export function App({}: AppProps) {
                     <Route path="settings" element={<Settings />} />
                     <Route path="musics" element={<Musics />} />
                     <Route path="artists" element={<Artists />} />
-                    <Route path="albums" element={<Albums />} />
+                    <Route path="albums">
+                        <Route path="" element={<Albums />} />
+                        <Route path=":id" element={<Album />} />
+                    </Route>
                 </Route>,
             ),
         );

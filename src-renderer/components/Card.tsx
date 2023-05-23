@@ -3,27 +3,29 @@ import React from "react";
 import { Box, Typography } from "@mui/material";
 import PlayArrowRoundedIcon from "@mui/icons-material/PlayArrowRounded";
 
-import { Image, PlayButton, Root, Subtitle, Title } from "@components/Card.styles";
+import { Image, PlayButton, Root, Subtitle, Title, Wrapper } from "@components/Card.styles";
 
 import { AlbumArtType, MinimalAlbumFragment } from "@queries";
 
 export interface CardProps {
     item: MinimalAlbumFragment;
     onPlay?(item: MinimalAlbumFragment): void;
+    href?: string;
 }
 
-export function Card({ item, onPlay }: CardProps) {
+export function Card({ item, onPlay, href }: CardProps) {
     const coverItem = item.albumArts.find(item => item.type === AlbumArtType.CoverFront) || item.albumArts[0];
-    const coverUrl: string | undefined = coverItem ? `cruise://${coverItem.path}` : undefined;
 
-    const handlePlayClick = () => {
+    const handlePlayClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         onPlay?.(item);
+        e.stopPropagation();
+        e.preventDefault();
     };
 
-    return (
-        <Root component="div" disableRipple>
+    const content = (
+        <Root component={href ? "span" : "div"} disableRipple>
             <Box position="relative" mb={3}>
-                <Image type="square" src={coverUrl} />
+                <Image type="square" src={coverItem?.url} />
                 {onPlay && (
                     <PlayButton tabIndex={-1} size="small" color="primary" aria-label="Play" onClick={handlePlayClick}>
                         <PlayArrowRoundedIcon />
@@ -38,4 +40,10 @@ export function Card({ item, onPlay }: CardProps) {
             </Typography>
         </Root>
     );
+
+    if (href) {
+        return <Wrapper to={href}>{content}</Wrapper>;
+    }
+
+    return content;
 }

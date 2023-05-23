@@ -10,11 +10,7 @@ fragment MinimalMusic on Music {
         title
     }
     albumArts {
-        id
-        path
-        width
-        height
-        mimeType
+        ...MinimalAlbumArt
     }
     path
     duration

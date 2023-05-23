@@ -2,8 +2,10 @@
 import React from "react";
 
 import {
+    FullAlbumFragment,
     MinimalAlbumFragment,
     MinimalMusicFragment,
+    useAlbumQuery,
     useAlbumsQuery,
     useMusicsAddedSubscription,
     useMusicsQuery,
@@ -107,6 +109,29 @@ export class Library {
 
         return {
             albums,
+            loading,
+            refetch,
+        };
+    }
+
+    public useAlbum(id: number) {
+        const [album, setAlbum] = React.useState<FullAlbumFragment | null>(null);
+        const { data, loading, refetch } = useAlbumQuery({
+            variables: {
+                id,
+            },
+        });
+
+        React.useEffect(() => {
+            if (!data?.album || loading) {
+                return;
+            }
+
+            setAlbum(data.album);
+        }, [data, loading]);
+
+        return {
+            album,
             loading,
             refetch,
         };

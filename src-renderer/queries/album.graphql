@@ -5,11 +5,7 @@ fragment MinimalAlbum on Album {
         ...MinimalMusic
     }
     albumArts {
-        id
-        width
-        height
-        path
-        type
+        ...MinimalAlbumArt
     }
     leadArtists {
         id
@@ -17,8 +13,34 @@ fragment MinimalAlbum on Album {
     }
 }
 
+fragment FullAlbum on Album {
+    id
+    title
+    leadArtists {
+        id
+        name
+    }
+    albumArts {
+        ...MinimalAlbumArt
+    }
+    musics {
+        ...MinimalMusic
+    }
+    genre
+    year
+    createdAt
+    updatedAt
+    musicCount
+}
+
 query albums {
     albums {
         ...MinimalAlbum
+    }
+}
+
+query album($id: Int!) {
+    album(id: $id) {
+        ...FullAlbum
     }
 }

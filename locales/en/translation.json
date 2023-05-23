@@ -37,5 +37,9 @@
             "album": "Album"
         }
     },
-    "shuffle_all": "Shuffle All"
+    "shuffle_all": "Shuffle All",
+    "playAll": "Play All",
+    "shuffleAll": "Shuffle All",
+    "trackCount_one": "{{count}} Track",
+    "trackCount_other": "{{count}} Tracks"
 }

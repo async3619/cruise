@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import styled from "@emotion/styled";
 
 import { ButtonBase, Fab } from "@mui/material";
@@ -52,7 +53,7 @@ export const PlayButton = styled(Fab)`
     transform-origin: center center;
 `;
 
-export const Root = styled(ButtonBase)<ExtendComponentProps<typeof ButtonBase, { component: "div" }>>`
+export const Root = styled(ButtonBase)<ExtendComponentProps<typeof ButtonBase, { component: "div" | "span" }>>`
     min-width: 0;
     width: 190px;
 
@@ -94,4 +95,9 @@ export const Root = styled(ButtonBase)<ExtendComponentProps<typeof ButtonBase, {
             transform: scale(1);
         }
     }
+`;
+
+export const Wrapper = styled(Link)`
+    color: inherit;
+    text-decoration: none;
 `;

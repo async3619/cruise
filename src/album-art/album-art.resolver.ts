@@ -34,4 +34,9 @@ export class AlbumArtResolver {
     public async path(@Inject("parent") albumArt: AlbumArt): Promise<string> {
         return albumArt.path.replace(/\\/g, "/");
     }
+
+    @ResolveField(() => String)
+    public async url(@Inject("parent") albumArt: AlbumArt): Promise<string> {
+        return `cruise://${albumArt.path.replace(/\\/g, "/")}`;
+    }
 }

@@ -1,0 +1,9 @@
+fragment MinimalAlbumArt on AlbumArt {
+    id
+    type
+    path
+    width
+    height
+    mimeType
+    url
+}

@@ -10,6 +10,7 @@ export interface MenuItem {
     label: string;
     icon?: React.ComponentType;
     href?: string;
+    hrefAliases?: string[];
     onClick?: () => void;
 }
 
@@ -43,8 +44,17 @@ export function Menu({ items, title }: MenuProps) {
                     };
                 }
 
+                let isSelected = false;
+                if (item.hrefAliases) {
+                    isSelected = item.hrefAliases.some(alias => location.pathname.startsWith(alias));
+                }
+
+                if (!isSelected && item.href) {
+                    isSelected = location.pathname === item.href;
+                }
+
                 return (
-                    <Item selected={location.pathname === item.href} {...props}>
+                    <Item selected={isSelected} {...props}>
                         {Icon && <Icon />}
                         {item.label}
                     </Item>

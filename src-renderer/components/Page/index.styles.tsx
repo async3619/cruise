@@ -35,3 +35,12 @@ export const Header = styled.header`
 
     background: ${({ theme }) => theme.vars.palette.background.default};
 `;
+
+export const FixedHelper = styled.div`
+    height: 0;
+
+    position: sticky;
+    top: 0;
+
+    z-index: 100;
+`;

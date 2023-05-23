@@ -37,5 +37,9 @@
             "album": "앨범"
         }
     },
-    "shuffle_all": "무작위 재생"
+    "shuffle_all": "무작위 재생",
+    "playAll": "모두 재생",
+    "shuffleAll": "무작위 재생",
+    "trackCount_one": "{{count}}개의 곡",
+    "trackCount_other": "{{count}}개의 곡"
 }

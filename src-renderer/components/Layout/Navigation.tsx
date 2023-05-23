@@ -61,6 +61,7 @@ export function Navigation({}: NavigationProps) {
                             label: t("pageTitle.albums"),
                             icon: AlbumRoundedIcon,
                             href: "/albums",
+                            hrefAliases: ["/albums/"],
                         },
                     ]}
                     title={t("Library")}

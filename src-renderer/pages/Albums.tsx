@@ -30,7 +30,7 @@ export function Albums({}: AlbumsProps) {
         <Page title={t("pageTitle.albums")}>
             <Box display="flex" flexWrap="wrap">
                 {albums.map(album => (
-                    <Card key={album.id} item={album} onPlay={handleAlbumPlay} />
+                    <Card key={album.id} item={album} onPlay={handleAlbumPlay} href={`/albums/${album.id}`} />
                 ))}
             </Box>
         </Page>

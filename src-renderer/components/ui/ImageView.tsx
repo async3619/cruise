@@ -11,13 +11,15 @@ export interface ImageViewProps {
     src?: string;
 }
 
-export function ImageView({ type, className, src }: ImageViewProps) {
-    const Root = type === "square" ? SquareRoot : CircularRoot;
-    const Icon = type === "square" ? AlbumRoundedIcon : Person2RoundedIcon;
+export const ImageView = React.forwardRef(
+    ({ type, className, src }: ImageViewProps, ref: React.Ref<HTMLDivElement>) => {
+        const Root = type === "square" ? SquareRoot : CircularRoot;
+        const Icon = type === "square" ? AlbumRoundedIcon : Person2RoundedIcon;
 
-    return (
-        <Root className={className} style={{ backgroundImage: src ? `url(${src})` : undefined }}>
-            {!src && <Icon />}
-        </Root>
-    );
-}
+        return (
+            <Root ref={ref} className={className} style={{ backgroundImage: src ? `url(${src})` : undefined }}>
+                {!src && <Icon />}
+            </Root>
+        );
+    },
+);
