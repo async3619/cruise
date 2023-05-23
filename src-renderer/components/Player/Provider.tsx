@@ -167,8 +167,13 @@ class PlayerProviderImpl extends React.Component<PlayerProviderProps, PlayerProv
         }
     };
 
-    public playPlaylist(playlist: MinimalMusicFragment[], index: number) {
-        this.setState({ playlist: [...playlist], playlistIndex: index }, () => {
+    public playPlaylist(playlist: MinimalMusicFragment[], index = 0, shuffled = false) {
+        playlist = [...playlist];
+        if (shuffled) {
+            playlist = _.shuffle(playlist);
+        }
+
+        this.setState({ playlist, playlistIndex: index }, () => {
             this.play();
         });
     }

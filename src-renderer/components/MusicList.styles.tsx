@@ -60,6 +60,8 @@ export const Root = styled.table`
     padding: 0;
     border-spacing: 0;
 
+    table-layout: fixed;
+
     td,
     th {
         padding: ${({ theme }) => theme.spacing(1, 1.5)};

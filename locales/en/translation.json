@@ -36,5 +36,6 @@
             "artist": "Artist",
             "album": "Album"
         }
-    }
+    },
+    "shuffle_all": "Shuffle All"
 }

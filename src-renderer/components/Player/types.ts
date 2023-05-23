@@ -19,7 +19,7 @@ export interface PlayerEventMap {
 }
 
 export interface PlayerProviderContext {
-    playPlaylist(playlist: MinimalMusicFragment[], index: number): void;
+    playPlaylist(playlist: MinimalMusicFragment[], index?: number, shuffled?: boolean): void;
     play(): void;
     pause(): void;
     stop(): void;

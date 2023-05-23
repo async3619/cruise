@@ -25,7 +25,7 @@ export function MusicList({ items }: MusicListProps) {
     return (
         <Root>
             <colgroup>
-                <col />
+                <col style={{ width: 50 }} />
                 <col width="*" />
                 <col style={{ width: "20%" }} />
                 <col style={{ width: "20%" }} />
@@ -78,7 +78,13 @@ export function MusicList({ items }: MusicListProps) {
                                 </Typography>
                             </td>
                             <td>
-                                <Typography fontSize="0.9rem" color={active ? "primary" : "inherit"}>
+                                <Typography
+                                    fontSize="0.9rem"
+                                    whiteSpace="nowrap"
+                                    overflow="hidden"
+                                    textOverflow="ellipsis"
+                                    color={active ? "primary" : "inherit"}
+                                >
                                     {item.album?.title}
                                 </Typography>
                             </td>
