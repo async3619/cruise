@@ -44,3 +44,19 @@ query album($id: Int!) {
         ...FullAlbum
     }
 }
+
+subscription albumAdded {
+    albumAdded {
+        ...MinimalAlbum
+    }
+}
+
+subscription albumUpdated {
+    albumsUpdated {
+        ...MinimalAlbum
+    }
+}
+
+subscription albumRemoved {
+    albumRemoved
+}

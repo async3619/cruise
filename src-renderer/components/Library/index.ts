@@ -5,7 +5,9 @@ import {
     FullAlbumFragment,
     MinimalAlbumFragment,
     MinimalMusicFragment,
+    useAlbumAddedSubscription,
     useAlbumQuery,
+    useAlbumRemovedSubscription,
     useAlbumsQuery,
     useMusicsAddedSubscription,
     useMusicsQuery,
@@ -106,6 +108,38 @@ export class Library {
 
             setAlbums(data.albums);
         }, [data, loading]);
+
+        useAlbumAddedSubscription({
+            onData: ({ data: { data } }) => {
+                if (!data?.albumAdded) {
+                    return;
+                }
+
+                setAlbums(albums => {
+                    if (!albums) {
+                        return null;
+                    }
+
+                    return [...albums, data.albumAdded];
+                });
+            },
+        });
+
+        useAlbumRemovedSubscription({
+            onData: ({ data: { data } }) => {
+                if (!data?.albumRemoved) {
+                    return;
+                }
+
+                setAlbums(albums => {
+                    if (!albums) {
+                        return null;
+                    }
+
+                    return albums.filter(album => album.id !== data.albumRemoved);
+                });
+            },
+        });
 
         return {
             albums,

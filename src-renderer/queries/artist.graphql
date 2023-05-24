@@ -1,0 +1,6 @@
+query leadArtists {
+    leadArtists {
+        id
+        name
+    }
+}
