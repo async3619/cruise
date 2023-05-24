@@ -22,6 +22,7 @@
             "@/*": ["src-renderer/*"],
             "@components/*": ["src-renderer/components/*"],
             "@pages/*": ["src-renderer/pages/*"],
+            "@pages": ["src-renderer/pages/index.tsx"],
             "@styles/*": ["src-renderer/styles/*"],
             "@utils/*": ["src-renderer/utils/*"],
             "@constants/*": ["src-renderer/constants/*"],

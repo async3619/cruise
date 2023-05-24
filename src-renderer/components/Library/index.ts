@@ -10,6 +10,8 @@ import {
     useAlbumQuery,
     useAlbumRemovedSubscription,
     useAlbumsQuery,
+    useArtistPortraitAddedSubscription,
+    useArtistQuery,
     useLeadArtistAddedSubscription,
     useLeadArtistRemovedSubscription,
     useLeadArtistsQuery,
@@ -221,6 +223,38 @@ export class Library {
 
         return {
             artists,
+            loading,
+            refetch,
+        };
+    }
+
+    public useArtist(id: number) {
+        const [artist, setArtist] = React.useState<MinimalArtistFragment | null>(null);
+        const { data, loading, refetch } = useArtistQuery({
+            variables: {
+                id,
+            },
+        });
+
+        React.useEffect(() => {
+            if (!data?.artist || loading) {
+                return;
+            }
+
+            setArtist(data.artist);
+        }, [data, loading]);
+
+        useArtistPortraitAddedSubscription({
+            variables: {
+                id,
+            },
+            onData: () => {
+                refetch();
+            },
+        });
+
+        return {
+            artist,
             loading,
             refetch,
         };

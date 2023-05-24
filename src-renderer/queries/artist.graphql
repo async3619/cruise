@@ -9,9 +9,29 @@ fragment MinimalArtist on Artist {
     }
 }
 
+fragment FullArtist on Artist {
+    id
+    name
+    portrait(fetch: true) {
+        ...MinimalAlbumArt
+    }
+    leadAlbums {
+        ...FullAlbum
+    }
+    musics {
+        ...MinimalMusic
+    }
+}
+
 query leadArtists {
     leadArtists {
         ...MinimalArtist
+    }
+}
+
+query artist($id: Int!) {
+    artist(id: $id) {
+        ...FullArtist
     }
 }
 
@@ -23,4 +43,10 @@ subscription leadArtistAdded {
 
 subscription leadArtistRemoved {
     leadArtistRemoved
+}
+
+subscription artistPortraitAdded($id: Int!) {
+    artistPortraitAdded(artistId: $id) {
+        ...FullArtist
+    }
 }

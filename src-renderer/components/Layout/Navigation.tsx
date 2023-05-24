@@ -55,6 +55,7 @@ export function Navigation({}: NavigationProps) {
                             label: t("pageTitle.artists"),
                             icon: Person2RoundedIcon,
                             href: "/artists",
+                            hrefAliases: ["/artists"],
                         },
                         {
                             id: "albums",

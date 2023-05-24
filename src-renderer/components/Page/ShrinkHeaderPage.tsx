@@ -20,6 +20,7 @@ export interface ShrinkHeaderPageProps extends WithLayoutProps {
     tokens?: Array<string | number>;
     imageSrc?: string;
     buttons?: ButtonItem[];
+    imageType?: "circle" | "square";
 }
 export interface ShrinkHeaderPageStates {}
 
@@ -133,12 +134,12 @@ class ShrinkHeaderPageImpl extends React.Component<ShrinkHeaderPageProps, Shrink
     };
 
     private renderHeader = () => {
-        const { subtitle, imageSrc, tokens } = this.props;
+        const { subtitle, imageSrc, tokens, imageType = "square" } = this.props;
 
         return (
             <Root>
                 <ImageWrapper ref={this.imageViewRef}>
-                    <ImageView type="square" src={imageSrc} />
+                    <ImageView type={imageType} src={imageSrc} />
                 </ImageWrapper>
                 <Content>
                     <Measure bounds onResize={this.handleTitleMeasure}>

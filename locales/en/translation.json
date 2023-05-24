@@ -41,5 +41,7 @@
     "playAll": "Play All",
     "shuffleAll": "Shuffle All",
     "trackCount_one": "{{count}} Track",
-    "trackCount_other": "{{count}} Tracks"
+    "trackCount_other": "{{count}} Tracks",
+    "albumCount_one": "{{count}} Album",
+    "albumCount_other": "{{count}} Albums"
 }
