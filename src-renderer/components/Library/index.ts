@@ -4,11 +4,15 @@ import React from "react";
 import {
     FullAlbumFragment,
     MinimalAlbumFragment,
+    MinimalArtistFragment,
     MinimalMusicFragment,
     useAlbumAddedSubscription,
     useAlbumQuery,
     useAlbumRemovedSubscription,
     useAlbumsQuery,
+    useLeadArtistAddedSubscription,
+    useLeadArtistRemovedSubscription,
+    useLeadArtistsQuery,
     useMusicsAddedSubscription,
     useMusicsQuery,
     useMusicsRemovedSubscription,
@@ -166,6 +170,57 @@ export class Library {
 
         return {
             album,
+            loading,
+            refetch,
+        };
+    }
+
+    public useArtists() {
+        const [artists, setArtists] = React.useState<MinimalArtistFragment[] | null>(null);
+        const { data, loading, refetch } = useLeadArtistsQuery();
+
+        React.useEffect(() => {
+            if (!data?.leadArtists || loading) {
+                return;
+            }
+
+            setArtists(data.leadArtists);
+        }, [data, loading]);
+
+        useLeadArtistAddedSubscription({
+            onData: ({ data: { data } }) => {
+                if (!data?.leadArtistAdded) {
+                    return;
+                }
+
+                setArtists(artists => {
+                    if (!artists) {
+                        return null;
+                    }
+
+                    return [...artists, data.leadArtistAdded];
+                });
+            },
+        });
+
+        useLeadArtistRemovedSubscription({
+            onData: ({ data: { data } }) => {
+                if (!data?.leadArtistRemoved) {
+                    return;
+                }
+
+                setArtists(artists => {
+                    if (!artists) {
+                        return null;
+                    }
+
+                    return artists.filter(artist => artist.id !== data.leadArtistRemoved);
+                });
+            },
+        });
+
+        return {
+            artists,
             loading,
             refetch,
         };

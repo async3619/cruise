@@ -1,6 +1,26 @@
+fragment MinimalArtist on Artist {
+    id
+    name
+    portrait {
+        ...MinimalAlbumArt
+    }
+    leadAlbums {
+        ...MinimalAlbum
+    }
+}
+
 query leadArtists {
     leadArtists {
-        id
-        name
+        ...MinimalArtist
     }
+}
+
+subscription leadArtistAdded {
+    leadArtistAdded {
+        ...MinimalArtist
+    }
+}
+
+subscription leadArtistRemoved {
+    leadArtistRemoved
 }
