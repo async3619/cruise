@@ -1,4 +1,5 @@
 {
+    "language": "한국어",
     "Hello": "환영합니다!",
     "Home": "홈",
     "Library": "라이브러리",
@@ -19,6 +20,12 @@
         },
         "appTheme": {
             "title": "앱 테마"
+        },
+        "language": {
+            "title": "언어"
+        },
+        "themeColor": {
+            "title": "테마 색상"
         }
     },
     "pageTitle": {

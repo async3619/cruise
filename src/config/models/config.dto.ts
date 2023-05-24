@@ -31,6 +31,9 @@ export class ConfigInput {
 
     @Field(() => RepeatMode)
     public repeatMode!: RepeatMode;
+
+    @Field(() => String, { nullable: true })
+    public language?: string;
 }
 
 @ObjectType()
@@ -49,4 +52,7 @@ export class Config {
 
     @Field(() => RepeatMode)
     public repeatMode!: RepeatMode;
+
+    @Field(() => String, { nullable: true })
+    public language?: string;
 }

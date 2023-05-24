@@ -5,6 +5,14 @@ query config {
         volume
         muted
         repeatMode
+        language
+    }
+}
+
+query availableLanguages {
+    availableLanguages {
+        code
+        name
     }
 }
 
@@ -15,5 +23,6 @@ mutation updateConfig($config: ConfigInput!) {
         volume
         muted
         repeatMode
+        language
     }
 }

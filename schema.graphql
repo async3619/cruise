@@ -96,6 +96,7 @@ type Config {
   volume: Float!
   muted: Boolean!
   repeatMode: RepeatMode!
+  language: String
 }
 
 enum AppTheme {
@@ -129,6 +130,11 @@ type SearchResult {
   total: Int!
 }
 
+type Language {
+  name: String!
+  code: String!
+}
+
 type Query {
   music(id: Int!): Music
   musics: [Music!]!
@@ -140,6 +146,7 @@ type Query {
   leadArtists: [Artist!]!
   isMaximized: Boolean!
   config: Config!
+  availableLanguages: [Language!]!
   needScan: Boolean!
   search(query: String!): SearchResult!
   searchSuggestions(query: String!, limit: Int!): [SearchSuggestion!]!
@@ -188,6 +195,7 @@ input ConfigInput {
   volume: Float!
   muted: Boolean!
   repeatMode: RepeatMode!
+  language: String
 }
 
 type Subscription {

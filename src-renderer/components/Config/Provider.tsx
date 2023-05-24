@@ -1,8 +1,17 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 import { useColorScheme } from "@mui/material";
 
-import { AppTheme, Config, useConfigQuery, useUpdateConfigMutation } from "@queries";
+import {
+    AppTheme,
+    Config,
+    Language,
+    useAvailableLanguagesQuery,
+    useConfigQuery,
+    useUpdateConfigMutation,
+} from "@queries";
+import _ from "lodash";
 
 export interface ConfigProviderProps {
     children: React.ReactNode;
@@ -11,6 +20,8 @@ export interface ConfigProviderProps {
 export interface ConfigContextValue {
     config: Config;
     setConfig: (config: Partial<Config>) => void;
+    languages: Language[];
+    languageMap: Record<string, string>;
 }
 
 export const ConfigContext = React.createContext<ConfigContextValue>({
@@ -18,6 +29,8 @@ export const ConfigContext = React.createContext<ConfigContextValue>({
         throw new Error("ConfigProvider not initialized");
     },
     config: {} as any,
+    languages: [],
+    languageMap: {},
 });
 
 export function useConfig() {
@@ -28,7 +41,11 @@ export const ConfigProvider: React.FC<ConfigProviderProps> = ({ children }: Conf
     const { setMode } = useColorScheme();
     const [config, setConfig] = React.useState<Config | null>(null);
     const { data: initialConfig, loading } = useConfigQuery();
+    const [languages, setLanguages] = React.useState<Language[]>([]);
+    const [languageMap, setLanguageMap] = React.useState<Record<string, string>>({});
     const [updateConfig] = useUpdateConfigMutation();
+    const languagesQuery = useAvailableLanguagesQuery();
+    const { i18n } = useTranslation();
 
     const handleChange = React.useCallback(
         (config: Config) => {
@@ -69,7 +86,6 @@ export const ConfigProvider: React.FC<ConfigProviderProps> = ({ children }: Conf
 
         handleChange(initialConfig.config);
     }, [initialConfig, handleChange]);
-
     React.useEffect(() => {
         if (!config) {
             return;
@@ -83,9 +99,31 @@ export const ConfigProvider: React.FC<ConfigProviderProps> = ({ children }: Conf
         });
     }, [config, updateConfig]);
 
+    React.useEffect(() => {
+        const { data, loading } = languagesQuery;
+        if (!data || loading) {
+            return;
+        }
+
+        setLanguages(data.availableLanguages);
+        setLanguageMap(_.chain(data.availableLanguages).keyBy("code").mapValues("name").value());
+    }, [languagesQuery]);
+
+    React.useEffect(() => {
+        if (!config?.language) {
+            return;
+        }
+
+        i18n.changeLanguage(config.language);
+    }, [config?.language, i18n]);
+
     if (!config || loading) {
         return null;
     }
 
-    return <ConfigContext.Provider value={{ config, setConfig: setConfigValue }}>{children}</ConfigContext.Provider>;
+    return (
+        <ConfigContext.Provider value={{ config, setConfig: setConfigValue, languages, languageMap }}>
+            {children}
+        </ConfigContext.Provider>
+    );
 };

@@ -1,4 +1,5 @@
 {
+    "language": "English",
     "Hello": "Hello World!",
     "Home": "Home",
     "Search": "Search",
@@ -19,6 +20,12 @@
         },
         "appTheme": {
             "title": "App Theme"
+        },
+        "language": {
+            "title": "Language"
+        },
+        "themeColor": {
+            "title": "Theme Color"
         }
     },
     "pageTitle": {

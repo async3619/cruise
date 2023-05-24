@@ -1,12 +1,15 @@
 import { z } from "zod";
 import * as fs from "fs-extra";
 import * as _ from "lodash";
+import * as path from "path";
+import glob from "fast-glob";
 
 import * as mgr from "@async3619/merry-go-round";
 
 import { Injectable } from "@nestjs/common";
 
 import { AppTheme, RepeatMode } from "@main/config/models/config.dto";
+import { Language } from "@main/config/models/language.dto";
 
 import { CONFIG_FILE_DIR, CONFIG_FILE_PATH } from "@main/constants";
 import type { AsyncFn, Fn } from "@common/types";
@@ -17,6 +20,7 @@ export const CONFIG_SCHEMA = z.object({
     repeatMode: z.nativeEnum(RepeatMode),
     volume: z.number().min(0).max(1),
     muted: z.boolean(),
+    language: z.string().optional(),
     lastPosition: z
         .object({
             x: z.number(),
@@ -83,5 +87,22 @@ export class ConfigService {
 
         assertConfig(config);
         await fs.writeJson(CONFIG_FILE_PATH, config, { spaces: 4 });
+    }
+
+    public async getAvailableLanguages(): Promise<Language[]> {
+        const languages: Language[] = [];
+        const filePaths = await glob("./**/translation.json", { cwd: path.join(process.cwd(), "locales") });
+        for (const targetPath of filePaths) {
+            const filePath = path.join(process.cwd(), "locales", targetPath);
+            const fileContent = await fs.readJSONSync(filePath);
+            const language: Language = {
+                name: fileContent.language,
+                code: targetPath.split("/")[0],
+            };
+
+            languages.push(language);
+        }
+
+        return languages;
     }
 }

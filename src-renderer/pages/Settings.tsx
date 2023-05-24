@@ -1,3 +1,4 @@
+import _ from "lodash";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
@@ -18,7 +19,14 @@ export interface SettingsProps {}
 
 export function Settings({}: SettingsProps) {
     const { t } = useTranslation();
-    const { config, setConfig } = useConfig();
+    const { config, setConfig, languages, languageMap } = useConfig();
+    const languageEnum = React.useMemo(() => {
+        if (!languages) {
+            return {};
+        }
+
+        return _.chain(languages).keyBy("code").mapValues("code").value();
+    }, [languages]);
     const [scan] = useScanMutation();
 
     const handleChange = async (key: string, value: any) => {
@@ -34,7 +42,7 @@ export function Settings({}: SettingsProps) {
         setConfig(newConfig);
     };
 
-    if (!config) {
+    if (!config || !languageMap) {
         return null;
     }
 
@@ -82,6 +90,14 @@ export function Settings({}: SettingsProps) {
                                 [AppTheme.Dark]: "어둡게",
                                 [AppTheme.System]: "시스템 설정 사용",
                             },
+                        }),
+                        createEnumConfigItem({
+                            type: "enum",
+                            label: t("configs.language.title"),
+                            name: "language",
+                            enum: languageEnum,
+                            icon: ColorLensRoundedIcon,
+                            enumLabels: languageMap,
                         }),
                     ]}
                     value={config}
