@@ -85,6 +85,7 @@ class ShrinkHeaderPageImpl extends React.Component<ShrinkHeaderPageProps, Shrink
         const progress = (width - hiddenWidth) / (maxWidth - hiddenWidth);
 
         imageView.style.width = `${width}px`;
+        imageView.style.flexBasis = `${width}px`;
         this.descriptionRef.current.style.opacity = `${progress}`;
     };
     private handleScroll = () => {
