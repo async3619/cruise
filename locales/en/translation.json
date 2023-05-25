@@ -19,7 +19,10 @@
             "description": "Force to refresh the library by scanning the library directories for new music."
         },
         "appTheme": {
-            "title": "App Theme"
+            "title": "App Theme",
+            "light": "Light",
+            "dark": "Dark",
+            "system": "Use System Theme"
         },
         "language": {
             "title": "Language"

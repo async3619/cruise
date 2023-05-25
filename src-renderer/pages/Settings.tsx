@@ -48,7 +48,7 @@ export function Settings({}: SettingsProps) {
 
     return (
         <Page title={t("Settings")}>
-            <Stack spacing={2}>
+            <Stack spacing={3}>
                 <ConfigGroup
                     title={t("configs.library")}
                     items={[
@@ -86,9 +86,9 @@ export function Settings({}: SettingsProps) {
                             enum: AppTheme,
                             icon: ColorLensRoundedIcon,
                             enumLabels: {
-                                [AppTheme.Light]: "밝게",
-                                [AppTheme.Dark]: "어둡게",
-                                [AppTheme.System]: "시스템 설정 사용",
+                                [AppTheme.Light]: t("configs.appTheme.light"),
+                                [AppTheme.Dark]: t("configs.appTheme.dark"),
+                                [AppTheme.System]: t("configs.appTheme.system"),
                             },
                         }),
                         createEnumConfigItem({
