@@ -7,6 +7,7 @@ import { Stack } from "@mui/material";
 import FolderOpenRoundedIcon from "@mui/icons-material/FolderOpenRounded";
 import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
 import ColorLensRoundedIcon from "@mui/icons-material/ColorLensRounded";
+import TranslateIcon from "@mui/icons-material/Translate";
 
 import { Page } from "@components/Page";
 import { ConfigGroup } from "@components/Config/Group";
@@ -96,7 +97,7 @@ export function Settings({}: SettingsProps) {
                             label: t("configs.language.title"),
                             name: "language",
                             enum: languageEnum,
-                            icon: ColorLensRoundedIcon,
+                            icon: TranslateIcon,
                             enumLabels: languageMap,
                         }),
                     ]}
