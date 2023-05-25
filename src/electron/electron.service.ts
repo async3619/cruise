@@ -72,6 +72,25 @@ export class ElectronService implements OnModuleInit {
             });
         });
 
+        this.mainWindow.on("close", async () => {
+            if (!this.mainWindow) {
+                throw new Error("Main window is not ready");
+            }
+
+            const [x, y] = this.mainWindow.getPosition();
+            const [width, height] = this.mainWindow.getSize();
+
+            await this.configService.setConfig(config => ({
+                ...config,
+                lastPosition: {
+                    x,
+                    y,
+                    width,
+                    height,
+                },
+            }));
+        });
+
         app.on("activate", async () => {
             // On macOS it's common to re-create a window in the app when the
             // dock icon is clicked and there are no other windows open.
@@ -115,21 +134,7 @@ export class ElectronService implements OnModuleInit {
             throw new Error("Main window is not ready");
         }
 
-        const [x, y] = this.mainWindow.getPosition();
-        const [width, height] = this.mainWindow.getSize();
-
-        await this.configService.setConfig(config => ({
-            ...config,
-            lastPosition: {
-                x,
-                y,
-                width,
-                height,
-            },
-        }));
-
         this.mainWindow.close();
-
         return true;
     }
 
@@ -158,9 +163,9 @@ export class ElectronService implements OnModuleInit {
             title: "Main window",
             icon: path.join(publicPath, "favicon.ico"),
             frame: false,
-            ...config.lastPosition,
             width: 1300,
             height: 800,
+            ...config.lastPosition,
             minWidth: 500,
             webPreferences: {
                 preload: path.join(__dirname, "../preload.js"),
