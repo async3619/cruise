@@ -138,7 +138,7 @@
         "indefinite": "^2.4.2",
         "jest": "^29.5.0",
         "localforage": "^1.10.0",
-        "material-ui-popup-state": "^5.0.4",
+        "material-ui-popup-state": "^5.0.8",
         "memoize-one": "^6.0.0",
         "pluralize": "^8.0.0",
         "portfinder": "^1.0.32",

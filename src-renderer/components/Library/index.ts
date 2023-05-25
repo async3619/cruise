@@ -1,20 +1,37 @@
 /* eslint-disable react-hooks/rules-of-hooks */
+import { i18n } from "i18next";
+import { z } from "zod";
+
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 import {
+    AddMusicsToPlaylistDocument,
+    AddMusicsToPlaylistMutation,
+    AddMusicsToPlaylistMutationVariables,
+    CreatePlaylistDocument,
+    CreatePlaylistFromMusicsDocument,
+    CreatePlaylistFromMusicsMutation,
+    CreatePlaylistFromMusicsMutationVariables,
+    CreatePlaylistMutation,
+    CreatePlaylistMutationVariables,
+    DeletePlaylistMutationVariables,
+    DeletePlaylistMutation,
     FullAlbumFragment,
     FullPlaylistFragment,
     MinimalAlbumFragment,
     MinimalArtistFragment,
     MinimalMusicFragment,
     MinimalPlaylistFragment,
+    UpdatePlaylistDocument,
+    UpdatePlaylistMutation,
+    UpdatePlaylistMutationVariables,
     useAlbumAddedSubscription,
     useAlbumQuery,
     useAlbumRemovedSubscription,
     useAlbumsQuery,
     useArtistPortraitAddedSubscription,
     useArtistQuery,
-    useCreatePlaylistMutation,
     useLeadArtistAddedSubscription,
     useLeadArtistRemovedSubscription,
     useLeadArtistsQuery,
@@ -25,9 +42,24 @@ import {
     usePlaylistAddedSubscription,
     usePlaylistQuery,
     usePlaylistsQuery,
+    usePlaylistUpdatedSubscription,
+    DeletePlaylistDocument,
+    usePlaylistRemovedSubscription,
 } from "@queries";
 
+import { ApolloClient } from "@apollo/client";
+
+import { DialogActionType, DialogContextValue } from "@components/Dialog/types";
+import { InputTextDialog } from "@components/Dialog/InputTextDialog";
+import { YesNoDialog } from "@components/Dialog/YesNoDialog";
+
 export class Library {
+    public constructor(
+        private readonly client: ApolloClient<object>,
+        private readonly dialog: DialogContextValue,
+        private readonly i18n: i18n,
+    ) {}
+
     public useMusics() {
         const [musics, setMusics] = React.useState<MinimalMusicFragment[] | null>(null);
         const { data, loading, refetch } = useMusicsQuery();
@@ -267,7 +299,6 @@ export class Library {
     public usePlaylists() {
         const [playlists, setPlaylists] = React.useState<MinimalPlaylistFragment[] | null>(null);
         const { data, loading, refetch } = usePlaylistsQuery();
-        const [create] = useCreatePlaylistMutation();
 
         React.useEffect(() => {
             if (!data?.playlists || loading) {
@@ -293,14 +324,52 @@ export class Library {
             },
         });
 
+        usePlaylistUpdatedSubscription({
+            onData: ({ data: { data } }) => {
+                if (!data?.playlistUpdated) {
+                    return;
+                }
+
+                setPlaylists(playlists => {
+                    if (!playlists) {
+                        return null;
+                    }
+
+                    return playlists.map(p => {
+                        if (p.id !== data.playlistUpdated.id) {
+                            return p;
+                        }
+
+                        return data.playlistUpdated;
+                    });
+                });
+            },
+        });
+
+        usePlaylistRemovedSubscription({
+            onData: ({ data: { data } }) => {
+                if (!data?.playlistRemoved) {
+                    return;
+                }
+
+                setPlaylists(playlists => {
+                    if (!playlists) {
+                        return null;
+                    }
+
+                    return playlists.filter(playlist => playlist.id !== data.playlistRemoved);
+                });
+            },
+        });
+
         return {
             playlists,
             loading,
             refetch,
-            create,
         };
     }
     public usePlaylist(id: number) {
+        const navigate = useNavigate();
         const [playlist, setPlaylist] = React.useState<FullPlaylistFragment | null>(null);
         const { data, loading, refetch } = usePlaylistQuery({
             variables: {
@@ -316,10 +385,132 @@ export class Library {
             setPlaylist(data.playlist);
         }, [data, loading]);
 
+        usePlaylistUpdatedSubscription({
+            onData: ({ data: { data } }) => {
+                if (!data?.playlistUpdated) {
+                    return;
+                }
+
+                if (data.playlistUpdated.id !== id) {
+                    return;
+                }
+
+                refetch();
+            },
+        });
+
+        usePlaylistRemovedSubscription({
+            onData: ({ data: { data } }) => {
+                if (data?.playlistRemoved !== id) {
+                    return;
+                }
+
+                navigate("/musics");
+            },
+        });
+
         return {
             playlist,
             loading,
             refetch,
         };
+    }
+
+    public async createPlaylist() {
+        const data = await this.dialog.openDialog(InputTextDialog, {
+            title: this.i18n.t("dialog.createPlaylist.title"),
+            content: this.i18n.t("dialog.createPlaylist.content"),
+            validationSchema: z.string().nonempty(this.i18n.t("dialog.createPlaylist.validation.empty")),
+        });
+
+        if (data.type !== DialogActionType.Submit) {
+            return;
+        }
+
+        return this.client.mutate<CreatePlaylistMutation, CreatePlaylistMutationVariables>({
+            mutation: CreatePlaylistDocument,
+            variables: {
+                input: {
+                    name: data.value,
+                },
+            },
+        });
+    }
+    public addMusicsToPlaylist(playlistId: number, musics: MinimalMusicFragment[]) {
+        return this.client.mutate<AddMusicsToPlaylistMutation, AddMusicsToPlaylistMutationVariables>({
+            mutation: AddMusicsToPlaylistDocument,
+            variables: {
+                playlistId,
+                musicIds: musics.map(music => music.id),
+            },
+        });
+    }
+    public async createPlaylistWithMusics(musics: MinimalMusicFragment[]) {
+        const result = await this.dialog.openDialog(InputTextDialog, {
+            title: this.i18n.t("dialog.createPlaylist.title"),
+            content: this.i18n.t("dialog.createPlaylist.content"),
+            validationSchema: z.string().nonempty(),
+        });
+
+        if (result.type !== DialogActionType.Submit) {
+            return;
+        }
+
+        const { data } = await this.client.mutate<
+            CreatePlaylistFromMusicsMutation,
+            CreatePlaylistFromMusicsMutationVariables
+        >({
+            mutation: CreatePlaylistFromMusicsDocument,
+            variables: {
+                input: {
+                    name: result.value,
+                },
+                musicIds: musics.map(music => music.id),
+            },
+        });
+
+        return data?.createPlaylistFromMusics;
+    }
+
+    public async renamePlaylist(playlist: MinimalPlaylistFragment) {
+        const data = await this.dialog.openDialog(InputTextDialog, {
+            title: this.i18n.t("dialog.renamePlaylist.title"),
+            content: this.i18n.t("dialog.renamePlaylist.content"),
+            validationSchema: z.string().nonempty(this.i18n.t("dialog.renamePlaylist.validation.empty")),
+            defaultValue: playlist.name,
+        });
+
+        if (data.type !== DialogActionType.Submit) {
+            return;
+        }
+
+        return this.client.mutate<UpdatePlaylistMutation, UpdatePlaylistMutationVariables>({
+            mutation: UpdatePlaylistDocument,
+            variables: {
+                id: playlist.id,
+                input: {
+                    name: data.value,
+                },
+            },
+        });
+    }
+    public async deletePlaylist(playlist: MinimalPlaylistFragment) {
+        const data = await this.dialog.openDialog(YesNoDialog, {
+            title: this.i18n.t("dialog.deletePlaylist.title"),
+            content: this.i18n.t("dialog.deletePlaylist.content"),
+            positiveLabel: this.i18n.t("dialog.deletePlaylist.confirm"),
+            positiveColor: "error",
+        });
+
+        if (data.type !== DialogActionType.Positive) {
+            return;
+        }
+
+        return this.client.mutate<DeletePlaylistMutation, DeletePlaylistMutationVariables>({
+            mutation: DeletePlaylistDocument,
+            variables: {
+                id: playlist.id,
+            },
+        });
     }
 }

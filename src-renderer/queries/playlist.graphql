@@ -27,9 +27,35 @@ mutation createPlaylist($input: CreatePlaylistInput!) {
         ...MinimalPlaylist
     }
 }
+mutation createPlaylistFromMusics($input: CreatePlaylistInput!, $musicIds: [Int!]!) {
+    createPlaylistFromMusics(input: $input, musicIds: $musicIds) {
+        ...MinimalPlaylist
+    }
+}
+mutation addMusicsToPlaylist($musicIds: [Int!]!, $playlistId: Int!) {
+    addMusicsToPlaylist(musicIds: $musicIds, playlistId: $playlistId) {
+        id
+    }
+}
+mutation updatePlaylist($id: Int!, $input: UpdatePlaylistInput!) {
+    updatePlaylist(id: $id, input: $input) {
+        ...MinimalPlaylist
+    }
+}
+mutation deletePlaylist($id: Int!) {
+    deletePlaylist(id: $id)
+}
 
 subscription playlistAdded {
     playlistAdded {
         ...MinimalPlaylist
     }
+}
+subscription playlistUpdated {
+    playlistUpdated {
+        ...MinimalPlaylist
+    }
+}
+subscription playlistRemoved {
+    playlistRemoved
 }

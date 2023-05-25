@@ -21,6 +21,7 @@ export interface PlayerEventMap {
 export interface PlayerProviderContext {
     playPlaylist(playlist: MinimalMusicFragment[], index?: number, shuffled?: boolean): void;
     clearPlaylist(): void;
+    addMusicsToPlaylist(musics: MinimalMusicFragment[]): void;
     play(): void;
     pause(): void;
     stop(): void;

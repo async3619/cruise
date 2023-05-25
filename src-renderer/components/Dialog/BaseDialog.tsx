@@ -29,6 +29,10 @@ export function BaseDialog<TValue>({
         onClose({ type: DialogActionType.Negative });
     };
 
+    const callClose = (type: Exclude<DialogActionType, DialogActionType.Submit>) => {
+        onClose({ type });
+    };
+
     return (
         <Dialog open={open} onClose={handleClose} TransitionProps={{ onExited: onClosed }} {...rest}>
             <Root onSubmit={onSubmit}>
@@ -42,6 +46,8 @@ export function BaseDialog<TValue>({
 
                         if (type === DialogActionType.Submit) {
                             props.type = "submit";
+                        } else {
+                            props.onClick = () => callClose(type);
                         }
 
                         return (

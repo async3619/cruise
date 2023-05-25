@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 
 import { ButtonBase, ButtonProps } from "@mui/material";
 import styled from "@emotion/styled";
+import { backgroundColors } from "@styles/theme";
 
 export interface ItemProps extends ButtonProps {
     component?: typeof Link;
@@ -10,6 +11,9 @@ export interface ItemProps extends ButtonProps {
 }
 
 export const Item = styled(ButtonBase)<ItemProps>`
+    min-width: 0;
+    min-height: ${({ theme }) => theme.spacing(4.5)};
+
     margin: 0;
     padding: ${({ theme }) => theme.spacing(0.75, 1)};
     border-radius: 4px;
@@ -45,6 +49,12 @@ export const Item = styled(ButtonBase)<ItemProps>`
         }
     }
 
+    > p {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
     &:hover,
     &:focus {
         color: ${({ theme }) => theme.vars.palette.text.primary};
@@ -68,4 +78,13 @@ export const Title = styled.p`
     font-family: ${({ theme }) => theme.typography.fontFamily};
     font-size: 0.875rem;
     font-weight: 600;
+`;
+
+export const Root = styled.div`
+    width: 220px;
+
+    padding: ${({ theme }) => theme.spacing(0.75)};
+    border-radius: 4px;
+
+    background: ${backgroundColors["950"]};
 `;

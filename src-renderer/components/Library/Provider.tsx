@@ -1,5 +1,9 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 
+import { useApolloClient } from "@apollo/client";
+
+import { useDialog } from "@components/Dialog/Provider";
 import { Library } from "@components/Library";
 
 export interface LibraryProviderProps {
@@ -15,7 +19,10 @@ export const LibraryContext = React.createContext<LibraryContextValue>({
 });
 
 export function LibraryProvider(props: LibraryProviderProps) {
-    const [library] = React.useState<Library>(new Library());
+    const client = useApolloClient();
+    const { i18n } = useTranslation();
+    const dialog = useDialog();
+    const [library] = React.useState<Library>(new Library(client, dialog, i18n));
 
     return <LibraryContext.Provider value={{ library }}>{props.children}</LibraryContext.Provider>;
 }

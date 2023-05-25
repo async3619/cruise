@@ -27,7 +27,7 @@ export function LibraryPage({ children, title, loading, onShuffleAll }: LibraryP
                         <span>{title}</span>
                     </Typography>
                     <Button
-                        beforeIcon={<ShuffleRoundedIcon fontSize="small" />}
+                        startIcon={<ShuffleRoundedIcon fontSize="small" />}
                         variant="contained"
                         size="small"
                         disabled={loading}

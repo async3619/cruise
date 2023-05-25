@@ -1,11 +1,11 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 
-import { Stack, Typography } from "@mui/material";
+import { Divider, Stack, Typography } from "@mui/material";
 
-import { Item, ItemProps, Title } from "./Menu.styles";
+import { Item, ItemProps, Root, Title } from "./Menu.styles";
 
-export interface MenuItem {
+export interface NormalMenuItem {
     id: string;
     label: string;
     icon?: React.ComponentType;
@@ -14,22 +14,36 @@ export interface MenuItem {
     onClick?: () => void;
 }
 
+export type DividerMenuItem = "divider";
+
+export type MenuItem = NormalMenuItem | DividerMenuItem;
+
 export interface MenuProps {
     items: MenuItem[];
+    onClick?: () => void;
     title?: string;
+    standalone?: boolean;
 }
 
-export function Menu({ items, title }: MenuProps) {
+export function Menu({ items, title, standalone, onClick }: MenuProps) {
     const location = useLocation();
+    const handleClick = (item: NormalMenuItem) => {
+        item.onClick?.();
+        onClick?.();
+    };
 
-    return (
+    const content = (
         <Stack spacing={0.75}>
             {title && (
                 <Typography component={Title} fontSize="0.875rem" fontWeight={600} color="text.disabled">
                     {title}
                 </Typography>
             )}
-            {items.map(item => {
+            {items.map((item, index) => {
+                if (item === "divider") {
+                    return <Divider key={index} />;
+                }
+
                 const Icon = item.icon;
                 let props: ItemProps = {
                     key: item.id,
@@ -54,12 +68,20 @@ export function Menu({ items, title }: MenuProps) {
                 }
 
                 return (
-                    <Item selected={isSelected} {...props}>
+                    <Item selected={isSelected} {...props} onClick={() => handleClick(item)}>
                         {Icon && <Icon />}
-                        {item.label}
+                        <Typography variant="body1" fontSize="inherit">
+                            {item.label}
+                        </Typography>
                     </Item>
                 );
             })}
         </Stack>
     );
+
+    if (standalone) {
+        return content;
+    }
+
+    return <Root>{content}</Root>;
 }

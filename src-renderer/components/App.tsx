@@ -32,13 +32,13 @@ export function App({}: AppProps) {
             <I18nextProvider i18n={i18n}>
                 <CssVarsProvider theme={theme} defaultMode={defaultMode}>
                     <ConfigProvider>
-                        <LibraryProvider>
-                            <PlayerProvider>
-                                <DialogProvider>
+                        <DialogProvider>
+                            <LibraryProvider>
+                                <PlayerProvider>
                                     <RouterProvider router={router} />
-                                </DialogProvider>
-                            </PlayerProvider>
-                        </LibraryProvider>
+                                </PlayerProvider>
+                            </LibraryProvider>
+                        </DialogProvider>
                     </ConfigProvider>
                 </CssVarsProvider>
             </I18nextProvider>

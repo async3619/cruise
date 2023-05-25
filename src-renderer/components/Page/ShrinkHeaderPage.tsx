@@ -6,6 +6,7 @@ import { Box, Stack, Typography } from "@mui/material";
 import { Page } from "@components/Page";
 import { ImageView } from "@components/ui/ImageView";
 import { Button } from "@components/ui/Button";
+
 import { withLayout, WithLayoutProps } from "@components/Layout/withLayout";
 import { Content, Description, ImageWrapper, Root } from "@components/Page/ShrinkHeaderPage.styles";
 
@@ -115,7 +116,7 @@ class ShrinkHeaderPageImpl extends React.Component<ShrinkHeaderPageProps, Shrink
         return (
             <Stack ref={measureRef} spacing={1} direction="row">
                 {buttons?.map((button, index) => (
-                    <Button key={index} {...button}>
+                    <Button key={index} {...button} size="small">
                         {button.label}
                     </Button>
                 ))}
@@ -127,7 +128,16 @@ class ShrinkHeaderPageImpl extends React.Component<ShrinkHeaderPageProps, Shrink
         const { title } = this.props;
 
         return (
-            <Typography ref={measureRef} variant="h3" fontSize="1.75rem">
+            <Typography
+                ref={measureRef}
+                variant="h3"
+                fontSize="1.75rem"
+                sx={{
+                    whiteSpace: "nowrap",
+                    textOverflow: "ellipsis",
+                    overflow: "hidden",
+                }}
+            >
                 <span>{title}</span>
             </Typography>
         );

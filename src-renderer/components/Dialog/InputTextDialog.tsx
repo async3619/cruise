@@ -17,14 +17,17 @@ export interface InputTextDialogProps extends BaseDialogProps<string> {
     title: string;
     content: string;
     validationSchema: z.ZodType<string>;
+    defaultValue?: string;
 }
 
-export function InputTextDialog({ title, content, validationSchema, ...props }: InputTextDialogProps) {
+export function InputTextDialog({ title, content, validationSchema, defaultValue, ...props }: InputTextDialogProps) {
     const schema = React.useMemo(() => z.object({ input: validationSchema }), [validationSchema]);
     const { register, getFieldState, formState, handleSubmit } = useForm<InputTextFormValues>({
         mode: "all",
         resolver: zodResolver(schema),
-        defaultValues: {},
+        defaultValues: {
+            input: defaultValue || "",
+        },
     });
 
     const fieldState = getFieldState("input");

@@ -171,6 +171,10 @@ type Mutation {
   scan: Boolean!
   syncAlbumData(albumId: Int!, targetId: String!, locale: String): Boolean!
   createPlaylist(input: CreatePlaylistInput!): Playlist!
+  createPlaylistFromMusics(input: CreatePlaylistInput!, musicIds: [Int!]!): Playlist!
+  addMusicsToPlaylist(musicIds: [Int!]!, playlistId: Int!): Playlist!
+  updatePlaylist(id: Int!, input: UpdatePlaylistInput!): Playlist!
+  deletePlaylist(id: Int!): Boolean!
 }
 
 input UpdateAlbumInput {
@@ -211,6 +215,10 @@ input CreatePlaylistInput {
   name: String!
 }
 
+input UpdatePlaylistInput {
+  name: String
+}
+
 type Subscription {
   musicAdded: Music!
   musicUpdated: Music!
@@ -228,4 +236,6 @@ type Subscription {
   maximizedStateChanged: Boolean!
   scanningStateChanged: Boolean!
   playlistAdded: Playlist!
+  playlistUpdated: Playlist!
+  playlistRemoved: Int!
 }

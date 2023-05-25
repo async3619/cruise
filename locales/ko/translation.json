@@ -48,6 +48,22 @@
             "validation": {
                 "empty": "재생목록 이름을 입력하세요."
             }
+        },
+        "renamePlaylist": {
+            "title": "재생목록 이름 변경",
+            "content": "변경할 재생목록 이름을 입력하세요.",
+            "validation": {
+                "empty": "재생목록 이름을 입력하세요."
+            }
+        },
+        "deletePlaylist": {
+            "title": "재생목록 삭제",
+            "content": "정말 이 재생목록을 삭제할까요?",
+            "confirm": "삭제"
+        },
+        "common": {
+            "cancel": "취소",
+            "confirm": "확인"
         }
     },
     "delete": "삭제",
@@ -65,5 +81,7 @@
     "trackCount_other": "{{count}}개의 곡",
     "albumCount_one": "{{count}}개의 앨범",
     "albumCount_other": "{{count}}개의 앨범",
-    "clear_all": "비우기"
+    "clear_all": "비우기",
+    "addToPlaylist": "추가",
+    "rename": "이름 변경"
 }

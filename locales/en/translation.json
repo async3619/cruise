@@ -56,5 +56,7 @@
     "trackCount_other": "{{count}} Tracks",
     "albumCount_one": "{{count}} Album",
     "albumCount_other": "{{count}} Albums",
-    "clear_all": "Clear All"
+    "clear_all": "Clear All",
+    "addToPlaylist": "Add To",
+    "rename": "Rename"
 }

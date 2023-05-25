@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 
 import PlayArrowRoundedIcon from "@mui/icons-material/PlayArrowRounded";
 import ShuffleRoundedIcon from "@mui/icons-material/ShuffleRounded";
+import AddRoundedIcon from "@mui/icons-material/AddRounded";
 
 import { AlbumArtType } from "@queries";
 
@@ -14,6 +15,7 @@ import { ShrinkHeaderPage } from "@components/Page/ShrinkHeaderPage";
 import { MusicList } from "@components/MusicList";
 
 import { formatSeconds } from "@utils/formatTime";
+import QueueMusicIcon from "@mui/icons-material/QueueMusic";
 
 export interface AlbumProps {}
 
@@ -21,6 +23,7 @@ export function Album({}: AlbumProps) {
     const library = useLibrary();
     const { id: idParam } = useParams<{ id: string }>();
     const player = usePlayer();
+    const { playlists } = library.usePlaylists();
     const { t } = useTranslation();
     if (!idParam) {
         throw new Error("id is required");
@@ -70,6 +73,33 @@ export function Album({}: AlbumProps) {
                     color: "inherit",
                     startIcon: <ShuffleRoundedIcon />,
                     onClick: () => playAlbum(true),
+                },
+                {
+                    label: t("addToPlaylist"),
+                    variant: "contained",
+                    color: "inherit",
+                    startIcon: <AddRoundedIcon />,
+                    menuItems: [
+                        {
+                            id: "queue",
+                            label: "재생 대기열",
+                            icon: QueueMusicIcon,
+                            onClick: () => player.addMusicsToPlaylist(album.musics),
+                        },
+                        "divider",
+                        {
+                            id: "create-new",
+                            label: "새 재생 목록",
+                            icon: AddRoundedIcon,
+                            onClick: () => library.createPlaylistWithMusics(album.musics),
+                        },
+                        ...(playlists?.map(playlist => ({
+                            id: `playlist.${playlist.id}`,
+                            label: playlist.name,
+                            icon: AddRoundedIcon,
+                            onClick: () => library.addMusicsToPlaylist(playlist.id, album.musics),
+                        })) || []),
+                    ],
                 },
             ]}
         >

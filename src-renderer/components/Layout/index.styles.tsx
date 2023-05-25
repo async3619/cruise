@@ -16,6 +16,7 @@ export const GlobalStyles = css`
 
 export const Root = styled.div`
     height: 100vh;
+    max-height: 100vh;
 
     margin: 0;
     padding: 0;

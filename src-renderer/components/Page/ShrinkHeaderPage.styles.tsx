@@ -18,6 +18,7 @@ export const Root = styled.div`
 `;
 
 export const Content = styled.div`
+    min-width: 0;
     padding-left: ${({ theme }) => theme.spacing(2)};
 
     display: flex;
@@ -28,6 +29,8 @@ export const Content = styled.div`
 
 export const ImageWrapper = styled.div`
     width: 200px;
+
+    flex: 0 0 200px;
 `;
 
 export const Description = styled.div`

@@ -33,6 +33,7 @@ class PlayerProviderImpl extends React.Component<PlayerProviderProps, PlayerProv
     private readonly contextValue: PickFn<PlayerProviderContext> = {
         playPlaylist: this.playPlaylist.bind(this),
         clearPlaylist: this.clearPlaylist.bind(this),
+        addMusicsToPlaylist: this.addMusicsToPlaylist.bind(this),
         play: this.play.bind(this),
         pause: this.pause.bind(this),
         stop: this.stop.bind(this),
@@ -181,6 +182,14 @@ class PlayerProviderImpl extends React.Component<PlayerProviderProps, PlayerProv
     public clearPlaylist() {
         this.setState({ playlist: null, playlistIndex: -1 }, () => {
             this.stop();
+        });
+    }
+    public addMusicsToPlaylist(musics: MinimalMusicFragment[]) {
+        this.setState(({ playlist, playlistIndex }) => {
+            return {
+                playlist: playlist ? [...playlist, ...musics] : musics,
+                playlistIndex: playlist ? playlistIndex : 0,
+            };
         });
     }
 
