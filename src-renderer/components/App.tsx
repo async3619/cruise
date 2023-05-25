@@ -17,6 +17,7 @@ import i18n from "@/i18n.config";
 import { theme } from "@styles/theme";
 
 import { Router } from "@pages";
+import { DialogProvider } from "@components/Dialog/Provider";
 
 export interface AppProps {}
 
@@ -33,7 +34,9 @@ export function App({}: AppProps) {
                     <ConfigProvider>
                         <LibraryProvider>
                             <PlayerProvider>
-                                <RouterProvider router={router} />
+                                <DialogProvider>
+                                    <RouterProvider router={router} />
+                                </DialogProvider>
                             </PlayerProvider>
                         </LibraryProvider>
                     </ConfigProvider>

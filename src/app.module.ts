@@ -23,6 +23,8 @@ import { ArtistService } from "@main/artist/artist.service";
 import { AlbumArtModule } from "@main/album-art/album-art.module";
 import { AlbumArtService } from "@main/album-art/album-art.service";
 
+import { PlaylistModule } from "@main/playlist/playlist.module";
+
 import { ConfigModule } from "@main/config/config.module";
 import { HauntedModule } from "@main/haunted/haunted.module";
 
@@ -68,6 +70,7 @@ fs.ensureDirSync(SQLITE_DATABASE_DIR);
         AlbumArtModule,
         ElectronModule,
         ConfigModule,
+        PlaylistModule,
     ],
 })
 export class AppModule {}

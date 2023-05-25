@@ -73,6 +73,12 @@ type Artist {
   musicCount: Int!
 }
 
+type Playlist {
+  id: Int!
+  name: String!
+  musics: [Music!]!
+}
+
 type Music {
   id: Int!
   title: String!
@@ -150,6 +156,8 @@ type Query {
   needScan: Boolean!
   search(query: String!): SearchResult!
   searchSuggestions(query: String!, limit: Int!): [SearchSuggestion!]!
+  playlists: [Playlist!]!
+  playlist(id: Int!): Playlist!
 }
 
 type Mutation {
@@ -162,6 +170,7 @@ type Mutation {
   updateConfig(config: ConfigInput!): Config!
   scan: Boolean!
   syncAlbumData(albumId: Int!, targetId: String!, locale: String): Boolean!
+  createPlaylist(input: CreatePlaylistInput!): Playlist!
 }
 
 input UpdateAlbumInput {
@@ -198,6 +207,10 @@ input ConfigInput {
   language: String
 }
 
+input CreatePlaylistInput {
+  name: String!
+}
+
 type Subscription {
   musicAdded: Music!
   musicUpdated: Music!
@@ -214,4 +227,5 @@ type Subscription {
   artistPortraitAdded(artistId: Int!): Artist!
   maximizedStateChanged: Boolean!
   scanningStateChanged: Boolean!
+  playlistAdded: Playlist!
 }

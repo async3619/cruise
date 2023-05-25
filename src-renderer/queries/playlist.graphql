@@ -1,0 +1,35 @@
+fragment MinimalPlaylist on Playlist {
+    id
+    name
+}
+
+fragment FullPlaylist on Playlist {
+    ...MinimalPlaylist
+    musics {
+        ...MinimalMusic
+    }
+}
+
+query playlists {
+    playlists {
+        ...MinimalPlaylist
+    }
+}
+
+query playlist($id: Int!) {
+    playlist(id: $id) {
+        ...FullPlaylist
+    }
+}
+
+mutation createPlaylist($input: CreatePlaylistInput!) {
+    createPlaylist(input: $input) {
+        ...MinimalPlaylist
+    }
+}
+
+subscription playlistAdded {
+    playlistAdded {
+        ...MinimalPlaylist
+    }
+}

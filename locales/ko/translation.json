@@ -37,7 +37,18 @@
         "settings": "설정",
         "musics": "음악",
         "artists": "아티스트",
-        "albums": "앨범"
+        "albums": "앨범",
+        "nowPlaying": "재생 대기열",
+        "newPlaylist": "새 재생목록 추가"
+    },
+    "dialog": {
+        "createPlaylist": {
+            "title": "새 재생목록 추가",
+            "content": "추가할 재생목록의 이름을 입력하세요.",
+            "validation": {
+                "empty": "재생목록 이름을 입력하세요."
+            }
+        }
     },
     "delete": "삭제",
     "tableColumn": {
@@ -53,5 +64,6 @@
     "trackCount_one": "{{count}}개의 곡",
     "trackCount_other": "{{count}}개의 곡",
     "albumCount_one": "{{count}}개의 앨범",
-    "albumCount_other": "{{count}}개의 앨범"
+    "albumCount_other": "{{count}}개의 앨범",
+    "clear_all": "비우기"
 }

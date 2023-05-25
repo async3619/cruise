@@ -32,6 +32,10 @@ export class BaseService<T extends BaseEntityClass> {
         return item;
     }
     public async findByIds(ids: ReadonlyArray<number>) {
+        if (ids.length === 0) {
+            return [];
+        }
+
         const items = await this.repository.find({
             where: {
                 id: In(ids),

@@ -6,6 +6,7 @@ import {
     JoinTable,
     ManyToMany,
     ManyToOne,
+    OneToMany,
     PrimaryGeneratedColumn,
     RelationId,
     UpdateDateColumn,
@@ -15,6 +16,7 @@ import { Field, Int, ObjectType } from "@nestjs/graphql";
 import { Artist } from "@main/artist/models/artist.model";
 import { Album } from "@main/album/models/album.model";
 import { AlbumArt } from "@main/album-art/models/album-art.model";
+import { PlaylistRelation } from "@main/playlist/models/playlist-relation.model";
 
 import type { Nullable } from "@common/types";
 
@@ -90,4 +92,11 @@ export class Music extends BaseEntity {
 
     @RelationId((item: Music) => item.albumArts)
     public albumArtIds!: AlbumArt["id"][];
+
+    // Music => PlaylistRelation[]
+    @OneToMany(() => PlaylistRelation, item => item.music)
+    public playlistRelations!: PlaylistRelation[];
+
+    @RelationId((item: Music) => item.playlistRelations)
+    public playlistRelationIds!: PlaylistRelation["id"];
 }

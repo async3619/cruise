@@ -3,15 +3,18 @@ import React from "react";
 
 import {
     FullAlbumFragment,
+    FullPlaylistFragment,
     MinimalAlbumFragment,
     MinimalArtistFragment,
     MinimalMusicFragment,
+    MinimalPlaylistFragment,
     useAlbumAddedSubscription,
     useAlbumQuery,
     useAlbumRemovedSubscription,
     useAlbumsQuery,
     useArtistPortraitAddedSubscription,
     useArtistQuery,
+    useCreatePlaylistMutation,
     useLeadArtistAddedSubscription,
     useLeadArtistRemovedSubscription,
     useLeadArtistsQuery,
@@ -19,6 +22,9 @@ import {
     useMusicsQuery,
     useMusicsRemovedSubscription,
     useMusicsUpdatedSubscription,
+    usePlaylistAddedSubscription,
+    usePlaylistQuery,
+    usePlaylistsQuery,
 } from "@queries";
 
 export class Library {
@@ -153,7 +159,6 @@ export class Library {
             refetch,
         };
     }
-
     public useAlbum(id: number) {
         const [album, setAlbum] = React.useState<FullAlbumFragment | null>(null);
         const { data, loading, refetch } = useAlbumQuery({
@@ -227,7 +232,6 @@ export class Library {
             refetch,
         };
     }
-
     public useArtist(id: number) {
         const [artist, setArtist] = React.useState<MinimalArtistFragment | null>(null);
         const { data, loading, refetch } = useArtistQuery({
@@ -255,6 +259,65 @@ export class Library {
 
         return {
             artist,
+            loading,
+            refetch,
+        };
+    }
+
+    public usePlaylists() {
+        const [playlists, setPlaylists] = React.useState<MinimalPlaylistFragment[] | null>(null);
+        const { data, loading, refetch } = usePlaylistsQuery();
+        const [create] = useCreatePlaylistMutation();
+
+        React.useEffect(() => {
+            if (!data?.playlists || loading) {
+                return;
+            }
+
+            setPlaylists(data.playlists);
+        }, [data, loading]);
+
+        usePlaylistAddedSubscription({
+            onData: ({ data: { data } }) => {
+                if (!data?.playlistAdded) {
+                    return;
+                }
+
+                setPlaylists(playlists => {
+                    if (!playlists) {
+                        return null;
+                    }
+
+                    return [...playlists, data.playlistAdded];
+                });
+            },
+        });
+
+        return {
+            playlists,
+            loading,
+            refetch,
+            create,
+        };
+    }
+    public usePlaylist(id: number) {
+        const [playlist, setPlaylist] = React.useState<FullPlaylistFragment | null>(null);
+        const { data, loading, refetch } = usePlaylistQuery({
+            variables: {
+                id,
+            },
+        });
+
+        React.useEffect(() => {
+            if (!data?.playlist || loading) {
+                return;
+            }
+
+            setPlaylist(data.playlist);
+        }, [data, loading]);
+
+        return {
+            playlist,
             loading,
             refetch,
         };

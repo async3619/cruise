@@ -37,7 +37,9 @@
         "settings": "Settings",
         "musics": "Musics",
         "artists": "Artists",
-        "albums": "Albums"
+        "albums": "Albums",
+        "nowPlaying": "Now Playing",
+        "newPlaylist": "Create Playlist"
     },
     "delete": "Delete",
     "tableColumn": {
@@ -53,5 +55,6 @@
     "trackCount_one": "{{count}} Track",
     "trackCount_other": "{{count}} Tracks",
     "albumCount_one": "{{count}} Album",
-    "albumCount_other": "{{count}} Albums"
+    "albumCount_other": "{{count}} Albums",
+    "clear_all": "Clear All"
 }

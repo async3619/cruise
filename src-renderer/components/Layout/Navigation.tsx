@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 import React from "react";
 import { useTranslation } from "react-i18next";
 
@@ -8,14 +10,47 @@ import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import Person2RoundedIcon from "@mui/icons-material/Person2Rounded";
 import MusicNoteIcon from "@mui/icons-material/MusicNote";
 import AlbumRoundedIcon from "@mui/icons-material/AlbumRounded";
+import QueueMusicIcon from "@mui/icons-material/QueueMusic";
+import AddRoundedIcon from "@mui/icons-material/AddRounded";
 
 import { Menu } from "@components/Menu";
+import { useDialog } from "@components/Dialog/Provider";
+import { DialogActionType } from "@components/Dialog/types";
+import { InputTextDialog } from "@components/Dialog/InputTextDialog";
+
+import { useLibrary } from "@components/Library/Provider";
+
 import { Root } from "@components/Layout/Navigation.styles";
 
 export interface NavigationProps {}
 
 export function Navigation({}: NavigationProps) {
     const { t } = useTranslation();
+    const { openDialog } = useDialog();
+    const library = useLibrary();
+    const { playlists, create: createPlaylist } = library.usePlaylists();
+
+    const handleCreatePlaylist = React.useCallback(async () => {
+        const data = await openDialog(InputTextDialog, {
+            title: t("dialog.createPlaylist.title"),
+            content: t("dialog.createPlaylist.content"),
+            validationSchema: z.string().nonempty(t("dialog.createPlaylist.validation.empty")),
+        });
+
+        if (data.type !== DialogActionType.Submit) {
+            return;
+        }
+
+        await createPlaylist({
+            variables: {
+                input: {
+                    name: data.value,
+                },
+            },
+        });
+    }, [openDialog, t, createPlaylist]);
+
+    const playlistItems = playlists ?? [];
 
     return (
         <Root>
@@ -67,7 +102,29 @@ export function Navigation({}: NavigationProps) {
                     ]}
                     title={t("Library")}
                 />
-                <Menu items={[]} title={t("Playlists")} />
+                <Menu
+                    items={[
+                        {
+                            id: "playlists.nowPlaying",
+                            label: t("pageTitle.nowPlaying"),
+                            icon: QueueMusicIcon,
+                            href: "/playlists",
+                        },
+                        ...playlistItems.map(playlist => ({
+                            id: `playlists.${playlist.id}`,
+                            label: playlist.name,
+                            icon: QueueMusicIcon,
+                            href: `/playlists/${playlist.id}`,
+                        })),
+                        {
+                            id: "playlists.add",
+                            label: t("pageTitle.newPlaylist"),
+                            icon: AddRoundedIcon,
+                            onClick: handleCreatePlaylist,
+                        },
+                    ]}
+                    title={t("Playlists")}
+                />
             </Stack>
         </Root>
     );

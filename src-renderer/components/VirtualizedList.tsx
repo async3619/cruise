@@ -1,5 +1,4 @@
 import React from "react";
-
 import { useVirtualizer, VirtualItem } from "@tanstack/react-virtual";
 
 import { useLayout } from "@components/Layout";
@@ -14,24 +13,26 @@ export interface VirtualizedListProps<TItem> {
 
 export function VirtualizedList<TItem>({ rowHeight, children, items }: VirtualizedListProps<TItem>) {
     const { scrollView } = useLayout();
-    const parentRef = React.useRef<HTMLDivElement>(null);
-    const parentOffsetRef = React.useRef(0);
+    const [initialScrollTop, setInitialScrollTop] = React.useState(0);
+    const handleRef = (element: HTMLDivElement | null) => {
+        if (!element) {
+            return;
+        }
 
-    React.useLayoutEffect(() => {
-        parentOffsetRef.current = parentRef.current?.offsetTop ?? 0;
-    }, []);
+        setInitialScrollTop(element.offsetTop);
+    };
 
     const virtualizer = useVirtualizer({
         count: items.length,
         estimateSize: () => rowHeight,
-        scrollMargin: parentOffsetRef.current,
+        scrollMargin: initialScrollTop,
         getScrollElement: () => scrollView,
     });
 
     const virtualItems = virtualizer.getVirtualItems();
 
     return (
-        <Root ref={parentRef}>
+        <Root ref={handleRef}>
             <div style={{ height: virtualizer.getTotalSize(), width: "100%", position: "relative" }}>
                 <div
                     style={{

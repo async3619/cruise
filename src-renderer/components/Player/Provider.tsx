@@ -32,6 +32,7 @@ class PlayerProviderImpl extends React.Component<PlayerProviderProps, PlayerProv
     private readonly audioRef = React.createRef<HTMLAudioElement>();
     private readonly contextValue: PickFn<PlayerProviderContext> = {
         playPlaylist: this.playPlaylist.bind(this),
+        clearPlaylist: this.clearPlaylist.bind(this),
         play: this.play.bind(this),
         pause: this.pause.bind(this),
         stop: this.stop.bind(this),
@@ -175,6 +176,11 @@ class PlayerProviderImpl extends React.Component<PlayerProviderProps, PlayerProv
 
         this.setState({ playlist, playlistIndex: index }, () => {
             this.play();
+        });
+    }
+    public clearPlaylist() {
+        this.setState({ playlist: null, playlistIndex: -1 }, () => {
+            this.stop();
         });
     }
 
