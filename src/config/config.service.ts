@@ -85,6 +85,11 @@ export class ConfigService {
             config = await config(await this.getConfig());
         }
 
+        config = {
+            ...(await this.getConfig()),
+            ...config,
+        };
+
         assertConfig(config);
         await fs.writeJson(CONFIG_FILE_PATH, config, { spaces: 4 });
     }
