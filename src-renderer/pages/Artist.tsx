@@ -105,7 +105,7 @@ export function Artist({}: ArtistProps) {
                     <Typography variant="h6">{t("pageTitle.albums")}</Typography>
                     <Box display="flex" flexWrap="wrap">
                         {artist.leadAlbums.map(item => (
-                            <Card key={item.id} item={item} onPlay={playAlbum} />
+                            <Card key={item.id} item={item} onPlay={playAlbum} href={`/albums/${item.id}`} />
                         ))}
                     </Box>
                 </Stack>
