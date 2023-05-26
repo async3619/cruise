@@ -103,7 +103,7 @@ export function Album({}: AlbumProps) {
                 },
             ]}
         >
-            <MusicList items={album.musics} />
+            <MusicList withTrackNumber items={album.musics} />
         </ShrinkHeaderPage>
     );
 }

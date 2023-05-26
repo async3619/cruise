@@ -1,23 +1,43 @@
 import React from "react";
 
+import { Box } from "@mui/material";
 import PlayArrowRoundedIcon from "@mui/icons-material/PlayArrowRounded";
 
 import { usePlayer } from "@components/Player/Provider";
 import { VirtualizedList } from "@components/VirtualizedList";
 import { AlbumArt, Cell, Item, Label, LinkLabel } from "@components/MusicList.styles";
 
-import { MinimalMusicFragment } from "@queries";
-import { Box } from "@mui/material";
+import { ArtistIdNameFragment, MinimalMusicFragment } from "@queries";
 
 export interface MusicListProps {
     items: ReadonlyArray<MinimalMusicFragment>;
+    withTrackNumber?: boolean;
 }
 
-export function MusicList({ items }: MusicListProps) {
+export function MusicList({ items, withTrackNumber }: MusicListProps) {
     const { playPlaylist, playingMusic } = usePlayer();
 
     const handlePlay = (index: number) => {
         playPlaylist(items, index);
+    };
+
+    const renderArtist = (music: MinimalMusicFragment) => {
+        const artists: Array<ArtistIdNameFragment> | string =
+            music.album?.leadArtists || music.artists || music.albumArtist;
+
+        if (Array.isArray(artists)) {
+            return artists.map(artist => (
+                <LinkLabel key={artist.id} to={`/artists/${artist.id}`}>
+                    <span>{artist.name}</span>
+                </LinkLabel>
+            ));
+        }
+
+        return (
+            <Label>
+                <span>{artists}</span>
+            </Label>
+        );
     };
 
     return (
@@ -33,20 +53,16 @@ export function MusicList({ items }: MusicListProps) {
                         </AlbumArt>
                     </Cell>
                     <Cell grow>
-                        <Label>{item.title}</Label>
+                        <Label>{`${withTrackNumber ? `${item.track}. ` : ""}${item.title}`}</Label>
                     </Cell>
-                    <Cell width="20%">
-                        <Box minWidth={0} pr={1}>
-                            <LinkLabel>
-                                <span>{item.albumArtist}</span>
-                            </LinkLabel>
-                        </Box>
-                    </Cell>
+                    <Cell width="20%">{renderArtist(item)}</Cell>
                     <Cell width="25%">
                         <Box minWidth={0} pr={1}>
-                            <LinkLabel>
-                                <span>{item.album?.title}</span>
-                            </LinkLabel>
+                            {item.album && (
+                                <LinkLabel to={`/albums/${item.album.id}`}>
+                                    <span>{item.album.title}</span>
+                                </LinkLabel>
+                            )}
                         </Box>
                     </Cell>
                 </Item>

@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 import { ButtonBase } from "@mui/material";
 
@@ -108,6 +109,10 @@ export const Cell = styled.div<{ width?: string; grow?: boolean; withoutPadding?
 
     display: flex;
     align-items: center;
+
+    &:not(:nth-of-type(1)):not(:nth-of-type(2)) {
+        padding: ${({ theme }) => theme.spacing(0, 1)};
+    }
 `;
 
 export const Label = styled.span`
@@ -123,23 +128,25 @@ export const Label = styled.span`
     text-overflow: ellipsis;
 `;
 
-export const LinkLabel = styled(ButtonBase)`
+export const LinkLabel = styled(Link)`
     max-width: 100%;
 
-    padding: ${({ theme }) => theme.spacing(0.75)};
     border-radius: 2px;
+
+    display: block;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 
     font-size: 0.9rem;
     font-family: ${({ theme }) => theme.typography.fontFamily};
     line-height: 1;
+    text-decoration: none;
 
-    span {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
+    color: inherit;
 
     &:hover {
-        background: ${({ theme }) => theme.vars.palette.action.hover};
+        text-decoration: underline;
     }
 `;

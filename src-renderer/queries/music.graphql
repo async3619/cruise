@@ -1,18 +1,30 @@
+fragment ArtistIdName on Artist {
+    id
+    name
+}
+
 fragment MinimalMusic on Music {
     id
     title
-    albumArtist
     duration
     year
     genre
+    albumArtist
+    artists {
+        ...ArtistIdName
+    }
     album {
         id
         title
+        leadArtists {
+            ...ArtistIdName
+        }
     }
     albumArts {
         ...MinimalAlbumArt
     }
     path
+    track
     duration
 }
 
