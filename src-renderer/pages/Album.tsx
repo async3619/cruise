@@ -96,7 +96,7 @@ export function Album({}: AlbumProps) {
                         ...(playlists.map(playlist => ({
                             id: `playlist.${playlist.id}`,
                             label: playlist.name,
-                            icon: AddRoundedIcon,
+                            icon: QueueMusicIcon,
                             onClick: () => library.addMusicsToPlaylist(playlist.id, album.musics),
                         })) || []),
                     ],
