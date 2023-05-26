@@ -17,6 +17,7 @@ import { MusicList } from "@components/MusicList";
 import { MinimalMusicFragment, MinimalPlaylistFragment } from "@queries";
 
 import { formatSeconds } from "@utils/formatTime";
+import { frequentBy } from "@utils/frequentBy";
 
 export interface PlaylistPageProps {
     title: string;
@@ -100,8 +101,25 @@ export function PlaylistPage({ title, playlist, musics }: PlaylistPageProps) {
         );
     }
 
+    const collageSrc = React.useMemo(() => {
+        if (!musics) {
+            return undefined;
+        }
+
+        return frequentBy(
+            musics.map(m => m.albumArts[0].url),
+            4,
+        );
+    }, [musics]);
+
     return (
-        <ShrinkHeaderPage title={title} subtitle={t("Playlists")} tokens={tokens} buttons={buttons}>
+        <ShrinkHeaderPage
+            title={title}
+            subtitle={t("Playlists")}
+            tokens={tokens}
+            buttons={buttons}
+            imageSrc={collageSrc}
+        >
             {children}
         </ShrinkHeaderPage>
     );

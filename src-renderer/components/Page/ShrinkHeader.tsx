@@ -9,6 +9,7 @@ import { Button } from "@components/ui/Button";
 
 import { withLayout, WithLayoutProps } from "@components/Layout/withLayout";
 import { Content, Description, ImageWrapper, Root } from "@components/Page/ShrinkHeader.styles";
+import { CollageView } from "@components/ui/CollageView";
 
 export interface ButtonItem extends React.ComponentProps<typeof Button> {
     label: string;
@@ -19,7 +20,7 @@ export interface ShrinkHeaderPageProps extends WithLayoutProps {
     title: string;
     subtitle?: string;
     tokens?: Array<string | number>;
-    imageSrc?: string;
+    imageSrc?: string | string[];
     buttons?: ButtonItem[];
     imageType?: "circle" | "square";
 }
@@ -150,7 +151,8 @@ class ShrinkHeaderPageImpl extends React.Component<ShrinkHeaderPageProps, Shrink
         return (
             <Root>
                 <ImageWrapper ref={this.imageViewRef}>
-                    <ImageView type={imageType} src={imageSrc} />
+                    {!Array.isArray(imageSrc) && <ImageView type={imageType} src={imageSrc} />}
+                    {Array.isArray(imageSrc) && <CollageView src={imageSrc} />}
                 </ImageWrapper>
                 <Content>
                     <Measure bounds onResize={this.handleTitleMeasure}>

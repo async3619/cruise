@@ -1,33 +1,27 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 
+import { Box } from "@mui/material";
+
 import { Page } from "@components/Page";
-import { Menu } from "@components/Menu";
+import { CollageView } from "@components/ui/CollageView";
 
-export interface HomeProps {}
-
-export function Home({}: HomeProps) {
+export function Home() {
     const { t } = useTranslation();
 
     return (
         <Page title={t("Home")}>
             <span>{t("Hello")}</span>
-            <Menu
-                items={[
-                    {
-                        id: "test",
-                        label: "Test",
-                    },
-                    {
-                        id: "test2",
-                        label: "Test2",
-                    },
-                    {
-                        id: "test3",
-                        label: "Test3",
-                    },
-                ]}
-            />
+            <Box maxWidth={240} mt={4}>
+                <CollageView
+                    src={[
+                        "cruise://C:/Users/async/.cruise/album-arts/1.jpg",
+                        "cruise://C:/Users/async/.cruise/album-arts/2.jpg",
+                        "cruise://C:/Users/async/.cruise/album-arts/2.jpg",
+                        "cruise://C:/Users/async/.cruise/album-arts/1.jpg",
+                    ]}
+                />
+            </Box>
         </Page>
     );
 }
