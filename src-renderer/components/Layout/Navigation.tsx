@@ -13,7 +13,7 @@ import QueueMusicIcon from "@mui/icons-material/QueueMusic";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 
 import { Menu } from "@components/Menu";
-import { useLibrary } from "@components/Library/Provider";
+import { useLibrary, usePlaylists } from "@components/Library/Provider";
 
 import { Content, Root } from "@components/Layout/Navigation.styles";
 
@@ -22,13 +22,11 @@ export interface NavigationProps {}
 export function Navigation({}: NavigationProps) {
     const { t } = useTranslation();
     const library = useLibrary();
-    const { playlists } = library.usePlaylists();
+    const playlists = usePlaylists();
 
     const handleCreatePlaylist = React.useCallback(async () => {
         await library.createPlaylist();
     }, [library]);
-
-    const playlistItems = playlists ?? [];
 
     return (
         <Root>
@@ -93,7 +91,7 @@ export function Navigation({}: NavigationProps) {
                                     icon: QueueMusicIcon,
                                     href: "/playlists",
                                 },
-                                ...playlistItems.map(playlist => ({
+                                ...playlists.map(playlist => ({
                                     id: `playlists.${playlist.id}`,
                                     label: playlist.name,
                                     icon: QueueMusicIcon,

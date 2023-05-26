@@ -39,9 +39,7 @@ import {
     useMusicsQuery,
     useMusicsRemovedSubscription,
     useMusicsUpdatedSubscription,
-    usePlaylistAddedSubscription,
     usePlaylistQuery,
-    usePlaylistsQuery,
     usePlaylistUpdatedSubscription,
     DeletePlaylistDocument,
     usePlaylistRemovedSubscription,
@@ -296,78 +294,6 @@ export class Library {
         };
     }
 
-    public usePlaylists() {
-        const [playlists, setPlaylists] = React.useState<MinimalPlaylistFragment[] | null>(null);
-        const { data, loading, refetch } = usePlaylistsQuery();
-
-        React.useEffect(() => {
-            if (!data?.playlists || loading) {
-                return;
-            }
-
-            setPlaylists(data.playlists);
-        }, [data, loading]);
-
-        usePlaylistAddedSubscription({
-            onData: ({ data: { data } }) => {
-                if (!data?.playlistAdded) {
-                    return;
-                }
-
-                setPlaylists(playlists => {
-                    if (!playlists) {
-                        return null;
-                    }
-
-                    return [...playlists, data.playlistAdded];
-                });
-            },
-        });
-
-        usePlaylistUpdatedSubscription({
-            onData: ({ data: { data } }) => {
-                if (!data?.playlistUpdated) {
-                    return;
-                }
-
-                setPlaylists(playlists => {
-                    if (!playlists) {
-                        return null;
-                    }
-
-                    return playlists.map(p => {
-                        if (p.id !== data.playlistUpdated.id) {
-                            return p;
-                        }
-
-                        return data.playlistUpdated;
-                    });
-                });
-            },
-        });
-
-        usePlaylistRemovedSubscription({
-            onData: ({ data: { data } }) => {
-                if (!data?.playlistRemoved) {
-                    return;
-                }
-
-                setPlaylists(playlists => {
-                    if (!playlists) {
-                        return null;
-                    }
-
-                    return playlists.filter(playlist => playlist.id !== data.playlistRemoved);
-                });
-            },
-        });
-
-        return {
-            playlists,
-            loading,
-            refetch,
-        };
-    }
     public usePlaylist(id: number) {
         const navigate = useNavigate();
         const [playlist, setPlaylist] = React.useState<FullPlaylistFragment | null>(null);

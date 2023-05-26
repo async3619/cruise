@@ -10,7 +10,7 @@ import { MinimalMusicFragment } from "@queries";
 import { Box } from "@mui/material";
 
 export interface MusicListProps {
-    items: MinimalMusicFragment[];
+    items: ReadonlyArray<MinimalMusicFragment>;
 }
 
 export function MusicList({ items }: MusicListProps) {

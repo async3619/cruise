@@ -8,7 +8,7 @@ import { ImageView } from "@components/ui/ImageView";
 import { Button } from "@components/ui/Button";
 
 import { withLayout, WithLayoutProps } from "@components/Layout/withLayout";
-import { Content, Description, ImageWrapper, Root } from "@components/Page/ShrinkHeaderPage.styles";
+import { Content, Description, ImageWrapper, Root } from "@components/Page/ShrinkHeader.styles";
 
 export interface ButtonItem extends React.ComponentProps<typeof Button> {
     label: string;

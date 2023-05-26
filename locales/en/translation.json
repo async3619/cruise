@@ -58,5 +58,6 @@
     "albumCount_other": "{{count}} Albums",
     "clear_all": "Clear All",
     "addToPlaylist": "Add To",
+    "emptyPlaylist": "Playlist is empty",
     "rename": "Rename"
 }

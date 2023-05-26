@@ -83,5 +83,6 @@
     "albumCount_other": "{{count}}개의 앨범",
     "clear_all": "비우기",
     "addToPlaylist": "추가",
+    "emptyPlaylist": "재생목록이 비어있습니다.",
     "rename": "이름 변경"
 }

@@ -10,8 +10,8 @@ import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import { AlbumArtType } from "@queries";
 
 import { usePlayer } from "@/components/Player/Provider";
-import { useLibrary } from "@components/Library/Provider";
-import { ShrinkHeaderPage } from "@components/Page/ShrinkHeaderPage";
+import { useLibrary, usePlaylists } from "@components/Library/Provider";
+import { ShrinkHeaderPage } from "@components/Page/ShrinkHeader";
 import { MusicList } from "@components/MusicList";
 
 import { formatSeconds } from "@utils/formatTime";
@@ -23,7 +23,7 @@ export function Album({}: AlbumProps) {
     const library = useLibrary();
     const { id: idParam } = useParams<{ id: string }>();
     const player = usePlayer();
-    const { playlists } = library.usePlaylists();
+    const playlists = usePlaylists();
     const { t } = useTranslation();
     if (!idParam) {
         throw new Error("id is required");
@@ -93,7 +93,7 @@ export function Album({}: AlbumProps) {
                             icon: AddRoundedIcon,
                             onClick: () => library.createPlaylistWithMusics(album.musics),
                         },
-                        ...(playlists?.map(playlist => ({
+                        ...(playlists.map(playlist => ({
                             id: `playlist.${playlist.id}`,
                             label: playlist.name,
                             icon: AddRoundedIcon,

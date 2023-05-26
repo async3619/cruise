@@ -8,7 +8,7 @@ import { Root } from "@components/VirtualizedList.styles";
 export interface VirtualizedListProps<TItem> {
     children: (virtualItem: VirtualItem, item: TItem) => React.ReactNode;
     rowHeight: number;
-    items: TItem[];
+    items: ReadonlyArray<TItem>;
 }
 
 export function VirtualizedList<TItem>({ rowHeight, children, items }: VirtualizedListProps<TItem>) {

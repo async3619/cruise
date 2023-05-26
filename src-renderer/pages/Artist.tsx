@@ -6,7 +6,7 @@ import { Box, Stack, Typography } from "@mui/material";
 import PlayArrowRoundedIcon from "@mui/icons-material/PlayArrowRounded";
 import ShuffleRoundedIcon from "@mui/icons-material/ShuffleRounded";
 
-import { ButtonItem, ShrinkHeaderPage } from "@components/Page/ShrinkHeaderPage";
+import { ButtonItem, ShrinkHeaderPage } from "@components/Page/ShrinkHeader";
 import { useLibrary } from "@components/Library/Provider";
 import { usePlayer } from "@components/Player/Provider";
 
