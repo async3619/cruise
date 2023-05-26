@@ -7,10 +7,12 @@ import { Global } from "@emotion/react";
 
 import { Header } from "@components/Layout/Header";
 import { Navigation } from "@components/Layout/Navigation";
+import { LayoutContextValue } from "@components/Layout/types";
 import { PlayerToolbar } from "@components/Player/Toolbar";
 
+import { ScrollThumb } from "@components/ui/ScrollThumb";
+
 import { Body, Content, ContentWrapper, GlobalStyles, Root } from "@components/Layout/index.styles";
-import { LayoutContextValue } from "@components/Layout/types";
 
 export interface LayoutProps {}
 
@@ -39,6 +41,8 @@ export function Layout({}: LayoutProps) {
                     <Navigation />
                     <Content>
                         <Scrollbars
+                            autoHide
+                            renderThumbVertical={props => <ScrollThumb {...props} />}
                             ref={scrollbars => {
                                 if (!scrollbars) {
                                     return;

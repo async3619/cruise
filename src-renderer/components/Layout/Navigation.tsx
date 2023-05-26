@@ -14,6 +14,7 @@ import AddRoundedIcon from "@mui/icons-material/AddRounded";
 
 import { Menu } from "@components/Menu";
 import { useLibrary, usePlaylists } from "@components/Library/Provider";
+import { ScrollThumb } from "@components/ui/ScrollThumb";
 
 import { Content, Root } from "@components/Layout/Navigation.styles";
 
@@ -30,7 +31,7 @@ export function Navigation({}: NavigationProps) {
 
     return (
         <Root>
-            <Scrollbars>
+            <Scrollbars autoHide renderThumbVertical={props => <ScrollThumb {...props} />}>
                 <Content>
                     <Stack spacing={2}>
                         <Menu
