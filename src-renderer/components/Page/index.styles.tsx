@@ -36,6 +36,10 @@ export const Header = styled.header`
     background: ${({ theme }) => theme.vars.palette.background.default};
 `;
 
+export const DenseHeader = styled(Header)`
+    padding: ${({ theme }) => theme.spacing(2, 2, 1)};
+`;
+
 export const FixedHelper = styled.div`
     height: 0;
 

@@ -362,7 +362,7 @@ export class Library {
             },
         });
     }
-    public addMusicsToPlaylist(playlistId: number, musics: MinimalMusicFragment[]) {
+    public addMusicsToPlaylist(playlistId: number, musics: ReadonlyArray<MinimalMusicFragment>) {
         return this.client.mutate<AddMusicsToPlaylistMutation, AddMusicsToPlaylistMutationVariables>({
             mutation: AddMusicsToPlaylistDocument,
             variables: {
@@ -371,7 +371,7 @@ export class Library {
             },
         });
     }
-    public async createPlaylistWithMusics(musics: MinimalMusicFragment[]) {
+    public async createPlaylistWithMusics(musics: ReadonlyArray<MinimalMusicFragment>) {
         const result = await this.dialog.openDialog(InputTextDialog, {
             title: this.i18n.t("dialog.createPlaylist.title"),
             content: this.i18n.t("dialog.createPlaylist.content"),

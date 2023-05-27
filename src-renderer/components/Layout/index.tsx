@@ -1,3 +1,4 @@
+import _ from "lodash";
 import React from "react";
 import { Outlet } from "react-router-dom";
 import Scrollbars from "react-custom-scrollbars-2";
@@ -7,30 +8,92 @@ import { Global } from "@emotion/react";
 
 import { Header } from "@components/Layout/Header";
 import { Navigation } from "@components/Layout/Navigation";
-import { LayoutContextValue } from "@components/Layout/types";
+import { LayoutContextValue, LayoutMusicActions, LayoutMusicState } from "@components/Layout/types";
 import { PlayerToolbar } from "@components/Player/Toolbar";
-
 import { ScrollThumb } from "@components/ui/ScrollThumb";
 
 import { Body, Content, ContentWrapper, GlobalStyles, Root } from "@components/Layout/index.styles";
 
-export interface LayoutProps {}
+import { MinimalMusicFragment } from "@queries";
 
-export const LayoutContext = React.createContext<LayoutContextValue>({
-    scrollView: null,
-});
+export const LayoutContext = React.createContext<LayoutContextValue | null>(null);
 
 export function useLayout() {
-    return React.useContext(LayoutContext);
+    const context = React.useContext(LayoutContext);
+    if (!context) {
+        throw new Error("useLayout must be used within a LayoutProvider");
+    }
+
+    return context;
+}
+export function useLayoutMusics() {
+    const { musics } = useLayout();
+
+    return { ...musics };
 }
 
-export function Layout({}: LayoutProps) {
+export function Layout() {
     const [scrollView, setScrollView] = React.useState<HTMLDivElement | null>(null);
+    const [musics, setMusics] = React.useState<ReadonlyArray<MinimalMusicFragment>>([]);
+    const [selectedIndices, setSelectedIndices] = React.useState<ReadonlyArray<number>>([]);
+
+    const setItems = React.useCallback(
+        (newItems: ReadonlyArray<MinimalMusicFragment>) => {
+            if (newItems === musics) {
+                return;
+            }
+
+            setMusics(newItems);
+            setSelectedIndices([]);
+        },
+        [musics],
+    );
+
+    const selectMusic = React.useCallback((index: number | number[]) => {
+        if (typeof index === "number") {
+            setSelectedIndices(oldItems => {
+                const newItems = [...oldItems];
+                if (newItems.includes(index)) {
+                    newItems.splice(newItems.indexOf(index), 1);
+                } else {
+                    newItems.push(index);
+                }
+
+                return _.orderBy(newItems, i => i, "asc");
+            });
+        } else {
+            setSelectedIndices(oldItems => {
+                const newItems = [...oldItems, ...index];
+
+                return _.chain(newItems)
+                    .orderBy(i => i, "asc")
+                    .uniq()
+                    .value();
+            });
+        }
+    }, []);
+
+    const cancelAll = React.useCallback(() => {
+        setSelectedIndices([]);
+    }, []);
+
+    const layoutMusics = React.useMemo<LayoutMusicState & LayoutMusicActions>(
+        () => ({
+            musics,
+            selectedIndices,
+            selectedMusics: selectedIndices.map(index => musics[index]),
+            setItems,
+            selectMusic,
+            cancelAll,
+        }),
+        [musics, selectMusic, selectedIndices, setItems, cancelAll],
+    );
 
     return (
         <LayoutContext.Provider
             value={{
                 scrollView,
+                musics: layoutMusics,
             }}
         >
             <Root>

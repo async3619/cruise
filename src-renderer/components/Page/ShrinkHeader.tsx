@@ -23,17 +23,37 @@ export interface ShrinkHeaderPageProps extends WithLayoutProps {
     imageSrc?: string | string[];
     buttons?: ButtonItem[];
     imageType?: "circle" | "square";
+    denseHeaderMargin?: boolean;
 }
 export interface ShrinkHeaderPageStates {}
+
+export interface ShrinkHeaderContextValue {
+    subscribe(callback: (height: number) => void): void;
+    unsubscribe(callback: (height: number) => void): void;
+}
+
+export const ShrinkHeaderContext = React.createContext<ShrinkHeaderContextValue | null>(null);
+
+export function useShrinkHeader() {
+    const context = React.useContext(ShrinkHeaderContext);
+    if (!context) {
+        throw new Error("useShrinkHeader must be used within a ShrinkHeaderPage");
+    }
+
+    return context;
+}
 
 class ShrinkHeaderPageImpl extends React.Component<ShrinkHeaderPageProps, ShrinkHeaderPageStates> {
     private readonly imageViewRef = React.createRef<HTMLDivElement>();
     private readonly descriptionRef = React.createRef<HTMLDivElement>();
+    private readonly rootRef = React.createRef<HTMLDivElement>();
 
     private buttonContainerHeight: number | null = null;
     private titleHeight: number | null = null;
     private scrollY = 0;
     private unmounted = false;
+    private subscribers: Array<(height: number) => void> = [];
+    private lastHeight = 0;
 
     public componentDidMount() {
         if (this.props.scrollView) {
@@ -88,6 +108,18 @@ class ShrinkHeaderPageImpl extends React.Component<ShrinkHeaderPageProps, Shrink
         imageView.style.width = `${width}px`;
         imageView.style.flexBasis = `${width}px`;
         this.descriptionRef.current.style.opacity = `${progress}`;
+
+        if (!this.rootRef.current) {
+            return;
+        }
+
+        const { height: headerHeight } = this.rootRef.current.getBoundingClientRect();
+        if (headerHeight === this.lastHeight) {
+            return;
+        }
+
+        this.notify(headerHeight);
+        this.lastHeight = headerHeight;
     };
     private handleScroll = () => {
         if (!this.props.scrollView) {
@@ -112,6 +144,16 @@ class ShrinkHeaderPageImpl extends React.Component<ShrinkHeaderPageProps, Shrink
         this.titleHeight = bounds.height;
     };
 
+    private subscribe = (callback: (height: number) => void) => {
+        this.subscribers.push(callback);
+    };
+    private unsubscribe = (callback: (height: number) => void) => {
+        this.subscribers = this.subscribers.filter(subscriber => subscriber !== callback);
+    };
+    private notify = (height: number) => {
+        this.subscribers.forEach(subscriber => subscriber(height));
+    };
+
     private renderButtonContainer = ({ measureRef }: MeasuredComponentProps) => {
         const { buttons } = this.props;
 
@@ -125,7 +167,6 @@ class ShrinkHeaderPageImpl extends React.Component<ShrinkHeaderPageProps, Shrink
             </Stack>
         );
     };
-
     private renderTitle = ({ measureRef }: MeasuredComponentProps) => {
         const { title } = this.props;
 
@@ -144,7 +185,6 @@ class ShrinkHeaderPageImpl extends React.Component<ShrinkHeaderPageProps, Shrink
             </Typography>
         );
     };
-
     private renderHeader = () => {
         const { subtitle, imageSrc, tokens, imageType = "square" } = this.props;
 
@@ -191,12 +231,24 @@ class ShrinkHeaderPageImpl extends React.Component<ShrinkHeaderPageProps, Shrink
         );
     };
     public render() {
-        const { children } = this.props;
+        const { children, denseHeaderMargin } = this.props;
 
         return (
-            <Page headerPosition="fixed" renderHeader={this.renderHeader}>
-                {children}
-            </Page>
+            <ShrinkHeaderContext.Provider
+                value={{
+                    subscribe: this.subscribe,
+                    unsubscribe: this.unsubscribe,
+                }}
+            >
+                <Page
+                    denseHeaderMargin={denseHeaderMargin}
+                    headerPosition="fixed"
+                    renderHeader={this.renderHeader}
+                    headerRef={this.rootRef}
+                >
+                    {children}
+                </Page>
+            </ShrinkHeaderContext.Provider>
         );
     }
 }

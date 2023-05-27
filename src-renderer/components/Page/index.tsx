@@ -2,18 +2,29 @@ import React from "react";
 
 import { Box, CircularProgress, Typography } from "@mui/material";
 
-import { Content, FixedHelper, Header, Root } from "./index.styles";
+import { Content, DenseHeader, FixedHelper, Header, Root } from "./index.styles";
 import useMeasure from "react-use-measure";
+import { mergeRefs } from "react-merge-refs";
 
 export interface PageProps {
+    denseHeaderMargin?: boolean;
     title?: string;
     children?: React.ReactNode;
     loading?: boolean;
     headerPosition?: "fixed" | "sticky";
+    headerRef?: React.Ref<HTMLDivElement>;
     renderHeader?(title?: string): React.ReactNode;
 }
 
-export function Page({ title, children, loading, renderHeader, headerPosition = "sticky" }: PageProps) {
+export function Page({
+    title,
+    children,
+    loading,
+    renderHeader,
+    headerPosition = "sticky",
+    headerRef,
+    denseHeaderMargin = false,
+}: PageProps) {
     const [ref, { height: headerHeight }] = useMeasure();
     const [initialHeight, setInitialHeight] = React.useState<number | null>(null);
 
@@ -36,19 +47,25 @@ export function Page({ title, children, loading, renderHeader, headerPosition = 
         };
     }
 
+    const headerRefs: React.Ref<Element>[] = [ref];
+    if (headerRef) {
+        headerRefs.push(headerRef);
+    }
+
+    const HeaderComponent = denseHeaderMargin ? DenseHeader : Header;
     let header: React.ReactNode = (
-        <Header ref={ref} style={headerStyle}>
+        <HeaderComponent ref={mergeRefs(headerRefs)} style={headerStyle}>
             {title && !renderHeader && (
                 <Typography variant="h2" fontSize="2rem" lineHeight={1}>
                     {title}
                 </Typography>
             )}
             {renderHeader && renderHeader(title)}
-        </Header>
+        </HeaderComponent>
     );
 
     if (headerPosition === "fixed") {
-        header = <FixedHelper>{header}</FixedHelper>;
+        header = <FixedHelper ref={headerRef}>{header}</FixedHelper>;
     }
 
     return (

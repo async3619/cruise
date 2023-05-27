@@ -28,7 +28,7 @@ export function Musics({}: MusicsProps) {
 
     return (
         <LibraryPage title={t("pageTitle.musics")} onShuffleAll={handleShuffleAll}>
-            <MusicList items={musics} />
+            <MusicList selectable items={musics} />
         </LibraryPage>
     );
 }

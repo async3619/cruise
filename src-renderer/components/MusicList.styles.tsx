@@ -56,7 +56,7 @@ export const AlbumArt = styled(({ active: _, ...rest }: AlbumArtProps) => <Butto
     }
 `;
 
-export const Item = styled.div<{ odd?: boolean; active?: boolean }>`
+export const Item = styled.div<{ odd?: boolean; active?: boolean; selected?: boolean }>`
     height: 100%;
     border-radius: 4px;
 
@@ -100,8 +100,18 @@ export const Item = styled.div<{ odd?: boolean; active?: boolean }>`
     }
 `;
 
+export const SelectedItem = styled(Item)`
+    background: ${({ theme }) => `rgba(${theme.vars.palette.primary.mainChannel} / 0.15)`} !important;
+
+    &:hover {
+        background: ${({ theme }) => `rgba(${theme.vars.palette.primary.mainChannel} / 0.25)`} !important;
+    }
+`;
+
 export const Cell = styled.div<{ width?: string; grow?: boolean; withoutPadding?: boolean }>`
     min-width: 0;
+
+    padding: ${({ withoutPadding, theme }) => (withoutPadding ? 0 : theme.spacing(0, 1))};
 
     flex-basis: ${({ width }) => width || "auto"};
     flex-grow: ${({ grow }) => (grow ? 1 : 0)};
@@ -109,10 +119,6 @@ export const Cell = styled.div<{ width?: string; grow?: boolean; withoutPadding?
 
     display: flex;
     align-items: center;
-
-    &:not(:nth-of-type(1)):not(:nth-of-type(2)) {
-        padding: ${({ theme }) => theme.spacing(0, 1)};
-    }
 `;
 
 export const Label = styled.span`

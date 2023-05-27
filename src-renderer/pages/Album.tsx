@@ -16,6 +16,7 @@ import { MusicList } from "@components/MusicList";
 
 import { formatSeconds } from "@utils/formatTime";
 import QueueMusicIcon from "@mui/icons-material/QueueMusic";
+import { MusicToolbar } from "@components/Layout/MusicToolbar";
 
 export interface AlbumProps {}
 
@@ -38,7 +39,7 @@ export function Album({}: AlbumProps) {
 
     if (loading || !album) {
         return (
-            <ShrinkHeaderPage title="test">
+            <ShrinkHeaderPage denseHeaderMargin title="test">
                 <span>loading</span>
             </ShrinkHeaderPage>
         );
@@ -55,6 +56,7 @@ export function Album({}: AlbumProps) {
 
     return (
         <ShrinkHeaderPage
+            denseHeaderMargin
             title={album.title}
             subtitle={subtitle}
             imageSrc={albumArt?.url}
@@ -103,7 +105,8 @@ export function Album({}: AlbumProps) {
                 },
             ]}
         >
-            <MusicList withTrackNumber items={album.musics} />
+            <MusicToolbar />
+            <MusicList selectable withTrackNumber items={album.musics} />
         </ShrinkHeaderPage>
     );
 }
