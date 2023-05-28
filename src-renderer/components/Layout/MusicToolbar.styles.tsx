@@ -9,10 +9,11 @@ export const Root = styled.div`
     display: flex;
     align-items: center;
 
-    position: sticky;
+    position: static;
     top: 0;
 
     opacity: 0;
+    pointer-events: none;
 
     transition: ${spacing =>
         spacing.theme.transitions.create(["opacity"], {
@@ -26,4 +27,17 @@ export const Root = styled.div`
     ${({ theme }) => theme.getColorSchemeSelector("light")} {
         background-color: ${backgroundColors["50"]};
     }
+`;
+
+export const ChildrenWrapper = styled.div`
+    height: 0;
+`;
+
+export const Children = styled(Root)`
+    opacity: 1;
+    pointer-events: auto;
+
+    margin: 0;
+
+    background-color: transparent !important;
 `;

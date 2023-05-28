@@ -10,6 +10,7 @@ export interface LayoutMusicActions {
     selectMusic: (index: number | number[]) => void;
     setItems: (items: ReadonlyArray<MinimalMusicFragment>) => void;
     cancelAll(): void;
+    selectAll(): void;
 }
 
 export interface LayoutContextValue {

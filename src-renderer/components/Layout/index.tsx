@@ -76,6 +76,9 @@ export function Layout() {
     const cancelAll = React.useCallback(() => {
         setSelectedIndices([]);
     }, []);
+    const checkAll = React.useCallback(() => {
+        setSelectedIndices(_.range(musics.length));
+    }, [musics]);
 
     const layoutMusics = React.useMemo<LayoutMusicState & LayoutMusicActions>(
         () => ({
@@ -85,8 +88,9 @@ export function Layout() {
             setItems,
             selectMusic,
             cancelAll,
+            selectAll: checkAll,
         }),
-        [musics, selectMusic, selectedIndices, setItems, cancelAll],
+        [musics, selectMusic, selectedIndices, setItems, cancelAll, checkAll],
     );
 
     return (

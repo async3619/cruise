@@ -11,12 +11,15 @@ import { useShrinkHeader } from "@components/Page/ShrinkHeader";
 import { MenuItem } from "@components/Menu";
 import { Button } from "@components/ui/Button";
 
-import { Root } from "@components/Layout/MusicToolbar.styles";
+import { Children, ChildrenWrapper, Root } from "@components/Layout/MusicToolbar.styles";
+import { Checkbox } from "../ui/Checkbox";
 
-export interface MusicToolbarProps {}
+export interface MusicToolbarProps {
+    children?: React.ReactNode;
+}
 
-export function MusicToolbar({}: MusicToolbarProps) {
-    const { selectedIndices, cancelAll, selectedMusics } = useLayoutMusics();
+export function MusicToolbar({ children }: MusicToolbarProps) {
+    const { selectedIndices, cancelAll, selectedMusics, selectAll, musics } = useLayoutMusics();
     const { subscribe, unsubscribe } = useShrinkHeader();
     const playlists = usePlaylists();
     const player = usePlayer();
@@ -31,6 +34,31 @@ export function MusicToolbar({}: MusicToolbarProps) {
 
         rootRef.current.style.top = `${height}px`;
     }, []);
+    const handleCheckAllChange = React.useCallback(
+        (_: any, checked: boolean) => {
+            if (!checked) {
+                cancelAll();
+            } else {
+                selectAll();
+            }
+        },
+        [cancelAll, selectAll],
+    );
+
+    React.useEffect(() => {
+        subscribe(handleHeightChange);
+
+        return () => {
+            unsubscribe(handleHeightChange);
+        };
+    }, [handleHeightChange, subscribe, unsubscribe]);
+    React.useEffect(() => {
+        if (!selectedIndices.length) {
+            return;
+        }
+
+        setDisplayCount(selectedIndices.length);
+    }, [selectedIndices.length]);
 
     const addMenuItems = React.useMemo<MenuItem[]>(() => {
         const addToPlaylist = (playlistId?: number) => {
@@ -77,42 +105,47 @@ export function MusicToolbar({}: MusicToolbarProps) {
         ];
     }, [selectedMusics, library, player, playlists, cancelAll]);
 
-    React.useEffect(() => {
-        subscribe(handleHeightChange);
-
-        return () => {
-            unsubscribe(handleHeightChange);
-        };
-    }, [handleHeightChange, subscribe, unsubscribe]);
-    React.useEffect(() => {
-        if (!selectedIndices.length) {
-            return;
-        }
-
-        setDisplayCount(selectedIndices.length);
-    }, [selectedIndices.length]);
-
     const styles: React.CSSProperties = {};
     if (selectedIndices.length) {
         styles.zIndex = 100;
         styles.opacity = 1;
+        styles.pointerEvents = "auto";
+        styles.position = "sticky";
     }
 
+    const isIndeterminate = selectedIndices.length > 0 && selectedIndices.length < (musics?.length ?? 0);
+    const isDisabled = !selectedIndices.length || !musics?.length;
+    const isAllChecked = selectedIndices.length === (musics?.length ?? 0);
+
     return (
-        <Root ref={rootRef} style={styles}>
-            <Typography variant="body1" color="text.secondary">
-                {displayCount}개 항목 선택됨
-            </Typography>
-            <Box flex="1 1 auto" />
-            <Button
-                size="small"
-                variant="contained"
-                color="inherit"
-                startIcon={<AddRoundedIcon />}
-                menuItems={addMenuItems}
-            >
-                추가
-            </Button>
-        </Root>
+        <>
+            <ChildrenWrapper>
+                <Children>{children}</Children>
+            </ChildrenWrapper>
+            <Root ref={rootRef} style={styles}>
+                <Checkbox
+                    size="small"
+                    disabled={isDisabled}
+                    label="전체 선택"
+                    onChange={handleCheckAllChange}
+                    checked={isAllChecked}
+                    indeterminate={isIndeterminate}
+                />
+                <Typography variant="body1" color="text.secondary" fontSize="0.9rem">
+                    {displayCount}개 항목 선택됨
+                </Typography>
+                <Box flex="1 1 auto" />
+                <Button
+                    disabled={isDisabled}
+                    size="small"
+                    variant="contained"
+                    color="inherit"
+                    startIcon={<AddRoundedIcon />}
+                    menuItems={addMenuItems}
+                >
+                    추가
+                </Button>
+            </Root>
+        </>
     );
 }

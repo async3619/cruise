@@ -17,6 +17,8 @@ import { MusicList } from "@components/MusicList";
 import { formatSeconds } from "@utils/formatTime";
 import QueueMusicIcon from "@mui/icons-material/QueueMusic";
 import { MusicToolbar } from "@components/Layout/MusicToolbar";
+import { Checkbox, FormControlLabel } from "@mui/material";
+import { useLayoutMusics } from "@components/Layout";
 
 export interface AlbumProps {}
 
@@ -26,6 +28,7 @@ export function Album({}: AlbumProps) {
     const player = usePlayer();
     const playlists = usePlaylists();
     const { t } = useTranslation();
+    const { selectAll } = useLayoutMusics();
     if (!idParam) {
         throw new Error("id is required");
     }
@@ -52,6 +55,10 @@ export function Album({}: AlbumProps) {
 
     const playAlbum = (shuffled?: boolean) => {
         player.playPlaylist(album.musics, 0, shuffled);
+    };
+
+    const handleSelectAll = () => {
+        selectAll();
     };
 
     return (
@@ -105,7 +112,18 @@ export function Album({}: AlbumProps) {
                 },
             ]}
         >
-            <MusicToolbar />
+            <MusicToolbar>
+                <FormControlLabel
+                    control={<Checkbox size="small" onChange={handleSelectAll} checked={false} />}
+                    label="전체 선택"
+                    componentsProps={{
+                        typography: {
+                            fontSize: "0.9rem",
+                            color: "text.secondary",
+                        },
+                    }}
+                />
+            </MusicToolbar>
             <MusicList selectable withTrackNumber items={album.musics} />
         </ShrinkHeaderPage>
     );
