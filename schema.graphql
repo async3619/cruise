@@ -175,6 +175,7 @@ type Mutation {
   addMusicsToPlaylist(musicIds: [Int!]!, playlistId: Int!): Playlist!
   updatePlaylist(id: Int!, input: UpdatePlaylistInput!): Playlist!
   deletePlaylist(id: Int!): Boolean!
+  deleteMusicsFromPlaylist(playlistId: Int!, indices: [Int!]!): Playlist!
 }
 
 input UpdateAlbumInput {

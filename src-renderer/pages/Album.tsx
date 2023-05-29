@@ -6,19 +6,19 @@ import { useTranslation } from "react-i18next";
 import PlayArrowRoundedIcon from "@mui/icons-material/PlayArrowRounded";
 import ShuffleRoundedIcon from "@mui/icons-material/ShuffleRounded";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
+import QueueMusicIcon from "@mui/icons-material/QueueMusic";
 
 import { AlbumArtType } from "@queries";
 
 import { usePlayer } from "@/components/Player/Provider";
 import { useLibrary, usePlaylists } from "@components/Library/Provider";
 import { ShrinkHeaderPage } from "@components/Page/ShrinkHeader";
+import { useLayoutMusics } from "@components/Layout";
+import { MusicToolbar } from "@components/Layout/MusicToolbar";
 import { MusicList } from "@components/MusicList";
+import { Checkbox } from "@components/ui/Checkbox";
 
 import { formatSeconds } from "@utils/formatTime";
-import QueueMusicIcon from "@mui/icons-material/QueueMusic";
-import { MusicToolbar } from "@components/Layout/MusicToolbar";
-import { Checkbox, FormControlLabel } from "@mui/material";
-import { useLayoutMusics } from "@components/Layout";
 
 export interface AlbumProps {}
 
@@ -113,16 +113,7 @@ export function Album({}: AlbumProps) {
             ]}
         >
             <MusicToolbar>
-                <FormControlLabel
-                    control={<Checkbox size="small" onChange={handleSelectAll} checked={false} />}
-                    label="전체 선택"
-                    componentsProps={{
-                        typography: {
-                            fontSize: "0.9rem",
-                            color: "text.secondary",
-                        },
-                    }}
-                />
+                <Checkbox checked={false} size="small" label="전체 선택" onChange={handleSelectAll} />
             </MusicToolbar>
             <MusicList selectable withTrackNumber items={album.musics} />
         </ShrinkHeaderPage>

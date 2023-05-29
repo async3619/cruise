@@ -60,6 +60,14 @@ export class PlaylistResolver {
         return this.playlistService.remove(id);
     }
 
+    @Mutation(() => Playlist)
+    public async deleteMusicsFromPlaylist(
+        @Args("playlistId", { type: () => Int }) playlistId: number,
+        @Args("indices", { type: () => [Int] }) indices: number[],
+    ) {
+        return this.playlistService.deleteMusicsFromPlaylist(playlistId, indices);
+    }
+
     @Subscription(() => Playlist)
     public playlistAdded(): AsyncIterator<Playlist> {
         return pubsub.asyncIterator(PLAYLIST_ADDED);

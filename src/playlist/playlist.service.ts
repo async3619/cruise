@@ -114,7 +114,25 @@ export class PlaylistService extends BaseService<Playlist> {
         await this.playlistRepository.delete(id);
 
         pubsub.publish(PLAYLIST_REMOVED, { playlistRemoved: id });
-
         return true;
+    }
+
+    public async deleteMusicsFromPlaylist(playlistId: number, indices: number[]) {
+        let item = await this.findById(playlistId, ["playlistRelations"]);
+        if (!item) {
+            throw new Error("Playlist not found");
+        }
+
+        const removedRelations = item.playlistRelations.filter((_, index) => indices.includes(index));
+        item.playlistRelations = item.playlistRelations.filter((_, index) => !indices.includes(index));
+
+        item = await this.playlistRepository.save(item);
+        await this.playlistRelationRepository.delete({
+            id: In(removedRelations.map(item => item.id)),
+        });
+
+        pubsub.publish(PLAYLIST_UPDATED, { playlistUpdated: item });
+
+        return item;
     }
 }

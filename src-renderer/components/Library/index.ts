@@ -43,6 +43,9 @@ import {
     usePlaylistUpdatedSubscription,
     DeletePlaylistDocument,
     usePlaylistRemovedSubscription,
+    DeleteMusicsFromPlaylistMutation,
+    DeleteMusicsFromPlaylistMutationVariables,
+    DeleteMusicsFromPlaylistDocument,
 } from "@queries";
 
 import { ApolloClient } from "@apollo/client";
@@ -504,6 +507,24 @@ export class Library {
                     mutation: DeletePlaylistDocument,
                     variables: {
                         id: playlist.id,
+                    },
+                });
+            },
+        });
+    }
+    public async deleteMusicsFromPlaylist(playlist: MinimalPlaylistFragment, indices: ReadonlyArray<number>) {
+        return this.toast.doWork({
+            messages: {
+                success: this.i18n.t("toast.deleteFromPlaylist.success"),
+                error: this.i18n.t("toast.deleteFromPlaylist.error"),
+                pending: this.i18n.t("toast.deleteFromPlaylist.pending"),
+            },
+            work: () => {
+                return this.client.mutate<DeleteMusicsFromPlaylistMutation, DeleteMusicsFromPlaylistMutationVariables>({
+                    mutation: DeleteMusicsFromPlaylistDocument,
+                    variables: {
+                        playlistId: playlist.id,
+                        indices: [...indices],
                     },
                 });
             },

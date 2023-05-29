@@ -1,8 +1,9 @@
 import React from "react";
 
-import { Box, Typography } from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import QueueMusicIcon from "@mui/icons-material/QueueMusic";
+import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
 
 import { useLayoutMusics } from "@components/Layout";
 import { useLibrary, usePlaylists } from "@components/Library/Provider";
@@ -10,15 +11,18 @@ import { usePlayer } from "@components/Player/Provider";
 import { useShrinkHeader } from "@components/Page/ShrinkHeader";
 import { MenuItem } from "@components/Menu";
 import { Button } from "@components/ui/Button";
+import { Checkbox } from "@components/ui/Checkbox";
+
+import { MinimalMusicFragment } from "@queries";
 
 import { Children, ChildrenWrapper, Root } from "@components/Layout/MusicToolbar.styles";
-import { Checkbox } from "../ui/Checkbox";
 
 export interface MusicToolbarProps {
     children?: React.ReactNode;
+    onDelete?(indices: ReadonlyArray<number>, musics: ReadonlyArray<MinimalMusicFragment>): void;
 }
 
-export function MusicToolbar({ children }: MusicToolbarProps) {
+export function MusicToolbar({ children, onDelete }: MusicToolbarProps) {
     const { selectedIndices, cancelAll, selectedMusics, selectAll, musics } = useLayoutMusics();
     const { subscribe, unsubscribe } = useShrinkHeader();
     const playlists = usePlaylists();
@@ -110,7 +114,6 @@ export function MusicToolbar({ children }: MusicToolbarProps) {
         styles.zIndex = 100;
         styles.opacity = 1;
         styles.pointerEvents = "auto";
-        styles.position = "sticky";
     }
 
     const isIndeterminate = selectedIndices.length > 0 && selectedIndices.length < (musics?.length ?? 0);
@@ -135,16 +138,30 @@ export function MusicToolbar({ children }: MusicToolbarProps) {
                     {displayCount}개 항목 선택됨
                 </Typography>
                 <Box flex="1 1 auto" />
-                <Button
-                    disabled={isDisabled}
-                    size="small"
-                    variant="contained"
-                    color="inherit"
-                    startIcon={<AddRoundedIcon />}
-                    menuItems={addMenuItems}
-                >
-                    추가
-                </Button>
+                <Stack direction="row" spacing={1}>
+                    <Button
+                        disabled={isDisabled}
+                        size="small"
+                        variant="contained"
+                        color="inherit"
+                        startIcon={<AddRoundedIcon />}
+                        menuItems={addMenuItems}
+                    >
+                        추가
+                    </Button>
+                    {onDelete && (
+                        <Button
+                            disabled={isDisabled}
+                            size="small"
+                            variant="contained"
+                            color="inherit"
+                            onClick={() => onDelete(selectedIndices, selectedMusics)}
+                            startIcon={<DeleteRoundedIcon />}
+                        >
+                            목록에서 삭제
+                        </Button>
+                    )}
+                </Stack>
             </Root>
         </>
     );

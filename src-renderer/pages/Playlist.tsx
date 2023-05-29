@@ -23,6 +23,11 @@ export function Playlist() {
     }
 
     const { playlist: playlistData } = library.usePlaylist(playlist.id);
+    const handleDelete = (indices: ReadonlyArray<number>) => {
+        library.deleteMusicsFromPlaylist(playlist, indices);
+    };
 
-    return <PlaylistPage title={playlist.name} playlist={playlist} musics={playlistData?.musics} />;
+    return (
+        <PlaylistPage title={playlist.name} playlist={playlist} musics={playlistData?.musics} onDelete={handleDelete} />
+    );
 }

@@ -13,6 +13,9 @@ import { useLibrary } from "@components/Library/Provider";
 import { usePlayer } from "@components/Player/Provider";
 import { ButtonItem, ShrinkHeaderPage } from "@components/Page/ShrinkHeader";
 import { MusicList } from "@components/MusicList";
+import { MusicToolbar } from "@components/Layout/MusicToolbar";
+import { Checkbox } from "@components/ui/Checkbox";
+import { useLayoutMusics } from "@components/Layout";
 
 import { MinimalMusicFragment, MinimalPlaylistFragment } from "@queries";
 
@@ -23,10 +26,12 @@ export interface PlaylistPageProps {
     title: string;
     musics?: ReadonlyArray<MinimalMusicFragment> | null;
     playlist?: MinimalPlaylistFragment;
+    onDelete?(indices: ReadonlyArray<number>): void;
 }
 
-export function PlaylistPage({ title, playlist, musics }: PlaylistPageProps) {
+export function PlaylistPage({ title, playlist, musics, onDelete }: PlaylistPageProps) {
     const { t } = useTranslation();
+    const { selectAll, setItems } = useLayoutMusics();
     const player = usePlayer();
     const library = useLibrary();
 
@@ -44,7 +49,7 @@ export function PlaylistPage({ title, playlist, musics }: PlaylistPageProps) {
     } else {
         loaded = true;
         if (musics.length !== 0) {
-            children = <MusicList items={musics} />;
+            children = <MusicList selectable items={musics} />;
         } else {
             playable = true;
 
@@ -112,14 +117,26 @@ export function PlaylistPage({ title, playlist, musics }: PlaylistPageProps) {
         );
     }, [musics]);
 
+    React.useEffect(() => {
+        setItems(musics ?? []);
+    }, [musics, setItems]);
+
+    const handleSelectAll = () => {
+        selectAll();
+    };
+
     return (
         <ShrinkHeaderPage
+            denseHeaderMargin
             title={title}
             subtitle={t("Playlists")}
             tokens={tokens}
             buttons={buttons}
             imageSrc={collageSrc}
         >
+            <MusicToolbar onDelete={onDelete}>
+                <Checkbox checked={false} size="small" label="전체 선택" onChange={handleSelectAll} />
+            </MusicToolbar>
             {children}
         </ShrinkHeaderPage>
     );

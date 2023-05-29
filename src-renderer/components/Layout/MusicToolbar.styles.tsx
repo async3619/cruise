@@ -9,7 +9,7 @@ export const Root = styled.div`
     display: flex;
     align-items: center;
 
-    position: static;
+    position: sticky;
     top: 0;
 
     opacity: 0;

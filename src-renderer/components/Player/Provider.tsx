@@ -37,6 +37,7 @@ class PlayerProviderImpl extends React.Component<PlayerProviderProps, PlayerProv
         playPlaylist: this.playPlaylist.bind(this),
         clearPlaylist: this.clearPlaylist.bind(this),
         addMusicsToPlaylist: this.addMusicsToPlaylist.bind(this),
+        deleteFromPlaylist: this.deleteFromPlaylist.bind(this),
         play: this.play.bind(this),
         pause: this.pause.bind(this),
         stop: this.stop.bind(this),
@@ -202,6 +203,31 @@ class PlayerProviderImpl extends React.Component<PlayerProviderProps, PlayerProv
                 label: this.props.t("toast.addMusicsToPlaylist.actionText"),
                 to: "/playlists",
             },
+        });
+    }
+    public deleteFromPlaylist(indices: ReadonlyArray<number>) {
+        this.setState(({ playlist, playlistIndex }) => {
+            if (!playlist) {
+                return null;
+            }
+
+            const newPlaylist = playlist.filter((_, index) => !indices.includes(index));
+
+            let newPlaylistIndex: number;
+            if (indices.includes(playlistIndex)) {
+                // if playlistIndex is deleted, set playlistIndex to the first music
+                newPlaylistIndex = 0;
+            } else {
+                // if playlistIndex is not deleted, set playlistIndex to the new index
+                newPlaylistIndex = playlistIndex - indices.filter(index => index < playlistIndex).length;
+            }
+
+            return { playlist: newPlaylist, playlistIndex: newPlaylistIndex };
+        });
+
+        this.props.toast.enqueueToast({
+            message: this.props.t("toast.deleteFromPlaylist.success"),
+            severity: "success",
         });
     }
 

@@ -88,6 +88,11 @@
             "pending": "재생목록 삭제 중",
             "success": "재생목록 삭제 완료",
             "error": "재생목록 삭제 실패"
+        },
+        "deleteFromPlaylist": {
+            "pending": "재생목록 곡 삭제 중",
+            "success": "재생목록 곡 삭제 완료",
+            "error": "재생목록 곡 삭제 실패"
         }
     },
     "delete": "삭제",

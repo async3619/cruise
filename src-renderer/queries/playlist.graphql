@@ -45,6 +45,11 @@ mutation updatePlaylist($id: Int!, $input: UpdatePlaylistInput!) {
 mutation deletePlaylist($id: Int!) {
     deletePlaylist(id: $id)
 }
+mutation deleteMusicsFromPlaylist($indices: [Int!]!, $playlistId: Int!) {
+    deleteMusicsFromPlaylist(playlistId: $playlistId, indices: $indices) {
+        id
+    }
+}
 
 subscription playlistAdded {
     playlistAdded {

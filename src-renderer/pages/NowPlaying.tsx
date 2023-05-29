@@ -10,5 +10,9 @@ export function NowPlaying({}: NowPlayingProps) {
     const player = usePlayer();
     const { t } = useTranslation();
 
-    return <PlaylistPage title={t("pageTitle.nowPlaying")} musics={player.playlist ?? []} />;
+    const handleDelete = (indices: ReadonlyArray<number>) => {
+        player.deleteFromPlaylist(indices);
+    };
+
+    return <PlaylistPage title={t("pageTitle.nowPlaying")} musics={player.playlist ?? []} onDelete={handleDelete} />;
 }
