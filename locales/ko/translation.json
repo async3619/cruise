@@ -93,6 +93,9 @@
             "pending": "재생목록 곡 삭제 중",
             "success": "재생목록 곡 삭제 완료",
             "error": "재생목록 곡 삭제 실패"
+        },
+        "clearPlaylist": {
+            "success": "재생목록 비우기 완료"
         }
     },
     "delete": "삭제",
@@ -110,7 +113,7 @@
     "trackCount_other": "{{count}}개의 곡",
     "albumCount_one": "{{count}}개의 앨범",
     "albumCount_other": "{{count}}개의 앨범",
-    "clear_all": "비우기",
+    "clearAll": "비우기",
     "addToPlaylist": "추가",
     "emptyPlaylist": "재생목록이 비어있습니다.",
     "rename": "이름 변경"

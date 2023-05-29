@@ -104,6 +104,15 @@ export function PlaylistPage({ title, playlist, musics, onDelete }: PlaylistPage
                 onClick: () => library.deletePlaylist(playlist),
             },
         );
+    } else {
+        buttons.push({
+            label: t("clearAll"),
+            variant: "contained",
+            color: "inherit",
+            startIcon: <DeleteRoundedIcon />,
+            disabled: !loaded || !musics?.length,
+            onClick: () => player.clearPlaylist(),
+        });
     }
 
     const collageSrc = React.useMemo(() => {

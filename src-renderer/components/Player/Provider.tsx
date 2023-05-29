@@ -187,6 +187,11 @@ class PlayerProviderImpl extends React.Component<PlayerProviderProps, PlayerProv
         this.setState({ playlist: null, playlistIndex: -1 }, () => {
             this.stop();
         });
+
+        this.props.toast.enqueueToast({
+            message: this.props.t("toast.clearPlaylist.success"),
+            severity: "success",
+        });
     }
     public addMusicsToPlaylist(musics: MinimalMusicFragment[]) {
         this.setState(({ playlist, playlistIndex }) => {
