@@ -135,7 +135,13 @@ export function PlaylistPage({ title, playlist, musics, onDelete }: PlaylistPage
             imageSrc={collageSrc}
         >
             <MusicToolbar onDelete={onDelete}>
-                <Checkbox checked={false} size="small" label="전체 선택" onChange={handleSelectAll} />
+                <Checkbox
+                    disabled={!musics?.length}
+                    checked={false}
+                    size="small"
+                    label="전체 선택"
+                    onChange={handleSelectAll}
+                />
             </MusicToolbar>
             {children}
         </ShrinkHeaderPage>
