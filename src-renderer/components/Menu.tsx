@@ -1,9 +1,11 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
-import { Divider, Stack, Typography } from "@mui/material";
+import { Box, Divider, Stack, Tooltip, Typography } from "@mui/material";
+import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
 
-import { Item, ItemProps, Root, Title } from "./Menu.styles";
+import { IconButtonContainer, Item, ItemProps, Root, Title } from "@components/Menu.styles";
 
 export interface NormalMenuItem {
     id: string;
@@ -12,6 +14,7 @@ export interface NormalMenuItem {
     href?: string;
     hrefAliases?: string[];
     onClick?: () => void;
+    onDelete?: () => void;
 }
 
 export type DividerMenuItem = "divider";
@@ -27,6 +30,7 @@ export interface MenuProps {
 
 export function Menu({ items, title, standalone, onClick }: MenuProps) {
     const location = useLocation();
+    const { t } = useTranslation();
     const handleClick = (item: NormalMenuItem) => {
         item.onClick?.();
         onClick?.();
@@ -73,6 +77,23 @@ export function Menu({ items, title, standalone, onClick }: MenuProps) {
                         <Typography variant="body1" fontSize="inherit">
                             {item.label}
                         </Typography>
+                        <Box flex="1 1 auto" />
+                        <IconButtonContainer>
+                            {item.onDelete && (
+                                <Tooltip title={t("dialog.deletePlaylist.title")} placement="top">
+                                    <button
+                                        onMouseDown={e => e.stopPropagation()}
+                                        onClick={e => {
+                                            e.stopPropagation();
+                                            e.preventDefault();
+                                            item.onDelete?.();
+                                        }}
+                                    >
+                                        <DeleteRoundedIcon fontSize="inherit" />
+                                    </button>
+                                </Tooltip>
+                            )}
+                        </IconButtonContainer>
                     </Item>
                 );
             })}

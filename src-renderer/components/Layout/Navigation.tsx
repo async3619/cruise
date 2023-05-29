@@ -97,6 +97,7 @@ export function Navigation({}: NavigationProps) {
                                     label: playlist.name,
                                     icon: QueueMusicIcon,
                                     href: `/playlists/${playlist.id}`,
+                                    onDelete: () => library.deletePlaylist(playlist),
                                 })),
                                 {
                                     id: "playlists.add",
