@@ -1,7 +1,9 @@
+import { Link } from "react-router-dom";
+
 import styled from "@emotion/styled";
 import { Button as MuiButton } from "@mui/material";
 
-export const Root = styled(MuiButton)`
+export const Root = styled(MuiButton)<{ component?: typeof Link; to?: string }>`
     min-width: 0;
     max-width: 100%;
 

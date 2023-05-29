@@ -8,6 +8,7 @@ import type { Mode } from "@mui/system/cssVars/useCurrentColorScheme";
 import { ConfigProvider } from "@components/Config/Provider";
 import { LibraryProvider } from "@components/Library/Provider";
 import { PlayerProvider } from "@components/Player/Provider";
+import { ToastProvider } from "@components/Toast/Provider";
 
 import { ApolloProvider } from "@apollo/client";
 import apolloClient from "@graphql/client";
@@ -32,13 +33,15 @@ export function App({}: AppProps) {
             <I18nextProvider i18n={i18n}>
                 <CssVarsProvider theme={theme} defaultMode={defaultMode}>
                     <ConfigProvider>
-                        <DialogProvider>
-                            <LibraryProvider>
-                                <PlayerProvider>
-                                    <RouterProvider router={router} />
-                                </PlayerProvider>
-                            </LibraryProvider>
-                        </DialogProvider>
+                        <ToastProvider>
+                            <DialogProvider>
+                                <LibraryProvider>
+                                    <PlayerProvider>
+                                        <RouterProvider router={router} />
+                                    </PlayerProvider>
+                                </LibraryProvider>
+                            </DialogProvider>
+                        </ToastProvider>
                     </ConfigProvider>
                 </CssVarsProvider>
             </I18nextProvider>

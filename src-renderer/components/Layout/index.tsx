@@ -11,6 +11,7 @@ import { Navigation } from "@components/Layout/Navigation";
 import { LayoutContextValue, LayoutMusicActions, LayoutMusicState } from "@components/Layout/types";
 import { PlayerToolbar } from "@components/Player/Toolbar";
 import { ScrollThumb } from "@components/ui/ScrollThumb";
+import { ToastContainer } from "@components/Toast/Container";
 
 import { Body, Content, ContentWrapper, GlobalStyles, Root } from "@components/Layout/index.styles";
 
@@ -27,9 +28,7 @@ export function useLayout() {
     return context;
 }
 export function useLayoutMusics() {
-    const { musics } = useLayout();
-
-    return { ...musics };
+    return useLayout().musics;
 }
 
 export function Layout() {
@@ -105,6 +104,7 @@ export function Layout() {
                 <Global styles={GlobalStyles} />
                 <Header />
                 <Body>
+                    <ToastContainer />
                     <Navigation />
                     <Content>
                         <Scrollbars

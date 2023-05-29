@@ -21,7 +21,7 @@ import { RepeatMode } from "@queries";
 
 export interface PlayerToolbarProps {}
 
-export function PlayerToolbar({}: PlayerToolbarProps) {
+export const PlayerToolbar = React.forwardRef(({}: PlayerToolbarProps, ref: React.Ref<HTMLDivElement>) => {
     const [time, setTime] = React.useState(0);
     const theme = useTheme();
     const player = usePlayer();
@@ -95,7 +95,7 @@ export function PlayerToolbar({}: PlayerToolbarProps) {
     const music = player.playingMusic;
 
     return (
-        <Root>
+        <Root ref={ref}>
             <NowPlaying>
                 {player.playingMusic && (
                     <>
@@ -183,4 +183,4 @@ export function PlayerToolbar({}: PlayerToolbarProps) {
             </Box>
         </Root>
     );
-}
+});

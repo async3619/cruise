@@ -12,6 +12,7 @@ import {
 
 import { useDialog } from "@components/Dialog/Provider";
 import { Library } from "@components/Library";
+import { useToast } from "@components/Toast/Provider";
 
 export interface LibraryProviderProps {
     children: React.ReactNode;
@@ -28,7 +29,8 @@ export function LibraryProvider(props: LibraryProviderProps) {
     const client = useApolloClient();
     const { i18n } = useTranslation();
     const dialog = useDialog();
-    const [library] = React.useState<Library>(new Library(client, dialog, i18n));
+    const toast = useToast();
+    const [library] = React.useState<Library>(new Library(client, dialog, i18n, toast));
 
     const [playlists, setPlaylists] = React.useState<MinimalPlaylistFragment[] | null>(null);
     const playlistsQuery = usePlaylistsQuery();

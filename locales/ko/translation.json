@@ -66,6 +66,30 @@
             "confirm": "확인"
         }
     },
+    "toast": {
+        "createPlaylist": {
+            "pending": "재생목록 생성 중",
+            "success": "재생목록 생성 완료",
+            "error": "재생목록 생성 실패",
+            "actionText": "열기"
+        },
+        "addMusicsToPlaylist": {
+            "pending": "재생목록 곡 추가 중",
+            "success": "재생목록 곡 추가 완료",
+            "error": "재생목록 곡 추가 실패",
+            "actionText": "열기"
+        },
+        "updatePlaylist": {
+            "pending": "재생목록 업데이트 중",
+            "success": "재생목록 업데이트 완료",
+            "error": "재생목록 업데이트 실패"
+        },
+        "deletePlaylist": {
+            "pending": "재생목록 삭제 중",
+            "success": "재생목록 삭제 완료",
+            "error": "재생목록 삭제 실패"
+        }
+    },
     "delete": "삭제",
     "tableColumn": {
         "music": {

@@ -50,6 +50,8 @@ export const Content = styled.main`
 export const Body = styled.div`
     display: flex;
     flex: 1 1 auto;
+
+    position: relative;
 `;
 
 export const ContentWrapper = styled.div``;

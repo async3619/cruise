@@ -48,6 +48,7 @@ import {
 import { ApolloClient } from "@apollo/client";
 
 import { DialogActionType, DialogContextValue } from "@components/Dialog/types";
+import { ToastContextValues } from "@components/Toast/types";
 import { InputTextDialog } from "@components/Dialog/InputTextDialog";
 import { YesNoDialog } from "@components/Dialog/YesNoDialog";
 
@@ -56,6 +57,7 @@ export class Library {
         private readonly client: ApolloClient<object>,
         private readonly dialog: DialogContextValue,
         private readonly i18n: i18n,
+        private readonly toast: ToastContextValues,
     ) {}
 
     public useMusics() {
@@ -353,21 +355,54 @@ export class Library {
             return;
         }
 
-        return this.client.mutate<CreatePlaylistMutation, CreatePlaylistMutationVariables>({
-            mutation: CreatePlaylistDocument,
-            variables: {
-                input: {
-                    name: data.value,
-                },
+        const playlistName = data.value;
+        await this.toast.doWork({
+            messages: {
+                success: this.i18n.t("toast.createPlaylist.success"),
+                error: this.i18n.t("toast.createPlaylist.error"),
+                pending: this.i18n.t("toast.createPlaylist.pending"),
             },
+            work: async () => {
+                const { data } = await this.client.mutate<CreatePlaylistMutation, CreatePlaylistMutationVariables>({
+                    mutation: CreatePlaylistDocument,
+                    variables: {
+                        input: {
+                            name: playlistName,
+                        },
+                    },
+                });
+
+                if (!data?.createPlaylist) {
+                    throw new Error();
+                }
+
+                return data.createPlaylist;
+            },
+            action: data => ({
+                label: this.i18n.t("toast.createPlaylist.actionText"),
+                to: `/playlists/${data.id}`,
+            }),
         });
     }
     public addMusicsToPlaylist(playlistId: number, musics: ReadonlyArray<MinimalMusicFragment>) {
-        return this.client.mutate<AddMusicsToPlaylistMutation, AddMusicsToPlaylistMutationVariables>({
-            mutation: AddMusicsToPlaylistDocument,
-            variables: {
-                playlistId,
-                musicIds: musics.map(music => music.id),
+        return this.toast.doWork({
+            messages: {
+                success: this.i18n.t("toast.addMusicsToPlaylist.success"),
+                error: this.i18n.t("toast.addMusicsToPlaylist.error"),
+                pending: this.i18n.t("toast.addMusicsToPlaylist.pending"),
+            },
+            work: () => {
+                return this.client.mutate<AddMusicsToPlaylistMutation, AddMusicsToPlaylistMutationVariables>({
+                    mutation: AddMusicsToPlaylistDocument,
+                    variables: {
+                        playlistId,
+                        musicIds: musics.map(music => music.id),
+                    },
+                });
+            },
+            action: {
+                label: this.i18n.t("toast.addMusicsToPlaylist.actionText"),
+                to: `/playlists/${playlistId}`,
             },
         });
     }
@@ -382,20 +417,37 @@ export class Library {
             return;
         }
 
-        const { data } = await this.client.mutate<
-            CreatePlaylistFromMusicsMutation,
-            CreatePlaylistFromMusicsMutationVariables
-        >({
-            mutation: CreatePlaylistFromMusicsDocument,
-            variables: {
-                input: {
-                    name: result.value,
-                },
-                musicIds: musics.map(music => music.id),
+        await this.toast.doWork({
+            messages: {
+                success: this.i18n.t("toast.createPlaylist.success"),
+                error: this.i18n.t("toast.createPlaylist.error"),
+                pending: this.i18n.t("toast.createPlaylist.pending"),
             },
-        });
+            work: async () => {
+                const { data } = await this.client.mutate<
+                    CreatePlaylistFromMusicsMutation,
+                    CreatePlaylistFromMusicsMutationVariables
+                >({
+                    mutation: CreatePlaylistFromMusicsDocument,
+                    variables: {
+                        input: {
+                            name: result.value,
+                        },
+                        musicIds: musics.map(music => music.id),
+                    },
+                });
 
-        return data?.createPlaylistFromMusics;
+                if (!data?.createPlaylistFromMusics) {
+                    throw new Error();
+                }
+
+                return data.createPlaylistFromMusics;
+            },
+            action: data => ({
+                label: this.i18n.t("toast.createPlaylist.actionText"),
+                to: `/playlists/${data.id}`,
+            }),
+        });
     }
 
     public async renamePlaylist(playlist: MinimalPlaylistFragment) {
@@ -410,13 +462,22 @@ export class Library {
             return;
         }
 
-        return this.client.mutate<UpdatePlaylistMutation, UpdatePlaylistMutationVariables>({
-            mutation: UpdatePlaylistDocument,
-            variables: {
-                id: playlist.id,
-                input: {
-                    name: data.value,
-                },
+        return this.toast.doWork({
+            messages: {
+                success: this.i18n.t("toast.updatePlaylist.success"),
+                error: this.i18n.t("toast.updatePlaylist.error"),
+                pending: this.i18n.t("toast.updatePlaylist.pending"),
+            },
+            work: () => {
+                return this.client.mutate<UpdatePlaylistMutation, UpdatePlaylistMutationVariables>({
+                    mutation: UpdatePlaylistDocument,
+                    variables: {
+                        id: playlist.id,
+                        input: {
+                            name: data.value,
+                        },
+                    },
+                });
             },
         });
     }
@@ -432,10 +493,19 @@ export class Library {
             return;
         }
 
-        return this.client.mutate<DeletePlaylistMutation, DeletePlaylistMutationVariables>({
-            mutation: DeletePlaylistDocument,
-            variables: {
-                id: playlist.id,
+        return this.toast.doWork({
+            messages: {
+                success: this.i18n.t("toast.deletePlaylist.success"),
+                error: this.i18n.t("toast.deletePlaylist.error"),
+                pending: this.i18n.t("toast.deletePlaylist.pending"),
+            },
+            work: () => {
+                return this.client.mutate<DeletePlaylistMutation, DeletePlaylistMutationVariables>({
+                    mutation: DeletePlaylistDocument,
+                    variables: {
+                        id: playlist.id,
+                    },
+                });
             },
         });
     }

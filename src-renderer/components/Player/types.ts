@@ -1,10 +1,12 @@
 import React from "react";
+import { WithTranslation } from "react-i18next";
 
 import { MinimalMusicFragment, RepeatMode } from "@queries";
 
 import { WithConfigProps } from "@components/Config/withConfig";
+import { WithToastProps } from "@components/Toast/withToast";
 
-export interface PlayerProviderProps extends WithConfigProps {
+export interface PlayerProviderProps extends WithConfigProps, WithToastProps, WithTranslation {
     children: React.ReactNode;
 }
 export interface PlayerProviderStates {

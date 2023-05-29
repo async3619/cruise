@@ -1,5 +1,7 @@
-import React from "react";
 import _ from "lodash";
+
+import React from "react";
+import { withTranslation } from "react-i18next";
 
 import {
     PlayerEventMap,
@@ -13,6 +15,7 @@ import { MinimalMusicFragment, RepeatMode } from "@queries";
 import { PickFn } from "@common/types";
 import { loadImageAsBlob } from "@utils/loadImage";
 import { withConfig } from "@components/Config/withConfig";
+import { withToast } from "@components/Toast/withToast";
 
 export const PlayerContext = React.createContext<PlayerProviderContext>({} as any);
 
@@ -190,6 +193,15 @@ class PlayerProviderImpl extends React.Component<PlayerProviderProps, PlayerProv
                 playlist: playlist ? [...playlist, ...musics] : musics,
                 playlistIndex: playlist ? playlistIndex : 0,
             };
+        });
+
+        this.props.toast.enqueueToast({
+            message: this.props.t("toast.addMusicsToPlaylist.success"),
+            severity: "success",
+            action: {
+                label: this.props.t("toast.addMusicsToPlaylist.actionText"),
+                to: "/playlists",
+            },
         });
     }
 
@@ -390,4 +402,4 @@ export function usePlayer() {
     return React.useContext(PlayerContext);
 }
 
-export const PlayerProvider = withConfig(PlayerProviderImpl);
+export const PlayerProvider = withTranslation()(withToast(withConfig(PlayerProviderImpl)));

@@ -30,7 +30,7 @@ export const theme = extendTheme({
     },
     typography: {
         fontFamily: "SUIT Variable, sans-serif",
-        fontWeightRegular: 400,
+        fontWeightRegular: 600,
     },
     components: {
         MuiButton: {
