@@ -46,6 +46,12 @@ import {
     DeleteMusicsFromPlaylistMutation,
     DeleteMusicsFromPlaylistMutationVariables,
     DeleteMusicsFromPlaylistDocument,
+    NeedScanQuery,
+    NeedScanDocument,
+    useScanningStateChangedSubscription,
+    ScanDocument,
+    ScanMutation,
+    ScanMutationVariables,
 } from "@queries";
 
 import { ApolloClient } from "@apollo/client";
@@ -347,6 +353,23 @@ export class Library {
         };
     }
 
+    public useScanningState() {
+        const [isScanning, setIsScanning] = React.useState<boolean>(false);
+
+        useScanningStateChangedSubscription({
+            onData: ({ data: { data } }) => {
+                const scanningState = data?.scanningStateChanged;
+                if (typeof scanningState !== "boolean") {
+                    return;
+                }
+
+                setIsScanning(scanningState);
+            },
+        });
+
+        return isScanning;
+    }
+
     public async createPlaylist() {
         const data = await this.dialog.openDialog(InputTextDialog, {
             title: this.i18n.t("dialog.createPlaylist.title"),
@@ -528,6 +551,19 @@ export class Library {
                     },
                 });
             },
+        });
+    }
+
+    public async needScan() {
+        const { data } = await this.client.query<NeedScanQuery>({
+            query: NeedScanDocument,
+        });
+
+        return data.needScan;
+    }
+    public async scan() {
+        return this.client.mutate<ScanMutation, ScanMutationVariables>({
+            mutation: ScanDocument,
         });
     }
 }

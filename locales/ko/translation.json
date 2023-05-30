@@ -96,6 +96,10 @@
         },
         "clearPlaylist": {
             "success": "재생목록 비우기 완료"
+        },
+        "scanning": {
+            "pending": "라이브러리 업데이트 중",
+            "success": "라이브러리 업데이트 완료"
         }
     },
     "delete": "삭제",

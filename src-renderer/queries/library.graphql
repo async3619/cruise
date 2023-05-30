@@ -1,3 +1,11 @@
+query needScan {
+    needScan
+}
+
 mutation scan {
     scan
+}
+
+subscription scanningStateChanged {
+    scanningStateChanged
 }

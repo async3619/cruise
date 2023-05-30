@@ -13,6 +13,7 @@ import {
 import { useDialog } from "@components/Dialog/Provider";
 import { Library } from "@components/Library";
 import { useToast } from "@components/Toast/Provider";
+import { ToastInstance } from "@components/Toast/types";
 
 export interface LibraryProviderProps {
     children: React.ReactNode;
@@ -27,10 +28,13 @@ export const LibraryContext = React.createContext<LibraryContextValue | null>(nu
 
 export function LibraryProvider(props: LibraryProviderProps) {
     const client = useApolloClient();
-    const { i18n } = useTranslation();
     const dialog = useDialog();
+    const { i18n, t } = useTranslation();
     const toast = useToast();
-    const [library] = React.useState<Library>(new Library(client, dialog, i18n, toast));
+    const library = React.useRef(new Library(client, dialog, i18n, toast));
+    const isScanning = library.current.useScanningState();
+    const previousScanningState = React.useRef(isScanning);
+    const [scanningToastInstance, setScanningToastInstance] = React.useState<ToastInstance | null>(null);
 
     const [playlists, setPlaylists] = React.useState<MinimalPlaylistFragment[] | null>(null);
     const playlistsQuery = usePlaylistsQuery();
@@ -55,7 +59,6 @@ export function LibraryProvider(props: LibraryProviderProps) {
             });
         },
     });
-
     usePlaylistRemovedSubscription({
         onData: ({ data: { data } }) => {
             if (!data?.playlistRemoved) {
@@ -71,7 +74,6 @@ export function LibraryProvider(props: LibraryProviderProps) {
             });
         },
     });
-
     usePlaylistUpdatedSubscription({
         onData: ({ data: { data } }) => {
             if (!data?.playlistUpdated) {
@@ -94,11 +96,58 @@ export function LibraryProvider(props: LibraryProviderProps) {
         },
     });
 
+    React.useEffect(() => {
+        (async () => {
+            const needScan = await library.current.needScan();
+            if (!needScan) {
+                return;
+            }
+
+            await library.current.scan();
+        })();
+    }, []);
+
+    React.useEffect(() => {
+        if (isScanning === previousScanningState.current) {
+            return;
+        }
+
+        if (isScanning && !previousScanningState.current) {
+            const instance = toast.enqueueToast({
+                message: t("toast.scanning.pending"),
+                loading: true,
+            });
+
+            setScanningToastInstance(instance);
+        }
+
+        if (!isScanning && previousScanningState.current) {
+            if (scanningToastInstance) {
+                scanningToastInstance.update({
+                    message: t("toast.scanning.success"),
+                    severity: "success",
+                    loading: false,
+                });
+            } else {
+                toast.enqueueToast({
+                    message: t("toast.scanning.success"),
+                    severity: "success",
+                });
+            }
+        }
+
+        previousScanningState.current = isScanning;
+    }, [isScanning, scanningToastInstance, t, toast]);
+
     if (!playlists) {
         return null;
     }
 
-    return <LibraryContext.Provider value={{ library, playlists }}>{props.children}</LibraryContext.Provider>;
+    return (
+        <LibraryContext.Provider value={{ library: library.current, playlists }}>
+            {props.children}
+        </LibraryContext.Provider>
+    );
 }
 
 export function useLibrary() {

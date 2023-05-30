@@ -39,7 +39,7 @@ export interface WorkOptions<T> extends Omit<ToastOptions, "message" | "action">
 }
 
 export interface ToastInstance {
-    update(options: ToastOptions): void;
+    update(options: Partial<ToastOptions>): void;
 }
 
 export interface ToastContextValues {

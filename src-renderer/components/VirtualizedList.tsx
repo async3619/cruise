@@ -40,7 +40,7 @@ export function VirtualizedList<TItem>({ rowHeight, children, items }: Virtualiz
                         top: 0,
                         left: 0,
                         width: "100%",
-                        transform: `translateY(${virtualItems[0].start - virtualizer.options.scrollMargin}px)`,
+                        transform: `translateY(${(virtualItems[0]?.start ?? 0) - virtualizer.options.scrollMargin}px)`,
                     }}
                 >
                     {virtualItems.map(row => (
