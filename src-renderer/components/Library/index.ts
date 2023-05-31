@@ -222,6 +222,7 @@ export class Library {
 
         useAlbumUpdatedSubscription({
             variables: { id },
+            fetchPolicy: "no-cache",
             onData: ({ data: { data } }) => {
                 if (!data?.albumUpdated) {
                     return;

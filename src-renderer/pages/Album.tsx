@@ -46,7 +46,6 @@ export function Album({}: AlbumProps) {
                 return;
             }
 
-            console.log(data);
             if (!data.albumsRemoved.includes(id)) {
                 return;
             }
