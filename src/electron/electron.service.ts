@@ -8,25 +8,28 @@ import { mainBindings } from "i18next-electron-fs-backend";
 import { electronApp, is, optimizer } from "@electron-toolkit/utils";
 import { Inject, Injectable, OnModuleInit } from "@nestjs/common";
 
-import { MAXIMIZED_STATE_CHANGED } from "@main/electron/electron.constants";
 import { SelectPathInput } from "@main/electron/models/select-path.dto";
-
 import { ConfigService } from "@main/config/config.service";
-
 import { REACT_DEVTOOLS_DIR, REACT_DEVTOOLS_PATH } from "@main/constants";
-import pubSub from "@main/pubsub";
 
 import type { Nullable } from "@common/types";
+import { PubSubService } from "@main/common/pubsub.service";
 
 const mainDistPath = path.join(__dirname, "../");
 const distPath = path.join(mainDistPath, "../dist");
 const publicPath = process.env.VITE_DEV_SERVER_URL ? path.join(mainDistPath, "../public") : distPath;
 
+interface ElectronPubSub {
+    maximizedStateChanged: boolean;
+}
+
 @Injectable()
-export class ElectronService implements OnModuleInit {
+export class ElectronService extends PubSubService<ElectronPubSub> implements OnModuleInit {
     private mainWindow: BrowserWindow | null = null;
 
-    public constructor(@Inject(ConfigService) private readonly configService: ConfigService) {}
+    public constructor(@Inject(ConfigService) private readonly configService: ConfigService) {
+        super();
+    }
 
     public async onModuleInit() {
         if (os.release().startsWith("6.1")) {
@@ -61,15 +64,11 @@ export class ElectronService implements OnModuleInit {
 
         this.mainWindow = await this.createWindow();
         this.mainWindow.on("maximize", () => {
-            pubSub.publish(MAXIMIZED_STATE_CHANGED, {
-                maximizedStateChanged: true,
-            });
+            this.publish("maximizedStateChanged", true);
         });
 
         this.mainWindow.on("unmaximize", () => {
-            pubSub.publish(MAXIMIZED_STATE_CHANGED, {
-                maximizedStateChanged: false,
-            });
+            this.publish("maximizedStateChanged", false);
         });
 
         this.mainWindow.on("close", async () => {

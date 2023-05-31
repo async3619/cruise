@@ -2,11 +2,8 @@ import { Inject } from "@nestjs/common";
 import { Args, Int, Mutation, Query, Resolver, Subscription } from "@nestjs/graphql";
 
 import { LibraryService } from "@main/library/library.service";
-import { SCANNING_STATE_CHANGED } from "@main/library/library.constants";
 import { SearchResult } from "@main/library/models/search-result.dto";
 import { SearchSuggestion } from "@main/library/models/search-suggestion.dto";
-
-import pubSub from "@main/pubsub";
 
 import type { Nullable } from "@common/types";
 
@@ -50,6 +47,6 @@ export class LibraryResolver {
 
     @Subscription(() => Boolean)
     public scanningStateChanged() {
-        return pubSub.asyncIterator(SCANNING_STATE_CHANGED);
+        return this.libraryService.subscribe("scanningStateChanged");
     }
 }

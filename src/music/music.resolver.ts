@@ -2,8 +2,6 @@ import { forwardRef, Inject } from "@nestjs/common";
 import { Args, Context, Int, Query, ResolveField, Resolver, Root, Subscription } from "@nestjs/graphql";
 
 import { MusicService } from "@main/music/music.service";
-import { MUSICS_UPDATED, MUSIC_ADDED, MUSIC_REMOVED, MUSIC_UPDATED, MUSICS_ADDED } from "@main/music/music.constants";
-
 import { AlbumService } from "@main/album/album.service";
 
 import { Music } from "@main/music/models/music.model";
@@ -12,8 +10,6 @@ import { Album } from "@main/album/models/album.model";
 import { AlbumArt } from "@main/album-art/models/album-art.model";
 
 import { GraphQLContext } from "@main/context";
-import pubSub from "@main/pubsub";
-
 import type { Nullable } from "@common/types";
 
 @Resolver(() => Music)
@@ -35,32 +31,32 @@ export class MusicResolver {
 
     @Subscription(() => Music)
     public async musicAdded() {
-        return pubSub.asyncIterator(MUSIC_ADDED);
+        return this.musicService.subscribe("musicAdded");
     }
 
     @Subscription(() => Music)
     public async musicUpdated() {
-        return pubSub.asyncIterator(MUSIC_UPDATED);
+        return this.musicService.subscribe("musicUpdated");
     }
 
     @Subscription(() => Int)
     public async musicRemoved() {
-        return pubSub.asyncIterator(MUSIC_REMOVED);
+        return this.musicService.subscribe("musicRemoved");
     }
 
     @Subscription(() => [Music])
     public async musicsAdded() {
-        return pubSub.asyncIterator(MUSICS_ADDED);
+        return this.musicService.subscribe("musicsAdded");
     }
 
     @Subscription(() => [Music])
     public async musicsUpdated() {
-        return pubSub.asyncIterator(MUSICS_UPDATED);
+        return this.musicService.subscribe("musicsUpdated");
     }
 
     @Subscription(() => [Int])
     public async musicsRemoved() {
-        return pubSub.asyncIterator(MUSIC_REMOVED);
+        return this.musicService.subscribe("musicsRemoved");
     }
 
     @ResolveField(() => String, { nullable: true })

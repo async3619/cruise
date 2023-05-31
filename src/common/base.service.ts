@@ -5,12 +5,19 @@ import type { FindOptionsWhere } from "typeorm/find-options/FindOptionsWhere";
 import type { FindOptionsOrder } from "typeorm/find-options/FindOptionsOrder";
 import type { QueryDeepPartialEntity } from "typeorm/query-builder/QueryPartialEntity";
 
+import { PubSubMap, PubSubService } from "@main/common/pubsub.service";
+
 interface BaseEntityClass extends BaseEntity {
     id: number;
 }
 
-export class BaseService<T extends BaseEntityClass> {
-    protected constructor(private readonly repository: Repository<T>, private readonly entityClass: Class<T>) {}
+export class BaseService<
+    T extends BaseEntityClass,
+    TMap extends PubSubMap = Record<string, never>,
+> extends PubSubService<TMap> {
+    protected constructor(private readonly repository: Repository<T>, private readonly entityClass: Class<T>) {
+        super();
+    }
 
     public async findAll(relations?: FindOptionsRelations<T> | Array<Exclude<keyof T, number | symbol>>) {
         return this.repository.find({

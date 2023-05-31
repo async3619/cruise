@@ -5,17 +5,20 @@ import { forwardRef, Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 
 import { Artist } from "@main/artist/models/artist.model";
-import { ARTIST_PORTRAIT_ADDED } from "@main/artist/artist.constants";
 
 import { BaseService } from "@main/common/base.service";
 import { AlbumService } from "@main/album/album.service";
 import { LibraryService } from "@main/library/library.service";
 import { AlbumArtService } from "@main/album-art/album-art.service";
 
-import pubSub from "@main/pubsub";
+interface ArtistPubSub {
+    artistPortraitAdded: Artist;
+    leadArtistAdded: Artist;
+    leadArtistRemoved: number;
+}
 
 @Injectable()
-export class ArtistService extends BaseService<Artist> {
+export class ArtistService extends BaseService<Artist, ArtistPubSub> {
     public constructor(
         @InjectRepository(Artist) private readonly artistRepository: Repository<Artist>,
         @Inject(forwardRef(() => AlbumService)) private readonly albumService: AlbumService,
@@ -56,9 +59,7 @@ export class ArtistService extends BaseService<Artist> {
         targetArtist.portrait = albumArt;
         await this.artistRepository.save(targetArtist);
 
-        await pubSub.publish(ARTIST_PORTRAIT_ADDED, {
-            artistPortraitAdded: targetArtist,
-        });
+        this.publish("artistPortraitAdded", targetArtist);
     }
 
     public async create(name: string) {

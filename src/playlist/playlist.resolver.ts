@@ -6,9 +6,6 @@ import { Music } from "@main/music/models/music.model";
 import { PlaylistService } from "@main/playlist/playlist.service";
 import { Playlist } from "@main/playlist/models/playlist.model";
 import { CreatePlaylistInput, UpdatePlaylistInput } from "@main/playlist/models/playlist.dto";
-import { PLAYLIST_ADDED, PLAYLIST_REMOVED, PLAYLIST_UPDATED } from "@main/playlist/playlist.constants";
-
-import pubsub from "@main/pubsub";
 
 @Resolver(() => Playlist)
 export class PlaylistResolver {
@@ -70,17 +67,17 @@ export class PlaylistResolver {
 
     @Subscription(() => Playlist)
     public playlistAdded(): AsyncIterator<Playlist> {
-        return pubsub.asyncIterator(PLAYLIST_ADDED);
+        return this.playlistService.subscribe("playlistAdded");
     }
 
     @Subscription(() => Playlist)
     public playlistUpdated(): AsyncIterator<Playlist> {
-        return pubsub.asyncIterator(PLAYLIST_UPDATED);
+        return this.playlistService.subscribe("playlistUpdated");
     }
 
     @Subscription(() => Int)
     public playlistRemoved(): AsyncIterator<number> {
-        return pubsub.asyncIterator(PLAYLIST_REMOVED);
+        return this.playlistService.subscribe("playlistRemoved");
     }
 
     @ResolveField(() => [Music])

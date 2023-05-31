@@ -24,20 +24,21 @@ import { Music } from "@main/music/models/music.model";
 
 import { InjectHauntedClient } from "@main/haunted/haunted.decorator";
 import type { HauntedClient } from "@main/haunted/haunted.module";
+import { PubSubService } from "@main/common/pubsub.service";
 
-import { SCANNING_STATE_CHANGED } from "@main/library/library.constants";
 import { SearchResult } from "@main/library/models/search-result.dto";
 import { SearchSuggestion, SearchSuggestionType } from "@main/library/models/search-suggestion.dto";
 
 import { FileEvent, Scanner } from "@main/library/utils/scanner.model";
-
 import { fetchUrlToBuffer } from "@main/utils/fetchUrlToBuffer";
-
-import pubSub from "@main/pubsub";
 import type { Nullable } from "@common/types";
 
+interface LibraryPubSub {
+    scanningStateChanged: boolean;
+}
+
 @Injectable()
-export class LibraryService implements OnModuleInit, OnModuleDestroy {
+export class LibraryService extends PubSubService<LibraryPubSub> implements OnModuleInit, OnModuleDestroy {
     private readonly watchers: chokidar.FSWatcher[] = [];
     private readonly eventBuffer: FileEvent[] = [];
 
@@ -49,7 +50,9 @@ export class LibraryService implements OnModuleInit, OnModuleDestroy {
         @Inject(ConfigService) private readonly configService: ConfigService,
         @Inject(ElectronService) private readonly electronService: ElectronService,
         @InjectHauntedClient() private readonly client: HauntedClient,
-    ) {}
+    ) {
+        super();
+    }
 
     public async onModuleInit() {
         const { libraryDirectories } = await this.configService.getConfig();
@@ -77,9 +80,7 @@ export class LibraryService implements OnModuleInit, OnModuleDestroy {
     }
 
     private flushEventBuffer = _.debounce(async () => {
-        await pubSub.publish(SCANNING_STATE_CHANGED, {
-            scanningStateChanged: true,
-        });
+        this.publish("scanningStateChanged", true);
 
         const scanner = new Scanner(
             this.eventBuffer,
@@ -91,9 +92,7 @@ export class LibraryService implements OnModuleInit, OnModuleDestroy {
 
         await scanner.start();
 
-        await pubSub.publish(SCANNING_STATE_CHANGED, {
-            scanningStateChanged: false,
-        });
+        this.publish("scanningStateChanged", false);
     }, 500);
 
     public async needScan() {
@@ -122,9 +121,7 @@ export class LibraryService implements OnModuleInit, OnModuleDestroy {
         );
     }
     public async scan() {
-        await pubSub.publish(SCANNING_STATE_CHANGED, {
-            scanningStateChanged: true,
-        });
+        this.publish("scanningStateChanged", true);
 
         await this.musicService.clear();
         await this.albumService.clear();

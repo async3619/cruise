@@ -2,7 +2,6 @@ import { Inject } from "@nestjs/common";
 import { Args, Context, Int, Query, ResolveField, Resolver, Root, Subscription } from "@nestjs/graphql";
 
 import { ArtistService } from "@main/artist/artist.service";
-import { ARTIST_PORTRAIT_ADDED, LEAD_ARTIST_ADDED, LEAD_ARTIST_REMOVED } from "@main/artist/artist.constants";
 
 import { Artist } from "@main/artist/models/artist.model";
 import { Music } from "@main/music/models/music.model";
@@ -10,8 +9,6 @@ import { Album } from "@main/album/models/album.model";
 import { AlbumArt } from "@main/album-art/models/album-art.model";
 
 import { GraphQLContext } from "@main/context";
-import pubSub from "@main/pubsub";
-
 import type { Nullable } from "@common/types";
 
 @Resolver(() => Artist)
@@ -35,19 +32,19 @@ export class ArtistResolver {
 
     @Subscription(() => Artist)
     public async leadArtistAdded(): Promise<AsyncIterator<Artist>> {
-        return pubSub.asyncIterator(LEAD_ARTIST_ADDED);
+        return this.artistService.subscribe("leadArtistAdded");
     }
 
     @Subscription(() => Int)
     public async leadArtistRemoved() {
-        return pubSub.asyncIterator(LEAD_ARTIST_REMOVED);
+        return this.artistService.subscribe("leadArtistRemoved");
     }
 
     @Subscription(() => Artist, {
         filter: (payload, variables) => payload.artistPortraitAdded.id === variables.artistId,
     })
     public async artistPortraitAdded(@Args("artistId", { type: () => Int }) _: number) {
-        return pubSub.asyncIterator(ARTIST_PORTRAIT_ADDED);
+        return this.artistService.subscribe("artistPortraitAdded");
     }
 
     @ResolveField(() => AlbumArt, { nullable: true })

@@ -1,4 +1,0 @@
-export const ALBUM_ADDED = "ALBUM_ADDED";
-export const ALBUM_REMOVED = "ALBUM_REMOVED";
-export const ALBUM_UPDATED = "ALBUM_UPDATED";
-export const ALBUMS_UPDATED = "ALBUMS_UPDATED";

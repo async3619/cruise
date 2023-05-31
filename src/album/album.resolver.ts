@@ -5,7 +5,6 @@ import { Args, Context, Int, Mutation, Query, ResolveField, Resolver, Root, Subs
 
 import { GraphQLContext } from "@main/context";
 
-import { ALBUM_ADDED, ALBUM_REMOVED, ALBUM_UPDATED, ALBUMS_UPDATED } from "@main/album/album.constants";
 import { AlbumService } from "@main/album/album.service";
 import { UpdateAlbumInput } from "@main/album/models/update-album.input";
 
@@ -20,8 +19,6 @@ import loadMany from "@main/utils/loadMany";
 import common from "@main/utils/common";
 
 import type { Nullable } from "@common/types";
-
-import pubSub from "@main/pubsub";
 
 @Resolver(() => Album)
 export class AlbumResolver {
@@ -55,24 +52,24 @@ export class AlbumResolver {
 
     @Subscription(() => Album)
     public async albumAdded() {
-        return pubSub.asyncIterator(ALBUM_ADDED);
+        return this.albumService.subscribe("albumAdded");
     }
 
     @Subscription(() => Int)
     public async albumRemoved() {
-        return pubSub.asyncIterator(ALBUM_REMOVED);
+        return this.albumService.subscribe("albumDeleted");
     }
 
     @Subscription(() => [Album])
     public async albumsUpdated() {
-        return pubSub.asyncIterator(ALBUMS_UPDATED);
+        return this.albumService.subscribe("albumsUpdated");
     }
 
     @Subscription(() => Album, {
         filter: (payload, variables) => payload.albumUpdated.id === variables.id,
     })
     public async albumUpdated(@Args("id", { type: () => Int }) _: number) {
-        return pubSub.asyncIterator(ALBUM_UPDATED);
+        return this.albumService.subscribe("albumUpdated");
     }
 
     @ResolveField(() => Int, { nullable: true })

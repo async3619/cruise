@@ -8,15 +8,18 @@ import { BaseService } from "@main/common/base.service";
 import { Playlist } from "@main/playlist/models/playlist.model";
 import { PlaylistRelation } from "@main/playlist/models/playlist-relation.model";
 import { CreatePlaylistInput, UpdatePlaylistInput } from "@main/playlist/models/playlist.dto";
-import { PLAYLIST_ADDED, PLAYLIST_REMOVED, PLAYLIST_UPDATED } from "@main/playlist/playlist.constants";
 
 import { MusicService } from "@main/music/music.service";
 import { Music } from "@main/music/models/music.model";
 
-import pubsub from "@main/pubsub";
+export interface PlaylistPubSub {
+    playlistAdded: Playlist;
+    playlistUpdated: Playlist;
+    playlistRemoved: number;
+}
 
 @Injectable()
-export class PlaylistService extends BaseService<Playlist> {
+export class PlaylistService extends BaseService<Playlist, PlaylistPubSub> {
     public constructor(
         @InjectRepository(Playlist) private readonly playlistRepository: Repository<Playlist>,
         @InjectRepository(PlaylistRelation) private readonly playlistRelationRepository: Repository<PlaylistRelation>,
@@ -42,7 +45,7 @@ export class PlaylistService extends BaseService<Playlist> {
         playlist = await this.playlistRepository.save(playlist);
 
         if (publish) {
-            pubsub.publish(PLAYLIST_ADDED, { playlistAdded: playlist });
+            this.publish("playlistAdded", playlist);
         }
 
         return playlist;
@@ -59,8 +62,7 @@ export class PlaylistService extends BaseService<Playlist> {
         playlist.playlistRelations = newRelations;
         playlist = await this.playlistRepository.save(playlist);
 
-        pubsub.publish(PLAYLIST_ADDED, { playlistAdded: playlist });
-
+        this.publish("playlistAdded", playlist);
         return playlist;
     }
 
@@ -82,7 +84,7 @@ export class PlaylistService extends BaseService<Playlist> {
         playlist.playlistRelations = [...playlist.playlistRelations, ...newRelations];
 
         playlist = await this.playlistRepository.save(playlist);
-        pubsub.publish(PLAYLIST_UPDATED, { playlistUpdated: playlist });
+        this.publish("playlistUpdated", playlist);
 
         return playlist;
     }
@@ -96,7 +98,7 @@ export class PlaylistService extends BaseService<Playlist> {
         playlist.name = input.name || playlist.name;
         playlist = await this.playlistRepository.save(playlist);
 
-        pubsub.publish(PLAYLIST_UPDATED, { playlistUpdated: playlist });
+        this.publish("playlistUpdated", playlist);
 
         return playlist;
     }
@@ -113,7 +115,7 @@ export class PlaylistService extends BaseService<Playlist> {
 
         await this.playlistRepository.delete(id);
 
-        pubsub.publish(PLAYLIST_REMOVED, { playlistRemoved: id });
+        this.publish("playlistRemoved", id);
         return true;
     }
 
@@ -131,8 +133,7 @@ export class PlaylistService extends BaseService<Playlist> {
             id: In(removedRelations.map(item => item.id)),
         });
 
-        pubsub.publish(PLAYLIST_UPDATED, { playlistUpdated: item });
-
+        this.publish("playlistUpdated", item);
         return item;
     }
 }

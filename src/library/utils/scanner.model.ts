@@ -5,19 +5,15 @@ import { DeepPartial } from "typeorm";
 
 import { MusicService } from "@main/music/music.service";
 import { Music } from "@main/music/models/music.model";
-import { MUSIC_ADDED, MUSIC_REMOVED, MUSICS_ADDED, MUSICS_REMOVED, MUSICS_UPDATED } from "@main/music/music.constants";
 
 import { ArtistService } from "@main/artist/artist.service";
 import { Artist } from "@main/artist/models/artist.model";
 
 import { AlbumService } from "@main/album/album.service";
 import { Album } from "@main/album/models/album.model";
-import { ALBUM_ADDED, ALBUM_REMOVED, ALBUMS_UPDATED, ALBUM_UPDATED } from "@main/album/album.constants";
 
 import { AlbumArtService } from "@main/album-art/album-art.service";
 import { AlbumArt } from "@main/album-art/models/album-art.model";
-import pubSub from "@main/pubsub";
-import { LEAD_ARTIST_ADDED, LEAD_ARTIST_REMOVED } from "@main/artist/artist.constants";
 
 export type EventTypes = "add" | "addDir" | "change" | "unlink" | "unlinkDir";
 
@@ -127,26 +123,17 @@ export class Scanner {
             }
 
             updatedAlbums.push(item);
-            await pubSub.publish(ALBUM_UPDATED, {
-                albumUpdated: item,
-            });
+            await this.albumService.publish("albumUpdated", item);
         }
 
-        await pubSub.publish(MUSICS_UPDATED, {
-            musicsUpdated: this.musicService.findByIds(this.updatedMusics.map(m => m.id)),
-        });
+        await this.musicService.publish(
+            "musicsUpdated",
+            await this.musicService.findByIds(this.updatedMusics.map(m => m.id)),
+        );
 
-        await pubSub.publish(MUSICS_REMOVED, {
-            musicRemoved: removedMusicIds,
-        });
-
-        await pubSub.publish(MUSICS_ADDED, {
-            musicsAdded: addedMusics,
-        });
-
-        await pubSub.publish(ALBUMS_UPDATED, {
-            albumsUpdated: updatedAlbums,
-        });
+        await this.musicService.publish("musicsRemoved", removedMusicIds);
+        await this.musicService.publish("musicsAdded", addedMusics);
+        await this.albumService.publish("albumsUpdated", updatedAlbums);
 
         allAlbums = await this.albumService.findAll();
         const newLeadArtistIds = _.uniq(allAlbums.flatMap(a => a.leadArtistIds));
@@ -157,17 +144,13 @@ export class Scanner {
         if (leadArtistIdsAdded.length > 0) {
             const artists = await this.artistService.findByIds(leadArtistIdsAdded);
             for (const artist of artists) {
-                await pubSub.publish(LEAD_ARTIST_ADDED, {
-                    leadArtistAdded: artist,
-                });
+                await this.artistService.publish("leadArtistAdded", artist);
             }
         }
 
         if (leadArtistIdsRemoved.length > 0) {
             for (const id of leadArtistIdsRemoved) {
-                await pubSub.publish(LEAD_ARTIST_REMOVED, {
-                    leadArtistRemoved: id,
-                });
+                await this.artistService.publish("leadArtistRemoved", id);
             }
         }
     }
@@ -217,9 +200,7 @@ export class Scanner {
 
         const music = await this.musicService.create(audio, path, albumArts, album, featuredArtists);
         if (music) {
-            await pubSub.publish(MUSIC_ADDED, {
-                musicAdded: music,
-            });
+            await this.musicService.publish("musicAdded", music);
         }
 
         if (album) {
@@ -228,10 +209,7 @@ export class Scanner {
                 return music;
             }
 
-            await pubSub.publish(ALBUM_ADDED, {
-                albumAdded: await this.albumService.findById(album.id),
-            });
-
+            await this.albumService.publish("albumAdded", await this.albumService.findById(album.id));
             this.addUpdatedMusic(music);
         }
 
@@ -263,9 +241,7 @@ export class Scanner {
             const oldAlbum = await this.albumService.findById(music.albumId);
             if (oldAlbum && oldAlbum.musicIds.length <= 0) {
                 await this.albumService.delete(oldAlbum.id);
-                await pubSub.publish(ALBUM_REMOVED, {
-                    albumRemoved: oldAlbum.id,
-                });
+                await this.albumService.publish("albumDeleted", oldAlbum.id);
             }
         }
 
@@ -275,16 +251,12 @@ export class Scanner {
                 return;
             }
 
-            await pubSub.publish(ALBUM_ADDED, {
-                albumAdded: await this.albumService.findById(album.id),
-            });
+            await this.albumService.publish("albumAdded", await this.albumService.findById(album.id));
         }
     };
     private onFileRemoved = async ({ music }: ExistingFileEvent) => {
         await this.musicService.delete(music.id);
-        await pubSub.publish(MUSIC_REMOVED, {
-            musicRemoved: music.id,
-        });
+        await this.musicService.publish("musicRemoved", music.id);
 
         this.removeUpdatedMusic(music);
 
@@ -293,13 +265,9 @@ export class Scanner {
             if (album) {
                 if (album.musicIds.length <= 0) {
                     await this.albumService.delete(album.id);
-                    await pubSub.publish(ALBUM_REMOVED, {
-                        albumRemoved: album.id,
-                    });
+                    await this.albumService.publish("albumDeleted", album.id);
                 } else {
-                    await pubSub.publish(ALBUM_UPDATED, {
-                        albumUpdated: album,
-                    });
+                    await this.albumService.publish("albumUpdated", album);
                 }
             }
         }

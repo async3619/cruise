@@ -13,8 +13,15 @@ import { ArtistService } from "@main/artist/artist.service";
 import { AlbumArtService } from "@main/album-art/album-art.service";
 import { LibraryService } from "@main/library/library.service";
 
+export interface AlbumServicePubSub {
+    albumAdded: Album;
+    albumUpdated: Album;
+    albumsUpdated: Album[];
+    albumDeleted: number;
+}
+
 @Injectable()
-export class AlbumService extends BaseService<Album> {
+export class AlbumService extends BaseService<Album, AlbumServicePubSub> {
     public constructor(
         @InjectRepository(Album) private readonly albumRepository: Repository<Album>,
         @Inject(MusicService) private readonly musicService: MusicService,

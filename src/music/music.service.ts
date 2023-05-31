@@ -16,8 +16,17 @@ import { BaseService } from "@main/common/base.service";
 
 import type { Nullable } from "@common/types";
 
+interface MusicPubSub {
+    musicAdded: Music;
+    musicUpdated: Music;
+    musicRemoved: number;
+    musicsAdded: Music[];
+    musicsUpdated: Music[];
+    musicsRemoved: number[];
+}
+
 @Injectable()
-export class MusicService extends BaseService<Music> {
+export class MusicService extends BaseService<Music, MusicPubSub> {
     public constructor(@InjectRepository(Music) private readonly musicRepository: Repository<Music>) {
         super(musicRepository, Music);
     }

@@ -2,13 +2,9 @@ import { Inject } from "@nestjs/common";
 import { Args, Mutation, Query, Resolver, Subscription } from "@nestjs/graphql";
 
 import { ElectronService } from "@main/electron/electron.service";
-import { MAXIMIZED_STATE_CHANGED } from "@main/electron/electron.constants";
-
 import { SelectPathInput } from "@main/electron/models/select-path.dto";
 
 import type { Nullable } from "@common/types";
-
-import pubSub from "@main/pubsub";
 
 @Resolver()
 export class ElectronResolver {
@@ -43,6 +39,6 @@ export class ElectronResolver {
 
     @Subscription(() => Boolean)
     public maximizedStateChanged() {
-        return pubSub.asyncIterator(MAXIMIZED_STATE_CHANGED);
+        return this.electronService.subscribe("maximizedStateChanged");
     }
 }
