@@ -24,7 +24,7 @@ export class BaseService<
             relations,
         });
     }
-    public async findById(id: number, relations?: Array<Exclude<keyof T, number | symbol>>) {
+    public async findById(id: number, relations?: FindOptionsRelations<T> | Array<Exclude<keyof T, number | symbol>>) {
         const item = await this.repository.findOne({
             where: {
                 id,
@@ -38,7 +38,10 @@ export class BaseService<
 
         return item;
     }
-    public async findByIds(ids: ReadonlyArray<number>) {
+    public async findByIds(
+        ids: ReadonlyArray<number>,
+        relations?: FindOptionsRelations<T> | Array<Exclude<keyof T, number | symbol>>,
+    ) {
         if (ids.length === 0) {
             return [];
         }
@@ -47,6 +50,7 @@ export class BaseService<
             where: {
                 id: In(ids),
             } as FindOptionsWhere<T>,
+            relations,
         });
 
         const itemMap = _.keyBy(items, "id");
@@ -96,7 +100,7 @@ export class BaseService<
         return this.repository.save(item);
     }
 
-    public async delete(id: number) {
+    public async delete(id: number | number[]) {
         await this.repository.delete(id);
     }
 

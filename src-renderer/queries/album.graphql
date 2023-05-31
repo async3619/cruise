@@ -45,18 +45,24 @@ query album($id: Int!) {
     }
 }
 
-subscription albumAdded {
-    albumAdded {
+subscription albumsAdded {
+    albumsAdded {
         ...MinimalAlbum
     }
 }
 
-subscription albumUpdated {
+subscription albumsUpdated {
     albumsUpdated {
         ...MinimalAlbum
     }
 }
 
-subscription albumRemoved {
-    albumRemoved
+subscription albumsRemoved {
+    albumsRemoved
+}
+
+subscription albumUpdated($id: Int!) {
+    albumUpdated(id: $id) {
+        ...FullAlbum
+    }
 }

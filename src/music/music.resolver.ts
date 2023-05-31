@@ -65,6 +65,11 @@ export class MusicResolver {
     }
 
     @ResolveField(() => [Artist])
+    public async albumArtists(@Root() music: Music, @Context("loaders") loaders: GraphQLContext["loaders"]) {
+        return loaders.artist.loadMany(music.albumArtistIds);
+    }
+
+    @ResolveField(() => [Artist])
     public async artists(@Root() music: Music, @Context("loaders") loaders: GraphQLContext["loaders"]) {
         return loaders.artist.loadMany(music.artistIds);
     }

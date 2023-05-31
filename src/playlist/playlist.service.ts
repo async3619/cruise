@@ -119,7 +119,7 @@ export class PlaylistService extends BaseService<Playlist, PlaylistPubSub> {
         return true;
     }
 
-    public async deleteMusicsFromPlaylist(playlistId: number, indices: number[]) {
+    public async deleteMusicsByIndices(playlistId: number, indices: number[]) {
         let item = await this.findById(playlistId, ["playlistRelations"]);
         if (!item) {
             throw new Error("Playlist not found");
@@ -135,5 +135,26 @@ export class PlaylistService extends BaseService<Playlist, PlaylistPubSub> {
 
         this.publish("playlistUpdated", item);
         return item;
+    }
+
+    public async deleteMusics(musicIds: number[]) {
+        const targetRelations = await this.playlistRelationRepository
+            .createQueryBuilder("r")
+            .where("`r`.`musicId` IN (:...musicIds)", { musicIds })
+            .getMany();
+
+        const relationIds = targetRelations.map(item => item.id);
+        await this.playlistRelationRepository.delete({
+            id: In(relationIds),
+        });
+
+        const playlistIds = targetRelations.map(item => item.playlistId);
+        const playlists = await this.playlistRepository.findBy({
+            id: In(playlistIds),
+        });
+
+        for (const playlist of playlists) {
+            this.publish("playlistUpdated", playlist);
+        }
     }
 }

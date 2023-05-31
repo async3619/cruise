@@ -10,10 +10,15 @@ import { BaseService } from "@main/common/base.service";
 import { AlbumService } from "@main/album/album.service";
 import { LibraryService } from "@main/library/library.service";
 import { AlbumArtService } from "@main/album-art/album-art.service";
+import { EnsureResult } from "@main/utils/types";
 
 interface ArtistPubSub {
+    artistsAdded: Artist[];
+
     artistPortraitAdded: Artist;
+
     leadArtistAdded: Artist;
+    leadArtistsAdded: Artist[];
     leadArtistRemoved: number;
 }
 
@@ -69,26 +74,24 @@ export class ArtistService extends BaseService<Artist, ArtistPubSub> {
         return this.artistRepository.save(artist);
     }
 
-    public async bulkEnsure(names: string[]) {
-        const items = await this.artistRepository.find({
-            where: {
-                name: In(names),
-            },
+    public async bulkEnsure(names: string[]): Promise<EnsureResult<Artist>[]> {
+        names = _.uniq(names);
+        const artists = await this.artistRepository.find({
+            where: { name: In(names) },
         });
 
-        const itemMap: Record<string, Artist> = _.chain(items).keyBy("name").value();
-        for (const name of names) {
-            if (!itemMap[name]) {
-                itemMap[name] = await this.create(name);
-            }
+        const existingNames = artists.map(artist => artist.name);
+        const newNames = _.difference(names, existingNames);
+
+        const newArtists: EnsureResult<Artist>[] = [];
+        for (const name of newNames) {
+            const artist = this.artistRepository.create();
+            artist.name = name;
+
+            const item = await this.artistRepository.save(artist);
+            newArtists.push({ created: true, item });
         }
 
-        return names.map(name => {
-            if (!itemMap[name]) {
-                throw new Error(`Failed to ensure artist '${name}'`);
-            }
-
-            return itemMap[name];
-        });
+        return [...artists.map(artist => ({ created: false, item: artist })), ...newArtists];
     }
 }

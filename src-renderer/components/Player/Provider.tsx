@@ -10,12 +10,14 @@ import {
     PlayerProviderStates,
 } from "@components/Player/types";
 
-import { MinimalMusicFragment, RepeatMode } from "@queries";
+import { MinimalMusicFragment, MusicsRemovedComponent, MusicsRemovedSubscription, RepeatMode } from "@queries";
 
 import { PickFn } from "@common/types";
 import { loadImageAsBlob } from "@utils/loadImage";
 import { withConfig } from "@components/Config/withConfig";
 import { withToast } from "@components/Toast/withToast";
+import { formatArtistName } from "@utils/formatArtistName";
+import { OnDataOptions } from "@apollo/client";
 
 export const PlayerContext = React.createContext<PlayerProviderContext>({} as any);
 
@@ -138,11 +140,15 @@ class PlayerProviderImpl extends React.Component<PlayerProviderProps, PlayerProv
         }
 
         const music = playlist[playlistIndex];
+        if (!music) {
+            return;
+        }
+
         const albumArtUrl = await loadImageAsBlob(`cruise://${music.albumArts[0].path}`);
 
         navigator.mediaSession.metadata = new MediaMetadata({
             title: music.title,
-            artist: music.albumArtist || "Unknown Artist",
+            artist: formatArtistName(music.albumArtists),
             album: music.album?.title || "Unknown Album",
             artwork: [
                 {
@@ -171,6 +177,39 @@ class PlayerProviderImpl extends React.Component<PlayerProviderProps, PlayerProv
                 this.play();
                 return;
         }
+    };
+    private handleMusicsRemoved = ({ data: { data } }: OnDataOptions<MusicsRemovedSubscription>) => {
+        if (!data?.musicsRemoved) {
+            return;
+        }
+
+        const { playlist, playlistIndex } = this.state;
+        if (!playlist) {
+            return;
+        }
+
+        const newPlaylist = playlist.filter(music => !data.musicsRemoved.includes(music.id));
+        if (!newPlaylist.length) {
+            this.stop();
+            this.setState({ playlist: null, playlistIndex: -1 });
+        }
+
+        const hasItem = newPlaylist.some(music => music.id === playlist[playlistIndex].id);
+        if (!hasItem) {
+            this.stop();
+        }
+
+        this.setState(({ playlistIndex }) => {
+            let newIndex = hasItem ? playlistIndex : -1;
+            if (hasItem && newIndex >= newPlaylist.length) {
+                newIndex = newPlaylist.length - 1;
+            }
+
+            return {
+                playlist: newPlaylist,
+                playlistIndex: newIndex,
+            };
+        });
     };
 
     public playPlaylist(playlist: MinimalMusicFragment[], index = 0, shuffled = false) {
@@ -412,6 +451,7 @@ class PlayerProviderImpl extends React.Component<PlayerProviderProps, PlayerProv
                     muted,
                 }}
             >
+                <MusicsRemovedComponent onData={this.handleMusicsRemoved} />
                 <audio
                     muted={muted}
                     ref={this.audioRef}

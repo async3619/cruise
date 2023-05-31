@@ -56,7 +56,7 @@ export function MusicList({ items, withTrackNumber, selectable }: MusicListProps
 
     const renderArtist = (music: MinimalMusicFragment) => {
         const artists: Array<ArtistIdNameFragment> | string =
-            music.album?.leadArtists || music.artists || music.albumArtist;
+            music.album?.leadArtists || music.artists || music.albumArtists;
 
         if (Array.isArray(artists)) {
             return artists.map(artist => (

@@ -6,7 +6,8 @@
         "module": "commonjs",
         "outDir": "../out/main",
         "sourceMap": true,
-        "esModuleInterop": true
+        "esModuleInterop": true,
+        "isolatedModules": false
     },
     "include": ["../src"],
     "exclude": ["../src-common"]

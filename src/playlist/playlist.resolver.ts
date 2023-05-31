@@ -62,7 +62,7 @@ export class PlaylistResolver {
         @Args("playlistId", { type: () => Int }) playlistId: number,
         @Args("indices", { type: () => [Int] }) indices: number[],
     ) {
-        return this.playlistService.deleteMusicsFromPlaylist(playlistId, indices);
+        return this.playlistService.deleteMusicsByIndices(playlistId, indices);
     }
 
     @Subscription(() => Playlist)

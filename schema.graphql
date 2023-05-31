@@ -82,7 +82,6 @@ type Playlist {
 type Music {
   id: Int!
   title: String!
-  albumArtist: String
   genre: String
   year: Int
   track: Int
@@ -91,6 +90,7 @@ type Music {
   path: String!
   createdAt: DateTime!
   updatedAt: DateTime!
+  albumArtists: [Artist!]!
   artists: [Artist!]!
   album: Album
   albumArts: [AlbumArt!]!
@@ -227,9 +227,9 @@ type Subscription {
   musicsAdded: [Music!]!
   musicsUpdated: [Music!]!
   musicsRemoved: [Int!]!
-  albumAdded: Album!
-  albumRemoved: Int!
+  albumsAdded: [Album!]!
   albumsUpdated: [Album!]!
+  albumsRemoved: [Int!]!
   albumUpdated(id: Int!): Album!
   leadArtistAdded: Artist!
   leadArtistRemoved: Int!

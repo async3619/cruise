@@ -1,4 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
+import _ from "lodash";
 import { i18n } from "i18next";
 import { z } from "zod";
 
@@ -26,9 +27,9 @@ import {
     UpdatePlaylistDocument,
     UpdatePlaylistMutation,
     UpdatePlaylistMutationVariables,
-    useAlbumAddedSubscription,
+    useAlbumsAddedSubscription,
     useAlbumQuery,
-    useAlbumRemovedSubscription,
+    useAlbumsRemovedSubscription,
     useAlbumsQuery,
     useArtistPortraitAddedSubscription,
     useArtistQuery,
@@ -52,6 +53,7 @@ import {
     ScanDocument,
     ScanMutation,
     ScanMutationVariables,
+    useAlbumUpdatedSubscription,
 } from "@queries";
 
 import { ApolloClient } from "@apollo/client";
@@ -162,9 +164,9 @@ export class Library {
             setAlbums(data.albums);
         }, [data, loading]);
 
-        useAlbumAddedSubscription({
+        useAlbumsAddedSubscription({
             onData: ({ data: { data } }) => {
-                if (!data?.albumAdded) {
+                if (!data?.albumsAdded) {
                     return;
                 }
 
@@ -173,14 +175,14 @@ export class Library {
                         return null;
                     }
 
-                    return [...albums, data.albumAdded];
+                    return [...albums, ...data.albumsAdded];
                 });
             },
         });
 
-        useAlbumRemovedSubscription({
+        useAlbumsRemovedSubscription({
             onData: ({ data: { data } }) => {
-                if (!data?.albumRemoved) {
+                if (!data?.albumsRemoved) {
                     return;
                 }
 
@@ -189,7 +191,9 @@ export class Library {
                         return null;
                     }
 
-                    return albums.filter(album => album.id !== data.albumRemoved);
+                    return _.differenceBy(albums, data.albumsRemoved, item => {
+                        return typeof item === "number" ? item : item.id;
+                    });
                 });
             },
         });
@@ -215,6 +219,17 @@ export class Library {
 
             setAlbum(data.album);
         }, [data, loading]);
+
+        useAlbumUpdatedSubscription({
+            variables: { id },
+            onData: ({ data: { data } }) => {
+                if (!data?.albumUpdated) {
+                    return;
+                }
+
+                setAlbum(data.albumUpdated);
+            },
+        });
 
         return {
             album,

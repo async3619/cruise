@@ -50,19 +50,19 @@ export class AlbumResolver {
         return this.albumService.updateAlbum(id, data);
     }
 
-    @Subscription(() => Album)
-    public async albumAdded() {
-        return this.albumService.subscribe("albumAdded");
-    }
-
-    @Subscription(() => Int)
-    public async albumRemoved() {
-        return this.albumService.subscribe("albumDeleted");
+    @Subscription(() => [Album])
+    public async albumsAdded() {
+        return this.albumService.subscribe("albumsAdded");
     }
 
     @Subscription(() => [Album])
     public async albumsUpdated() {
         return this.albumService.subscribe("albumsUpdated");
+    }
+
+    @Subscription(() => [Int])
+    public async albumsRemoved() {
+        return this.albumService.subscribe("albumsRemoved");
     }
 
     @Subscription(() => Album, {

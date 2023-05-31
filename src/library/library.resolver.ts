@@ -6,14 +6,18 @@ import { SearchResult } from "@main/library/models/search-result.dto";
 import { SearchSuggestion } from "@main/library/models/search-suggestion.dto";
 
 import type { Nullable } from "@common/types";
+import { LibraryScanningService } from "@main/library/library-scanning.service";
 
 @Resolver()
 export class LibraryResolver {
-    public constructor(@Inject(LibraryService) private readonly libraryService: LibraryService) {}
+    public constructor(
+        @Inject(LibraryService) private readonly libraryService: LibraryService,
+        @Inject(LibraryScanningService) private readonly scanningService: LibraryScanningService,
+    ) {}
 
     @Query(() => Boolean)
     public async needScan(): Promise<boolean> {
-        return this.libraryService.needScan();
+        return this.scanningService.needScan();
     }
 
     @Query(() => SearchResult)
@@ -31,7 +35,7 @@ export class LibraryResolver {
 
     @Mutation(() => Boolean)
     public async scan(): Promise<boolean> {
-        this.libraryService.scan().then();
+        this.scanningService.scan().then();
 
         return true;
     }
@@ -47,6 +51,6 @@ export class LibraryResolver {
 
     @Subscription(() => Boolean)
     public scanningStateChanged() {
-        return this.libraryService.subscribe("scanningStateChanged");
+        return this.scanningService.subscribe("scanningStateChanged");
     }
 }

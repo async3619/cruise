@@ -1,4 +1,3 @@
-import fs from "fs-extra";
 import { Repository } from "typeorm";
 
 import { forwardRef, Inject, Injectable } from "@nestjs/common";
@@ -12,12 +11,13 @@ import { MusicService } from "@main/music/music.service";
 import { ArtistService } from "@main/artist/artist.service";
 import { AlbumArtService } from "@main/album-art/album-art.service";
 import { LibraryService } from "@main/library/library.service";
+import { EnsureResult } from "@main/utils/types";
 
 export interface AlbumServicePubSub {
-    albumAdded: Album;
+    albumsAdded: Album[];
     albumUpdated: Album;
     albumsUpdated: Album[];
-    albumDeleted: number;
+    albumsRemoved: number[];
 }
 
 @Injectable()
@@ -38,7 +38,7 @@ export class AlbumService extends BaseService<Album, AlbumServicePubSub> {
         return allAlbums.filter(album => album.leadArtistIds.includes(artistId));
     }
 
-    public async ensure(albumName: string): Promise<[Album, boolean]> {
+    public async ensure(albumName: string): Promise<EnsureResult<Album>> {
         let created = false;
         let album = await this.albumRepository.findOne({
             where: {
@@ -60,42 +60,20 @@ export class AlbumService extends BaseService<Album, AlbumServicePubSub> {
             created = true;
         }
 
-        return [album, created];
+        return {
+            item: album,
+            created,
+        };
     }
 
-    public async updateAlbum(id: number, data: UpdateAlbumInput) {
+    public async updateAlbum(id: number, _: UpdateAlbumInput) {
         const album = await this.findById(id, ["artists", "leadArtists", "musics"]);
         if (!album) {
             throw new Error(`Album with id '${id}' not found`);
         }
 
-        // check if album art files exist
-        for (const albumArt of data.albumArts) {
-            if (!fs.existsSync(albumArt.path)) {
-                throw new Error(`Album art file '${albumArt.path}' does not exist`);
-            }
-        }
+        // TODO: Update album art
 
-        album.leadArtists = await this.artistService.bulkEnsure(data.albumArtists);
-        album.title = data.title;
-        album.albumArts = [];
-        for (const albumArt of data.albumArts) {
-            const item = await this.albumArtService.ensureFromPath(albumArt.path);
-            item.type = albumArt.type;
-            item.description = albumArt.description || "";
-
-            album.albumArts.push(item);
-        }
-
-        await this.musicService.bulkUpdate(album.musicIds, {
-            genre: data.genre,
-            year: data.year ? parseInt(data.year, 10) : null,
-            albumArts: album.albumArts,
-        });
-
-        const result = await this.albumRepository.save(album);
-        await this.libraryService.updateTracks(result);
-
-        return result;
+        return album;
     }
 }

@@ -1,5 +1,4 @@
-import _ from "lodash";
-import { In, Repository } from "typeorm";
+import { FindOptionsRelations, Like, Repository } from "typeorm";
 import * as path from "path";
 
 import { Audio } from "@async3619/merry-go-round";
@@ -37,16 +36,17 @@ export class MusicService extends BaseService<Music, MusicPubSub> {
         albumArts: AlbumArt[],
         album: Nullable<Album>,
         featuredArtists: Artist[],
+        leadArtists: Artist[],
     ) {
         const fileName = path.basename(filePath);
         const music = this.musicRepository.create();
         music.title = audio.title || fileName;
-        music.albumArtist = audio.albumArtist;
         music.genre = audio.genre;
         music.year = audio.year;
         music.track = audio.track;
         music.disc = audio.disc;
         music.duration = audio.duration;
+        music.albumArtists = leadArtists;
         music.path = filePath;
         music.albumArts = albumArts;
         music.album = album;
@@ -55,24 +55,23 @@ export class MusicService extends BaseService<Music, MusicPubSub> {
         return this.musicRepository.save(music);
     }
 
-    public async getMusicsByPaths<AllowEmpty extends boolean>(
-        targetPaths: string[],
-        allowEmpty: AllowEmpty,
-    ): Promise<AllowEmpty extends true ? Array<Music | undefined> : Music[]> {
-        const musics = await this.musicRepository.find({
-            where: {
-                path: In(targetPaths),
-            },
+    public async findByPath(
+        filePath: string,
+        relations?: FindOptionsRelations<Music> | Array<Exclude<keyof Music, number | symbol>>,
+    ) {
+        return this.musicRepository.findOne({
+            where: { path: filePath },
+            relations,
         });
+    }
 
-        const musicMap = _.keyBy(musics, "path");
-        return targetPaths.map(path => {
-            const music = musicMap[path];
-            if (!music && !allowEmpty) {
-                throw new Error(`Music with path '${path}' not found`);
-            }
-
-            return music;
+    public async findByDirectory(
+        directoryPath: string,
+        relations?: FindOptionsRelations<Music> | Array<Exclude<keyof Music, number | symbol>>,
+    ) {
+        return this.musicRepository.find({
+            where: { path: Like(`${directoryPath}${path.sep}%`) },
+            relations,
         });
     }
 }

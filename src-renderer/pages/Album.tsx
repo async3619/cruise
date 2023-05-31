@@ -1,6 +1,6 @@
 import _ from "lodash";
 import React from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 import PlayArrowRoundedIcon from "@mui/icons-material/PlayArrowRounded";
@@ -8,7 +8,7 @@ import ShuffleRoundedIcon from "@mui/icons-material/ShuffleRounded";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import QueueMusicIcon from "@mui/icons-material/QueueMusic";
 
-import { AlbumArtType } from "@queries";
+import { AlbumArtType, useAlbumsRemovedSubscription } from "@queries";
 
 import { usePlayer } from "@/components/Player/Provider";
 import { useLibrary, usePlaylists } from "@components/Library/Provider";
@@ -27,6 +27,7 @@ export function Album({}: AlbumProps) {
     const { id: idParam } = useParams<{ id: string }>();
     const player = usePlayer();
     const playlists = usePlaylists();
+    const navigate = useNavigate();
     const { t } = useTranslation();
     const { selectAll } = useLayoutMusics();
     if (!idParam) {
@@ -39,6 +40,20 @@ export function Album({}: AlbumProps) {
     }
 
     const { album, loading } = library.useAlbum(id);
+    useAlbumsRemovedSubscription({
+        onData: ({ data: { data } }) => {
+            if (!data?.albumsRemoved) {
+                return;
+            }
+
+            console.log(data);
+            if (!data.albumsRemoved.includes(id)) {
+                return;
+            }
+
+            navigate("/albums");
+        },
+    });
 
     if (loading || !album) {
         return (

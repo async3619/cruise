@@ -9,8 +9,10 @@ fragment MinimalMusic on Music {
     duration
     year
     genre
-    albumArtist
     artists {
+        ...ArtistIdName
+    }
+    albumArtists {
         ...ArtistIdName
     }
     album {

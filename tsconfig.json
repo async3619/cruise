@@ -16,7 +16,7 @@
         "emitDecoratorMetadata": true,
         "downlevelIteration": true,
         "experimentalDecorators": true,
-        "isolatedModules": true,
+        "isolatedModules": false,
         "jsx": "react-jsx",
         "baseUrl": ".",
         "paths": {

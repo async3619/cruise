@@ -33,10 +33,6 @@ export class Music extends BaseEntity {
 
     @Field(() => String, { nullable: true })
     @Column({ type: "text", nullable: true })
-    public albumArtist?: Nullable<string>;
-
-    @Field(() => String, { nullable: true })
-    @Column({ type: "text", nullable: true })
     public genre?: Nullable<string>;
 
     @Field(() => Int, { nullable: true })
@@ -66,6 +62,15 @@ export class Music extends BaseEntity {
     @Field(() => Date)
     @UpdateDateColumn()
     public updatedAt!: Date;
+
+    // Music[] => Artist[]
+    @Field(() => [Artist])
+    @ManyToMany(() => Artist, item => item.albumMusics, { cascade: true })
+    @JoinTable()
+    public albumArtists!: Artist[];
+
+    @RelationId((item: Music) => item.albumArtists)
+    public albumArtistIds!: Artist["id"][];
 
     // Music[] => Artist[]
     @Field(() => [Artist])

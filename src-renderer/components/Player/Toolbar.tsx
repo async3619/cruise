@@ -18,6 +18,7 @@ import { AlbumArt, Controls, Information, NowPlaying, Root } from "@components/P
 import { formatSeconds } from "@utils/formatTime";
 
 import { RepeatMode } from "@queries";
+import { formatArtistName } from "@utils/formatArtistName";
 
 export interface PlayerToolbarProps {}
 
@@ -109,7 +110,7 @@ export const PlayerToolbar = React.forwardRef(({}: PlayerToolbarProps, ref: Reac
                                 {player.playingMusic.title}
                             </Typography>
                             <Typography variant="body2" fontSize="0.8rem" color="text.secondary" lineHeight={1}>
-                                {player.playingMusic.albumArtist}
+                                {formatArtistName(player.playingMusic.albumArtists)}
                             </Typography>
                         </Information>
                     </>

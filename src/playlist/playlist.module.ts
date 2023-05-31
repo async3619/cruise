@@ -12,5 +12,6 @@ import { Playlist } from "@main/playlist/models/playlist.model";
 @Module({
     imports: [TypeOrmModule.forFeature([Playlist, PlaylistRelation]), MusicModule],
     providers: [PlaylistService, PlaylistResolver],
+    exports: [PlaylistService],
 })
 export class PlaylistModule {}
