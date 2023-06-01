@@ -3,11 +3,10 @@ import React from "react";
 import { Box } from "@mui/material";
 import PlayArrowRoundedIcon from "@mui/icons-material/PlayArrowRounded";
 
+import { useMusicSelection } from "@components/MediaSelection/Provider";
 import { usePlayer } from "@components/Player/Provider";
 import { VirtualizedList } from "@components/VirtualizedList";
 import { AlbumArt, Cell, Item, Label, LinkLabel, SelectedItem } from "@components/MusicList.styles";
-
-import { useLayoutMusics } from "@components/Layout";
 
 import { ArtistIdNameFragment, MinimalMusicFragment } from "@queries";
 
@@ -19,11 +18,11 @@ export interface MusicListProps {
 
 export function MusicList({ items, withTrackNumber, selectable }: MusicListProps) {
     const { playPlaylist, playingMusic } = usePlayer();
-    const layoutMusics = useLayoutMusics();
+    const musicSelection = useMusicSelection();
 
     React.useEffect(() => {
-        layoutMusics.setItems(items);
-    }, [layoutMusics, items]);
+        musicSelection.setItems(items);
+    }, [musicSelection, items]);
 
     const handlePlay = (index: number) => {
         playPlaylist(items, index);
@@ -34,9 +33,9 @@ export function MusicList({ items, withTrackNumber, selectable }: MusicListProps
         }
 
         if (!shift) {
-            layoutMusics.selectMusic(index);
+            musicSelection.toggleItem(index);
         } else {
-            const selectedIndices = [...layoutMusics.selectedIndices];
+            const selectedIndices = [...musicSelection.selectedIndices];
 
             // get the closest selected index using lodash
             const closestIndex =
@@ -50,7 +49,7 @@ export function MusicList({ items, withTrackNumber, selectable }: MusicListProps
             const end = Math.max(closestIndex, index);
             const targetIndices = Array.from({ length: end - start + 1 }, (_, i) => start + i);
 
-            layoutMusics.selectMusic(targetIndices);
+            musicSelection.toggleItem(targetIndices);
         }
     };
 
@@ -76,7 +75,7 @@ export function MusicList({ items, withTrackNumber, selectable }: MusicListProps
     return (
         <VirtualizedList rowHeight={52} items={items}>
             {(virtualItem, item) => {
-                const isSelected = layoutMusics.selectedIndices.includes(virtualItem.index) && selectable;
+                const isSelected = musicSelection.selectedIndices.includes(virtualItem.index) && selectable;
                 const ItemComponent = isSelected ? SelectedItem : Item;
 
                 return (

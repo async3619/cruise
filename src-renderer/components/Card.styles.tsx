@@ -7,6 +7,7 @@ import { ImageView } from "@components/ui/ImageView";
 
 import { backgroundColors } from "@styles/theme";
 import { ExtendComponentProps } from "@utils/types";
+import { css } from "@emotion/react";
 
 export const Image = styled(ImageView)`
     box-shadow: ${({ theme }) => theme.shadows[4]};
@@ -53,7 +54,22 @@ export const PlayButton = styled(Fab)`
     transform-origin: center center;
 `;
 
-export const Root = styled(ButtonBase)<ExtendComponentProps<typeof ButtonBase, { component: "div" | "span" }>>`
+export const CheckboxWrapper = styled.div`
+    border-bottom-right-radius: 4px;
+    border-top-left-radius: 4px;
+
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    opacity: 0;
+    background: rgba(0, 0, 0, 0.5);
+
+    transition: ${({ theme }) => theme.transitions.create(["opacity"])};
+`;
+
+type RootProps = ExtendComponentProps<typeof ButtonBase, { component: "div" | "span"; selected?: boolean }>;
+export const Root = styled(({ selected: _, ...props }: RootProps) => <ButtonBase {...props} />)<RootProps>`
     min-width: 0;
     width: 190px;
 
@@ -73,11 +89,21 @@ export const Root = styled(ButtonBase)<ExtendComponentProps<typeof ButtonBase, {
         })};
 
     ${({ theme }) => theme.getColorSchemeSelector("dark")} {
-        background-color: ${backgroundColors["900"]};
+        background-color: ${({ selected }) => (selected ? backgroundColors["700"] : backgroundColors["900"])};
     }
 
+    ${({ selected, theme }) =>
+        selected
+            ? css`
+                  ${Image} {
+                      box-shadow: ${theme.shadows[12]};
+                  }
+              `
+            : ""}
+
     &:hover,
-    &:focus {
+    &:focus,
+    &:focus-within {
         ${({ theme }) => theme.getColorSchemeSelector("dark")} {
             background-color: ${backgroundColors["700"]};
         }
@@ -93,6 +119,10 @@ export const Root = styled(ButtonBase)<ExtendComponentProps<typeof ButtonBase, {
         ${PlayButton} {
             opacity: 1;
             transform: scale(1);
+        }
+
+        ${CheckboxWrapper} {
+            opacity: 1;
         }
     }
 `;

@@ -9,13 +9,13 @@ import ShuffleRoundedIcon from "@mui/icons-material/ShuffleRounded";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
 
+import { useMusicSelection } from "@components/MediaSelection/Provider";
 import { useLibrary } from "@components/Library/Provider";
 import { usePlayer } from "@components/Player/Provider";
 import { ButtonItem, ShrinkHeaderPage } from "@components/Page/ShrinkHeader";
 import { MusicList } from "@components/MusicList";
-import { MusicToolbar } from "@components/Layout/MusicToolbar";
+import { SelectionToolbar } from "@components/Layout/SelectionToolbar";
 import { Checkbox } from "@components/ui/Checkbox";
-import { useLayoutMusics } from "@components/Layout";
 
 import { MinimalMusicFragment, MinimalPlaylistFragment } from "@queries";
 
@@ -31,7 +31,7 @@ export interface PlaylistPageProps {
 
 export function PlaylistPage({ title, playlist, musics, onDelete }: PlaylistPageProps) {
     const { t } = useTranslation();
-    const { selectAll, setItems } = useLayoutMusics();
+    const { selectAll, setItems } = useMusicSelection();
     const player = usePlayer();
     const library = useLibrary();
 
@@ -143,7 +143,7 @@ export function PlaylistPage({ title, playlist, musics, onDelete }: PlaylistPage
             buttons={buttons}
             imageSrc={collageSrc}
         >
-            <MusicToolbar innerPadding onDelete={onDelete}>
+            <SelectionToolbar type="music" innerPadding onDelete={onDelete}>
                 <Checkbox
                     disabled={!musics?.length}
                     checked={false}
@@ -151,7 +151,7 @@ export function PlaylistPage({ title, playlist, musics, onDelete }: PlaylistPage
                     label="전체 선택"
                     onChange={handleSelectAll}
                 />
-            </MusicToolbar>
+            </SelectionToolbar>
             {children}
         </ShrinkHeaderPage>
     );

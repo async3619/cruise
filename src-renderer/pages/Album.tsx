@@ -11,10 +11,10 @@ import QueueMusicIcon from "@mui/icons-material/QueueMusic";
 import { AlbumArtType, useAlbumsRemovedSubscription } from "@queries";
 
 import { usePlayer } from "@/components/Player/Provider";
+import { useMusicSelection } from "@components/MediaSelection/Provider";
 import { useLibrary, usePlaylists } from "@components/Library/Provider";
 import { ShrinkHeaderPage } from "@components/Page/ShrinkHeader";
-import { useLayoutMusics } from "@components/Layout";
-import { MusicToolbar } from "@components/Layout/MusicToolbar";
+import { SelectionToolbar } from "@components/Layout/SelectionToolbar";
 import { MusicList } from "@components/MusicList";
 import { Checkbox } from "@components/ui/Checkbox";
 
@@ -29,7 +29,7 @@ export function Album({}: AlbumProps) {
     const playlists = usePlaylists();
     const navigate = useNavigate();
     const { t } = useTranslation();
-    const { selectAll } = useLayoutMusics();
+    const { selectAll } = useMusicSelection();
     if (!idParam) {
         throw new Error("id is required");
     }
@@ -126,9 +126,9 @@ export function Album({}: AlbumProps) {
                 },
             ]}
         >
-            <MusicToolbar innerPadding gutterBottom>
+            <SelectionToolbar type="music" innerPadding gutterBottom>
                 <Checkbox checked={false} size="small" label="전체 선택" onChange={handleSelectAll} />
-            </MusicToolbar>
+            </SelectionToolbar>
             <MusicList selectable withTrackNumber items={album.musics} />
         </ShrinkHeaderPage>
     );

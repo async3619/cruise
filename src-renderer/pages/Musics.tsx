@@ -23,11 +23,11 @@ export function Musics({}: MusicsProps) {
     }, [musics, loading, player]);
 
     if (loading || !musics) {
-        return <LibraryPage loading title={t("pageTitle.musics")} />;
+        return <LibraryPage toolbarType="music" loading title={t("pageTitle.musics")} />;
     }
 
     return (
-        <LibraryPage title={t("pageTitle.musics")} onShuffleAll={handleShuffleAll}>
+        <LibraryPage toolbarType="music" title={t("pageTitle.musics")} onShuffleAll={handleShuffleAll}>
             <MusicList selectable items={musics} />
         </LibraryPage>
     );

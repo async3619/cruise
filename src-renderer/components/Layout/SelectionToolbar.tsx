@@ -1,12 +1,13 @@
 import React from "react";
 import useMeasure from "react-use-measure";
+import { mergeRefs } from "react-merge-refs";
 
 import { Box, Stack, Typography } from "@mui/material";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import QueueMusicIcon from "@mui/icons-material/QueueMusic";
 import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
 
-import { useLayoutMusics } from "@components/Layout";
+import { useMediaSelection } from "@components/MediaSelection/Provider";
 import { useLibrary, usePlaylists } from "@components/Library/Provider";
 import { usePlayer } from "@components/Player/Provider";
 import { useShrinkHeader } from "@components/Page/ShrinkHeader";
@@ -14,20 +15,32 @@ import { MenuItem } from "@components/Menu";
 import { Button } from "@components/ui/Button";
 import { Checkbox } from "@components/ui/Checkbox";
 
-import { MinimalMusicFragment } from "@queries";
+import { MinimalAlbumFragment, MinimalMusicFragment } from "@queries";
+import { getMusics, isAlbumArray, isMusicArray } from "@utils/media";
 
-import { Children, ChildrenWrapper, Root } from "@components/Layout/MusicToolbar.styles";
-import { mergeRefs } from "react-merge-refs";
+import { Children, ChildrenWrapper, Root } from "@components/Layout/SelectionToolbar.styles";
 
-export interface MusicToolbarProps {
+export interface BaseSelectionToolbarProps {
     children?: React.ReactNode;
-    onDelete?(indices: ReadonlyArray<number>, musics: ReadonlyArray<MinimalMusicFragment>): void;
     gutterBottom?: boolean;
     innerPadding?: boolean;
 }
 
-export function MusicToolbar({ children, onDelete, gutterBottom, innerPadding }: MusicToolbarProps) {
-    const { selectedIndices, cancelAll, selectedMusics, selectAll, musics } = useLayoutMusics();
+export interface MusicSelectionToolbarProps extends BaseSelectionToolbarProps {
+    type: "music";
+    onDelete?(indices: ReadonlyArray<number>, musics: ReadonlyArray<MinimalMusicFragment>): void;
+}
+export interface AlbumSelectionToolbarProps extends BaseSelectionToolbarProps {
+    type: "album";
+    onDelete?(indices: ReadonlyArray<number>, albums: ReadonlyArray<MinimalAlbumFragment>): void;
+}
+
+export type SelectionToolbarProps = MusicSelectionToolbarProps | AlbumSelectionToolbarProps;
+
+export function SelectionToolbar(props: SelectionToolbarProps) {
+    const { children, onDelete, gutterBottom, innerPadding, type } = props;
+    const mediaSelection = useMediaSelection();
+    const { selectedIndices, cancelAll, selectedItem, selectAll, items: musics } = mediaSelection[type];
     const shrinkHeader = useShrinkHeader();
     const playlists = usePlaylists();
     const player = usePlayer();
@@ -54,6 +67,22 @@ export function MusicToolbar({ children, onDelete, gutterBottom, innerPadding }:
         },
         [cancelAll, selectAll],
     );
+    const handleDelete = React.useCallback(
+        (indices: typeof selectedIndices, items: typeof selectedItem) => {
+            if (typeof onDelete !== "function") {
+                return;
+            }
+
+            if (isAlbumArray(items) && type === "album") {
+                onDelete(indices, items);
+            }
+
+            if (isMusicArray(items) && type === "music") {
+                onDelete(indices, items);
+            }
+        },
+        [onDelete, type],
+    );
 
     React.useEffect(() => {
         if (!shrinkHeader) {
@@ -76,14 +105,25 @@ export function MusicToolbar({ children, onDelete, gutterBottom, innerPadding }:
 
     const addMenuItems = React.useMemo<MenuItem[]>(() => {
         const addToPlaylist = (playlistId?: number) => {
-            if (!selectedMusics.length) {
+            if (!selectedItem.length) {
                 return;
             }
 
-            if (typeof playlistId === "number") {
-                library.addMusicsToPlaylist(playlistId, selectedMusics);
-            } else {
-                player.addMusicsToPlaylist(selectedMusics);
+            if (isAlbumArray(selectedItem)) {
+                const musics = getMusics(selectedItem);
+                if (typeof playlistId === "number") {
+                    library.addMusicsToPlaylist(playlistId, musics);
+                } else {
+                    player.addMusicsToPlaylist(musics);
+                }
+            }
+
+            if (isMusicArray(selectedItem)) {
+                if (typeof playlistId === "number") {
+                    library.addMusicsToPlaylist(playlistId, selectedItem);
+                } else {
+                    player.addMusicsToPlaylist(selectedItem);
+                }
             }
 
             cancelAll();
@@ -102,11 +142,19 @@ export function MusicToolbar({ children, onDelete, gutterBottom, innerPadding }:
                 label: "새 재생 목록",
                 icon: AddRoundedIcon,
                 onClick: () => {
-                    if (!selectedMusics.length) {
+                    if (!selectedItem.length) {
                         return;
                     }
 
-                    library.createPlaylistWithMusics(selectedMusics);
+                    if (isAlbumArray(selectedItem)) {
+                        const musics = getMusics(selectedItem);
+                        library.createPlaylistWithMusics(musics);
+                    }
+
+                    if (isMusicArray(selectedItem)) {
+                        library.createPlaylistWithMusics(selectedItem);
+                    }
+
                     cancelAll();
                 },
             },
@@ -117,7 +165,7 @@ export function MusicToolbar({ children, onDelete, gutterBottom, innerPadding }:
                 onClick: () => addToPlaylist(playlist.id),
             })) || []),
         ];
-    }, [selectedMusics, library, player, playlists, cancelAll]);
+    }, [selectedItem, library, player, playlists, cancelAll]);
 
     const styles: React.CSSProperties = {};
     const childrenStyles: React.CSSProperties = {};
@@ -177,7 +225,7 @@ export function MusicToolbar({ children, onDelete, gutterBottom, innerPadding }:
                             size="small"
                             variant="contained"
                             color="inherit"
-                            onClick={() => onDelete(selectedIndices, selectedMusics)}
+                            onClick={() => handleDelete(selectedIndices, selectedItem)}
                             startIcon={<DeleteRoundedIcon />}
                         >
                             목록에서 삭제
