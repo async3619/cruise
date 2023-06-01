@@ -20,7 +20,7 @@ export const CONFIG_SCHEMA = z.object({
     repeatMode: z.nativeEnum(RepeatMode),
     volume: z.number().min(0).max(1),
     muted: z.boolean(),
-    language: z.string().optional(),
+    language: z.string().optional().nullish(),
     lastPosition: z
         .object({
             x: z.number(),
@@ -67,14 +67,15 @@ export class ConfigService {
         }
 
         const data = await fs.readFile(CONFIG_FILE_PATH, "utf8");
-        const config = JSON.parse(data);
-        if (!isConfig(config)) {
-            if (fs.existsSync(CONFIG_FILE_PATH)) {
-                await fs.unlink(CONFIG_FILE_PATH);
-            }
+        let config: Config;
 
-            await this.setConfig(DEFAULT_CONFIG);
-            return DEFAULT_CONFIG;
+        try {
+            config = JSON.parse(data);
+            if (!isConfig(config)) {
+                config = await this.ensureConfig();
+            }
+        } catch {
+            config = await this.ensureConfig();
         }
 
         return _.merge({}, DEFAULT_CONFIG, config);
@@ -92,6 +93,15 @@ export class ConfigService {
 
         assertConfig(config);
         await fs.writeJson(CONFIG_FILE_PATH, config, { spaces: 4 });
+    }
+
+    private async ensureConfig() {
+        if (fs.existsSync(CONFIG_FILE_PATH)) {
+            await fs.unlink(CONFIG_FILE_PATH);
+        }
+
+        await this.setConfig(DEFAULT_CONFIG);
+        return DEFAULT_CONFIG;
     }
 
     public async getAvailableLanguages(): Promise<Language[]> {
