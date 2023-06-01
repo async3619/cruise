@@ -35,14 +35,8 @@ query artist($id: Int!) {
     }
 }
 
-subscription leadArtistAdded {
-    leadArtistAdded {
-        ...MinimalArtist
-    }
-}
-
-subscription leadArtistRemoved {
-    leadArtistRemoved
+subscription artistsDataUpdated {
+    artistsDataUpdated
 }
 
 subscription artistPortraitAdded($id: Int!) {

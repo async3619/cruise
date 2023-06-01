@@ -30,14 +30,9 @@ export class ArtistResolver {
         return this.artistService.findLeadArtists();
     }
 
-    @Subscription(() => Artist)
-    public async leadArtistAdded(): Promise<AsyncIterator<Artist>> {
-        return this.artistService.subscribe("leadArtistAdded");
-    }
-
-    @Subscription(() => Int)
-    public async leadArtistRemoved() {
-        return this.artistService.subscribe("leadArtistRemoved");
+    @Subscription(() => Boolean)
+    public async artistsDataUpdated() {
+        return this.artistService.subscribe("artistsDataUpdated");
     }
 
     @Subscription(() => Artist, {

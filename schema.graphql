@@ -231,8 +231,7 @@ type Subscription {
   albumsUpdated: [Album!]!
   albumsRemoved: [Int!]!
   albumUpdated(id: Int!): Album!
-  leadArtistAdded: Artist!
-  leadArtistRemoved: Int!
+  artistsDataUpdated: Boolean!
   artistPortraitAdded(artistId: Int!): Artist!
   maximizedStateChanged: Boolean!
   scanningStateChanged: Boolean!

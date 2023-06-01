@@ -28,12 +28,13 @@ export interface WatcherEventResult {
 
     createdAlbumIds?: number[];
     createdMusicIds?: number[];
+    createdArtistIds?: number[];
 
     updatedAlbumIds?: number[];
     updatedMusicIds?: number[];
+    updatedArtistIds?: number[];
 
     deletedMusicIds?: number[];
-    deletedArtistIds?: number[];
     deletedAlbumIds?: number[];
 }
 
@@ -102,10 +103,13 @@ export class LibraryScanningService
             return {};
         }
 
-        const { audio, albumArts, album, featuredArtists, leadArtists, result } = await this.loadFromFile(targetPath);
+        const { audio, albumArts, album, featuredArtists, leadArtists, result, createdArtists, updatedArtists } =
+            await this.loadFromFile(targetPath);
 
         music = await this.musicService.create(audio, targetPath, albumArts, album, featuredArtists, leadArtists);
         result.createdMusicIds = [music.id];
+        result.createdArtistIds = createdArtists.map(artist => artist.id);
+        result.updatedArtistIds = updatedArtists.map(artist => artist.id);
 
         return result;
     }
@@ -167,7 +171,8 @@ export class LibraryScanningService
             return {};
         }
 
-        const { audio, albumArts, album, featuredArtists, leadArtists, result } = await this.loadFromFile(targetPath);
+        const { audio, albumArts, album, featuredArtists, leadArtists, result, createdArtists, updatedArtists } =
+            await this.loadFromFile(targetPath);
         const oldAlbum = music.album;
 
         music = await this.musicService.update(music.id, {
@@ -184,10 +189,13 @@ export class LibraryScanningService
         });
 
         if (oldAlbum) {
-            const [updatedAlbum, albumState] = await this.updateAlbum(oldAlbum.id);
+            const [updatedAlbum, albumState, updatedArtistIds] = await this.updateAlbum(oldAlbum.id);
             if (albumState === ObjectState.Deleted) {
                 result.deletedAlbumIds ??= [];
                 result.deletedAlbumIds.push(oldAlbum.id);
+
+                result.updatedArtistIds ??= [];
+                result.updatedArtistIds.push(...updatedArtistIds);
             } else {
                 result.updatedAlbumIds ??= [];
                 result.updatedAlbumIds.push(updatedAlbum.id);
@@ -197,6 +205,8 @@ export class LibraryScanningService
         return {
             ...result,
             updatedMusicIds: [music.id],
+            createdArtistIds: createdArtists.map(artist => artist.id),
+            updatedArtistIds: updatedArtists.map(artist => artist.id),
         };
     }
     private async onFileRenamed(event: nsfw.RenamedFileEvent): Promise<WatcherEventResult> {
@@ -233,8 +243,16 @@ export class LibraryScanningService
     }
 
     private async flushEventResult(result: WatcherEventResult) {
-        const { createdMusicIds, createdAlbumIds, updatedMusicIds, updatedAlbumIds, deletedMusicIds, deletedAlbumIds } =
-            result;
+        const {
+            createdMusicIds,
+            createdAlbumIds,
+            updatedMusicIds,
+            updatedAlbumIds,
+            deletedMusicIds,
+            deletedAlbumIds,
+            createdArtistIds,
+            updatedArtistIds,
+        } = result;
 
         if (createdMusicIds?.length) {
             const musics = await this.musicService.findByIds(createdMusicIds);
@@ -244,6 +262,10 @@ export class LibraryScanningService
         if (createdAlbumIds?.length) {
             const albums = await this.albumService.findByIds(createdAlbumIds);
             await this.albumService.publish("albumsAdded", albums);
+        }
+
+        if (createdArtistIds?.length || updatedArtistIds?.length) {
+            await this.artistService.publish("artistsDataUpdated", true);
         }
 
         if (updatedMusicIds?.length) {
@@ -374,11 +396,11 @@ export class LibraryScanningService
         this.watchers.length = 0;
     }
 
-    private async updateAlbum(albumId: number): Promise<[Album, ObjectState]> {
+    private async updateAlbum(albumId: number): Promise<[Album, ObjectState, number[]]> {
         const album = await this.albumService.findById(albumId);
         if (album.musicIds.length === 0) {
             await this.albumService.delete(album.id);
-            return [album, ObjectState.Deleted];
+            return [album, ObjectState.Deleted, album.leadArtistIds];
         }
 
         const musics = await this.musicService.findByIds(album.musicIds, ["artists", "albumArtists"]);
@@ -390,7 +412,7 @@ export class LibraryScanningService
             leadArtists,
         });
 
-        return [album, ObjectState.Updated];
+        return [album, ObjectState.Updated, []];
     }
     private async loadFromFile(targetPath: string) {
         const result: WatcherEventResult = {};
@@ -422,6 +444,9 @@ export class LibraryScanningService
             }
         }
 
+        const createdArtists = _.chain(artists).filter("created").map("item").value();
+        const updatedArtists = _.chain(artists).map("item").differenceBy(createdArtists, "id").value();
+
         return {
             result,
             audio,
@@ -429,6 +454,8 @@ export class LibraryScanningService
             featuredArtists,
             leadArtists,
             album,
+            createdArtists,
+            updatedArtists,
         };
     }
 }

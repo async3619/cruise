@@ -33,8 +33,7 @@ import {
     useAlbumsQuery,
     useArtistPortraitAddedSubscription,
     useArtistQuery,
-    useLeadArtistAddedSubscription,
-    useLeadArtistRemovedSubscription,
+    useArtistsDataUpdatedSubscription,
     useLeadArtistsQuery,
     useMusicsAddedSubscription,
     useMusicsQuery,
@@ -251,35 +250,9 @@ export class Library {
             setArtists(data.leadArtists);
         }, [data, loading]);
 
-        useLeadArtistAddedSubscription({
-            onData: ({ data: { data } }) => {
-                if (!data?.leadArtistAdded) {
-                    return;
-                }
-
-                setArtists(artists => {
-                    if (!artists) {
-                        return null;
-                    }
-
-                    return [...artists, data.leadArtistAdded];
-                });
-            },
-        });
-
-        useLeadArtistRemovedSubscription({
-            onData: ({ data: { data } }) => {
-                if (!data?.leadArtistRemoved) {
-                    return;
-                }
-
-                setArtists(artists => {
-                    if (!artists) {
-                        return null;
-                    }
-
-                    return artists.filter(artist => artist.id !== data.leadArtistRemoved);
-                });
+        useArtistsDataUpdatedSubscription({
+            onData: () => {
+                return refetch();
             },
         });
 

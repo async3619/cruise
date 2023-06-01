@@ -13,13 +13,8 @@ import { AlbumArtService } from "@main/album-art/album-art.service";
 import { EnsureResult } from "@main/utils/types";
 
 interface ArtistPubSub {
-    artistsAdded: Artist[];
-
     artistPortraitAdded: Artist;
-
-    leadArtistAdded: Artist;
-    leadArtistsAdded: Artist[];
-    leadArtistRemoved: number;
+    artistsDataUpdated: boolean;
 }
 
 @Injectable()
