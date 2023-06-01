@@ -1,4 +1,5 @@
 import React from "react";
+import useMeasure from "react-use-measure";
 
 import { Box, Stack, Typography } from "@mui/material";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
@@ -16,27 +17,32 @@ import { Checkbox } from "@components/ui/Checkbox";
 import { MinimalMusicFragment } from "@queries";
 
 import { Children, ChildrenWrapper, Root } from "@components/Layout/MusicToolbar.styles";
+import { mergeRefs } from "react-merge-refs";
 
 export interface MusicToolbarProps {
     children?: React.ReactNode;
     onDelete?(indices: ReadonlyArray<number>, musics: ReadonlyArray<MinimalMusicFragment>): void;
+    gutterBottom?: boolean;
+    innerPadding?: boolean;
 }
 
-export function MusicToolbar({ children, onDelete }: MusicToolbarProps) {
+export function MusicToolbar({ children, onDelete, gutterBottom, innerPadding }: MusicToolbarProps) {
     const { selectedIndices, cancelAll, selectedMusics, selectAll, musics } = useLayoutMusics();
-    const { subscribe, unsubscribe } = useShrinkHeader();
+    const shrinkHeader = useShrinkHeader();
     const playlists = usePlaylists();
     const player = usePlayer();
     const library = useLibrary();
     const [displayCount, setDisplayCount] = React.useState(0);
-    const rootRef = React.useRef<HTMLDivElement>(null);
+    const rootDomRef = React.useRef<HTMLDivElement>(null);
+    const [ref, { height: toolbarHeight }] = useMeasure();
+    const rootRef = mergeRefs([ref, rootDomRef]);
 
     const handleHeightChange = React.useCallback((height: number) => {
-        if (!rootRef.current) {
+        if (!rootDomRef.current) {
             return;
         }
 
-        rootRef.current.style.top = `${height}px`;
+        rootDomRef.current.style.top = `${height}px`;
     }, []);
     const handleCheckAllChange = React.useCallback(
         (_: any, checked: boolean) => {
@@ -50,12 +56,16 @@ export function MusicToolbar({ children, onDelete }: MusicToolbarProps) {
     );
 
     React.useEffect(() => {
-        subscribe(handleHeightChange);
+        if (!shrinkHeader) {
+            return;
+        }
+
+        shrinkHeader.subscribe(handleHeightChange);
 
         return () => {
-            unsubscribe(handleHeightChange);
+            shrinkHeader.unsubscribe(handleHeightChange);
         };
-    }, [handleHeightChange, subscribe, unsubscribe]);
+    }, [handleHeightChange, shrinkHeader]);
     React.useEffect(() => {
         if (!selectedIndices.length) {
             return;
@@ -110,10 +120,22 @@ export function MusicToolbar({ children, onDelete }: MusicToolbarProps) {
     }, [selectedMusics, library, player, playlists, cancelAll]);
 
     const styles: React.CSSProperties = {};
+    const childrenStyles: React.CSSProperties = {};
+
     if (selectedIndices.length) {
         styles.zIndex = 100;
         styles.opacity = 1;
         styles.pointerEvents = "auto";
+    }
+
+    if (!gutterBottom) {
+        styles.marginBottom = 0;
+    }
+
+    if (!innerPadding) {
+        childrenStyles.paddingLeft = 0;
+        childrenStyles.paddingRight = 0;
+        childrenStyles.height = toolbarHeight || "auto";
     }
 
     const isIndeterminate = selectedIndices.length > 0 && selectedIndices.length < (musics?.length ?? 0);
@@ -123,7 +145,7 @@ export function MusicToolbar({ children, onDelete }: MusicToolbarProps) {
     return (
         <>
             <ChildrenWrapper>
-                <Children>{children}</Children>
+                <Children style={childrenStyles}>{children}</Children>
             </ChildrenWrapper>
             <Root ref={rootRef} style={styles}>
                 <Checkbox

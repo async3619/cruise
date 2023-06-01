@@ -143,7 +143,7 @@ export function PlaylistPage({ title, playlist, musics, onDelete }: PlaylistPage
             buttons={buttons}
             imageSrc={collageSrc}
         >
-            <MusicToolbar onDelete={onDelete}>
+            <MusicToolbar innerPadding onDelete={onDelete}>
                 <Checkbox
                     disabled={!musics?.length}
                     checked={false}

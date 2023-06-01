@@ -126,7 +126,7 @@ export function Album({}: AlbumProps) {
                 },
             ]}
         >
-            <MusicToolbar>
+            <MusicToolbar innerPadding gutterBottom>
                 <Checkbox checked={false} size="small" label="전체 선택" onChange={handleSelectAll} />
             </MusicToolbar>
             <MusicList selectable withTrackNumber items={album.musics} />

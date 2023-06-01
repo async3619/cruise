@@ -35,12 +35,7 @@ export interface ShrinkHeaderContextValue {
 export const ShrinkHeaderContext = React.createContext<ShrinkHeaderContextValue | null>(null);
 
 export function useShrinkHeader() {
-    const context = React.useContext(ShrinkHeaderContext);
-    if (!context) {
-        throw new Error("useShrinkHeader must be used within a ShrinkHeaderPage");
-    }
-
-    return context;
+    return React.useContext(ShrinkHeaderContext);
 }
 
 class ShrinkHeaderPageImpl extends React.Component<ShrinkHeaderPageProps, ShrinkHeaderPageStates> {

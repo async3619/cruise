@@ -14,6 +14,9 @@ export interface PageProps {
     headerPosition?: "fixed" | "sticky";
     headerRef?: React.Ref<HTMLDivElement>;
     renderHeader?(title?: string): React.ReactNode;
+    componentProps?: {
+        title?: React.ComponentProps<typeof Typography>;
+    };
 }
 
 export function Page({
@@ -24,6 +27,7 @@ export function Page({
     headerPosition = "sticky",
     headerRef,
     denseHeaderMargin = false,
+    componentProps,
 }: PageProps) {
     const [ref, { height: headerHeight }] = useMeasure();
     const [initialHeight, setInitialHeight] = React.useState<number | null>(null);
@@ -56,7 +60,7 @@ export function Page({
     let header: React.ReactNode = (
         <HeaderComponent ref={mergeRefs(headerRefs)} style={headerStyle}>
             {title && !renderHeader && (
-                <Typography variant="h2" fontSize="2rem" lineHeight={1}>
+                <Typography variant="h2" fontSize="2rem" lineHeight={1} {...componentProps?.title}>
                     {title}
                 </Typography>
             )}

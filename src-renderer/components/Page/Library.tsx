@@ -8,6 +8,7 @@ import { Page } from "@components/Page";
 import { Root } from "@components/Page/Library.styles";
 
 import { Button } from "@components/ui/Button";
+import { MusicToolbar } from "@components/Layout/MusicToolbar";
 
 export interface LibraryPageProps {
     children?: React.ReactNode;
@@ -23,18 +24,20 @@ export function LibraryPage({ children, title, loading, onShuffleAll }: LibraryP
         (title?: string) => {
             return (
                 <Root>
-                    <Typography variant="h2" fontSize="2rem" lineHeight={1} sx={{ mb: 3 }}>
+                    <Typography variant="h2" fontSize="2rem" lineHeight={1} sx={{ mb: 2 }}>
                         <span>{title}</span>
                     </Typography>
-                    <Button
-                        startIcon={<ShuffleRoundedIcon fontSize="small" />}
-                        variant="contained"
-                        size="small"
-                        disabled={loading}
-                        onClick={onShuffleAll}
-                    >
-                        <span>{t("shuffle_all")}</span>
-                    </Button>
+                    <MusicToolbar>
+                        <Button
+                            startIcon={<ShuffleRoundedIcon fontSize="small" />}
+                            variant="contained"
+                            size="small"
+                            disabled={loading}
+                            onClick={onShuffleAll}
+                        >
+                            <span>{t("shuffle_all")}</span>
+                        </Button>
+                    </MusicToolbar>
                 </Root>
             );
         },
@@ -42,7 +45,7 @@ export function LibraryPage({ children, title, loading, onShuffleAll }: LibraryP
     );
 
     return (
-        <Page loading={loading} title={title} renderHeader={renderHeader}>
+        <Page denseHeaderMargin loading={loading} title={title} renderHeader={renderHeader}>
             {children}
         </Page>
     );
