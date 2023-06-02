@@ -106,7 +106,13 @@ export const PlayerToolbar = React.forwardRef(({}: PlayerToolbarProps, ref: Reac
                             }}
                         />
                         <Information>
-                            <Typography variant="body1" fontSize="0.9rem" lineHeight={1} sx={{ mb: 0.5 }}>
+                            <Typography
+                                overflow="hidden"
+                                textOverflow="ellipsis"
+                                whiteSpace="nowrap"
+                                variant="body1"
+                                fontSize="0.9rem"
+                            >
                                 {player.playingMusic.title}
                             </Typography>
                             <Typography variant="body2" fontSize="0.8rem" color="text.secondary" lineHeight={1}>
