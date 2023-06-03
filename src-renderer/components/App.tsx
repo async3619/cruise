@@ -20,6 +20,9 @@ import { theme } from "@styles/theme";
 import { Router } from "@pages";
 import { DialogProvider } from "@components/Dialog/Provider";
 
+import "swiper/css";
+import "swiper/css/free-mode";
+
 export interface AppProps {}
 
 export function App({}: AppProps) {

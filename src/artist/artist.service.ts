@@ -6,10 +6,14 @@ import { InjectRepository } from "@nestjs/typeorm";
 
 import { Artist } from "@main/artist/models/artist.model";
 
-import { BaseService } from "@main/common/base.service";
 import { AlbumService } from "@main/album/album.service";
 import { LibraryService } from "@main/library/library.service";
 import { AlbumArtService } from "@main/album-art/album-art.service";
+import { SearchSuggestion, SearchSuggestionType } from "@main/library/models/search-suggestion.dto";
+
+import { BaseService } from "@main/common/base.service";
+import { Searchable } from "@main/common/searchable.interface";
+
 import { EnsureResult } from "@main/utils/types";
 
 interface ArtistPubSub {
@@ -18,7 +22,7 @@ interface ArtistPubSub {
 }
 
 @Injectable()
-export class ArtistService extends BaseService<Artist, ArtistPubSub> {
+export class ArtistService extends BaseService<Artist, ArtistPubSub> implements Searchable<Artist> {
     public constructor(
         @InjectRepository(Artist) private readonly artistRepository: Repository<Artist>,
         @Inject(forwardRef(() => AlbumService)) private readonly albumService: AlbumService,
@@ -88,5 +92,56 @@ export class ArtistService extends BaseService<Artist, ArtistPubSub> {
         }
 
         return [...artists.map(artist => ({ created: false, item: artist })), ...newArtists];
+    }
+
+    public async search(query: string): Promise<Artist[]> {
+        const artistIdsByAlbum = await this.artistRepository
+            .createQueryBuilder("a")
+            .select("a.id", "id")
+            .leftJoin("albums_artists_artists", "b", "a.id = b.artistsId")
+            .leftJoin("albums", "c", "b.albumsId = c.id")
+            .where("c.title LIKE :query", { query: `%${query}%` })
+            .orWhere("a.name LIKE :query", { query: `%${query}%` })
+            .getRawMany<{ id: string }>()
+            .then(results => results.map(result => result.id))
+            .then(ids => ids.map(id => parseInt(`${id}`, 10)));
+
+        const artistIdsByMusic = await this.artistRepository
+            .createQueryBuilder("a")
+            .select("a.id", "id")
+            .leftJoin("musics_artists_artists", "b", "a.id = b.artistsId")
+            .leftJoin("musics", "c", "b.musicsId = c.id")
+            .where("c.title LIKE :query", { query: `%${query}%` })
+            .orWhere("a.name LIKE :query", { query: `%${query}%` })
+            .getRawMany<{ id: string }>()
+            .then(results => results.map(result => result.id))
+            .then(ids => ids.map(id => parseInt(`${id}`, 10)));
+
+        const artistIdsByName = await this.artistRepository
+            .createQueryBuilder("a")
+            .select("a.id", "id")
+            .where("a.name LIKE :query", { query: `%${query}%` })
+            .getRawMany<{ id: string }>()
+            .then(results => results.map(result => result.id))
+            .then(ids => ids.map(id => parseInt(`${id}`, 10)));
+
+        const artistIds = _.uniq([...artistIdsByAlbum, ...artistIdsByMusic, ...artistIdsByName]);
+        return this.findByIds(artistIds);
+    }
+
+    public async getSuggestions(query: string): Promise<SearchSuggestion[]> {
+        return this.artistRepository
+            .createQueryBuilder("a")
+            .select("a.name", "name")
+            .addSelect("a.id", "id")
+            .where("a.name LIKE :query", { query: `%${query}%` })
+            .getRawMany<{ name: string; id: number }>()
+            .then(results =>
+                results.map(item => ({
+                    id: item.id,
+                    name: item.name,
+                    type: SearchSuggestionType.Artist,
+                })),
+            );
     }
 }

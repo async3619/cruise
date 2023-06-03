@@ -77,16 +77,6 @@ export class BaseService<
         return lastItem[0]?.id ?? 0;
     }
 
-    public async bulkUpdate(ids: number[], data: QueryDeepPartialEntity<T>) {
-        const items = await this.findByIds(ids);
-        for (const item of items) {
-            for (const [key, value] of Object.entries(data) as [keyof T, T[keyof T]][]) {
-                item[key] = value;
-            }
-        }
-
-        return this.repository.save(items);
-    }
     public async update(id: number, data: QueryDeepPartialEntity<T>) {
         const item = await this.findById(id);
         if (!item) {
@@ -99,7 +89,6 @@ export class BaseService<
 
         return this.repository.save(item);
     }
-
     public async delete(id: number | number[]) {
         await this.repository.delete(id);
     }

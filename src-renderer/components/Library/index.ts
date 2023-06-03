@@ -53,6 +53,9 @@ import {
     ScanMutation,
     ScanMutationVariables,
     useAlbumUpdatedSubscription,
+    SearchSuggestionsQuery,
+    SearchSuggestionsQueryVariables,
+    SearchSuggestionsDocument,
 } from "@queries";
 
 import { ApolloClient } from "@apollo/client";
@@ -554,5 +557,17 @@ export class Library {
         return this.client.mutate<ScanMutation, ScanMutationVariables>({
             mutation: ScanDocument,
         });
+    }
+
+    public async getSearchSuggestions(query: string, limit: number) {
+        const { data } = await this.client.query<SearchSuggestionsQuery, SearchSuggestionsQueryVariables>({
+            query: SearchSuggestionsDocument,
+            variables: {
+                query,
+                limit,
+            },
+        });
+
+        return data.searchSuggestions;
     }
 }

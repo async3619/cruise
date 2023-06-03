@@ -1,6 +1,4 @@
 import React from "react";
-import useMeasure from "react-use-measure";
-import { mergeRefs } from "react-merge-refs";
 
 import { Box, Stack, Typography } from "@mui/material";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
@@ -47,8 +45,6 @@ export function SelectionToolbar(props: SelectionToolbarProps) {
     const library = useLibrary();
     const [displayCount, setDisplayCount] = React.useState(0);
     const rootDomRef = React.useRef<HTMLDivElement>(null);
-    const [ref, { height: toolbarHeight }] = useMeasure();
-    const rootRef = mergeRefs([ref, rootDomRef]);
 
     const handleHeightChange = React.useCallback((height: number) => {
         if (!rootDomRef.current) {
@@ -183,7 +179,6 @@ export function SelectionToolbar(props: SelectionToolbarProps) {
     if (!innerPadding) {
         childrenStyles.paddingLeft = 0;
         childrenStyles.paddingRight = 0;
-        childrenStyles.height = toolbarHeight || "auto";
     }
 
     const isIndeterminate = selectedIndices.length > 0 && selectedIndices.length < (musics?.length ?? 0);
@@ -195,7 +190,7 @@ export function SelectionToolbar(props: SelectionToolbarProps) {
             <ChildrenWrapper>
                 <Children style={childrenStyles}>{children}</Children>
             </ChildrenWrapper>
-            <Root ref={rootRef} style={styles}>
+            <Root ref={rootDomRef} style={styles}>
                 <Checkbox
                     size="small"
                     disabled={isDisabled}

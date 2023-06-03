@@ -1,7 +1,6 @@
 import * as _ from "lodash";
-import fs from "fs-extra";
 import dayjs from "dayjs";
-import stringSimilarity from "string-similarity";
+import { compareTwoStrings } from "string-similarity";
 
 import { AlbumArt as RawAlbumArt, Audio } from "@async3619/merry-go-round";
 
@@ -13,18 +12,15 @@ import { ArtistService } from "@main/artist/artist.service";
 import { ElectronService } from "@main/electron/electron.service";
 
 import { Artist } from "@main/artist/models/artist.model";
-import { Album } from "@main/album/models/album.model";
-import { AlbumArt } from "@main/album-art/models/album-art.model";
-import { Music } from "@main/music/models/music.model";
 
 import { InjectHauntedClient } from "@main/haunted/haunted.decorator";
 import type { HauntedClient } from "@main/haunted/haunted.module";
 
 import { SearchResult } from "@main/library/models/search-result.dto";
-import { SearchSuggestion, SearchSuggestionType } from "@main/library/models/search-suggestion.dto";
 
 import { fetchUrlToBuffer } from "@main/utils/fetchUrlToBuffer";
 import type { Nullable } from "@common/types";
+import { SearchSuggestion } from "@main/library/models/search-suggestion.dto";
 
 @Injectable()
 export class LibraryService {
@@ -35,56 +31,6 @@ export class LibraryService {
         @Inject(ElectronService) private readonly electronService: ElectronService,
         @InjectHauntedClient() private readonly client: HauntedClient,
     ) {}
-
-    public async updateTracks(target: Album): Promise<void>;
-    public async updateTracks(target: Album): Promise<void> {
-        let targetTracks: Music[] = [];
-        let albumTitle: string | null = null;
-        let albumArtists: Artist[] = [];
-        let albumArts: AlbumArt[] = [];
-        if (target instanceof Album) {
-            const album = await this.albumService.findById(target.id, ["musics", "leadArtists", "albumArts"]);
-            if (!album) {
-                throw new Error("Album not found");
-            }
-
-            albumTitle = album.title;
-            albumArtists = album.leadArtists;
-            albumArts = album.albumArts;
-            targetTracks = album.musics;
-        }
-
-        // check if all the track path is valid
-        for (const track of targetTracks) {
-            if (!fs.existsSync(track.path)) {
-                throw new Error(`Target audio file '${track.path}' does not exist`);
-            }
-
-            const audio = Audio.fromFile(track.path);
-            audio.genre = track.genre || "";
-            audio.year = track.year || 0;
-            audio.albumArtist = albumArtists.map(artist => artist.name).join("\0");
-
-            if (albumTitle) {
-                audio.album = albumTitle;
-            }
-
-            audio.clearAlbumArts();
-            for (const albumArt of albumArts) {
-                if (!fs.existsSync(albumArt.path)) {
-                    throw new Error(`Target album art file '${albumArt.path}' does not exist`);
-                }
-
-                const albumArtItem = await RawAlbumArt.fromFile(albumArt.path);
-                albumArtItem.type = albumArt.type as unknown as RawAlbumArt["type"];
-                albumArtItem.description = albumArt.description;
-
-                audio.addAlbumArt(albumArtItem);
-            }
-
-            audio.save(track.path);
-        }
-    }
 
     public async syncAlbumData(albumId: number, hauntedId: string, locale: Nullable<string>) {
         const client = this.client();
@@ -157,7 +103,9 @@ export class LibraryService {
     }
 
     public async search(query: string): Promise<SearchResult> {
-        const [matchedMusics, matchedAlbums, matchedArtists] = await this.getMatchedMedia(query);
+        const matchedMusics = await this.musicService.search(query);
+        const matchedAlbums = await this.albumService.search(query);
+        const matchedArtists = await this.artistService.search(query);
 
         return {
             total: matchedMusics.length + matchedAlbums.length + matchedArtists.length,
@@ -166,48 +114,14 @@ export class LibraryService {
             musics: matchedMusics,
         };
     }
-    public async getSearchSuggestions(query: string, limit: number): Promise<SearchSuggestion[]> {
-        const [matchedMusics, matchedAlbums, matchedArtists] = await this.getMatchedMedia(query);
-        const allItems = [...matchedMusics, ...matchedAlbums, ...matchedArtists];
-        const similarities = allItems.map<SearchSuggestion & { similarity: number }>(item => {
-            let name: string;
-            if ("name" in item) {
-                name = item.name;
-            } else {
-                name = item.title;
-            }
+    public async getSearchSuggestions(query: string): Promise<SearchSuggestion[]> {
+        const musicSuggestions = await this.musicService.getSuggestions(query);
+        const albumSuggestions = await this.albumService.getSuggestions(query);
+        const artistSuggestions = await this.artistService.getSuggestions(query);
 
-            let type: SearchSuggestionType;
-            if (item instanceof Music) {
-                type = SearchSuggestionType.Music;
-            } else if (item instanceof Album) {
-                type = SearchSuggestionType.Album;
-            } else {
-                type = SearchSuggestionType.Artist;
-            }
-
-            return {
-                id: item.id,
-                type,
-                name,
-                similarity: stringSimilarity.compareTwoStrings(query, name),
-            };
-        });
-
-        return _.orderBy(similarities, ["similarity"], ["desc"]).slice(0, limit);
-    }
-
-    private async getMatchedMedia(query: string): Promise<[Music[], Album[], Artist[]]> {
-        const musics = await this.musicService.findAll();
-        const albums = await this.albumService.findAll();
-        const artists = await this.artistService.findLeadArtists();
-
-        query = query.toLowerCase();
-
-        const matchedMusics = musics.filter(music => music.title.toLowerCase().includes(query));
-        const matchedAlbums = albums.filter(album => album.title.toLowerCase().includes(query));
-        const matchedArtists = artists.filter(artist => artist.name.toLowerCase().includes(query));
-
-        return [matchedMusics, matchedAlbums, matchedArtists];
+        return _.chain<SearchSuggestion>([])
+            .concat(musicSuggestions, albumSuggestions, artistSuggestions)
+            .orderBy(s => compareTwoStrings(s.name, query), "desc")
+            .value();
     }
 }

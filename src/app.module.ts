@@ -43,8 +43,6 @@ fs.ensureDirSync(SQLITE_DATABASE_DIR);
             database: SQLITE_DATABASE_PATH,
             entities: getMetadataArgsStorage().tables.map(t => t.target),
             autoLoadEntities: true,
-            dropSchema: true,
-            synchronize: true,
         }),
         GraphQLModule.forRootAsync<ElectronApolloDriverConfig>({
             imports: [MusicModule, AlbumModule, ArtistModule, AlbumArtModule],

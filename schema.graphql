@@ -96,6 +96,18 @@ type Music {
   albumArts: [AlbumArt!]!
 }
 
+type SearchSuggestion {
+  id: Int!
+  type: SearchSuggestionType!
+  name: String!
+}
+
+enum SearchSuggestionType {
+  Artist
+  Album
+  Music
+}
+
 type Config {
   libraryDirectories: [String!]!
   appTheme: AppTheme!
@@ -115,18 +127,6 @@ enum RepeatMode {
   None
   One
   All
-}
-
-type SearchSuggestion {
-  id: Int!
-  type: SearchSuggestionType!
-  name: String!
-}
-
-enum SearchSuggestionType {
-  Artist
-  Album
-  Music
 }
 
 type SearchResult {

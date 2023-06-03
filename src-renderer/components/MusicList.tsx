@@ -14,11 +14,13 @@ export interface MusicListProps {
     items: ReadonlyArray<MinimalMusicFragment>;
     withTrackNumber?: boolean;
     selectable?: boolean;
+    maxItems?: number;
 }
 
-export function MusicList({ items, withTrackNumber, selectable }: MusicListProps) {
+export function MusicList({ items, withTrackNumber, selectable, maxItems }: MusicListProps) {
     const { playPlaylist, playingMusic } = usePlayer();
     const musicSelection = useMusicSelection();
+    const targetItems = items.slice(0, maxItems);
 
     React.useEffect(() => {
         musicSelection.setItems(items);
@@ -73,7 +75,7 @@ export function MusicList({ items, withTrackNumber, selectable }: MusicListProps
     };
 
     return (
-        <VirtualizedList rowHeight={52} items={items}>
+        <VirtualizedList rowHeight={52} items={targetItems}>
             {(virtualItem, item) => {
                 const isSelected = musicSelection.selectedIndices.includes(virtualItem.index) && selectable;
                 const ItemComponent = isSelected ? SelectedItem : Item;

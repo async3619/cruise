@@ -8,16 +8,19 @@ import { Audio } from "@async3619/merry-go-round";
 
 import { Inject, Injectable, OnModuleDestroy, OnModuleInit } from "@nestjs/common";
 
-import { PubSubService } from "@main/common/pubsub.service";
-import { MusicService } from "@main/music/music.service";
 import { AlbumService } from "@main/album/album.service";
+import { Album } from "@main/album/models/album.model";
+
+import { MusicService } from "@main/music/music.service";
+import { Music } from "@main/music/models/music.model";
+
+import { PubSubService } from "@main/common/pubsub.service";
 import { ArtistService } from "@main/artist/artist.service";
 import { ConfigService } from "@main/config/config.service";
-import { Album } from "@main/album/models/album.model";
 import { AlbumArtService } from "@main/album-art/album-art.service";
-import { Music } from "@main/music/models/music.model";
-import { mergeWatcherResult } from "@main/utils/mergeWatcherResult";
 import { PlaylistService } from "@main/playlist/playlist.service";
+
+import { mergeWatcherResult } from "@main/utils/mergeWatcherResult";
 
 interface LibraryScanningPubSub {
     scanningStateChanged: boolean;
@@ -430,16 +433,22 @@ export class LibraryScanningService
         let album: Album | null = null;
         if (audio.album) {
             const { created, item } = await this.albumService.ensure(audio.album);
+            const newFeaturedArtists = _.uniqBy([...(item.artists ?? []), ...featuredArtists], "id");
+            const newLeadArtists = _.uniqBy([...(item.leadArtists ?? []), ...leadArtists], "id");
 
             if (created) {
                 album = await this.albumService.update(item.id, {
-                    artists: featuredArtists,
-                    leadArtists,
+                    artists: newFeaturedArtists,
+                    leadArtists: newLeadArtists,
                     albumArts,
                 });
                 result.createdAlbumIds = [item.id];
             } else {
-                album = item;
+                album = await this.albumService.update(item.id, {
+                    artists: newFeaturedArtists,
+                    leadArtists: newLeadArtists,
+                    albumArts,
+                });
                 result.updatedAlbumIds = [item.id];
             }
         }

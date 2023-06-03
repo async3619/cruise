@@ -30,7 +30,9 @@ export class LibraryResolver {
         @Args("query", { type: () => String }) query: string,
         @Args("limit", { type: () => Int }) limit: number,
     ): Promise<SearchSuggestion[]> {
-        return this.libraryService.getSearchSuggestions(query, limit);
+        const suggestions = await this.libraryService.getSearchSuggestions(query);
+
+        return suggestions.slice(0, limit);
     }
 
     @Mutation(() => Boolean)

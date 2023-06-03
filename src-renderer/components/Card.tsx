@@ -12,6 +12,7 @@ export interface BaseCardProps {
     href?: string;
     selected?: boolean;
     selectMode?: boolean;
+    className?: string;
 }
 
 export interface ArtistCardProps extends BaseCardProps {
@@ -28,7 +29,7 @@ export interface AlbumCardProps extends BaseCardProps {
 
 export type CardProps = ArtistCardProps | AlbumCardProps;
 
-export function Card({ item, onPlay, href, selected = false, onSelectionChange, selectMode }: CardProps) {
+export function Card({ item, onPlay, href, selected = false, onSelectionChange, selectMode, className }: CardProps) {
     let title: string;
     let subtitle: string | undefined;
     let image: Nullable<MinimalAlbumArtFragment>;
@@ -71,7 +72,7 @@ export function Card({ item, onPlay, href, selected = false, onSelectionChange, 
     };
 
     const content = (
-        <Root selected={selected} component={href ? "span" : "div"} disableRipple>
+        <Root selected={selected} component={href ? "span" : "div"} disableRipple className={className}>
             <Box position="relative" mb={3}>
                 <Image type={imageType} src={image?.url} />
                 {item.__typename === "Album" && onSelectionChange && (
