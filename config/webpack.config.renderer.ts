@@ -100,6 +100,11 @@ const rendererConfig: (dev: boolean, analyze: boolean, port: number) => webpack.
                     },
                 ],
             },
+            {
+                test: /\.css$/i,
+                sideEffects: true,
+                use: ["style-loader", "css-loader"],
+            },
         ],
     },
 
