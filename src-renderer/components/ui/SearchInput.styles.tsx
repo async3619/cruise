@@ -18,8 +18,4 @@ export const Root = styled.label<{ fullWidth?: boolean }>`
     ${({ theme }) => theme.getColorSchemeSelector("light")} {
         background-color: ${backgroundColors["100"]};
     }
-
-    &:focus-within {
-        box-shadow: 0 0 0 3px ${({ theme }) => `rgba(${theme.vars.palette.primary.lightChannel} / 0.5)`};
-    }
 `;

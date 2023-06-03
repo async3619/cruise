@@ -6,6 +6,20 @@
     "Search": "검색",
     "Settings": "설정",
     "Playlists": "재생목록",
+    "delete": "삭제",
+    "shuffle_all": "무작위 재생",
+    "playAll": "모두 재생",
+    "shuffleAll": "무작위 재생",
+    "trackCount_one": "{{count}}개의 곡",
+    "trackCount_other": "{{count}}개의 곡",
+    "albumCount_one": "{{count}}개의 앨범",
+    "albumCount_other": "{{count}}개의 앨범",
+    "clearAll": "비우기",
+    "addToPlaylist": "추가",
+    "emptyPlaylist": "재생목록이 비어있습니다.",
+    "rename": "이름 변경",
+    "emptySearch": "검색 결과가 없습니다.",
+    "notSearched": "검색어를 입력하세요.",
     "configs": {
         "library": "라이브러리",
         "personalization": "개인화",
@@ -102,7 +116,6 @@
             "success": "라이브러리 업데이트 완료"
         }
     },
-    "delete": "삭제",
     "tableColumn": {
         "music": {
             "title": "제목",
@@ -110,17 +123,10 @@
             "album": "앨범"
         }
     },
-    "shuffle_all": "무작위 재생",
-    "playAll": "모두 재생",
-    "shuffleAll": "무작위 재생",
-    "trackCount_one": "{{count}}개의 곡",
-    "trackCount_other": "{{count}}개의 곡",
-    "albumCount_one": "{{count}}개의 앨범",
-    "albumCount_other": "{{count}}개의 앨범",
-    "clearAll": "비우기",
-    "addToPlaylist": "추가",
-    "emptyPlaylist": "재생목록이 비어있습니다.",
-    "rename": "이름 변경",
-    "emptySearch": "검색 결과가 없습니다.",
-    "notSearched": "검색어를 입력하세요."
+    "common": {
+        "music": "음악",
+        "album": "앨범",
+        "artist": "아티스트",
+        "all": "전체"
+    }
 }

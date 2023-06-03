@@ -6,7 +6,7 @@ export const Root = styled.div`
     padding: 0;
 
     display: flex;
-    align-items: center;
+    flex-direction: column;
 
     > h2 {
         flex: 0 0 auto;

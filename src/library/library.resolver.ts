@@ -1,7 +1,7 @@
 import { Inject } from "@nestjs/common";
 import { Args, Int, Mutation, Query, Resolver, Subscription } from "@nestjs/graphql";
 
-import { LibraryService } from "@main/library/library.service";
+import { LibraryService, SearchMode } from "@main/library/library.service";
 import { SearchResult } from "@main/library/models/search-result.dto";
 import { SearchSuggestion } from "@main/library/models/search-suggestion.dto";
 
@@ -21,8 +21,11 @@ export class LibraryResolver {
     }
 
     @Query(() => SearchResult)
-    public async search(@Args("query", { type: () => String }) query: string): Promise<SearchResult> {
-        return this.libraryService.search(query);
+    public async search(
+        @Args("query", { type: () => String }) query: string,
+        @Args("mode", { type: () => SearchMode }) mode: SearchMode,
+    ): Promise<SearchResult> {
+        return this.libraryService.search(query, mode);
     }
 
     @Query(() => [SearchSuggestion])

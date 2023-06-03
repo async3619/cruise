@@ -154,10 +154,17 @@ type Query {
   config: Config!
   availableLanguages: [Language!]!
   needScan: Boolean!
-  search(query: String!): SearchResult!
+  search(query: String!, mode: SearchMode!): SearchResult!
   searchSuggestions(query: String!, limit: Int!): [SearchSuggestion!]!
   playlists: [Playlist!]!
   playlist(id: Int!): Playlist!
+}
+
+enum SearchMode {
+  All
+  Artist
+  Album
+  Music
 }
 
 type Mutation {

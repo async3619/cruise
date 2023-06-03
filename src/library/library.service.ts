@@ -5,6 +5,7 @@ import { compareTwoStrings } from "string-similarity";
 import { AlbumArt as RawAlbumArt, Audio } from "@async3619/merry-go-round";
 
 import { Inject, Injectable } from "@nestjs/common";
+import { registerEnumType } from "@nestjs/graphql";
 
 import { MusicService } from "@main/music/music.service";
 import { AlbumService } from "@main/album/album.service";
@@ -21,6 +22,17 @@ import { SearchResult } from "@main/library/models/search-result.dto";
 import { fetchUrlToBuffer } from "@main/utils/fetchUrlToBuffer";
 import type { Nullable } from "@common/types";
 import { SearchSuggestion } from "@main/library/models/search-suggestion.dto";
+import { Music } from "@main/music/models/music.model";
+import { Album } from "@main/album/models/album.model";
+
+export enum SearchMode {
+    All = "all",
+    Artist = "artist",
+    Album = "album",
+    Music = "music",
+}
+
+registerEnumType(SearchMode, { name: "SearchMode" });
 
 @Injectable()
 export class LibraryService {
@@ -102,10 +114,30 @@ export class LibraryService {
         return matchedArtist.artistImages;
     }
 
-    public async search(query: string): Promise<SearchResult> {
-        const matchedMusics = await this.musicService.search(query);
-        const matchedAlbums = await this.albumService.search(query);
-        const matchedArtists = await this.artistService.search(query);
+    public async search(query: string, mode: SearchMode): Promise<SearchResult> {
+        if (!query) {
+            return {
+                total: 0,
+                artists: [],
+                albums: [],
+                musics: [],
+            };
+        }
+
+        let matchedMusics: Music[] = [];
+        if (mode === SearchMode.All || mode === SearchMode.Music) {
+            matchedMusics = await this.musicService.search(query);
+        }
+
+        let matchedAlbums: Album[] = [];
+        if (mode === SearchMode.All || mode === SearchMode.Album) {
+            matchedAlbums = await this.albumService.search(query);
+        }
+
+        let matchedArtists: Artist[] = [];
+        if (mode === SearchMode.All || mode === SearchMode.Artist) {
+            matchedArtists = await this.artistService.search(query);
+        }
 
         return {
             total: matchedMusics.length + matchedAlbums.length + matchedArtists.length,

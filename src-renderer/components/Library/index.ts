@@ -56,6 +56,9 @@ import {
     SearchSuggestionsQuery,
     SearchSuggestionsQueryVariables,
     SearchSuggestionsDocument,
+    useSearchQuery,
+    SearchDocument,
+    SearchMode,
 } from "@queries";
 
 import { ApolloClient } from "@apollo/client";
@@ -569,5 +572,16 @@ export class Library {
         });
 
         return data.searchSuggestions;
+    }
+
+    public useSearch(query: string, mode: SearchMode, enabled = true) {
+        return useSearchQuery({
+            query: SearchDocument,
+            variables: {
+                query,
+                mode,
+            },
+            skip: !enabled,
+        });
     }
 }

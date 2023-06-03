@@ -1,100 +1,118 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 
-import { Box, CircularProgress, Fade, Stack, Typography } from "@mui/material";
+import { Box, CircularProgress, Typography, useTheme } from "@mui/material";
 
 import { SearchPage } from "@components/Page/Search";
-import { MusicList } from "@components/MusicList";
-import { SearchSection } from "@components/SearchSection";
-import { CardList } from "@components/CardList";
+import { Library } from "@components/Library";
+import { useLibrary } from "@components/Library/Provider";
+
+import { ArtistSearch } from "@pages/Search/Artist";
+import { MusicSearch } from "@pages/Search/Music";
+import { AllSearch } from "@pages/Search/All";
+import { AlbumSearch } from "@pages/Search/Album";
+
+import { MinimalAlbumFragment, MinimalArtistFragment, MinimalMusicFragment, SearchMode } from "@queries";
+import { isAlbum } from "@utils/media";
 import { usePlayer } from "@components/Player/Provider";
 
-import { MinimalAlbumFragment, MinimalArtistFragment, MinimalMusicFragment, useSearchQuery } from "@queries";
-import { isAlbum } from "@utils/media";
+export interface SearchProps {
+    search: Exclude<ReturnType<Library["useSearch"]>["data"], null | undefined>["search"];
+    onSearchModeChange(mode: SearchMode): void;
+    onPlay(album: MinimalAlbumFragment | MinimalArtistFragment): void;
+}
 
-export interface SearchProps {}
+const SearchComponentMap: Record<SearchMode, React.ComponentType<SearchProps>> = {
+    [SearchMode.Music]: MusicSearch,
+    [SearchMode.Album]: AlbumSearch,
+    [SearchMode.Artist]: ArtistSearch,
+    [SearchMode.All]: AllSearch,
+};
 
-export function Search({}: SearchProps) {
+export function Search() {
     const { t } = useTranslation();
+    const library = useLibrary();
     const player = usePlayer();
+    const theme = useTheme();
     const [searchQuery, setSearchQuery] = React.useState<string>("");
-    const { data, loading } = useSearchQuery({
-        variables: {
-            query: searchQuery,
-        },
-        skip: !searchQuery,
-        fetchPolicy: "no-cache",
-    });
+    const [searchMode, setSearchMode] = React.useState<SearchMode>(SearchMode.All);
+    const [contentDOM, setContentDOM] = React.useState<HTMLDivElement | null>(null);
+    const SearchComponent = SearchComponentMap[searchMode];
+    const { data, loading } = library.useSearch(searchQuery, searchMode, !!searchQuery);
 
-    const handleSearch = React.useCallback((query: string) => {
-        setSearchQuery(query);
-    }, []);
     const handlePlay = (item: MinimalAlbumFragment | MinimalArtistFragment) => {
         const musics: MinimalMusicFragment[] = [];
         if (isAlbum(item)) {
             musics.push(...item.musics);
         } else {
-            for (const album of item.leadAlbums) {
-                musics.push(...album.musics);
-            }
+            musics.push(...item.leadAlbums.flatMap(album => album.musics));
         }
 
         player.playPlaylist(musics, 0);
     };
 
-    let children: React.ReactNode;
-    if (!data) {
-        if (!searchQuery) {
-            children = (
-                <Box py={4}>
-                    <Typography variant="body1" color="text.disabled" textAlign="center">
+    const lastData = React.useRef<typeof data | null>(null);
+    React.useEffect(() => {
+        if (loading || !contentDOM) {
+            return;
+        }
+
+        if (!data || data === lastData.current) {
+            return;
+        }
+
+        contentDOM.animate(
+            [
+                { opacity: 0, transform: "translateY(16px)" },
+                { opacity: 1, transform: "translateY(0)" },
+            ],
+            {
+                duration: theme.transitions.duration.standard,
+                easing: theme.transitions.easing.easeInOut,
+            },
+        );
+        lastData.current = data;
+    }, [contentDOM, data, loading, theme]);
+
+    return (
+        <SearchPage
+            title={t("pageTitle.search")}
+            onSearch={setSearchQuery}
+            searchMode={searchMode}
+            onSearchModeChange={setSearchMode}
+        >
+            {!searchQuery && (
+                <Box py={9} display="flex" justifyContent="center">
+                    <Typography variant="body1" align="center" color="text.disabled">
                         {t("notSearched")}
                     </Typography>
                 </Box>
-            );
-        } else {
-            children = (
-                <Box p={2} display="flex" justifyContent="center">
-                    <CircularProgress size={36} />
-                </Box>
-            );
-        }
-    } else {
-        const { total, musics, artists, albums } = data.search;
-        if (total === 0) {
-            children = (
-                <Box py={4}>
-                    <Typography variant="body1" color="text.disabled" textAlign="center">
-                        {t("emptySearch")}
-                    </Typography>
-                </Box>
-            );
-        } else {
-            children = (
-                <Stack spacing={3}>
-                    {musics.length > 0 && (
-                        <SearchSection hasMore={musics.length > 5} title={`음악 (${musics.length})`}>
-                            <MusicList maxItems={5} items={musics} />
-                        </SearchSection>
+            )}
+            {!!searchQuery && (
+                <>
+                    {loading && (
+                        <Box py={9} display="flex" justifyContent="center">
+                            <CircularProgress size={36} />
+                        </Box>
                     )}
-                    {albums.length > 0 && (
-                        <SearchSection hasMore={albums.length > 10} title={`앨범 (${albums.length})`}>
-                            <CardList direction="horizontal" items={albums} onPlay={handlePlay} />
-                        </SearchSection>
-                    )}
-                    {artists.length > 0 && (
-                        <SearchSection hasMore={artists.length > 10} title={`아티스트 (${artists.length})`}>
-                            <CardList direction="horizontal" items={artists} onPlay={handlePlay} />
-                        </SearchSection>
-                    )}
-                </Stack>
-            );
-        }
-    }
-
-    return (
-        <SearchPage title={t("Search")} onSearch={handleSearch}>
-            <Fade in={!searchQuery ? true : !loading}>{children}</Fade>
+                    <Box ref={setContentDOM} pt={1}>
+                        {!data?.search.total && !loading && (
+                            <Box py={8} display="flex" justifyContent="center">
+                                <Typography variant="body1" align="center" color="text.disabled">
+                                    {t("emptySearch")}
+                                </Typography>
+                            </Box>
+                        )}
+                        {data && data.search.total > 0 && (
+                            <SearchComponent
+                                search={data.search}
+                                onSearchModeChange={setSearchMode}
+                                onPlay={handlePlay}
+                            />
+                        )}
+                    </Box>
+                </>
+            )}
         </SearchPage>
     );
 }

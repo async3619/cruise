@@ -33,6 +33,13 @@ export const theme = extendTheme({
         fontWeightRegular: 600,
     },
     components: {
+        MuiChip: {
+            styleOverrides: {
+                root: {
+                    fontSize: "0.85rem",
+                },
+            },
+        },
         MuiTooltip: {
             styleOverrides: {
                 tooltip: {
