@@ -26,9 +26,6 @@ export function MusicList({ items, withTrackNumber, selectable, maxItems }: Musi
         musicSelection.setItems(items);
     }, [musicSelection, items]);
 
-    const handlePlay = (index: number) => {
-        playPlaylist(items, index);
-    };
     const handleItemClick = (index: number, shift: boolean) => {
         if (!selectable) {
             return;
@@ -53,6 +50,12 @@ export function MusicList({ items, withTrackNumber, selectable, maxItems }: Musi
 
             musicSelection.toggleItem(targetIndices);
         }
+    };
+    const handleAlbumArtClick = (e: React.MouseEvent<HTMLButtonElement>, index: number) => {
+        playPlaylist(items, index);
+
+        e.stopPropagation();
+        e.preventDefault();
     };
 
     const renderArtist = (music: MinimalMusicFragment) => {
@@ -90,7 +93,7 @@ export function MusicList({ items, withTrackNumber, selectable, maxItems }: Musi
                         <Cell withoutPadding>
                             <AlbumArt
                                 style={{ backgroundImage: `url(cruise://${item.albumArts[0].path})` }}
-                                onClick={() => handlePlay(virtualItem.index)}
+                                onClick={e => handleAlbumArtClick(e, virtualItem.index)}
                             >
                                 <PlayArrowRoundedIcon />
                             </AlbumArt>
