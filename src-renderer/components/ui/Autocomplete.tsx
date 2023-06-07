@@ -45,6 +45,7 @@ export function Autocomplete<T>({
     const [wrapperRef, setWrapperRef] = React.useState<HTMLElement | null>(null);
     const [optionsValue, setOptionsValue] = React.useState<string | null>(null);
     const [measureRef, { width }] = useMeasure();
+    const [submittedValue, setSubmittedValue] = React.useState<string | null>(null);
     const { getRootProps, getInputProps, getListboxProps, getOptionProps, groupedOptions, inputValue, value } =
         useAutocomplete<T>({
             id: "use-autocomplete-demo",
@@ -80,6 +81,10 @@ export function Autocomplete<T>({
     }, [items]);
 
     React.useEffect(() => {
+        setSubmittedValue("");
+    }, [inputValue]);
+
+    React.useEffect(() => {
         let active = true;
         if (Array.isArray(items)) {
             return;
@@ -91,7 +96,7 @@ export function Autocomplete<T>({
         }
 
         fetchOptions(inputValue, results => {
-            if (!active) {
+            if (!active || submittedValue === inputValue) {
                 return;
             }
 
@@ -111,11 +116,12 @@ export function Autocomplete<T>({
         return () => {
             active = false;
         };
-    }, [value, inputValue, fetchOptions, items]);
+    }, [value, inputValue, fetchOptions, items, submittedValue]);
 
     const inputProps = getInputProps();
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === "Enter" && !Array.isArray(items)) {
+            setSubmittedValue(inputValue);
             setOptions([]);
         }
 
