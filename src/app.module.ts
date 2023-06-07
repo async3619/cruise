@@ -30,6 +30,7 @@ import { HauntedModule } from "@main/haunted/haunted.module";
 
 import { createGraphQLContext } from "@main/context";
 import { SQLITE_DATABASE_DIR, SQLITE_DATABASE_PATH } from "@main/constants";
+import { LogModule } from "./log/log.module";
 
 fs.ensureDirSync(SQLITE_DATABASE_DIR);
 
@@ -43,6 +44,8 @@ fs.ensureDirSync(SQLITE_DATABASE_DIR);
             database: SQLITE_DATABASE_PATH,
             entities: getMetadataArgsStorage().tables.map(t => t.target),
             autoLoadEntities: true,
+            synchronize: true,
+            dropSchema: true,
         }),
         GraphQLModule.forRootAsync<ElectronApolloDriverConfig>({
             imports: [MusicModule, AlbumModule, ArtistModule, AlbumArtModule],
@@ -69,6 +72,7 @@ fs.ensureDirSync(SQLITE_DATABASE_DIR);
         ElectronModule,
         ConfigModule,
         PlaylistModule,
+        LogModule,
     ],
 })
 export class AppModule {}

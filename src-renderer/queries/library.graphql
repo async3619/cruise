@@ -1,3 +1,10 @@
+fragment FullPlayingLog on PlayingLog {
+    id
+    music {
+        ...MinimalMusic
+    }
+}
+
 query needScan {
     needScan
 }
@@ -25,10 +32,26 @@ query searchSuggestions($query: String!, $limit: Int!) {
     }
 }
 
+query playingLogs($take: Int!) {
+    playingLogs(take: $take) {
+        ...FullPlayingLog
+    }
+}
+
 mutation scan {
     scan
 }
 
+mutation createLog($musicId: Int!) {
+    createLog(musicId: $musicId)
+}
+
 subscription scanningStateChanged {
     scanningStateChanged
+}
+
+subscription logCreated {
+    playingLogCreated {
+        ...FullPlayingLog
+    }
 }

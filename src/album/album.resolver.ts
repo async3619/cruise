@@ -42,6 +42,17 @@ export class AlbumResolver {
         return this.albumService.findAll();
     }
 
+    @Query(() => [Album])
+    public async recentlyAddedAlbums(@Args("take", { type: () => Int }) take: number): Promise<Album[]> {
+        return this.albumService.findAll({
+            skip: 0,
+            take,
+            order: {
+                createdAt: "DESC",
+            },
+        });
+    }
+
     @Mutation(() => Album)
     public async updateAlbum(
         @Args("id", { type: () => Int }) id: number,

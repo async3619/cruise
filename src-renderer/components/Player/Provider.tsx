@@ -3,6 +3,11 @@ import _ from "lodash";
 import React from "react";
 import { withTranslation } from "react-i18next";
 
+import { withConfig } from "@components/Config/withConfig";
+import { withToast } from "@components/Toast/withToast";
+import { withLibrary } from "@components/Library/withLibrary";
+
+import { OnDataOptions } from "@apollo/client";
 import {
     PlayerEventMap,
     PlayerProviderContext,
@@ -14,10 +19,7 @@ import { MinimalMusicFragment, MusicsRemovedComponent, MusicsRemovedSubscription
 
 import { PickFn } from "@common/types";
 import { loadImageAsBlob } from "@utils/loadImage";
-import { withConfig } from "@components/Config/withConfig";
-import { withToast } from "@components/Toast/withToast";
 import { formatArtistName } from "@utils/formatArtistName";
-import { OnDataOptions } from "@apollo/client";
 
 export const PlayerContext = React.createContext<PlayerProviderContext>({} as any);
 
@@ -84,6 +86,12 @@ class PlayerProviderImpl extends React.Component<PlayerProviderProps, PlayerProv
         return this.props.config.repeatMode;
     }
 
+    public get currentMusic() {
+        const { playlist, playlistIndex } = this.state;
+
+        return playlist?.[playlistIndex] ?? null;
+    }
+
     public componentDidMount() {
         for (const targetAction of MEDIASESSION_ACTIONS) {
             navigator.mediaSession.setActionHandler(targetAction, this.handleMediaSessionAction.bind(this));
@@ -110,8 +118,15 @@ class PlayerProviderImpl extends React.Component<PlayerProviderProps, PlayerProv
         }
     }
 
-    private handlePlay = () => {
+    private handlePlay = async () => {
         this.setState({ playing: true });
+
+        const currentMusic = this.currentMusic;
+        if (!currentMusic) {
+            return;
+        }
+
+        await this.props.library.createLog(currentMusic.id);
     };
     private handlePause = () => {
         this.setState({ playing: false });
@@ -434,7 +449,7 @@ class PlayerProviderImpl extends React.Component<PlayerProviderProps, PlayerProv
     public render() {
         const { children } = this.props;
         const { playing, playlist, playlistIndex, muted, volume } = this.state;
-        const currentMusic = playlist?.[playlistIndex] ?? null;
+        const currentMusic = this.currentMusic;
 
         return (
             <PlayerContext.Provider
@@ -473,4 +488,4 @@ export function usePlayer() {
     return React.useContext(PlayerContext);
 }
 
-export const PlayerProvider = withTranslation()(withToast(withConfig(PlayerProviderImpl)));
+export const PlayerProvider = withTranslation()(withLibrary(withToast(withConfig(PlayerProviderImpl))));

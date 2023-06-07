@@ -45,6 +45,12 @@ query album($id: Int!) {
     }
 }
 
+query recentlyAddedAlbums($take: Int!) {
+    recentlyAddedAlbums(take: $take) {
+        ...MinimalAlbum
+    }
+}
+
 subscription albumsAdded {
     albumsAdded {
         ...MinimalAlbum

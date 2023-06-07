@@ -2,15 +2,15 @@ import React from "react";
 
 import { Box, Button, Typography } from "@mui/material";
 
-import { Root } from "@components/SearchSection.styles";
+import { Root } from "@components/ContentSection.styles";
 
-export interface SearchSectionProps {
+export interface ContentSectionProps {
     title?: string;
     children?: React.ReactNode;
     onMoreClick?(): void;
 }
 
-export function SearchSection({ title, children, onMoreClick }: SearchSectionProps) {
+export function ContentSection({ title, children, onMoreClick }: ContentSectionProps) {
     return (
         <Root>
             <Box height={32} mb={2} display="flex" alignItems="center">

@@ -17,6 +17,7 @@ import { Artist } from "@main/artist/models/artist.model";
 import { Album } from "@main/album/models/album.model";
 import { AlbumArt } from "@main/album-art/models/album-art.model";
 import { PlaylistRelation } from "@main/playlist/models/playlist-relation.model";
+import { PlayingLog } from "@main/log/models/playing-logs.model";
 
 import type { Nullable } from "@common/types";
 
@@ -104,4 +105,11 @@ export class Music extends BaseEntity {
 
     @RelationId((item: Music) => item.playlistRelations)
     public playlistRelationIds!: PlaylistRelation["id"];
+
+    // Music => PlayingLog[]
+    @OneToMany(() => PlayingLog, item => item.music)
+    public playingLogs!: PlayingLog[];
+
+    @RelationId((item: Music) => item.playingLogs)
+    public playingLogIds!: PlayingLog["id"][];
 }

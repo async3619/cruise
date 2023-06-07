@@ -5,8 +5,9 @@ import { MinimalMusicFragment, RepeatMode } from "@queries";
 
 import { WithConfigProps } from "@components/Config/withConfig";
 import { WithToastProps } from "@components/Toast/withToast";
+import { WithLibraryProps } from "@components/Library/withLibrary";
 
-export interface PlayerProviderProps extends WithConfigProps, WithToastProps, WithTranslation {
+export interface PlayerProviderProps extends WithConfigProps, WithToastProps, WithTranslation, WithLibraryProps {
     children: React.ReactNode;
 }
 export interface PlayerProviderStates {

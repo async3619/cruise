@@ -79,6 +79,11 @@ type Playlist {
   musics: [Music!]!
 }
 
+type PlayingLog {
+  id: Int!
+  music: Music!
+}
+
 type Music {
   id: Int!
   title: String!
@@ -147,6 +152,7 @@ type Query {
   album(id: Int!): Album
   leadAlbumsByArtist(id: Int!): [Album!]!
   albums: [Album!]!
+  recentlyAddedAlbums(take: Int!): [Album!]!
   artist(id: Int!): Artist
   artists: [Artist!]!
   leadArtists: [Artist!]!
@@ -158,6 +164,7 @@ type Query {
   searchSuggestions(query: String!, limit: Int!): [SearchSuggestion!]!
   playlists: [Playlist!]!
   playlist(id: Int!): Playlist!
+  playingLogs(take: Int!): [PlayingLog!]!
 }
 
 enum SearchMode {
@@ -183,6 +190,7 @@ type Mutation {
   updatePlaylist(id: Int!, input: UpdatePlaylistInput!): Playlist!
   deletePlaylist(id: Int!): Boolean!
   deleteMusicsFromPlaylist(playlistId: Int!, indices: [Int!]!): Playlist!
+  createLog(musicId: Int!): Boolean!
 }
 
 input UpdateAlbumInput {
@@ -245,4 +253,5 @@ type Subscription {
   playlistAdded: Playlist!
   playlistUpdated: Playlist!
   playlistRemoved: Int!
+  playingLogCreated: PlayingLog!
 }

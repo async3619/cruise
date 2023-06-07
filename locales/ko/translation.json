@@ -128,5 +128,9 @@
         "album": "앨범",
         "artist": "아티스트",
         "all": "전체"
+    },
+    "sectionTitle": {
+        "recentlyAddedAlbums": "최근 추가된 앨범",
+        "recentlyPlayed": "최근 재생"
     }
 }

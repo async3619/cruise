@@ -11,6 +11,13 @@ interface BaseEntityClass extends BaseEntity {
     id: number;
 }
 
+interface FindAllOptions<T> {
+    relations?: FindOptionsRelations<T> | Array<Exclude<keyof T, number | symbol>>;
+    order?: FindOptionsOrder<T>;
+    skip?: number;
+    take?: number;
+}
+
 export class BaseService<
     T extends BaseEntityClass,
     TMap extends PubSubMap = Record<string, never>,
@@ -19,9 +26,14 @@ export class BaseService<
         super();
     }
 
-    public async findAll(relations?: FindOptionsRelations<T> | Array<Exclude<keyof T, number | symbol>>) {
+    public async findAll(options?: FindAllOptions<T>) {
+        const { relations, order, skip, take } = options ?? {};
+
         return this.repository.find({
             relations,
+            order,
+            skip,
+            take,
         });
     }
     public async findById(id: number, relations?: FindOptionsRelations<T> | Array<Exclude<keyof T, number | symbol>>) {

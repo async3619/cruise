@@ -22,7 +22,6 @@ import {
     FullPlaylistFragment,
     MinimalAlbumFragment,
     MinimalArtistFragment,
-    MinimalMusicFragment,
     MinimalPlaylistFragment,
     UpdatePlaylistDocument,
     UpdatePlaylistMutation,
@@ -59,6 +58,14 @@ import {
     useSearchQuery,
     SearchDocument,
     SearchMode,
+    useRecentlyAddedAlbumsQuery,
+    MinimalMusicFragment,
+    CreateLogMutation,
+    CreateLogMutationVariables,
+    CreateLogDocument,
+    FullPlayingLogFragment,
+    usePlayingLogsQuery,
+    useLogCreatedSubscription,
 } from "@queries";
 
 import { ApolloClient } from "@apollo/client";
@@ -243,6 +250,30 @@ export class Library {
             refetch,
         };
     }
+    public useRecentlyAddedAlbums(take: number) {
+        const [items, setItems] = React.useState<MinimalAlbumFragment[] | null>(null);
+        const { data, loading, refetch } = useRecentlyAddedAlbumsQuery({
+            variables: {
+                take,
+            },
+        });
+
+        useAlbumsAddedSubscription({
+            onData: () => {
+                return refetch();
+            },
+        });
+
+        React.useEffect(() => {
+            if (!data?.recentlyAddedAlbums || loading) {
+                return;
+            }
+
+            setItems(data.recentlyAddedAlbums);
+        }, [data, loading]);
+
+        return { items, loading };
+    }
 
     public useArtists() {
         const [artists, setArtists] = React.useState<MinimalArtistFragment[] | null>(null);
@@ -300,6 +331,47 @@ export class Library {
         };
     }
 
+    public usePlayingLogs(take: number) {
+        const [items, setItems] = React.useState<FullPlayingLogFragment[] | null>(null);
+        const { data, loading } = usePlayingLogsQuery({
+            variables: { take },
+        });
+
+        React.useEffect(() => {
+            if (!data?.playingLogs || loading) {
+                return;
+            }
+
+            setItems(data.playingLogs);
+        }, [data, loading]);
+
+        useLogCreatedSubscription({
+            onData: ({ data: { data } }) => {
+                if (!data?.playingLogCreated) {
+                    return;
+                }
+
+                setItems(items => {
+                    if (!items) {
+                        return null;
+                    }
+
+                    return [data.playingLogCreated, ...items];
+                });
+            },
+        });
+
+        return { items, loading };
+    }
+    public async createLog(musicId: MinimalMusicFragment["id"]) {
+        return this.client.mutate<CreateLogMutation, CreateLogMutationVariables>({
+            mutation: CreateLogDocument,
+            variables: {
+                musicId,
+            },
+        });
+    }
+
     public usePlaylist(id: number) {
         const navigate = useNavigate();
         const [playlist, setPlaylist] = React.useState<FullPlaylistFragment | null>(null);
@@ -346,23 +418,6 @@ export class Library {
             loading,
             refetch,
         };
-    }
-
-    public useScanningState() {
-        const [isScanning, setIsScanning] = React.useState<boolean>(false);
-
-        useScanningStateChangedSubscription({
-            onData: ({ data: { data } }) => {
-                const scanningState = data?.scanningStateChanged;
-                if (typeof scanningState !== "boolean") {
-                    return;
-                }
-
-                setIsScanning(scanningState);
-            },
-        });
-
-        return isScanning;
     }
 
     public async createPlaylist() {
@@ -549,6 +604,33 @@ export class Library {
         });
     }
 
+    public useSearch(query: string, mode: SearchMode, enabled = true) {
+        return useSearchQuery({
+            query: SearchDocument,
+            variables: {
+                query,
+                mode,
+            },
+            skip: !enabled,
+        });
+    }
+    public useScanningState() {
+        const [isScanning, setIsScanning] = React.useState<boolean>(false);
+
+        useScanningStateChangedSubscription({
+            onData: ({ data: { data } }) => {
+                const scanningState = data?.scanningStateChanged;
+                if (typeof scanningState !== "boolean") {
+                    return;
+                }
+
+                setIsScanning(scanningState);
+            },
+        });
+
+        return isScanning;
+    }
+
     public async needScan() {
         const { data } = await this.client.query<NeedScanQuery>({
             query: NeedScanDocument,
@@ -572,16 +654,5 @@ export class Library {
         });
 
         return data.searchSuggestions;
-    }
-
-    public useSearch(query: string, mode: SearchMode, enabled = true) {
-        return useSearchQuery({
-            query: SearchDocument,
-            variables: {
-                query,
-                mode,
-            },
-            skip: !enabled,
-        });
     }
 }
