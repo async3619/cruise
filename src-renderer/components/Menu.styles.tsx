@@ -19,6 +19,7 @@ export const Title = styled.p`
 export const Root = styled.ul`
     width: 220px;
 
+    margin: 0;
     padding: ${({ theme }) => theme.spacing(0.75)};
     border-radius: 4px;
 

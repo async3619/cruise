@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-import { Box, Button as MuiButton, Popover } from "@mui/material";
+import { Button as MuiButton, Popover } from "@mui/material";
 import PopupState, { bindPopover, bindTrigger } from "material-ui-popup-state";
 
 import { Menu, MenuItem } from "@components/Menu";
@@ -54,10 +54,9 @@ export function Button({ children, menuItems, to, ...props }: ButtonProps) {
                             vertical: "top",
                             horizontal: "center",
                         }}
+                        sx={{ mt: 1 }}
                     >
-                        <Box mt={1}>
-                            <Menu items={menuItems} onClick={popupState.close} />
-                        </Box>
+                        <Menu items={menuItems} onClick={popupState.close} />
                     </Popover>
                 </>
             )}
