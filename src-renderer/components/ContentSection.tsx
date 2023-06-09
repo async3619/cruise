@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 import { Box, Button, Typography } from "@mui/material";
 
@@ -11,6 +12,8 @@ export interface ContentSectionProps {
 }
 
 export function ContentSection({ title, children, onMoreClick }: ContentSectionProps) {
+    const { t } = useTranslation();
+
     return (
         <Root>
             <Box height={32} mb={2} display="flex" alignItems="center">
@@ -20,7 +23,7 @@ export function ContentSection({ title, children, onMoreClick }: ContentSectionP
                 <Box flex="1 1 auto" />
                 {!!onMoreClick && (
                     <Button variant="text" size="small" onClick={onMoreClick}>
-                        더보기
+                        {t("common.more")}
                     </Button>
                 )}
             </Box>

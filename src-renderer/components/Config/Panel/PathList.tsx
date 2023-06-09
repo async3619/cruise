@@ -60,7 +60,7 @@ export function PathListConfigPanel(props: ConfigPanelProps<PathListConfigItem>)
                             onClick={() => handleDelete(item)}
                             disabled={props.value.length === 1}
                         >
-                            {t("delete")}
+                            {t("common.delete")}
                         </Button>
                     </Item>
                 ))}

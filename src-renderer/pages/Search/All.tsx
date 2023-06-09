@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 import { Stack } from "@mui/material";
 
@@ -11,13 +12,14 @@ import { SearchMode } from "@queries";
 
 export function AllSearch({ search, onSearchModeChange, onPlay }: SearchProps) {
     const { albums, musics, artists } = search;
+    const { t } = useTranslation();
 
     return (
         <Stack spacing={3}>
             {musics.length > 0 && (
                 <ContentSection
                     onMoreClick={() => onSearchModeChange(SearchMode.Music)}
-                    title={`음악 (${musics.length})`}
+                    title={`${t("common.music")} (${musics.length})`}
                 >
                     <MusicList maxItems={5} items={musics} />
                 </ContentSection>
@@ -25,7 +27,7 @@ export function AllSearch({ search, onSearchModeChange, onPlay }: SearchProps) {
             {albums.length > 0 && (
                 <ContentSection
                     onMoreClick={() => onSearchModeChange(SearchMode.Album)}
-                    title={`앨범 (${albums.length})`}
+                    title={`${t("common.album")} (${albums.length})`}
                 >
                     <CardList direction="horizontal" items={albums} onPlay={onPlay} />
                 </ContentSection>
@@ -33,7 +35,7 @@ export function AllSearch({ search, onSearchModeChange, onPlay }: SearchProps) {
             {artists.length > 0 && (
                 <ContentSection
                     onMoreClick={() => onSearchModeChange(SearchMode.Artist)}
-                    title={`아티스트 (${artists.length})`}
+                    title={`${t("common.artist")} (${artists.length})`}
                 >
                     <CardList direction="horizontal" items={artists} onPlay={onPlay} />
                 </ContentSection>

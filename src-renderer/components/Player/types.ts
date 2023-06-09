@@ -21,7 +21,7 @@ export interface PlayerEventMap {
     timeUpdate(position: number): void;
 }
 
-export interface PlayerProviderContext {
+export interface Player {
     playPlaylist(playlist: ReadonlyArray<MinimalMusicFragment>, index?: number, shuffled?: boolean): void;
     clearPlaylist(): void;
     addMusicsToPlaylist(musics: ReadonlyArray<MinimalMusicFragment>): void;

@@ -420,7 +420,7 @@ export class Library {
         };
     }
 
-    public async createPlaylist() {
+    private async requestPlaylistName() {
         const data = await this.dialog.openDialog(InputTextDialog, {
             title: this.i18n.t("dialog.createPlaylist.title"),
             content: this.i18n.t("dialog.createPlaylist.content"),
@@ -428,10 +428,17 @@ export class Library {
         });
 
         if (data.type !== DialogActionType.Submit) {
+            return null;
+        }
+
+        return data.value;
+    }
+    public async createPlaylist() {
+        const playlistName = await this.requestPlaylistName();
+        if (!playlistName) {
             return;
         }
 
-        const playlistName = data.value;
         await this.toast.doWork({
             messages: {
                 success: this.i18n.t("toast.createPlaylist.success"),
@@ -483,13 +490,8 @@ export class Library {
         });
     }
     public async createPlaylistWithMusics(musics: ReadonlyArray<MinimalMusicFragment>) {
-        const result = await this.dialog.openDialog(InputTextDialog, {
-            title: this.i18n.t("dialog.createPlaylist.title"),
-            content: this.i18n.t("dialog.createPlaylist.content"),
-            validationSchema: z.string().nonempty(),
-        });
-
-        if (result.type !== DialogActionType.Submit) {
+        const playlistName = await this.requestPlaylistName();
+        if (!playlistName) {
             return;
         }
 
@@ -507,7 +509,7 @@ export class Library {
                     mutation: CreatePlaylistFromMusicsDocument,
                     variables: {
                         input: {
-                            name: result.value,
+                            name: playlistName,
                         },
                         musicIds: musics.map(music => music.id),
                     },
@@ -527,14 +529,8 @@ export class Library {
     }
 
     public async renamePlaylist(playlist: MinimalPlaylistFragment) {
-        const data = await this.dialog.openDialog(InputTextDialog, {
-            title: this.i18n.t("dialog.renamePlaylist.title"),
-            content: this.i18n.t("dialog.renamePlaylist.content"),
-            validationSchema: z.string().nonempty(this.i18n.t("dialog.renamePlaylist.validation.empty")),
-            defaultValue: playlist.name,
-        });
-
-        if (data.type !== DialogActionType.Submit) {
+        const playlistName = await this.requestPlaylistName();
+        if (!playlistName) {
             return;
         }
 
@@ -550,7 +546,7 @@ export class Library {
                     variables: {
                         id: playlist.id,
                         input: {
-                            name: data.value,
+                            name: playlistName,
                         },
                     },
                 });

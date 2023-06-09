@@ -36,7 +36,7 @@ export function LibraryPage({ children, title, loading, onShuffleAll, toolbarTyp
                             disabled={loading}
                             onClick={onShuffleAll}
                         >
-                            <span>{t("shuffle_all")}</span>
+                            <span>{t("common.shuffleAll")}</span>
                         </Button>
                     </SelectionToolbar>
                 </Root>

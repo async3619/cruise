@@ -65,21 +65,21 @@ export function Artist({}: ArtistProps) {
     }
 
     const tokens = [
-        t("albumCount", { count: artist.leadAlbums.length }),
-        t("trackCount", { count: artist.leadAlbums.reduce((acc, album) => acc + album.musics.length, 0) }),
+        t("common.albumCount", { count: artist.leadAlbums.length }),
+        t("common.trackCount", { count: artist.leadAlbums.reduce((acc, album) => acc + album.musics.length, 0) }),
         formatSeconds(totalDuration),
     ];
 
     const actions: ButtonItem[] = [
         {
-            label: t("playAll"),
+            label: t("common.playAll"),
             variant: "contained",
             color: "primary",
             startIcon: <PlayArrowRoundedIcon />,
             onClick: () => playAll(),
         },
         {
-            label: t("shuffleAll"),
+            label: t("common.shuffleAll"),
             variant: "contained",
             color: "inherit",
             startIcon: <ShuffleRoundedIcon />,

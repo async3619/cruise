@@ -35,7 +35,7 @@ export function Home() {
 
     if (!recentlyAddedAlbums.items || recentlyAddedAlbums.loading || playingLogs.loading || !playingLogs.items) {
         return (
-            <Page title={t("Home")}>
+            <Page title={t("pageTitle.home")}>
                 <Box p={4} display="flex" justifyContent="center">
                     <CircularProgress size={36} />
                 </Box>
@@ -46,7 +46,7 @@ export function Home() {
     const musicItems = playingLogs.items.map(log => log.music);
 
     return (
-        <Page title={t("Home")}>
+        <Page title={t("pageTitle.home")}>
             <Stack spacing={3}>
                 {musicItems.length > 0 && (
                     <ContentSection title={t("sectionTitle.recentlyPlayed")}>

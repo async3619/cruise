@@ -84,7 +84,7 @@ export function Search() {
             {!searchQuery && (
                 <Box py={9} display="flex" justifyContent="center">
                     <Typography variant="body1" align="center" color="text.disabled">
-                        {t("notSearched")}
+                        {t("search.notSearched")}
                     </Typography>
                 </Box>
             )}
@@ -99,7 +99,7 @@ export function Search() {
                         {!data?.search.total && !loading && (
                             <Box py={8} display="flex" justifyContent="center">
                                 <Typography variant="body1" align="center" color="text.disabled">
-                                    {t("emptySearch")}
+                                    {t("search.empty")}
                                 </Typography>
                             </Box>
                         )}

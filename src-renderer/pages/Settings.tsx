@@ -48,7 +48,7 @@ export function Settings({}: SettingsProps) {
     }
 
     return (
-        <Page title={t("Settings")}>
+        <Page title={t("pageTitle.settings")}>
             <Stack spacing={3}>
                 <ConfigGroup
                     title={t("configs.library")}

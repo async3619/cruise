@@ -1,11 +1,44 @@
 {
     "language": "English",
-    "Hello": "Hello World!",
-    "Home": "Home",
-    "Search": "Search",
-    "Library": "Library",
-    "Settings": "Settings",
-    "Playlists": "Playlists",
+    "common": {
+        "title": "Title",
+        "music": "Music",
+        "album": "Album",
+        "artist": "Artist",
+        "all": "All",
+        "search": "Search",
+        "library": "Library",
+        "playlists": "Playlists",
+        "delete": "Delete",
+        "rename": "Rename",
+        "shuffleAll": "Shuffle All",
+        "playAll": "Play All",
+        "clearAll": "Clear All",
+        "selectAll": "Select All",
+        "add": "Add",
+        "cancel": "Cancel",
+        "create": "Create",
+        "more": "More",
+        "nowPlaying": "Now Playing",
+        "newPlaylist": "New Playlist",
+        "removeFromList": "Remove",
+        "trackCount_one": "{{count}} Track",
+        "trackCount_other": "{{count}} Tracks",
+        "albumCount_one": "{{count}} Album",
+        "albumCount_other": "{{count}} Albums",
+        "selectedCount_one": "{{count}} item selected",
+        "selectedCount_other": "{{count}} items selected"
+    },
+    "pageTitle": {
+        "home": "Home",
+        "search": "Search",
+        "settings": "Settings",
+        "musics": "Musics",
+        "artists": "Artists",
+        "albums": "Albums",
+        "nowPlaying": "Now Playing",
+        "newPlaylist": "Create New Playlist"
+    },
     "configs": {
         "library": "Library",
         "personalization": "Personalization",
@@ -16,7 +49,7 @@
         "refreshLibrary": {
             "title": "Refresh Library",
             "action": "Refresh",
-            "description": "Force to refresh the library by scanning the library directories for new music."
+            "description": "This will scan your library directories and update your library."
         },
         "appTheme": {
             "title": "App Theme",
@@ -31,33 +64,77 @@
             "title": "Theme Color"
         }
     },
-    "pageTitle": {
-        "home": "Home",
-        "search": "Search",
-        "settings": "Settings",
-        "musics": "Musics",
-        "artists": "Artists",
-        "albums": "Albums",
-        "nowPlaying": "Now Playing",
-        "newPlaylist": "Create Playlist"
+    "playlist": {
+        "empty": "Playlist is empty",
+        "name": "Playlist Name"
     },
-    "delete": "Delete",
-    "tableColumn": {
-        "music": {
-            "title": "Title",
-            "artist": "Artist",
-            "album": "Album"
+    "search": {
+        "empty": "No results found",
+        "notSearched": "Search for something"
+    },
+    "dialog": {
+        "createPlaylist": {
+            "title": "Create New Playlist",
+            "content": "Enter a name for your new playlist.",
+            "validation": {
+                "empty": "Please enter a name for your playlist."
+            }
+        },
+        "renamePlaylist": {
+            "title": "Rename Playlist",
+            "content": "Enter a new name for your playlist.",
+            "validation": {
+                "empty": "Please enter a name for your playlist."
+            }
+        },
+        "deletePlaylist": {
+            "title": "Delete Playlist",
+            "content": "Are you sure you want to delete this playlist?",
+            "confirm": "Delete"
+        },
+        "common": {
+            "cancel": "Cancel",
+            "confirm": "Confirm"
         }
     },
-    "shuffle_all": "Shuffle All",
-    "playAll": "Play All",
-    "shuffleAll": "Shuffle All",
-    "trackCount_one": "{{count}} Track",
-    "trackCount_other": "{{count}} Tracks",
-    "albumCount_one": "{{count}} Album",
-    "albumCount_other": "{{count}} Albums",
-    "clear_all": "Clear All",
-    "addToPlaylist": "Add To",
-    "emptyPlaylist": "Playlist is empty",
-    "rename": "Rename"
+    "toast": {
+        "createPlaylist": {
+            "pending": "Creating playlist",
+            "success": "Playlist created",
+            "error": "Failed to create playlist",
+            "actionText": "Open"
+        },
+        "addMusicsToPlaylist": {
+            "pending": "Adding musics to playlist",
+            "success": "Musics added to playlist",
+            "error": "Failed to add musics to playlist",
+            "actionText": "Open"
+        },
+        "updatePlaylist": {
+            "pending": "Updating playlist",
+            "success": "Playlist updated",
+            "error": "Failed to update playlist"
+        },
+        "deletePlaylist": {
+            "pending": "Deleting playlist",
+            "success": "Playlist deleted",
+            "error": "Failed to delete playlist"
+        },
+        "deleteFromPlaylist": {
+            "pending": "Deleting music from playlist",
+            "success": "Music deleted from playlist",
+            "error": "Failed to delete music from playlist"
+        },
+        "clearPlaylist": {
+            "success": "Playlist cleared"
+        },
+        "scanning": {
+            "pending": "Scanning library",
+            "success": "Library scanned successfully"
+        }
+    },
+    "sectionTitle": {
+        "recentlyAddedAlbums": "Recently Added Albums",
+        "recentlyPlayed": "Recently Played"
+    }
 }

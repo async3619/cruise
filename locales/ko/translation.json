@@ -1,25 +1,44 @@
 {
     "language": "한국어",
-    "Hello": "환영합니다!",
-    "Home": "홈",
-    "Library": "라이브러리",
-    "Search": "검색",
-    "Settings": "설정",
-    "Playlists": "재생목록",
-    "delete": "삭제",
-    "shuffle_all": "무작위 재생",
-    "playAll": "모두 재생",
-    "shuffleAll": "무작위 재생",
-    "trackCount_one": "{{count}}개의 곡",
-    "trackCount_other": "{{count}}개의 곡",
-    "albumCount_one": "{{count}}개의 앨범",
-    "albumCount_other": "{{count}}개의 앨범",
-    "clearAll": "비우기",
-    "addToPlaylist": "추가",
-    "emptyPlaylist": "재생목록이 비어있습니다.",
-    "rename": "이름 변경",
-    "emptySearch": "검색 결과가 없습니다.",
-    "notSearched": "검색어를 입력하세요.",
+    "common": {
+        "title": "제목",
+        "music": "음악",
+        "album": "앨범",
+        "artist": "아티스트",
+        "all": "전체",
+        "search": "검색",
+        "library": "라이브러리",
+        "playlists": "재생목록",
+        "delete": "삭제",
+        "rename": "이름 변경",
+        "shuffleAll": "무작위 재생",
+        "playAll": "모두 재생",
+        "clearAll": "비우기",
+        "selectAll": "전체 선택",
+        "add": "추가",
+        "cancel": "취소",
+        "create": "생성",
+        "more": "더보기",
+        "nowPlaying": "재생 대기열",
+        "newPlaylist": "새 재생목록",
+        "removeFromList": "목록에서 삭제",
+        "trackCount_one": "{{count}}개의 곡",
+        "trackCount_other": "{{count}}개의 곡",
+        "albumCount_one": "{{count}}개의 앨범",
+        "albumCount_other": "{{count}}개의 앨범",
+        "selectedCount_one": "{{count}}개 항목 선택됨",
+        "selectedCount_other": "{{count}}개 항목 선택됨"
+    },
+    "pageTitle": {
+        "home": "홈",
+        "search": "검색",
+        "settings": "설정",
+        "musics": "음악",
+        "artists": "아티스트",
+        "albums": "앨범",
+        "nowPlaying": "재생 대기열",
+        "newPlaylist": "새 재생목록 추가"
+    },
     "configs": {
         "library": "라이브러리",
         "personalization": "개인화",
@@ -45,15 +64,13 @@
             "title": "테마 색상"
         }
     },
-    "pageTitle": {
-        "home": "홈",
-        "search": "검색",
-        "settings": "설정",
-        "musics": "음악",
-        "artists": "아티스트",
-        "albums": "앨범",
-        "nowPlaying": "재생 대기열",
-        "newPlaylist": "새 재생목록 추가"
+    "playlist": {
+        "empty": "재생목록이 비어있습니다.",
+        "name": "재생목록 이름"
+    },
+    "search": {
+        "empty": "검색 결과가 없습니다.",
+        "notSearched": "검색어를 입력하세요."
     },
     "dialog": {
         "createPlaylist": {
@@ -115,19 +132,6 @@
             "pending": "라이브러리 업데이트 중",
             "success": "라이브러리 업데이트 완료"
         }
-    },
-    "tableColumn": {
-        "music": {
-            "title": "제목",
-            "artist": "아티스트",
-            "album": "앨범"
-        }
-    },
-    "common": {
-        "music": "음악",
-        "album": "앨범",
-        "artist": "아티스트",
-        "all": "전체"
     },
     "sectionTitle": {
         "recentlyAddedAlbums": "최근 추가된 앨범",

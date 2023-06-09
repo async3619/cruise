@@ -56,19 +56,19 @@ export function PlaylistPage({ title, playlist, musics, onDelete }: PlaylistPage
             children = (
                 <Box py={4}>
                     <Typography variant="body1" color="text.disabled" textAlign="center">
-                        {t("emptyPlaylist")}
+                        {t("playlist.empty")}
                     </Typography>
                 </Box>
             );
         }
 
         const totalDuration = _.sumBy(musics, music => music.duration);
-        tokens = [t("trackCount", { count: musics.length }), formatSeconds(totalDuration)];
+        tokens = [t("common.trackCount", { count: musics.length }), formatSeconds(totalDuration)];
     }
 
     const buttons: ButtonItem[] = [
         {
-            label: t("playAll"),
+            label: t("common.playAll"),
             variant: "contained",
             color: "primary",
             startIcon: <PlayArrowRoundedIcon />,
@@ -76,7 +76,7 @@ export function PlaylistPage({ title, playlist, musics, onDelete }: PlaylistPage
             onClick: () => musics && player.playPlaylist(musics, 0),
         },
         {
-            label: t("shuffleAll"),
+            label: t("common.shuffleAll"),
             variant: "contained",
             color: "inherit",
             startIcon: <ShuffleRoundedIcon />,
@@ -88,7 +88,7 @@ export function PlaylistPage({ title, playlist, musics, onDelete }: PlaylistPage
     if (playlist) {
         buttons.push(
             {
-                label: t("rename"),
+                label: t("common.rename"),
                 variant: "contained",
                 color: "inherit",
                 startIcon: <EditRoundedIcon />,
@@ -96,7 +96,7 @@ export function PlaylistPage({ title, playlist, musics, onDelete }: PlaylistPage
                 onClick: () => library.renamePlaylist(playlist),
             },
             {
-                label: t("delete"),
+                label: t("common.delete"),
                 variant: "contained",
                 color: "inherit",
                 startIcon: <DeleteRoundedIcon />,
@@ -106,7 +106,7 @@ export function PlaylistPage({ title, playlist, musics, onDelete }: PlaylistPage
         );
     } else {
         buttons.push({
-            label: t("clearAll"),
+            label: t("common.clearAll"),
             variant: "contained",
             color: "inherit",
             startIcon: <DeleteRoundedIcon />,
@@ -138,7 +138,7 @@ export function PlaylistPage({ title, playlist, musics, onDelete }: PlaylistPage
         <ShrinkHeaderPage
             denseHeaderMargin
             title={title}
-            subtitle={t("Playlists")}
+            subtitle={t("common.playlists")}
             tokens={tokens}
             buttons={buttons}
             imageSrc={collageSrc}
@@ -148,7 +148,7 @@ export function PlaylistPage({ title, playlist, musics, onDelete }: PlaylistPage
                     disabled={!musics?.length}
                     checked={false}
                     size="small"
-                    label="전체 선택"
+                    label={t("common.selectAll")}
                     onChange={handleSelectAll}
                 />
             </SelectionToolbar>

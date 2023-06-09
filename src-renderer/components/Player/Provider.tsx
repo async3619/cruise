@@ -8,12 +8,7 @@ import { withToast } from "@components/Toast/withToast";
 import { withLibrary } from "@components/Library/withLibrary";
 
 import { OnDataOptions } from "@apollo/client";
-import {
-    PlayerEventMap,
-    PlayerProviderContext,
-    PlayerProviderProps,
-    PlayerProviderStates,
-} from "@components/Player/types";
+import { PlayerEventMap, Player, PlayerProviderProps, PlayerProviderStates } from "@components/Player/types";
 
 import { MinimalMusicFragment, MusicsRemovedComponent, MusicsRemovedSubscription, RepeatMode } from "@queries";
 
@@ -21,7 +16,7 @@ import { PickFn } from "@common/types";
 import { loadImageAsBlob } from "@utils/loadImage";
 import { formatArtistName } from "@utils/formatArtistName";
 
-export const PlayerContext = React.createContext<PlayerProviderContext>({} as any);
+export const PlayerContext = React.createContext<Player>({} as any);
 
 const MEDIASESSION_ACTIONS: MediaSessionAction[] = [
     "nexttrack",
@@ -37,7 +32,7 @@ const MEDIASESSION_ACTIONS: MediaSessionAction[] = [
 class PlayerProviderImpl extends React.Component<PlayerProviderProps, PlayerProviderStates> {
     private readonly eventListeners = new Map<keyof PlayerEventMap, Set<PlayerEventMap[keyof PlayerEventMap]>>();
     private readonly audioRef = React.createRef<HTMLAudioElement>();
-    private readonly contextValue: PickFn<PlayerProviderContext> = {
+    private readonly contextValue: PickFn<Player> = {
         playPlaylist: this.playPlaylist.bind(this),
         clearPlaylist: this.clearPlaylist.bind(this),
         addMusicsToPlaylist: this.addMusicsToPlaylist.bind(this),

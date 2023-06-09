@@ -2,7 +2,6 @@ import React from "react";
 
 import { Box, Stack, Typography } from "@mui/material";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
-import QueueMusicIcon from "@mui/icons-material/QueueMusic";
 import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
 
 import { useMediaSelection } from "@components/MediaSelection/Provider";
@@ -17,6 +16,8 @@ import { MinimalAlbumFragment, MinimalMusicFragment } from "@queries";
 import { getMusics, isAlbumArray, isMusicArray } from "@utils/media";
 
 import { Children, ChildrenWrapper, Root } from "@components/Layout/SelectionToolbar.styles";
+import { useTranslation } from "react-i18next";
+import { generateAddToPlaylistMenuItems } from "@constants/menu";
 
 export interface BaseSelectionToolbarProps {
     children?: React.ReactNode;
@@ -36,6 +37,7 @@ export interface AlbumSelectionToolbarProps extends BaseSelectionToolbarProps {
 export type SelectionToolbarProps = MusicSelectionToolbarProps | AlbumSelectionToolbarProps;
 
 export function SelectionToolbar(props: SelectionToolbarProps) {
+    const { t } = useTranslation();
     const { children, onDelete, gutterBottom, innerPadding, type } = props;
     const mediaSelection = useMediaSelection();
     const { selectedIndices, cancelAll, selectedItem, selectAll, items: musics } = mediaSelection[type];
@@ -100,68 +102,30 @@ export function SelectionToolbar(props: SelectionToolbarProps) {
     }, [selectedIndices.length]);
 
     const addMenuItems = React.useMemo<MenuItem[]>(() => {
-        const addToPlaylist = (playlistId?: number) => {
-            if (!selectedItem.length) {
-                return;
-            }
+        const targetMusics: MinimalMusicFragment[] = [];
+        if (isAlbumArray(selectedItem)) {
+            targetMusics.push(...getMusics(selectedItem));
+        } else if (isMusicArray(selectedItem)) {
+            targetMusics.push(...selectedItem);
+        }
 
-            if (isAlbumArray(selectedItem)) {
-                const musics = getMusics(selectedItem);
-                if (typeof playlistId === "number") {
-                    library.addMusicsToPlaylist(playlistId, musics);
-                } else {
-                    player.addMusicsToPlaylist(musics);
-                }
-            }
-
-            if (isMusicArray(selectedItem)) {
-                if (typeof playlistId === "number") {
-                    library.addMusicsToPlaylist(playlistId, selectedItem);
-                } else {
-                    player.addMusicsToPlaylist(selectedItem);
-                }
-            }
-
-            cancelAll();
-        };
-
-        return [
-            {
-                id: "queue",
-                label: "재생 대기열",
-                icon: QueueMusicIcon,
-                onClick: () => addToPlaylist(),
+        return generateAddToPlaylistMenuItems({
+            t,
+            playlists,
+            onNowPlayingClick: () => {
+                player.addMusicsToPlaylist(targetMusics);
+                cancelAll();
             },
-            "divider",
-            {
-                id: "create-new",
-                label: "새 재생 목록",
-                icon: AddRoundedIcon,
-                onClick: () => {
-                    if (!selectedItem.length) {
-                        return;
-                    }
-
-                    if (isAlbumArray(selectedItem)) {
-                        const musics = getMusics(selectedItem);
-                        library.createPlaylistWithMusics(musics);
-                    }
-
-                    if (isMusicArray(selectedItem)) {
-                        library.createPlaylistWithMusics(selectedItem);
-                    }
-
-                    cancelAll();
-                },
+            onPlaylistClick: playlist => {
+                library.addMusicsToPlaylist(playlist.id, targetMusics);
+                cancelAll();
             },
-            ...(playlists.map(playlist => ({
-                id: `playlist.${playlist.id}`,
-                label: playlist.name,
-                icon: QueueMusicIcon,
-                onClick: () => addToPlaylist(playlist.id),
-            })) || []),
-        ];
-    }, [selectedItem, library, player, playlists, cancelAll]);
+            onNewPlaylistClick: async () => {
+                await library.createPlaylistWithMusics(targetMusics);
+                cancelAll();
+            },
+        });
+    }, [selectedItem, library, player, playlists, cancelAll, t]);
 
     const styles: React.CSSProperties = {};
     const childrenStyles: React.CSSProperties = {};
@@ -194,13 +158,13 @@ export function SelectionToolbar(props: SelectionToolbarProps) {
                 <Checkbox
                     size="small"
                     disabled={isDisabled}
-                    label="전체 선택"
+                    label={t("common.selectAll")}
                     onChange={handleCheckAllChange}
                     checked={isAllChecked}
                     indeterminate={isIndeterminate}
                 />
                 <Typography variant="body1" color="text.secondary" fontSize="0.9rem">
-                    {displayCount}개 항목 선택됨
+                    {t("common.selectedCount", { count: displayCount })}
                 </Typography>
                 <Box flex="1 1 auto" />
                 <Stack direction="row" spacing={1}>
@@ -212,7 +176,7 @@ export function SelectionToolbar(props: SelectionToolbarProps) {
                         startIcon={<AddRoundedIcon />}
                         menuItems={addMenuItems}
                     >
-                        추가
+                        {t("common.add")}
                     </Button>
                     {onDelete && (
                         <Button
@@ -223,7 +187,7 @@ export function SelectionToolbar(props: SelectionToolbarProps) {
                             onClick={() => handleDelete(selectedIndices, selectedItem)}
                             startIcon={<DeleteRoundedIcon />}
                         >
-                            목록에서 삭제
+                            {t("common.removeFromList")}
                         </Button>
                     )}
                 </Stack>

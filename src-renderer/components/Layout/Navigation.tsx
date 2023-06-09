@@ -39,19 +39,19 @@ export function Navigation({}: NavigationProps) {
                             items={[
                                 {
                                     id: "home",
-                                    label: t("Home"),
+                                    label: t("pageTitle.home"),
                                     icon: HomeRoundedIcon,
                                     href: "/",
                                 },
                                 {
                                     id: "search",
-                                    label: t("Search"),
+                                    label: t("pageTitle.search"),
                                     icon: SearchRoundedIcon,
                                     href: "/search",
                                 },
                                 {
                                     id: "settings",
-                                    label: t("Settings"),
+                                    label: t("pageTitle.settings"),
                                     icon: SettingsRoundedIcon,
                                     href: "/settings",
                                 },
@@ -81,7 +81,7 @@ export function Navigation({}: NavigationProps) {
                                     hrefAliases: ["/albums/"],
                                 },
                             ]}
-                            title={t("Library")}
+                            title={t("common.library")}
                         />
                         <Menu
                             standalone
@@ -106,7 +106,7 @@ export function Navigation({}: NavigationProps) {
                                     onClick: handleCreatePlaylist,
                                 },
                             ]}
-                            title={t("Playlists")}
+                            title={t("common.playlists")}
                         />
                     </Stack>
                 </Content>

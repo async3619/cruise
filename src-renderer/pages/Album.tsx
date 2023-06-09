@@ -6,7 +6,6 @@ import { useTranslation } from "react-i18next";
 import PlayArrowRoundedIcon from "@mui/icons-material/PlayArrowRounded";
 import ShuffleRoundedIcon from "@mui/icons-material/ShuffleRounded";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
-import QueueMusicIcon from "@mui/icons-material/QueueMusic";
 
 import { AlbumArtType, useAlbumsRemovedSubscription } from "@queries";
 
@@ -19,6 +18,7 @@ import { MusicList } from "@components/MusicList";
 import { Checkbox } from "@components/ui/Checkbox";
 
 import { formatSeconds } from "@utils/formatTime";
+import { generateAddToPlaylistMenuItems } from "@constants/menu";
 
 export interface AlbumProps {}
 
@@ -65,7 +65,11 @@ export function Album({}: AlbumProps) {
     const subtitle = album.leadArtists.map(artist => artist.name).join(", ");
     const albumArt = album.albumArts.find(albumArt => albumArt.type === AlbumArtType.CoverFront) || album.albumArts[0];
     const totalDuration = album.musics.reduce((acc, music) => acc + music.duration, 0);
-    const tokens = _.compact([album.year, t("trackCount", { count: album.musicCount }), formatSeconds(totalDuration)]);
+    const tokens = _.compact([
+        album.year,
+        t("common.trackCount", { count: album.musicCount }),
+        formatSeconds(totalDuration),
+    ]);
 
     const playAlbum = (shuffled?: boolean) => {
         player.playPlaylist(album.musics, 0, shuffled);
@@ -84,50 +88,42 @@ export function Album({}: AlbumProps) {
             tokens={tokens}
             buttons={[
                 {
-                    label: t("playAll"),
+                    label: t("common.playAll"),
                     variant: "contained",
                     color: "primary",
                     startIcon: <PlayArrowRoundedIcon />,
                     onClick: () => playAlbum(),
                 },
                 {
-                    label: t("shuffleAll"),
+                    label: t("common.shuffleAll"),
                     variant: "contained",
                     color: "inherit",
                     startIcon: <ShuffleRoundedIcon />,
                     onClick: () => playAlbum(true),
                 },
                 {
-                    label: t("addToPlaylist"),
+                    label: t("common.add"),
                     variant: "contained",
                     color: "inherit",
                     startIcon: <AddRoundedIcon />,
-                    menuItems: [
-                        {
-                            id: "queue",
-                            label: "재생 대기열",
-                            icon: QueueMusicIcon,
-                            onClick: () => player.addMusicsToPlaylist(album.musics),
+                    menuItems: generateAddToPlaylistMenuItems({
+                        t,
+                        playlists,
+                        onNowPlayingClick: () => {
+                            player.addMusicsToPlaylist(album.musics);
                         },
-                        "divider",
-                        {
-                            id: "create-new",
-                            label: "새 재생 목록",
-                            icon: AddRoundedIcon,
-                            onClick: () => library.createPlaylistWithMusics(album.musics),
+                        onNewPlaylistClick: () => {
+                            library.createPlaylistWithMusics(album.musics);
                         },
-                        ...(playlists.map(playlist => ({
-                            id: `playlist.${playlist.id}`,
-                            label: playlist.name,
-                            icon: QueueMusicIcon,
-                            onClick: () => library.addMusicsToPlaylist(playlist.id, album.musics),
-                        })) || []),
-                    ],
+                        onPlaylistClick: playlist => {
+                            library.addMusicsToPlaylist(playlist.id, album.musics);
+                        },
+                    }),
                 },
             ]}
         >
             <SelectionToolbar type="music" innerPadding gutterBottom>
-                <Checkbox checked={false} size="small" label="전체 선택" onChange={handleSelectAll} />
+                <Checkbox checked={false} size="small" label={t("common.selectAll")} onChange={handleSelectAll} />
             </SelectionToolbar>
             <MusicList selectable withTrackNumber items={album.musics} />
         </ShrinkHeaderPage>

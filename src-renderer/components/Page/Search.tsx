@@ -72,7 +72,7 @@ export function SearchPage({ title, children, onSearch, onSearchModeChange, sear
                         items={fetchSuggestions}
                         getOptionLabel={item => item.name}
                         getOptionIcon={item => SearchSuggestionIcon[item.type]}
-                        renderInput={props => <SearchInput placeholder="검색..." {...props} />}
+                        renderInput={props => <SearchInput placeholder={`${t("common.search")}...`} {...props} />}
                         onChange={handleChange}
                         onKeyDown={handleKeyDown}
                     />

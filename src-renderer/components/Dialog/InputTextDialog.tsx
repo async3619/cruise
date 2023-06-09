@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -21,6 +22,7 @@ export interface InputTextDialogProps extends BaseDialogProps<string> {
 }
 
 export function InputTextDialog({ title, content, validationSchema, defaultValue, ...props }: InputTextDialogProps) {
+    const { t } = useTranslation();
     const schema = React.useMemo(() => z.object({ input: validationSchema }), [validationSchema]);
     const { register, getFieldState, formState, handleSubmit } = useForm<InputTextFormValues>({
         mode: "all",
@@ -48,11 +50,11 @@ export function InputTextDialog({ title, content, validationSchema, defaultValue
             actions={[
                 {
                     type: DialogActionType.Negative,
-                    label: "취소",
+                    label: t("common.cancel"),
                 },
                 {
                     type: DialogActionType.Submit,
-                    label: "생성",
+                    label: t("common.create"),
                     disabled: !formState.isValid,
                 },
             ]}
@@ -66,7 +68,7 @@ export function InputTextDialog({ title, content, validationSchema, defaultValue
                     size="small"
                     error={!!fieldState.error}
                     helperText={fieldState.error?.message}
-                    label="재생목록 이름"
+                    label={t("playlist.name")}
                     {...register("input")}
                 />
             </Box>
