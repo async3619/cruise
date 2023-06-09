@@ -4,6 +4,16 @@
         "plugin:prettier/recommended",
         "plugin:react-hooks/recommended"
     ],
+    "parser": "@typescript-eslint/parser",
+    "plugins": ["@typescript-eslint", "unicorn"],
+    "root": true,
+    "env": {
+        "es2022": true
+    },
+    "parserOptions": {
+        "ecmaVersion": "latest",
+        "sourceType": "module"
+    },
     "rules": {
         "@typescript-eslint/no-unused-vars": [
             "warn", // or "error"
@@ -14,6 +24,18 @@
             }
         ],
         "@typescript-eslint/no-empty-interface": "off",
-        "@typescript-eslint/no-explicit-any": "off"
+        "@typescript-eslint/no-explicit-any": "off",
+        "unicorn/string-content": [
+            "error",
+            {
+                "patterns": {
+                    "([가-힣]+)": {
+                        "suggest": "t(\"$1\")",
+                        "message": "한글은 사용하지 않습니다.",
+                        "fix": false
+                    }
+                }
+            }
+        ]
     }
 }
