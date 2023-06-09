@@ -1,5 +1,4 @@
 import { Field, Float, InputType, ObjectType, registerEnumType } from "@nestjs/graphql";
-import { Nullable } from "@common/types";
 
 export enum AppTheme {
     Light = "light",
@@ -33,8 +32,8 @@ export class ConfigInput {
     @Field(() => RepeatMode)
     public repeatMode!: RepeatMode;
 
-    @Field(() => String, { nullable: true })
-    public language?: Nullable<string>;
+    @Field(() => String)
+    public language!: string;
 }
 
 @ObjectType()
@@ -54,6 +53,6 @@ export class Config {
     @Field(() => RepeatMode)
     public repeatMode!: RepeatMode;
 
-    @Field(() => String, { nullable: true })
-    public language?: Nullable<string>;
+    @Field(() => String)
+    public language!: string;
 }

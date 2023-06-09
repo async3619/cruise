@@ -119,7 +119,7 @@ type Config {
   volume: Float!
   muted: Boolean!
   repeatMode: RepeatMode!
-  language: String
+  language: String!
 }
 
 enum AppTheme {
@@ -224,7 +224,7 @@ input ConfigInput {
   volume: Float!
   muted: Boolean!
   repeatMode: RepeatMode!
-  language: String
+  language: String!
 }
 
 input CreatePlaylistInput {

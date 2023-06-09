@@ -3,6 +3,7 @@ import * as fs from "fs-extra";
 import * as _ from "lodash";
 import * as path from "path";
 import glob from "fast-glob";
+import * as electron from "electron";
 
 import * as mgr from "@async3619/merry-go-round";
 
@@ -20,7 +21,7 @@ export const CONFIG_SCHEMA = z.object({
     repeatMode: z.nativeEnum(RepeatMode),
     volume: z.number().min(0).max(1),
     muted: z.boolean(),
-    language: z.string().optional().nullish(),
+    language: z.string(),
     lastPosition: z
         .object({
             x: z.number(),
@@ -48,12 +49,15 @@ const DEFAULT_CONFIG: Config = (() => {
         libraryDirectories.push(musicsDir);
     }
 
+    const languages = electron.app.getPreferredSystemLanguages();
+
     return {
         libraryDirectories,
         appTheme: AppTheme.System,
         repeatMode: RepeatMode.None,
         volume: 0.5,
         muted: false,
+        language: languages.length > 0 ? languages[0] : "en",
     };
 })();
 
