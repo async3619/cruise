@@ -101,7 +101,10 @@ class PlayerProviderImpl extends React.Component<PlayerProviderProps, PlayerProv
             this.audioRef.current.volume = this.state.volume;
         }
     }
-    public componentDidUpdate(prevProps: Readonly<PlayerProviderProps>, prevState: Readonly<PlayerProviderStates>) {
+    public async componentDidUpdate(
+        prevProps: Readonly<PlayerProviderProps>,
+        prevState: Readonly<PlayerProviderStates>,
+    ) {
         if (prevState.muted !== this.state.muted) {
             if (!this.state.muted) {
                 this.setVolume(this.state.volume);
@@ -110,6 +113,19 @@ class PlayerProviderImpl extends React.Component<PlayerProviderProps, PlayerProv
             this.props.setConfig({
                 muted: this.state.muted,
             });
+        }
+
+        if (prevState.playlistIndex !== this.state.playlistIndex) {
+            if (!this.state.playlist || this.state.playlistIndex < 0) {
+                return;
+            }
+
+            const currentMusic = this.currentMusic;
+            if (!currentMusic) {
+                return;
+            }
+
+            await this.props.library.createLog(currentMusic.id);
         }
     }
     public componentWillUnmount() {
@@ -120,13 +136,6 @@ class PlayerProviderImpl extends React.Component<PlayerProviderProps, PlayerProv
 
     private handlePlay = async () => {
         this.setState({ playing: true });
-
-        const currentMusic = this.currentMusic;
-        if (!currentMusic) {
-            return;
-        }
-
-        await this.props.library.createLog(currentMusic.id);
     };
     private handlePause = () => {
         this.setState({ playing: false });
