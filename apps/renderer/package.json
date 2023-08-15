@@ -1,0 +1,48 @@
+{
+    "name": "renderer",
+    "private": true,
+    "version": "0.0.0",
+    "type": "module",
+    "scripts": {
+        "build": "tsc && vite build",
+        "preview": "vite preview",
+        "lint": "eslint \"src/**/*.ts\"",
+        "codegen": "graphql-codegen --config codegen.yml"
+    },
+    "dependencies": {
+        "@apollo/client": "^3.8.1",
+        "@emotion/css": "^11.11.2",
+        "@emotion/react": "^11.11.1",
+        "@emotion/styled": "^11.11.0",
+        "@mui/material": "^5.14.5",
+        "apollo-link-logger": "^2.0.1",
+        "graphql": "^16.8.0",
+        "nanoid": "^4.0.2",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0",
+        "react-router-dom": "^6.15.0",
+        "serialize-error": "^11.0.1",
+        "types": "workspace:*",
+        "ui": "workspace:*",
+        "zen-observable": "^0.10.0"
+    },
+    "devDependencies": {
+        "@graphql-codegen/cli": "^5.0.0",
+        "@graphql-codegen/typescript": "^4.0.1",
+        "@graphql-codegen/typescript-graphql-files-modules": "^2.2.1",
+        "@graphql-codegen/typescript-operations": "^4.0.1",
+        "@graphql-codegen/typescript-react-apollo": "^3.3.7",
+        "@parcel/watcher": "^2.2.0",
+        "@types/react": "^18.2.20",
+        "@types/react-dom": "^18.2.7",
+        "@types/zen-observable": "^0.8.3",
+        "@vitejs/plugin-react": "^4.0.4",
+        "electron": "^25.5.0",
+        "eslint": "^8.47.0",
+        "eslint-config-custom": "workspace:*",
+        "tsconfig": "workspace:*",
+        "typescript": "^5.1.6",
+        "vite": "^4.4.9",
+        "vite-tsconfig-paths": "^4.2.0"
+    }
+}

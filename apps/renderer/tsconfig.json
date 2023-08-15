@@ -1,0 +1,15 @@
+{
+    "extends": "tsconfig/renderer.json",
+    "compilerOptions": {
+        "baseUrl": ".",
+        "paths": {
+            "@graphql/*": ["src/graphql/*"],
+            "@graphql/queries": ["src/queries/index.tsx"],
+            "@pages": ["src/pages"],
+            "@pages/*": ["src/pages/*"],
+            "@components/*": ["src/components/*"],
+            "@styles/*": ["src/styles/*"],
+        }
+    },
+    "include": ["src"]
+}
