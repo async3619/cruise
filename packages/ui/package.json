@@ -13,6 +13,7 @@
         "@emotion/react": "^11.11.1",
         "@emotion/styled": "^11.11.0",
         "@mui/material": "^5.14.5",
+        "nanoid": "^4.0.2",
         "react": "^18.2.0"
     },
     "devDependencies": {
@@ -27,6 +28,7 @@
         "jest-environment-jsdom": "^29.6.2",
         "ts-jest": "^29.1.1",
         "tsconfig": "workspace:*",
+        "types": "workspace:*",
         "typescript": "^5.1.6"
     }
 }

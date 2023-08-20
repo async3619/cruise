@@ -26,6 +26,12 @@ export const Root = styled.div`
     flex-direction: column;
 `;
 
+export const Body = styled.div`
+    display: flex;
+
+    flex: 1 1 auto;
+`;
+
 export const Main = styled.main`
     flex: 1 1 auto;
 `;

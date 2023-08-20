@@ -9,7 +9,15 @@ const PROJECT_ROOT = path.join(PACKAGE_ROOT, "../..");
 export default defineConfig({
     root: PACKAGE_ROOT,
     envDir: PROJECT_ROOT,
-    plugins: [react(), tsconfigPaths()],
+    plugins: [
+        react({
+            jsxImportSource: "@emotion/react",
+            babel: {
+                plugins: ["@emotion/babel-plugin"],
+            },
+        }),
+        tsconfigPaths(),
+    ],
     base: "",
     build: {
         sourcemap: true,
