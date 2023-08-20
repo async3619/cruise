@@ -1,11 +1,14 @@
 import os from "os";
 import { BrowserWindow, app } from "electron";
 import * as path from "path";
+import { PubSub } from "graphql-subscriptions";
 
 import { Inject, Injectable, OnApplicationBootstrap } from "@nestjs/common";
 import { electronApp, is, optimizer } from "@electron-toolkit/utils";
 
 import { ConfigService } from "@config/config.service";
+
+export const windowPubSub = new PubSub();
 
 @Injectable()
 export class ElectronService implements OnApplicationBootstrap {
@@ -100,6 +103,18 @@ export class ElectronService implements OnApplicationBootstrap {
         });
 
         window.on("close", this.onClose.bind(this));
+
+        window.on("maximize", () => {
+            windowPubSub.publish("maximizedStateChanged", {
+                maximizedStateChanged: true,
+            });
+        });
+
+        window.on("unmaximize", () => {
+            windowPubSub.publish("maximizedStateChanged", {
+                maximizedStateChanged: false,
+            });
+        });
 
         if (is.dev) {
             window.webContents.openDevTools({
