@@ -7,7 +7,12 @@ export const Root = styled.nav`
     width: ${SIDEBAR_WIDTH}px;
 
     margin: 0;
-    padding: ${({ theme }) => theme.spacing(0.5, 1.5)};
+
+    position: relative;
 
     background-color: ${backgroundColors["950"]};
+`;
+
+export const Content = styled.div`
+    padding: ${({ theme }) => theme.spacing(1.5, 1.5)};
 `;

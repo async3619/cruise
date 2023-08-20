@@ -1,11 +1,12 @@
 import React from "react";
+import { Scrollbars } from "rc-scrollbars";
+
 import { Menu, MenuItem } from "ui";
 
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 
-import { Root } from "./SideBar.styles";
-
-export interface SideBarProps {}
+import { ScrollbarThumb } from "@components/ScrollbarThumb";
+import { Content, Root } from "@components/Layout/SideBar.styles";
 
 const SIDEBAR_NAV_ITEMS: MenuItem[] = [
     {
@@ -16,10 +17,16 @@ const SIDEBAR_NAV_ITEMS: MenuItem[] = [
     },
 ];
 
-export function SideBar({}: SideBarProps) {
+export function SideBar() {
     return (
         <Root>
-            <Menu items={SIDEBAR_NAV_ITEMS} selectedId="/" />
+            <Scrollbars
+                autoHide
+                renderView={props => <Content {...props} />}
+                renderThumbVertical={props => <ScrollbarThumb {...props} />}
+            >
+                <Menu items={SIDEBAR_NAV_ITEMS} />
+            </Scrollbars>
         </Root>
     );
 }
