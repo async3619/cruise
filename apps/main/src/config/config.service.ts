@@ -24,11 +24,13 @@ const DEFAULT_CONFIG: ConfigType = {};
 
 @Injectable()
 export class ConfigService {
+    private readonly fs = fs;
+
     public async getConfig(): Promise<ConfigType> {
         try {
-            const data = await fs.readFile(CONFIG_FILE_PATH, "utf-8");
+            const data = await this.fs.readFile(CONFIG_FILE_PATH, "utf-8");
             return CONFIG_SCHEMA.parse(JSON.parse(data));
-        } catch {
+        } catch (error) {
             return CONFIG_SCHEMA.parse(DEFAULT_CONFIG);
         }
     }
@@ -39,7 +41,7 @@ export class ConfigService {
             ...config,
         };
 
-        await fs.ensureDir(path.dirname(CONFIG_FILE_PATH));
-        await fs.writeFile(CONFIG_FILE_PATH, JSON.stringify(newConfig, null, 4));
+        await this.fs.ensureDir(path.dirname(CONFIG_FILE_PATH));
+        await this.fs.writeFile(CONFIG_FILE_PATH, JSON.stringify(newConfig));
     }
 }

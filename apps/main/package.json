@@ -9,7 +9,7 @@
     "scripts": {
         "build": "rimraf ./dist && webpack --config ./webpack.config.ts",
         "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
-        "test": "jest",
+        "test": "jest --coverage",
         "e2e": "jest --config ./test/jest-e2e.json"
     },
     "dependencies": {
@@ -60,22 +60,5 @@
         "webpack": "^5.88.2",
         "webpack-bundle-analyzer": "^4.9.0",
         "webpack-cli": "^5.1.4"
-    },
-    "jest": {
-        "moduleFileExtensions": [
-            "js",
-            "json",
-            "ts"
-        ],
-        "rootDir": "src",
-        "testRegex": ".*\\.spec\\.ts$",
-        "transform": {
-            "^.+\\.(t|j)s$": "ts-jest"
-        },
-        "collectCoverageFrom": [
-            "**/*.(t|j)s"
-        ],
-        "coverageDirectory": "../coverage",
-        "testEnvironment": "node"
     }
 }
