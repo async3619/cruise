@@ -3,7 +3,8 @@ import React from "react";
 import { Global } from "@emotion/react";
 import { CssBaseline } from "@mui/material";
 
-import { GlobalStyles, Root } from "@components/Layout.styles";
+import { TitleBar } from "@components/Layout/TitleBar";
+import { GlobalStyles, Main, Root } from "@components/Layout/index.styles";
 
 export interface LayoutProps {}
 
@@ -12,7 +13,8 @@ export function Layout({ children }: React.PropsWithChildren<LayoutProps>) {
         <Root>
             <Global styles={GlobalStyles} />
             <CssBaseline />
-            {children}
+            <TitleBar />
+            <Main>{children}</Main>
         </Root>
     );
 }

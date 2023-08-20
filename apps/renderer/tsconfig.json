@@ -2,13 +2,14 @@
     "extends": "tsconfig/renderer.json",
     "compilerOptions": {
         "baseUrl": ".",
+        "moduleResolution": "bundler",
         "paths": {
             "@graphql/*": ["src/graphql/*"],
             "@graphql/queries": ["src/queries/index.tsx"],
             "@pages": ["src/pages"],
             "@pages/*": ["src/pages/*"],
             "@components/*": ["src/components/*"],
-            "@styles/*": ["src/styles/*"],
+            "@styles/*": ["src/styles/*"]
         }
     },
     "include": ["src"]

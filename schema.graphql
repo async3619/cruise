@@ -8,5 +8,12 @@ type Query {
 }
 
 type Mutation {
+  maximize: Boolean!
+  unmaximize: Boolean!
+  minimize: Boolean!
   close: Boolean!
+}
+
+type Subscription {
+  maximizedStateChanged: Boolean!
 }
