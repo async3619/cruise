@@ -4,6 +4,7 @@
         "isolatedModules": false,
         "jsx": "react-jsx",
         "lib": ["ES2015", "DOM"],
+        "types": ["@testing-library/jest-dom"],
         "module": "ESNext",
         "target": "es6"
     },

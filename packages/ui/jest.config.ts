@@ -7,6 +7,9 @@ const config: Config = {
     collectCoverage: true,
     collectCoverageFrom: ["src/**/*.{js,jsx,ts,tsx}", "!src/**/*.d.ts", "!src/**/index.{ts,tsx}"],
     coveragePathIgnorePatterns: ["/node_modules/", "/.next/", "/dist/"],
+    transform: {
+        "^.+\\.tsx?$": ["ts-jest", {}],
+    },
 };
 
 export default config;
