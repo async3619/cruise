@@ -1,4 +1,5 @@
 import React from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Scrollbars } from "rc-scrollbars";
 
 import { Menu, MenuItem } from "ui";
@@ -18,6 +19,20 @@ const SIDEBAR_NAV_ITEMS: MenuItem[] = [
 ];
 
 export function SideBar() {
+    const location = useLocation();
+    const navigate = useNavigate();
+
+    const handleClick = React.useCallback(
+        (item: MenuItem) => {
+            if (item.type !== "button") {
+                return;
+            }
+
+            navigate(item.id);
+        },
+        [navigate],
+    );
+
     return (
         <Root>
             <Scrollbars
@@ -25,7 +40,7 @@ export function SideBar() {
                 renderView={props => <Content {...props} />}
                 renderThumbVertical={props => <ScrollbarThumb {...props} />}
             >
-                <Menu items={SIDEBAR_NAV_ITEMS} />
+                <Menu items={SIDEBAR_NAV_ITEMS} selectedId={location.pathname} onClick={handleClick} />
             </Scrollbars>
         </Root>
     );

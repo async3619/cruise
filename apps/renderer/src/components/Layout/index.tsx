@@ -1,4 +1,5 @@
 import React from "react";
+import { Outlet } from "react-router-dom";
 
 import { Global } from "@emotion/react";
 import { CssBaseline } from "@mui/material";
@@ -8,9 +9,7 @@ import { SideBar } from "@components/Layout/SideBar";
 
 import { Body, GlobalStyles, Main, Root } from "@components/Layout/index.styles";
 
-export interface LayoutProps {}
-
-export function Layout({ children }: React.PropsWithChildren<LayoutProps>) {
+export function Layout() {
     return (
         <Root>
             <Global styles={GlobalStyles} />
@@ -18,7 +17,9 @@ export function Layout({ children }: React.PropsWithChildren<LayoutProps>) {
             <TitleBar />
             <Body>
                 <SideBar />
-                <Main>{children}</Main>
+                <Main>
+                    <Outlet />
+                </Main>
             </Body>
         </Root>
     );

@@ -7,16 +7,13 @@ import apolloClient from "@graphql/client";
 
 import { theme } from "@styles/theme";
 
-import { Layout } from "@components/Layout";
 import { Routes } from "@pages";
 
 export function App() {
     return (
         <ApolloProvider client={apolloClient}>
             <CssVarsProvider theme={theme} defaultMode="dark">
-                <Layout>
-                    <Routes />
-                </Layout>
+                <Routes />
             </CssVarsProvider>
         </ApolloProvider>
     );
