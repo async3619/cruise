@@ -87,6 +87,7 @@ export class ElectronService implements OnApplicationBootstrap {
             y: config.windowState?.y,
             width: config.windowState?.width ?? 1300,
             height: config.windowState?.height ?? 800,
+            frame: false,
             minWidth: 500,
             webPreferences: {
                 preload:
