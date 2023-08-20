@@ -21,6 +21,10 @@
             "dependsOn": ["^renderer#codegen"],
             "cache": false,
             "persistent": true
+        },
+        "test": {
+            "dependsOn": ["^renderer#codegen"],
+            "cache": false
         }
     }
 }
