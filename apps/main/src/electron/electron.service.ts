@@ -1,13 +1,17 @@
 import os from "os";
 import { BrowserWindow, app } from "electron";
-
-import { Injectable, OnApplicationBootstrap } from "@nestjs/common";
-import { electronApp, is, optimizer } from "@electron-toolkit/utils";
 import * as path from "path";
+
+import { Inject, Injectable, OnApplicationBootstrap } from "@nestjs/common";
+import { electronApp, is, optimizer } from "@electron-toolkit/utils";
+
+import { ConfigService } from "@config/config.service";
 
 @Injectable()
 export class ElectronService implements OnApplicationBootstrap {
     private mainWindow: BrowserWindow | null = null;
+
+    public constructor(@Inject(ConfigService) private readonly configService: ConfigService) {}
 
     public getMainWindow(): BrowserWindow {
         if (!this.mainWindow) {
@@ -56,11 +60,33 @@ export class ElectronService implements OnApplicationBootstrap {
         });
     }
 
+    private async onClose() {
+        if (!this.mainWindow) {
+            return;
+        }
+
+        const { x, y, width, height } = this.mainWindow.getBounds();
+        const isMaximized = this.mainWindow.isMaximized();
+
+        await this.configService.setConfig({
+            windowState: {
+                isMaximized,
+                x,
+                y,
+                width,
+                height,
+            },
+        });
+    }
+
     private async createWindow() {
+        const config = await this.configService.getConfig();
         const window = new BrowserWindow({
             title: "Main window",
-            width: 1300,
-            height: 800,
+            x: config.windowState?.x,
+            y: config.windowState?.y,
+            width: config.windowState?.width ?? 1300,
+            height: config.windowState?.height ?? 800,
             minWidth: 500,
             webPreferences: {
                 preload:
@@ -71,6 +97,8 @@ export class ElectronService implements OnApplicationBootstrap {
                 contextIsolation: true,
             },
         });
+
+        window.on("close", this.onClose.bind(this));
 
         if (is.dev) {
             window.webContents.openDevTools({
