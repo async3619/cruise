@@ -17,7 +17,7 @@ export const Root = styled.button<{ buttonType: WindowControlButtonTypes }>`
     font-family: inherit;
     font-size: inherit;
 
-    color: ${({ theme }) => theme.palette.text.secondary};
+    color: ${({ theme }) => theme.vars.palette.text.secondary};
     background-color: transparent;
 
     -webkit-app-region: no-drag;
@@ -26,16 +26,38 @@ export const Root = styled.button<{ buttonType: WindowControlButtonTypes }>`
     &:hover,
     &:focus-visible {
         color: ${({ theme, buttonType }) =>
-            buttonType === "close" ? theme.palette.error.contrastText : theme.palette.text.primary};
-        background-color: ${({ theme, buttonType }) =>
-            buttonType === "close" ? theme.palette.error.dark : "rgba(255, 255, 255, 0.08)"};
+            buttonType === "close" ? theme.vars.palette.error.contrastText : theme.vars.palette.text.primary};
     }
 
     &:active {
         color: ${({ theme, buttonType }) =>
-            buttonType === "close" ? theme.palette.error.contrastText : theme.palette.text.primary};
-        background-color: ${({ theme, buttonType }) =>
-            buttonType === "close" ? theme.palette.error.dark : "rgba(255, 255, 255, 0.12)"};
+            buttonType === "close" ? theme.vars.palette.error.contrastText : theme.vars.palette.text.primary};
+    }
+
+    ${({ theme }) => theme.getColorSchemeSelector("dark")} {
+        &:hover,
+        &:focus-visible {
+            background-color: ${({ theme, buttonType }) =>
+                buttonType === "close" ? theme.vars.palette.error.dark : "rgba(255, 255, 255, 0.08)"};
+        }
+
+        &:active {
+            background-color: ${({ theme, buttonType }) =>
+                buttonType === "close" ? theme.vars.palette.error.dark : "rgba(255, 255, 255, 0.12)"};
+        }
+    }
+
+    ${({ theme }) => theme.getColorSchemeSelector("light")} {
+        &:hover,
+        &:focus-visible {
+            background-color: ${({ theme, buttonType }) =>
+                buttonType === "close" ? theme.vars.palette.error.light : "rgba(0, 0, 0, 0.08)"};
+        }
+
+        &:active {
+            background-color: ${({ theme, buttonType }) =>
+                buttonType === "close" ? theme.vars.palette.error.light : "rgba(0, 0, 0, 0.12)"};
+        }
     }
 `;
 

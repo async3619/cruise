@@ -5,10 +5,17 @@ export const Icon = styled.span<{ active?: boolean }>`
 
     display: block;
 
-    color: ${({ theme, active }) => (active ? theme.palette.primary.light : theme.palette.text.secondary)};
-
     > svg {
         display: block;
+    }
+
+    ${({ theme }) => theme.getColorSchemeSelector("dark")} {
+        color: ${({ theme, active }) =>
+            active ? theme.vars.palette.primary.light : theme.vars.palette.text.secondary};
+    }
+
+    ${({ theme }) => theme.getColorSchemeSelector("light")} {
+        color: ${({ theme, active }) => (active ? theme.vars.palette.primary.main : theme.vars.palette.text.secondary)};
     }
 `;
 
@@ -24,8 +31,8 @@ export const Root = styled.button<{ active?: boolean }>`
     display: flex;
     align-items: center;
 
-    color: ${({ theme, active }) => (active ? theme.palette.text.primary : theme.palette.text.secondary)};
-    background-color: ${({ theme, active }) => (active ? theme.palette.action.hover : "transparent")};
+    color: ${({ theme, active }) => (active ? theme.vars.palette.text.primary : theme.vars.palette.text.secondary)};
+    background-color: transparent;
 
     cursor: pointer;
     outline: none;
@@ -37,16 +44,40 @@ export const Root = styled.button<{ active?: boolean }>`
 
     &:hover,
     &:focus-visible {
-        color: ${({ theme }) => theme.palette.text.primary};
-        background-color: ${({ theme }) => theme.palette.action.hover};
+        color: ${({ theme }) => theme.vars.palette.text.primary};
     }
 
     &:focus-visible {
-        box-shadow: 0 0 0 2px ${({ theme }) => theme.palette.primary.main};
+        box-shadow: 0 0 0 2px ${({ theme }) => theme.vars.palette.primary.main};
     }
 
     &:active {
-        color: ${({ theme }) => theme.palette.text.primary};
-        background-color: ${({ theme }) => theme.palette.action.selected};
+        color: ${({ theme }) => theme.vars.palette.text.primary};
+    }
+
+    ${({ theme }) => theme.getColorSchemeSelector("dark")} {
+        background-color: ${({ theme, active }) => (active ? theme.vars.palette.action.hover : "transparent")};
+
+        &:hover,
+        &:focus-visible {
+            background-color: ${({ theme }) => theme.vars.palette.action.hover};
+        }
+
+        &:active {
+            background-color: ${({ theme }) => theme.vars.palette.action.selected};
+        }
+    }
+
+    ${({ theme }) => theme.getColorSchemeSelector("light")} {
+        background-color: ${({ theme, active }) => (active ? theme.vars.palette.action.selected : "transparent")};
+
+        &:hover,
+        &:focus-visible {
+            background-color: ${({ theme }) => theme.vars.palette.action.selected};
+        }
+
+        &:active {
+            background-color: ${({ theme }) => theme.vars.palette.action.focus};
+        }
     }
 `;

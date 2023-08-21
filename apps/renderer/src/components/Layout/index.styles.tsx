@@ -1,6 +1,7 @@
+import { backgroundColors } from "ui";
+
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
-import { backgroundColors } from "@styles/theme.ts";
 
 export const GlobalStyles = css`
     html,
@@ -32,7 +33,16 @@ export const Body = styled.div`
 
     flex: 1 1 auto;
 
-    background-color: ${backgroundColors["950"]};
+    transition: ${({ theme }) =>
+        theme.transitions.create(["background-color"], { duration: theme.transitions.duration.shortest })};
+
+    ${({ theme }) => theme.getColorSchemeSelector("dark")} {
+        background-color: ${backgroundColors["950"]};
+    }
+
+    ${({ theme }) => theme.getColorSchemeSelector("light")} {
+        background-color: ${backgroundColors["100"]};
+    }
 `;
 
 export const Main = styled.main`
@@ -42,5 +52,14 @@ export const Main = styled.main`
 
     position: relative;
 
-    background-color: ${({ theme }) => theme.palette.background.default};
+    transition: ${({ theme }) =>
+        theme.transitions.create(["background-color"], { duration: theme.transitions.duration.shortest })};
+
+    ${({ theme }) => theme.getColorSchemeSelector("dark")} {
+        background-color: ${backgroundColors["800"]};
+    }
+
+    ${({ theme }) => theme.getColorSchemeSelector("light")} {
+        background-color: ${({ theme }) => theme.vars.palette.background.default};
+    }
 `;

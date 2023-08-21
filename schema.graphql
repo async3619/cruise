@@ -2,9 +2,20 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type ConfigData {
+  colorMode: ColorMode!
+}
+
+enum ColorMode {
+  Light
+  Dark
+  System
+}
+
 type Query {
   isMaximized: Boolean!
   isMinimized: Boolean!
+  config: ConfigData!
 }
 
 type Mutation {
@@ -12,8 +23,14 @@ type Mutation {
   unmaximize: Boolean!
   minimize: Boolean!
   close: Boolean!
+  updateConfig(config: ConfigUpdateInput!): Boolean!
+}
+
+input ConfigUpdateInput {
+  colorMode: ColorMode
 }
 
 type Subscription {
   maximizedStateChanged: Boolean!
+  configUpdated: ConfigData!
 }

@@ -66,6 +66,9 @@ export const Body = styled.div`
 
     overflow: hidden;
 
+    transition: ${({ theme }) =>
+        theme.transitions.create("background", { duration: theme.transitions.duration.shortest })};
+
     ${({ theme }) => theme.getColorSchemeSelector("dark")} {
         background: ${backgroundColors["900"]};
     }
