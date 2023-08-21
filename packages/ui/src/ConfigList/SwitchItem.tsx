@@ -43,7 +43,7 @@ export function SwitchConfigListItem<TConfig extends BaseConfig>({
                         <FormControlLabel
                             key={value}
                             value={value}
-                            control={<Radio size="small" />}
+                            control={<Radio size="small" data-testid={`radio-${value}`} />}
                             label={label}
                             slotProps={{ typography: { variant: "body1", fontSize: "1rem" } }}
                         />

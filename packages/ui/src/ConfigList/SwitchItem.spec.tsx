@@ -26,8 +26,8 @@ describe("<SwitchConfigListItem />", () => {
             { wrapper: Wrapper },
         );
 
-        const test = screen.getByText("test");
-        const mock = screen.getByText("mock");
+        const test = screen.getByTestId("radio-test");
+        const mock = screen.getByTestId("radio-mock");
 
         expect(test).toBeInTheDocument();
         expect(mock).toBeInTheDocument();
