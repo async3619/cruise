@@ -20,7 +20,8 @@
             "@root/*": ["./*"],
             "@nest/*": ["./nest/*"],
             "@electron/*": ["./electron/*"],
-            "@config/*": ["./config/*"]
+            "@config/*": ["./config/*"],
+            "@utils/*": ["./utils/*"]
         }
     }
 }
