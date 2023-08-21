@@ -5,7 +5,7 @@ import { ConfigUpdateInput } from "@graphql/queries";
 import { ConfigData } from "@utils/types";
 
 export interface ConfigContextValues {
-    config: ConfigData | null;
+    config: ConfigData;
     setConfig: (config: ConfigUpdateInput) => void;
 }
 

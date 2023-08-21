@@ -11,6 +11,9 @@
                 "dark": "Dark",
                 "system": "Use System Theme"
             }
+        },
+        "language": {
+            "title": "Language"
         }
     }
 }
