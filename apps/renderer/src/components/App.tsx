@@ -7,8 +7,9 @@ import apolloClient from "@graphql/client";
 
 import { theme } from "@styles/theme";
 
+import { ConfigProvider } from "@components/Config/Provider";
+
 import { Routes } from "@pages";
-import { ConfigProvider } from "@components/Config/Provider.tsx";
 
 export function App() {
     return (

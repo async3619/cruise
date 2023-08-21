@@ -12,3 +12,4 @@ public/dist
 .idea
 /apps/electron/packages
 coverage
+translation.missing.json

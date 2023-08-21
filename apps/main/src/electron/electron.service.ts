@@ -1,7 +1,9 @@
 import os from "os";
-import { app, BrowserWindow } from "electron";
+import { app, BrowserWindow, ipcMain } from "electron";
 import * as path from "path";
 import { PubSub } from "graphql-subscriptions";
+import fs from "fs-extra";
+import { clearMainBindings, mainBindings } from "i18next-electron-fs-backend";
 
 import { Inject, Injectable, OnApplicationBootstrap } from "@nestjs/common";
 import { electronApp, is, optimizer } from "@electron-toolkit/utils";
@@ -79,6 +81,7 @@ export class ElectronService extends EventEmitter<ElectronEventMap> implements O
             });
         }
 
+        clearMainBindings(ipcMain);
         this.emit("window-all-closed");
     }
     private async onClose() {
@@ -113,7 +116,7 @@ export class ElectronService extends EventEmitter<ElectronEventMap> implements O
                     process.env.NODE_ENV === "production"
                         ? path.join(__dirname, "preload.js")
                         : path.join(__dirname, "..", "preload.js"),
-                nodeIntegration: false,
+                nodeIntegration: true,
                 contextIsolation: true,
             },
         });
@@ -143,6 +146,8 @@ export class ElectronService extends EventEmitter<ElectronEventMap> implements O
         } else {
             await window.loadFile("./renderer/index.html");
         }
+
+        mainBindings(ipcMain, window, fs);
 
         return window;
     }

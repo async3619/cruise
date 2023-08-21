@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Scrollbars } from "rc-scrollbars";
 import { Menu, MenuItem } from "ui";
@@ -9,24 +10,27 @@ import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import { ScrollbarThumb } from "@components/ScrollbarThumb";
 import { Content, Root } from "@components/Layout/SideBar.styles";
 
-const SIDEBAR_NAV_ITEMS: MenuItem[] = [
-    {
-        id: "/",
-        type: "button",
-        label: "Home",
-        icon: <HomeRoundedIcon />,
-    },
-    {
-        id: "/config",
-        type: "button",
-        label: "Config",
-        icon: <SettingsRoundedIcon />,
-    },
-];
-
 export function SideBar() {
     const location = useLocation();
     const navigate = useNavigate();
+    const { t } = useTranslation();
+
+    const navigationItems = React.useMemo<MenuItem[]>(() => {
+        return [
+            {
+                id: "/",
+                type: "button",
+                label: t("pages.home"),
+                icon: <HomeRoundedIcon />,
+            },
+            {
+                id: "/settings",
+                type: "button",
+                label: t("pages.settings"),
+                icon: <SettingsRoundedIcon />,
+            },
+        ];
+    }, [t]);
 
     const handleClick = React.useCallback(
         (item: MenuItem) => {
@@ -46,7 +50,7 @@ export function SideBar() {
                 renderView={props => <Content {...props} />}
                 renderThumbVertical={props => <ScrollbarThumb {...props} />}
             >
-                <Menu items={SIDEBAR_NAV_ITEMS} selectedId={location.pathname} onClick={handleClick} />
+                <Menu items={navigationItems} selectedId={location.pathname} onClick={handleClick} />
             </Scrollbars>
         </Root>
     );
