@@ -1,5 +1,5 @@
 import { Test, TestingModule } from "@nestjs/testing";
-import { ConfigService, DEFAULT_CONFIG } from "@config/config.service";
+import { ConfigService, ConfigType, DEFAULT_CONFIG } from "@config/config.service";
 import { ColorMode } from "@config/models/config.dto";
 
 describe("ConfigService", () => {
@@ -50,7 +50,7 @@ describe("ConfigService", () => {
     });
 
     it("should return config if config file exists", async () => {
-        const data = { colorMode: ColorMode.System };
+        const data: ConfigType = { colorMode: ColorMode.System, language: "ko" };
         fakeFs.readFile.mockResolvedValueOnce(JSON.stringify(data));
 
         const config = await service.getConfig();
@@ -69,14 +69,14 @@ describe("ConfigService", () => {
     });
 
     it("should write config to file", async () => {
-        const data = { colorMode: ColorMode.System };
+        const data: ConfigType = { colorMode: ColorMode.System, language: "ko" };
         fakeFs.readFile.mockResolvedValueOnce(JSON.stringify(data));
 
         await service.setConfig({ colorMode: ColorMode.Light });
 
         expect(fakeFs.writeFile).toHaveBeenCalledWith(
             expect.stringContaining("config.json"),
-            JSON.stringify({ colorMode: ColorMode.Light }),
+            JSON.stringify({ colorMode: ColorMode.Light, language: "ko" }),
         );
     });
 });

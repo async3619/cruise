@@ -3,6 +3,7 @@ import os from "os";
 import path from "path";
 import fs from "fs-extra";
 import { PubSub } from "graphql-subscriptions";
+import { app } from "electron";
 
 import { Injectable } from "@nestjs/common";
 
@@ -11,6 +12,7 @@ import { ColorMode } from "@config/models/config.dto";
 const CONFIG_FILE_PATH = path.join(os.homedir(), ".cruise", "config.json");
 const CONFIG_SCHEMA = z.object({
     colorMode: z.nativeEnum(ColorMode),
+    language: z.string(),
 
     windowState: z
         .object({
@@ -26,6 +28,7 @@ const CONFIG_SCHEMA = z.object({
 export type ConfigType = z.infer<typeof CONFIG_SCHEMA>;
 export const DEFAULT_CONFIG: ConfigType = {
     colorMode: ColorMode.System,
+    language: app.getPreferredSystemLanguages()[0],
 };
 
 export const CONFIG_UPDATED = "CONFIG_UPDATED";
