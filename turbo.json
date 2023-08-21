@@ -2,7 +2,7 @@
     "$schema": "https://turbo.build/schema.json",
     "pipeline": {
         "build": {
-            "dependsOn": ["^build"],
+            "dependsOn": ["^build", "^renderer#codegen"],
             "outputs": ["dist/**"]
         },
         "renderer#codegen": {
