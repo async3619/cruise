@@ -6,6 +6,7 @@ import { ConfigContext, ConfigContextValues } from "@components/Config";
 import { ColorMode, ConfigUpdateInput, useConfigUpdatedSubscription, useUpdateConfigMutation } from "@graphql/queries";
 
 import { ConfigData } from "@utils/types";
+import { useTranslation } from "react-i18next";
 
 export interface ConfigProviderProps {
     initialConfig: ConfigData;
@@ -15,6 +16,7 @@ export function ConfigProvider({ children, initialConfig }: React.PropsWithChild
     const { setMode } = useColorScheme();
     const [configData, setConfigData] = React.useState(initialConfig);
     const [updateConfig] = useUpdateConfigMutation();
+    const { i18n } = useTranslation();
 
     useConfigUpdatedSubscription({
         onData: ({ data: { data } }) => {
@@ -31,7 +33,7 @@ export function ConfigProvider({ children, initialConfig }: React.PropsWithChild
             return;
         }
 
-        const { colorMode } = configData;
+        const { colorMode, language } = configData;
         switch (colorMode) {
             case ColorMode.System:
                 setMode("system");
@@ -45,16 +47,22 @@ export function ConfigProvider({ children, initialConfig }: React.PropsWithChild
                 setMode("dark");
                 break;
         }
-    }, [configData, setMode]);
+
+        if (i18n.language !== language) {
+            i18n.changeLanguage(language);
+        }
+    }, [configData, i18n, setMode]);
 
     const setConfig = React.useCallback(
         async (input: ConfigUpdateInput) => {
-            const data = { ...input };
-            if ("__typename" in data) {
-                delete data.__typename;
-            }
-
-            await updateConfig({ variables: { data } });
+            await updateConfig({
+                variables: {
+                    data: {
+                        colorMode: input.colorMode,
+                        language: input.language,
+                    },
+                },
+            });
         },
         [updateConfig],
     );
