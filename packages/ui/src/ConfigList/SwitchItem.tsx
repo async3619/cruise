@@ -1,6 +1,6 @@
 import React from "react";
 
-import { FormControlLabel, Radio, RadioGroup } from "@mui/material";
+import { FormControlLabel, Radio, RadioGroup, Typography } from "@mui/material";
 
 import { BaseConfigListItem } from "./BaseItem";
 import { Root } from "./SwitchItem.styles";
@@ -25,8 +25,18 @@ export function SwitchConfigListItem<TConfig extends BaseConfig>({
         [config, name, setConfig],
     );
 
+    const selectedItem = labelItems.find(([_, value]) => value === config[name]);
+    let helperText: React.ReactNode = null;
+    if (selectedItem) {
+        helperText = (
+            <Typography variant="body1" fontSize="0.95rem" lineHeight={1} color="text.secondary">
+                {selectedItem[0]}
+            </Typography>
+        );
+    }
+
     return (
-        <BaseConfigListItem item={item}>
+        <BaseConfigListItem item={item} helperText={helperText}>
             <Root data-testid="SwitchConfigListItem">
                 <RadioGroup name={name} onChange={handleChange} value={config[name]}>
                     {labelItems.map(([label, value]) => (

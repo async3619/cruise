@@ -62,12 +62,13 @@ export const Header = styled.button<{ opened?: boolean }>`
 `;
 
 export const Body = styled.div`
-    transition: ${({ theme }) => theme.transitions.create("max-height")};
-
     overflow: hidden;
 
     transition: ${({ theme }) =>
-        theme.transitions.create("background", { duration: theme.transitions.duration.shortest })};
+        [
+            theme.transitions.create("background", { duration: theme.transitions.duration.shortest }),
+            theme.transitions.create("max-height"),
+        ].join(", ")};
 
     ${({ theme }) => theme.getColorSchemeSelector("dark")} {
         background: ${backgroundColors["900"]};

@@ -10,11 +10,13 @@ import { BaseConfig, BaseConfigListItem as ItemType } from "./types";
 
 export interface BaseConfigListItemProps<TConfig extends BaseConfig> {
     item: ItemType<TConfig>;
+    helperText?: React.ReactNode;
 }
 
 export function BaseConfigListItem<TConfig extends BaseConfig>({
     item,
     children,
+    helperText,
 }: React.PropsWithChildren<BaseConfigListItemProps<TConfig>>) {
     const { label, icon } = item;
     const [measureRef, { height }] = useMeasure();
@@ -32,6 +34,7 @@ export function BaseConfigListItem<TConfig extends BaseConfig>({
                     {label}
                 </Typography>
                 <Box flex="1 1 auto" />
+                {helperText}
                 <Indicator>
                     {opened ? (
                         <ExpandLessRoundedIcon data-testid="opened-icon" />
