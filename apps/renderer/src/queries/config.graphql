@@ -1,0 +1,19 @@
+fragment ConfigData on ConfigData {
+    colorMode
+}
+
+query config {
+    config {
+        ...ConfigData
+    }
+}
+
+mutation updateConfig($data: ConfigUpdateInput!) {
+    updateConfig(config: $data)
+}
+
+subscription configUpdated {
+    configUpdated {
+        ...ConfigData
+    }
+}

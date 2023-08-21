@@ -12,9 +12,11 @@
         "@emotion/css": "^11.11.2",
         "@emotion/react": "^11.11.1",
         "@emotion/styled": "^11.11.0",
+        "@mui/icons-material": "^5.14.3",
         "@mui/material": "^5.14.5",
         "nanoid": "^4.0.2",
-        "react": "^18.2.0"
+        "react": "^18.2.0",
+        "react-use-measure": "^2.1.1"
     },
     "devDependencies": {
         "@testing-library/jest-dom": "^6.0.1",
@@ -26,6 +28,7 @@
         "eslint-config-custom": "*",
         "jest": "^29.6.2",
         "jest-environment-jsdom": "^29.6.2",
+        "resize-observer-polyfill": "^1.5.1",
         "ts-jest": "^29.1.1",
         "tsconfig": "workspace:*",
         "types": "workspace:*",

@@ -1,5 +1,6 @@
+import { backgroundColors } from "ui";
+
 import styled from "@emotion/styled";
-import { backgroundColors } from "@styles/theme";
 
 const SIDEBAR_WIDTH = 280;
 
@@ -10,7 +11,16 @@ export const Root = styled.nav`
 
     position: relative;
 
-    background-color: ${backgroundColors["950"]};
+    transition: ${({ theme }) =>
+        theme.transitions.create(["background-color"], { duration: theme.transitions.duration.shortest })};
+
+    ${({ theme }) => theme.getColorSchemeSelector("dark")} {
+        background-color: ${backgroundColors["950"]};
+    }
+
+    ${({ theme }) => theme.getColorSchemeSelector("light")} {
+        background-color: ${backgroundColors["100"]};
+    }
 `;
 
 export const Content = styled.div`

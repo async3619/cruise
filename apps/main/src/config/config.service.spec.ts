@@ -1,5 +1,6 @@
 import { Test, TestingModule } from "@nestjs/testing";
-import { ConfigService } from "@config/config.service";
+import { ConfigService, DEFAULT_CONFIG } from "@config/config.service";
+import { ColorMode } from "@config/models/config.dto";
 
 describe("ConfigService", () => {
     let service: ConfigService;
@@ -29,52 +30,53 @@ describe("ConfigService", () => {
 
     it("should return default config if config file does not exist", async () => {
         fakeFs.readFile.mockRejectedValueOnce(new Error("File not found"));
-        const config = await service.getConfig();
+        const config = await service.getConfig(false);
 
-        expect(config).toEqual({});
+        expect(config).toEqual(DEFAULT_CONFIG);
     });
 
     it("should return default config if config file is malformed", async () => {
         fakeFs.readFile.mockResolvedValueOnce("not json");
-        const config = await service.getConfig();
+        const config = await service.getConfig(false);
 
-        expect(config).toEqual({});
+        expect(config).toEqual(DEFAULT_CONFIG);
     });
 
     it("should return default config if config file is not valid config data", async () => {
         fakeFs.readFile.mockResolvedValueOnce('{"windowState": {"isMaximized": "yes"}}');
-        const config = await service.getConfig();
+        const config = await service.getConfig(false);
 
-        expect(config).toEqual({});
+        expect(config).toEqual(DEFAULT_CONFIG);
     });
 
     it("should return config if config file exists", async () => {
-        fakeFs.readFile.mockResolvedValueOnce(
-            '{"windowState": {"isMaximized": true, "width": 100, "height": 100, "x": 100, "y": 100}}',
-        );
+        const data = { colorMode: ColorMode.System };
+        fakeFs.readFile.mockResolvedValueOnce(JSON.stringify(data));
 
         const config = await service.getConfig();
-        expect(config).toEqual({
-            windowState: {
-                isMaximized: true,
-                width: 100,
-                height: 100,
-                x: 100,
-                y: 100,
-            },
-        });
+        expect(config).toEqual(data);
     });
 
-    it("should write config to file", async () => {
-        fakeFs.readFile.mockResolvedValueOnce(
-            '{"windowState": {"isMaximized": true, "width": 100, "height": 100, "x": 100, "y": 100}}',
-        );
+    it("should write default config to file if reading config file fails", async () => {
+        fakeFs.readFile.mockRejectedValueOnce(new Error("File not found"));
 
-        await service.setConfig({ windowState: { isMaximized: false, width: 200, height: 200, x: 200, y: 200 } });
+        await service.getConfig();
 
         expect(fakeFs.writeFile).toHaveBeenCalledWith(
             expect.stringContaining("config.json"),
-            JSON.stringify({ windowState: { isMaximized: false, width: 200, height: 200, x: 200, y: 200 } }),
+            JSON.stringify(DEFAULT_CONFIG),
+        );
+    });
+
+    it("should write config to file", async () => {
+        const data = { colorMode: ColorMode.System };
+        fakeFs.readFile.mockResolvedValueOnce(JSON.stringify(data));
+
+        await service.setConfig({ colorMode: ColorMode.Light });
+
+        expect(fakeFs.writeFile).toHaveBeenCalledWith(
+            expect.stringContaining("config.json"),
+            JSON.stringify({ colorMode: ColorMode.Light }),
         );
     });
 });

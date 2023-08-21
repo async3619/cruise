@@ -1,6 +1,6 @@
-import styled from "@emotion/styled";
+import { backgroundColors } from "ui";
 
-import { backgroundColors } from "@styles/theme";
+import styled from "@emotion/styled";
 
 export const Root = styled.div`
     margin: 0;
@@ -14,5 +14,16 @@ export const Root = styled.div`
 
     -webkit-app-region: drag;
 
-    background-color: ${backgroundColors["950"]};
+    transition: ${({ theme }) =>
+        theme.transitions.create(["color", "background-color"], { duration: theme.transitions.duration.shortest })};
+
+    ${({ theme }) => theme.getColorSchemeSelector("dark")} {
+        color: ${({ theme }) => theme.vars.palette.text.disabled};
+        background-color: ${backgroundColors["950"]};
+    }
+
+    ${({ theme }) => theme.getColorSchemeSelector("light")} {
+        color: ${({ theme }) => theme.vars.palette.text.secondary};
+        background-color: ${backgroundColors["100"]};
+    }
 `;

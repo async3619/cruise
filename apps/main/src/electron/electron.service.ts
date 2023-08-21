@@ -1,20 +1,29 @@
 import os from "os";
-import { BrowserWindow, app } from "electron";
+import { app, BrowserWindow } from "electron";
 import * as path from "path";
 import { PubSub } from "graphql-subscriptions";
 
 import { Inject, Injectable, OnApplicationBootstrap } from "@nestjs/common";
 import { electronApp, is, optimizer } from "@electron-toolkit/utils";
 
-import { ConfigService } from "@config/config.service";
+import { ConfigService, ConfigType } from "@config/config.service";
+
+import { BaseEventMap, EventEmitter } from "@utils/event-emitter";
 
 export const windowPubSub = new PubSub();
 
-@Injectable()
-export class ElectronService implements OnApplicationBootstrap {
-    private mainWindow: BrowserWindow | null = null;
+interface ElectronEventMap extends BaseEventMap {
+    "window-all-closed": () => void;
+}
 
-    public constructor(@Inject(ConfigService) private readonly configService: ConfigService) {}
+@Injectable()
+export class ElectronService extends EventEmitter<ElectronEventMap> implements OnApplicationBootstrap {
+    private mainWindow: BrowserWindow | null = null;
+    private lastWindowState: ConfigType["windowState"] | null = null;
+
+    public constructor(@Inject(ConfigService) private readonly configService: ConfigService) {
+        super();
+    }
 
     public getMainWindow(): BrowserWindow {
         if (!this.mainWindow) {
@@ -63,6 +72,15 @@ export class ElectronService implements OnApplicationBootstrap {
         });
     }
 
+    private async onWindowAllClosed() {
+        if (this.lastWindowState) {
+            await this.configService.setConfig({
+                windowState: this.lastWindowState,
+            });
+        }
+
+        this.emit("window-all-closed");
+    }
     private async onClose() {
         if (!this.mainWindow) {
             return;
@@ -71,15 +89,13 @@ export class ElectronService implements OnApplicationBootstrap {
         const { x, y, width, height } = this.mainWindow.getBounds();
         const isMaximized = this.mainWindow.isMaximized();
 
-        await this.configService.setConfig({
-            windowState: {
-                isMaximized,
-                x,
-                y,
-                width,
-                height,
-            },
-        });
+        this.lastWindowState = {
+            isMaximized,
+            x,
+            y,
+            width,
+            height,
+        };
     }
 
     private async createWindow() {
@@ -102,14 +118,14 @@ export class ElectronService implements OnApplicationBootstrap {
             },
         });
 
-        window.on("close", this.onClose.bind(this));
+        app.on("window-all-closed", this.onWindowAllClosed.bind(this));
 
+        window.on("close", this.onClose.bind(this));
         window.on("maximize", () => {
             windowPubSub.publish("maximizedStateChanged", {
                 maximizedStateChanged: true,
             });
         });
-
         window.on("unmaximize", () => {
             windowPubSub.publish("maximizedStateChanged", {
                 maximizedStateChanged: false,
