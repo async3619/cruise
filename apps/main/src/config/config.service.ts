@@ -2,6 +2,7 @@ import { z } from "zod";
 import os from "os";
 import path from "path";
 import fs from "fs-extra";
+import { PubSub } from "graphql-subscriptions";
 
 import { Injectable } from "@nestjs/common";
 
@@ -27,6 +28,9 @@ export const DEFAULT_CONFIG: ConfigType = {
     colorMode: ColorMode.System,
 };
 
+export const CONFIG_UPDATED = "CONFIG_UPDATED";
+export const configPubSub = new PubSub();
+
 @Injectable()
 export class ConfigService {
     private readonly fs = fs;
@@ -43,7 +47,6 @@ export class ConfigService {
             return CONFIG_SCHEMA.parse(DEFAULT_CONFIG);
         }
     }
-
     public async setConfig(config: Partial<ConfigType>) {
         const newConfig = {
             ...(await this.getConfig(false)),
@@ -52,5 +55,7 @@ export class ConfigService {
 
         await this.fs.ensureDir(path.dirname(CONFIG_FILE_PATH));
         await this.fs.writeFile(CONFIG_FILE_PATH, JSON.stringify(newConfig));
+
+        configPubSub.publish(CONFIG_UPDATED, { configUpdated: newConfig }).then();
     }
 }

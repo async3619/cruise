@@ -1,9 +1,9 @@
 import { Inject } from "@nestjs/common";
-import { Query, Resolver } from "@nestjs/graphql";
+import { Args, Mutation, Query, Resolver, Subscription } from "@nestjs/graphql";
 
-import { ConfigService } from "@config/config.service";
+import { CONFIG_UPDATED, configPubSub, ConfigService } from "@config/config.service";
 
-import { ConfigData } from "@config/models/config.dto";
+import { ConfigData, ConfigUpdateInput } from "@config/models/config.dto";
 
 @Resolver()
 export class ConfigResolver {
@@ -12,5 +12,18 @@ export class ConfigResolver {
     @Query(() => ConfigData)
     public async config(): Promise<ConfigData> {
         return this.configService.getConfig();
+    }
+
+    @Mutation(() => Boolean)
+    public async updateConfig(
+        @Args("config", { type: () => ConfigUpdateInput }) config: ConfigUpdateInput,
+    ): Promise<boolean> {
+        await this.configService.setConfig(config);
+        return true;
+    }
+
+    @Subscription(() => ConfigData)
+    public configUpdated() {
+        return configPubSub.asyncIterator(CONFIG_UPDATED);
     }
 }

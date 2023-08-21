@@ -1,6 +1,7 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { ConfigResolver } from "@config/config.resolver";
 import { ConfigService } from "@config/config.service";
+import { ColorMode } from "@config/models/config.dto";
 
 describe("ConfigResolver", () => {
     let resolver: ConfigResolver;
@@ -29,5 +30,15 @@ describe("ConfigResolver", () => {
 
         const config = await resolver.config();
         expect(config).toEqual(data);
+        expect(service.getConfig).toBeCalledTimes(1);
+    });
+
+    it("should able to update config", async () => {
+        const data = { colorMode: ColorMode.Light };
+        service.setConfig.mockResolvedValueOnce(data);
+
+        const config = await resolver.updateConfig(data);
+        expect(config).toEqual(true);
+        expect(service.setConfig).toBeCalledTimes(1);
     });
 });

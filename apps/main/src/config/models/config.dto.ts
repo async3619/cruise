@@ -1,4 +1,4 @@
-import { Field, ObjectType, registerEnumType } from "@nestjs/graphql";
+import { Field, InputType, ObjectType, registerEnumType } from "@nestjs/graphql";
 
 export enum ColorMode {
     Light = "light",
@@ -12,4 +12,10 @@ registerEnumType(ColorMode, { name: "ColorMode" });
 export class ConfigData {
     @Field(() => ColorMode)
     public colorMode!: ColorMode;
+}
+
+@InputType()
+export class ConfigUpdateInput {
+    @Field(() => ColorMode, { nullable: true })
+    public colorMode?: ColorMode;
 }
