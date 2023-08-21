@@ -1,8 +1,11 @@
 import * as React from "react";
-import { createTheme, ThemeProvider } from "@mui/material";
+import {
+    Experimental_CssVarsProvider as CssVarsProvider,
+    experimental_extendTheme as extendTheme,
+} from "@mui/material/styles";
 
-const theme = createTheme();
+const theme = extendTheme();
 
 export function Wrapper({ children }: React.PropsWithChildren) {
-    return <ThemeProvider theme={theme}>{children}</ThemeProvider>;
+    return <CssVarsProvider theme={theme}>{children}</CssVarsProvider>;
 }
