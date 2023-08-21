@@ -1,7 +1,9 @@
-import { render, screen } from "@testing-library/react";
-import { ButtonMenuItem, ButtonMenuItemProps } from "./ButtonMenuItem.tsx";
+import React from "react";
 
-import { Wrapper } from "../../__test__/Wrapper.tsx";
+import { render, screen } from "@testing-library/react";
+
+import { ButtonMenuItem, ButtonMenuItemProps } from "./ButtonMenuItem";
+import { Wrapper } from "../../__test__/Wrapper";
 
 describe("<ButtonMenuItem />", () => {
     it("should render ButtonMenuItem component properly", () => {

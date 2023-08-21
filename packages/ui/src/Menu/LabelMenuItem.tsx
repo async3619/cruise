@@ -1,3 +1,5 @@
+import React from "react";
+
 import { Typography } from "@mui/material";
 
 import { LabelMenuItem as ItemType } from "./Menu.types";

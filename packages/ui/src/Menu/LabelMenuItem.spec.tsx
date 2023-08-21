@@ -1,7 +1,9 @@
-import { render, screen } from "@testing-library/react";
-import { LabelMenuItem } from "./LabelMenuItem.tsx";
+import React from "react";
 
-import { Wrapper } from "../../__test__/Wrapper.tsx";
+import { render, screen } from "@testing-library/react";
+
+import { LabelMenuItem } from "./LabelMenuItem";
+import { Wrapper } from "../../__test__/Wrapper";
 
 describe("<LabelMenuItem />", () => {
     it("should render LabelMenuItem component properly", () => {

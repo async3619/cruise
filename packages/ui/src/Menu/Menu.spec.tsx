@@ -1,7 +1,9 @@
-import { render, screen } from "@testing-library/react";
-import { Menu } from "./Menu.tsx";
+import React from "react";
 
-import { Wrapper } from "../../__test__/Wrapper.tsx";
+import { render, screen } from "@testing-library/react";
+
+import { Menu } from "./Menu";
+import { Wrapper } from "../../__test__/Wrapper";
 
 describe("<Menu />", () => {
     beforeEach(() => {

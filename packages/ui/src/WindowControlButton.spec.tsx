@@ -1,7 +1,9 @@
-import { render, screen } from "@testing-library/react";
-import { WindowControlButton } from "./WindowControlButton.tsx";
+import React from "react";
 
-import { Wrapper } from "../__test__/Wrapper.tsx";
+import { render, screen } from "@testing-library/react";
+
+import { WindowControlButton } from "./WindowControlButton";
+import { Wrapper } from "../__test__/Wrapper";
 
 describe("<WindowControlButton />", () => {
     it("should render WindowControlButton component properly", () => {
