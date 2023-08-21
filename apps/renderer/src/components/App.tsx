@@ -9,13 +9,18 @@ import { theme } from "@styles/theme";
 
 import { ConfigProvider } from "@components/Config/Provider";
 
+import { ConfigData } from "@utils/types";
 import { Routes } from "@pages";
 
-export function App() {
+interface AppProps {
+    initialConfig: ConfigData;
+}
+
+export function App({ initialConfig }: AppProps) {
     return (
         <ApolloProvider client={apolloClient}>
             <CssVarsProvider theme={theme} defaultMode="dark">
-                <ConfigProvider>
+                <ConfigProvider initialConfig={initialConfig}>
                     <Routes />
                 </ConfigProvider>
             </CssVarsProvider>

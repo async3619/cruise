@@ -51,6 +51,8 @@ export class ElectronService extends EventEmitter<ElectronEventMap> implements O
 
         await app.whenReady();
         await this.onAppReady();
+
+        ipcMain.on("getConfig", this.onGetConfig.bind(this));
     }
     private async onAppReady() {
         // Set app user model id for windows
@@ -99,6 +101,10 @@ export class ElectronService extends EventEmitter<ElectronEventMap> implements O
             width,
             height,
         };
+    }
+    private async onGetConfig(event: Electron.IpcMainEvent) {
+        const config = await this.configService.getConfig();
+        event.reply("getConfig", config);
     }
 
     private async createWindow() {

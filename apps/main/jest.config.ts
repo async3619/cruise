@@ -3,7 +3,7 @@ import { pathsToModuleNameMapper } from "ts-jest";
 import { compilerOptions } from "./tsconfig.json";
 
 export const config: Config = {
-    setupFilesAfterEnv: ["<rootDir>/jest.setup.ts"],
+    setupFilesAfterEnv: ["<rootDir>/../jest.setup.ts"],
     moduleFileExtensions: ["js", "json", "ts"],
     rootDir: "src",
     testRegex: ".*\\.spec\\.ts$",

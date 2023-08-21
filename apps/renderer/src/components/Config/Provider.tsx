@@ -3,31 +3,28 @@ import React from "react";
 import { useColorScheme } from "@mui/material";
 import { ConfigContext, ConfigContextValues } from "@components/Config";
 
-import {
-    ColorMode,
-    ConfigUpdateInput,
-    useConfigQuery,
-    useConfigUpdatedSubscription,
-    useUpdateConfigMutation,
-} from "@graphql/queries";
+import { ColorMode, ConfigUpdateInput, useConfigUpdatedSubscription, useUpdateConfigMutation } from "@graphql/queries";
 
-export interface ConfigProviderProps {}
+import { ConfigData } from "@utils/types";
 
-export function ConfigProvider({ children }: React.PropsWithChildren<ConfigProviderProps>) {
-    const { data } = useConfigQuery();
+export interface ConfigProviderProps {
+    initialConfig: ConfigData;
+}
+
+export function ConfigProvider({ children, initialConfig }: React.PropsWithChildren<ConfigProviderProps>) {
     const { setMode } = useColorScheme();
-    const [configData, setConfigData] = React.useState(data?.config ?? null);
+    const [configData, setConfigData] = React.useState(initialConfig);
     const [updateConfig] = useUpdateConfigMutation();
 
     useConfigUpdatedSubscription({
         onData: ({ data: { data } }) => {
-            setConfigData(data?.configUpdated ?? null);
+            if (!data?.configUpdated) {
+                return;
+            }
+
+            setConfigData(data.configUpdated);
         },
     });
-
-    React.useEffect(() => {
-        setConfigData(data?.config ?? null);
-    }, [data?.config]);
 
     React.useEffect(() => {
         if (!configData) {

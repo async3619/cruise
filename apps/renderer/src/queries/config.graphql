@@ -1,11 +1,6 @@
 fragment ConfigData on ConfigData {
     colorMode
-}
-
-query config {
-    config {
-        ...ConfigData
-    }
+    language
 }
 
 mutation updateConfig($data: ConfigUpdateInput!) {

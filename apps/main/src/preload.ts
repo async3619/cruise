@@ -1,5 +1,6 @@
 import { contextBridge, ipcRenderer } from "electron";
 import { preloadBindings } from "i18next-electron-fs-backend";
+import type { ConfigType } from "@config/config.service";
 
 contextBridge.exposeInMainWorld("ipcRenderer", {
     on: (channel: string, listener: (...args: any[]) => void) => {
@@ -16,4 +17,16 @@ contextBridge.exposeInMainWorld("ipcRenderer", {
 });
 contextBridge.exposeInMainWorld("api", {
     i18nextElectronBackend: preloadBindings(ipcRenderer, process),
+});
+
+contextBridge.exposeInMainWorld("appBridge", {
+    getConfig: () => {
+        return new Promise<ConfigType>(res => {
+            ipcRenderer.once("getConfig", (event, args) => {
+                res(args);
+            });
+
+            ipcRenderer.send("getConfig");
+        });
+    },
 });
