@@ -19,7 +19,8 @@
         "paths": {
             "@root/*": ["./*"],
             "@nest/*": ["./nest/*"],
-            "@electron/*": ["./electron/*"]
+            "@electron/*": ["./electron/*"],
+            "@config/*": ["./config/*"]
         }
     }
 }

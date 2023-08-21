@@ -1,3 +1,23 @@
+query isMaximized {
+    isMaximized
+}
+
 mutation closeWindow {
     close
+}
+
+mutation maximizeWindow {
+    maximize
+}
+
+mutation unmaximizeWindow {
+    unmaximize
+}
+
+mutation minimizeWindow {
+    minimize
+}
+
+subscription maximizedStateChanged {
+    maximizedStateChanged
 }

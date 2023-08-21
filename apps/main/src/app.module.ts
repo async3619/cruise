@@ -6,6 +6,7 @@ import { GraphQLModule } from "@nestjs/graphql";
 import { ElectronApolloDriver, ElectronApolloDriverConfig } from "@nest/electron-apollo.driver";
 
 import { ElectronModule } from "@electron/electron.module";
+import { ConfigModule } from "@config/config.module";
 
 import { createGraphQLContext } from "@root/context";
 
@@ -25,6 +26,7 @@ import { createGraphQLContext } from "@root/context";
             }),
         }),
         ElectronModule,
+        ConfigModule,
     ],
 })
 export class AppModule {}
