@@ -26,11 +26,11 @@ export function Settings() {
                             icon: <PaletteRoundedIcon />,
                             name: "colorMode",
                             type: "switch",
-                            label: "Color Mode",
+                            label: t("settings.color-mode.title"),
                             labels: {
-                                Light: ColorMode.Light,
-                                Dark: ColorMode.Dark,
-                                System: ColorMode.System,
+                                [t("settings.color-mode.options.light")]: ColorMode.Light,
+                                [t("settings.color-mode.options.dark")]: ColorMode.Dark,
+                                [t("settings.color-mode.options.system")]: ColorMode.System,
                             },
                         },
                     ]}
