@@ -7,14 +7,20 @@ import apolloClient from "@graphql/client";
 
 import { theme } from "@styles/theme";
 
-import { Routes } from "@pages";
-import { ConfigProvider } from "@components/Config/Provider.tsx";
+import { ConfigProvider } from "@components/Config/Provider";
 
-export function App() {
+import { ConfigData } from "@utils/types";
+import { Routes } from "@pages";
+
+interface AppProps {
+    initialConfig: ConfigData;
+}
+
+export function App({ initialConfig }: AppProps) {
     return (
         <ApolloProvider client={apolloClient}>
             <CssVarsProvider theme={theme} defaultMode="dark">
-                <ConfigProvider>
+                <ConfigProvider initialConfig={initialConfig}>
                     <Routes />
                 </ConfigProvider>
             </CssVarsProvider>

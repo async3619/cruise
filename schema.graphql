@@ -4,6 +4,7 @@
 
 type ConfigData {
   colorMode: ColorMode!
+  language: String!
 }
 
 enum ColorMode {
@@ -28,6 +29,7 @@ type Mutation {
 
 input ConfigUpdateInput {
   colorMode: ColorMode
+  language: String
 }
 
 type Subscription {

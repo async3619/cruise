@@ -1,0 +1,19 @@
+{
+    "pages": {
+        "home": "홈",
+        "settings": "설정"
+    },
+    "settings": {
+        "color-mode": {
+            "title": "색상 모드",
+            "options": {
+                "light": "라이트",
+                "dark": "다크",
+                "system": "시스템 설정 사용"
+            }
+        },
+        "language": {
+            "title": "언어"
+        }
+    }
+}

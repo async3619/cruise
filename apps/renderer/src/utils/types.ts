@@ -1,3 +1,3 @@
-import { ConfigQuery } from "@graphql/queries";
+import { ConfigDataFragment } from "@graphql/queries";
 
-export type ConfigData = ConfigQuery["config"];
+export type ConfigData = ConfigDataFragment;
