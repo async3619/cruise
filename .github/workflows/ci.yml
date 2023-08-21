@@ -1,0 +1,74 @@
+name: CI
+
+on:
+    push:
+        branches: ["dev"]
+    pull_request:
+        types: [opened, synchronize]
+
+jobs:
+    build:
+        name: Build and Test
+        timeout-minutes: 15
+        runs-on: ubuntu-latest
+        # To use Remote Caching, uncomment the next lines and follow the steps below.
+        # env:
+        #  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+        #  TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+
+        steps:
+            - name: Check out code
+              uses: actions/checkout@v3
+              with:
+                  fetch-depth: 2
+
+            - name: Install Node.js
+              uses: actions/setup-node@v3
+              with:
+                  node-version: 18
+
+            - uses: pnpm/action-setup@v2
+              name: Install pnpm
+              with:
+                  version: 7
+                  run_install: false
+
+            - name: Get pnpm store directory
+              shell: bash
+              run: |
+                  echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+            - uses: actions/cache@v3
+              name: Cache pnpm store
+              with:
+                  path: ${{ env.STORE_PATH }}
+                  key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+                  restore-keys: |
+                      ${{ runner.os }}-pnpm-store-
+
+            - name: Cache turbo build setup
+              uses: actions/cache@v3
+              with:
+                  path: .turbo
+                  key: ${{ runner.os }}-turbo-${{ github.sha }}
+                  restore-keys: |
+                      ${{ runner.os }}-turbo-
+
+            - name: Install dependencies
+              run: pnpm install
+
+            - name: Build
+              run: pnpm build
+
+            - name: Test
+              run: pnpm test
+
+            - name: Upload coverage reports to Codecov
+              uses: codecov/codecov-action@v3
+              env:
+                  CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+            - uses: sarisia/actions-status-discord@v1
+              if: always()
+              with:
+                  webhook: ${{ secrets.DISCORD_WEBHOOK }}
