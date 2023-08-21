@@ -4,11 +4,13 @@ import { createHashRouter, createRoutesFromElements, Route, RouterProvider } fro
 import { Layout } from "@components/Layout";
 
 import { Home } from "@pages/Home";
+import { Config } from "@pages/Config";
 
 const router = createHashRouter(
     createRoutesFromElements(
         <Route element={<Layout />}>
             <Route path="/" element={<Home />} />
+            <Route path="/config" element={<Config />} />
         </Route>,
     ),
 );

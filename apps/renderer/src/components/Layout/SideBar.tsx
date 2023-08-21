@@ -1,10 +1,10 @@
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Scrollbars } from "rc-scrollbars";
-
 import { Menu, MenuItem } from "ui";
 
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
+import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 
 import { ScrollbarThumb } from "@components/ScrollbarThumb";
 import { Content, Root } from "@components/Layout/SideBar.styles";
@@ -15,6 +15,12 @@ const SIDEBAR_NAV_ITEMS: MenuItem[] = [
         type: "button",
         label: "Home",
         icon: <HomeRoundedIcon />,
+    },
+    {
+        id: "/config",
+        type: "button",
+        label: "Config",
+        icon: <SettingsRoundedIcon />,
     },
 ];
 
