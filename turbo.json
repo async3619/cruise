@@ -25,6 +25,9 @@
         "test": {
             "dependsOn": ["^renderer#codegen"],
             "cache": false
+        },
+        "merge-coverage": {
+            "cache": false
         }
     }
 }

@@ -1,0 +1,12 @@
+{
+    "extends": "tsconfig/base.json",
+    "compilerOptions": {
+        "target": "es6",
+        "downlevelIteration": true,
+        "isolatedModules": false,
+        "lib": ["dom", "es5", "es6"],
+        "noEmit": true
+    },
+    "include": ["src", "src/global.d.ts"],
+    "exclude": ["dist", "build", "node_modules", "**/*.spec.ts"]
+}
