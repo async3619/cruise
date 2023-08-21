@@ -1,7 +1,7 @@
 import React from "react";
 
-import { Root } from "@pages/Home.styles";
+import { Page } from "@components/Page";
 
 export function Home() {
-    return <Root></Root>;
+    return <Page title="Home">Hello World!</Page>;
 }

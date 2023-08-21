@@ -1,9 +1,11 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
+import { Scrollbars } from "rc-scrollbars";
 
 import { Global } from "@emotion/react";
 import { CssBaseline } from "@mui/material";
 
+import { ScrollbarThumb } from "@components/ScrollbarThumb";
 import { TitleBar } from "@components/Layout/TitleBar";
 import { SideBar } from "@components/Layout/SideBar";
 
@@ -18,7 +20,9 @@ export function Layout() {
             <Body>
                 <SideBar />
                 <Main>
-                    <Outlet />
+                    <Scrollbars autoHide renderThumbVertical={props => <ScrollbarThumb {...props} />}>
+                        <Outlet />
+                    </Scrollbars>
                 </Main>
             </Body>
         </Root>
