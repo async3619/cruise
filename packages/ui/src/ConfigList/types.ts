@@ -1,3 +1,5 @@
+import React from "react";
+
 export type BaseConfig = Record<string, unknown>;
 export type KeyOf<T> = Exclude<keyof T, symbol | number>;
 
@@ -12,9 +14,19 @@ export interface SwitchConfigListItem<TConfig extends BaseConfig> extends BaseCo
     labels: Record<string, string>;
 }
 
-export type ConfigListItem<TConfig extends BaseConfig> = SwitchConfigListItem<TConfig>;
+export interface ActionConfigListItem<TConfig extends BaseConfig> extends Omit<BaseConfigListItem<TConfig>, "name"> {
+    type: "action";
+    action: () => void;
+    description?: string;
+    button: {
+        label: string;
+        disabled?: boolean;
+    };
+}
 
-export interface BaseConfigListProps<TConfig extends BaseConfig, TListItem extends BaseConfigListItem<TConfig>> {
+export type ConfigListItem<TConfig extends BaseConfig> = SwitchConfigListItem<TConfig> | ActionConfigListItem<TConfig>;
+
+export interface BaseConfigListProps<TConfig extends BaseConfig, TListItem extends ConfigListItem<TConfig>> {
     item: TListItem;
     config: TConfig;
     setConfig: (config: TConfig) => void;

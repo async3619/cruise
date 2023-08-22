@@ -31,4 +31,31 @@ describe("<BaseConfigListItem />", () => {
         const openedIcon = screen.getByTestId("opened-icon");
         expect(openedIcon).toBeInTheDocument();
     });
+
+    it("should action button if button typed helperOption is provided", () => {
+        const onClick = jest.fn();
+
+        render(
+            <BaseConfigListItem
+                item={SWITCH_CONFIG_LIST_ITEM}
+                helperOption={{ type: "button", label: "button", onClick }}
+            />,
+            { wrapper: Wrapper },
+        );
+
+        const button = screen.getByTestId("action-button");
+        button.click();
+
+        expect(button).toBeInTheDocument();
+        expect(onClick).toBeCalledTimes(1);
+    });
+
+    it("should helper text if text typed helperOption is provided", () => {
+        render(<BaseConfigListItem item={SWITCH_CONFIG_LIST_ITEM} helperOption={{ type: "text", text: "text" }} />, {
+            wrapper: Wrapper,
+        });
+
+        const text = screen.getByTestId("action-helper-text");
+        expect(text).toBeInTheDocument();
+    });
 });

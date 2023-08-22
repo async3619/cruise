@@ -13,7 +13,7 @@ export const Root = styled.section<{ opened?: boolean }>`
     border-bottom-right-radius: ${({ theme, opened }) => (opened ? 0 : theme.shape.borderRadius)}px;
 `;
 
-export const Header = styled.button<{ opened?: boolean }>`
+export const Header = styled.div<{ opened?: boolean }>`
     width: 100%;
 
     margin: 0;
