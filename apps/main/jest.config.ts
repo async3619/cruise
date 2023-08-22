@@ -10,7 +10,12 @@ export const config: Config = {
     transform: {
         "^.+\\.(t|j)s$": "ts-jest",
     },
-    collectCoverageFrom: ["**/*.(t|j)s", "!**/*.module.(t|j)s", "!**/(main|preload|context).(t|j)s"],
+    collectCoverageFrom: [
+        "**/*.(t|j)s",
+        "!**/*.module.(t|j)s",
+        "!**/(main|preload|context).(t|j)s",
+        "!**/*.(model|dto|entity).(t|j)s",
+    ],
     coverageDirectory: "../coverage",
     testEnvironment: "node",
     roots: ["<rootDir>"],
