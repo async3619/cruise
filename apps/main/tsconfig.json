@@ -25,7 +25,8 @@
             "@library/*": ["./library/*"],
             "@music/*": ["./music/*"],
             "@base/*": ["./base/*"],
-            "@album/*": ["./album/*"]
+            "@album/*": ["./album/*"],
+            "@artist/*": ["./artist/*"]
         }
     }
 }

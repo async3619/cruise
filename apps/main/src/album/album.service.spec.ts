@@ -30,7 +30,7 @@ describe("AlbumService", () => {
         const album = service.create(title);
 
         expect(album.title).toBe(title);
-        expect(album.artists).toStrictEqual([]);
+        expect(album.artistNames).toStrictEqual([]);
         expect(album.albumArtists).toStrictEqual([]);
     });
 });

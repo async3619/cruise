@@ -1,7 +1,18 @@
-import { BaseEntity, Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, RelationId } from "typeorm";
+import {
+    BaseEntity,
+    Column,
+    CreateDateColumn,
+    Entity,
+    JoinTable,
+    ManyToMany,
+    OneToMany,
+    PrimaryGeneratedColumn,
+    RelationId,
+} from "typeorm";
 import { Field, Int, ObjectType } from "@nestjs/graphql";
 
 import { Music } from "@music/models/music.model";
+import { Artist } from "@artist/models/artist.model";
 
 @Entity({ name: "albums" })
 @ObjectType()
@@ -16,7 +27,7 @@ export class Album extends BaseEntity {
 
     @Field(() => [String])
     @Column({ type: "simple-array" })
-    public artists!: string[];
+    public artistNames!: string[];
 
     @Field(() => [String])
     @Column({ type: "simple-array" })
@@ -36,4 +47,12 @@ export class Album extends BaseEntity {
 
     @RelationId((item: Album) => item.musics)
     public musicIds!: Music["id"][];
+
+    // Album[] => Artist[]
+    @ManyToMany(() => Artist, item => item.albums)
+    @JoinTable()
+    public artists!: Artist[];
+
+    @RelationId((item: Album) => item.artists)
+    public artistIds!: Artist["id"][];
 }

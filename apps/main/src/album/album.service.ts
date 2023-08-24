@@ -18,7 +18,7 @@ export class AlbumService extends BaseService<Album, AlbumCreationArgs> {
     public create(title: string) {
         const album = this.albumRepository.create();
         album.title = title;
-        album.artists = [];
+        album.artistNames = [];
         album.albumArtists = [];
 
         return album;

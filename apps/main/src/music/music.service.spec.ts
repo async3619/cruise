@@ -44,8 +44,8 @@ describe("MusicService", () => {
         const music = service.create(MOCK_METADATA as any, filePath);
 
         expect(music.title).toBe(MOCK_METADATA.common.title);
-        expect(music.artist).toBe(MOCK_METADATA.common.artist);
-        expect(music.artists).toBe(MOCK_METADATA.common.artists);
+        expect(music.artistName).toBe(MOCK_METADATA.common.artist);
+        expect(music.artistNames).toBe(MOCK_METADATA.common.artists);
         expect(music.albumTitle).toBe(MOCK_METADATA.common.album);
         expect(music.albumArtist).toBe(MOCK_METADATA.common.albumartist);
         expect(music.genre).toBe(MOCK_METADATA.common.genre);
@@ -64,7 +64,7 @@ describe("MusicService", () => {
             filePath,
         );
 
-        expect(music.artists).toEqual([]);
+        expect(music.artistNames).toEqual([]);
     });
 
     it("should be set genre to empty array if not present", () => {

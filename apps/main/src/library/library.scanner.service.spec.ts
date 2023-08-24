@@ -7,15 +7,18 @@ import { getRepositoryToken } from "@nestjs/typeorm";
 import { LibraryScannerService } from "@library/library.scanner.service";
 
 import { MusicService } from "@music/music.service";
-import { Music } from "@music/models/music.model";
-
 import { AlbumService } from "@album/album.service";
+import { ArtistService } from "@artist/artist.service";
+
+import { Music } from "@music/models/music.model";
 import { Album } from "@album/models/album.model";
+import { Artist } from "@artist/models/artist.model";
 
 describe("LibraryScannerService", () => {
     let service: LibraryScannerService;
     let albumRepository: Record<string, jest.Mock>;
     let musicRepository: Record<string, jest.Mock>;
+    let artistRepository: Record<string, jest.Mock>;
 
     beforeEach(async () => {
         albumRepository = {
@@ -28,14 +31,21 @@ describe("LibraryScannerService", () => {
             save: jest.fn().mockImplementation(p => p),
             clear: jest.fn(),
         };
+        artistRepository = {
+            create: jest.fn().mockImplementation(p => p),
+            save: jest.fn().mockImplementation(p => p),
+            clear: jest.fn(),
+        };
 
         const module: TestingModule = await Test.createTestingModule({
             providers: [
                 LibraryScannerService,
                 AlbumService,
                 MusicService,
+                ArtistService,
                 { provide: getRepositoryToken(Album), useValue: albumRepository },
                 { provide: getRepositoryToken(Music), useValue: musicRepository },
+                { provide: getRepositoryToken(Artist), useValue: artistRepository },
             ],
         }).compile();
 

@@ -19,8 +19,8 @@ export class MusicService extends BaseService<Music, MusicCreationArgs> {
     public create(metadata: mm.IAudioMetadata, filePath: string) {
         return this.musicRepository.create({
             title: metadata.common.title,
-            artist: metadata.common.artist,
-            artists: metadata.common.artists ?? [],
+            artistName: metadata.common.artist,
+            artistNames: metadata.common.artists ?? [],
             albumTitle: metadata.common.album,
             albumArtist: metadata.common.albumartist,
             genre: metadata.common.genre ?? [],
