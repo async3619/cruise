@@ -1,7 +1,9 @@
-import { Field, ObjectType, Int, Float } from "@nestjs/graphql";
-
-import { Entity, BaseEntity, PrimaryGeneratedColumn, Column } from "typeorm";
 import { Nullable } from "types";
+
+import { Field, Float, Int, ObjectType } from "@nestjs/graphql";
+import { BaseEntity, Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, RelationId } from "typeorm";
+
+import { Album } from "@album/models/album.model";
 
 @Entity({ name: "musics" })
 @ObjectType()
@@ -24,7 +26,7 @@ export class Music extends BaseEntity {
 
     @Field(() => String, { nullable: true })
     @Column({ type: "text", nullable: true })
-    public album!: Nullable<string>;
+    public albumTitle!: Nullable<string>;
 
     @Field(() => String, { nullable: true })
     @Column({ type: "text", nullable: true })
@@ -53,4 +55,19 @@ export class Music extends BaseEntity {
     @Field(() => String)
     @Column({ type: "text" })
     public filePath!: Nullable<string>;
+
+    @Field(() => Date)
+    @CreateDateColumn()
+    public createdAt!: Date;
+
+    @Field(() => Date)
+    @CreateDateColumn()
+    public updatedAt!: Date;
+
+    // Music[] => Album
+    @ManyToOne(() => Album, item => item.musics)
+    public album!: Album;
+
+    @RelationId((item: Music) => item.album)
+    public albumId!: Album["id"];
 }

@@ -2,7 +2,7 @@ import { Test, TestingModule } from "@nestjs/testing";
 import { getRepositoryToken } from "@nestjs/typeorm";
 
 import { MusicService } from "@music/music.service";
-import { Music } from "@music/models/Music.model";
+import { Music } from "@music/models/music.model";
 
 const MOCK_METADATA = {
     common: {
@@ -25,7 +25,7 @@ describe("MusicService", () => {
 
     beforeEach(async () => {
         repository = {
-            create: jest.fn().mockReturnValue({}),
+            create: jest.fn().mockImplementation(p => p),
         };
 
         const module: TestingModule = await Test.createTestingModule({
@@ -46,7 +46,7 @@ describe("MusicService", () => {
         expect(music.title).toBe(MOCK_METADATA.common.title);
         expect(music.artist).toBe(MOCK_METADATA.common.artist);
         expect(music.artists).toBe(MOCK_METADATA.common.artists);
-        expect(music.album).toBe(MOCK_METADATA.common.album);
+        expect(music.albumTitle).toBe(MOCK_METADATA.common.album);
         expect(music.albumArtist).toBe(MOCK_METADATA.common.albumartist);
         expect(music.genre).toBe(MOCK_METADATA.common.genre);
         expect(music.year).toBe(MOCK_METADATA.common.year);

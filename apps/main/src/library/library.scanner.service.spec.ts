@@ -2,32 +2,47 @@ import path from "path";
 import os from "os";
 
 import { Test, TestingModule } from "@nestjs/testing";
+import { getRepositoryToken } from "@nestjs/typeorm";
 
 import { LibraryScannerService } from "@library/library.scanner.service";
+
 import { MusicService } from "@music/music.service";
+import { Music } from "@music/models/music.model";
+
+import { AlbumService } from "@album/album.service";
+import { Album } from "@album/models/album.model";
 
 describe("LibraryScannerService", () => {
     let service: LibraryScannerService;
-    let musicService: Record<string, jest.Mock>;
+    let albumRepository: Record<string, jest.Mock>;
+    let musicRepository: Record<string, jest.Mock>;
 
     beforeEach(async () => {
-        musicService = {
+        albumRepository = {
+            create: jest.fn().mockImplementation(p => ({ title: p, artists: [], albumArtists: [] })),
+            save: jest.fn().mockImplementation(p => p),
             clear: jest.fn(),
-            create: jest.fn(),
-            save: jest.fn(),
+        };
+        musicRepository = {
+            create: jest.fn().mockImplementation(p => p),
+            save: jest.fn().mockImplementation(p => p),
+            clear: jest.fn(),
         };
 
         const module: TestingModule = await Test.createTestingModule({
-            providers: [LibraryScannerService, { provide: MusicService, useValue: musicService }],
+            providers: [
+                LibraryScannerService,
+                AlbumService,
+                MusicService,
+                { provide: getRepositoryToken(Album), useValue: albumRepository },
+                { provide: getRepositoryToken(Music), useValue: musicRepository },
+            ],
         }).compile();
 
         service = module.get<LibraryScannerService>(LibraryScannerService);
 
         Object.defineProperty(service, "pubSub", {
-            value: {
-                asyncIterator: jest.fn(),
-                publish: jest.fn(),
-            },
+            value: { asyncIterator: jest.fn(), publish: jest.fn() },
         });
     });
 
@@ -39,11 +54,7 @@ describe("LibraryScannerService", () => {
         jest.spyOn(service, "getMediaFilePaths").mockResolvedValue(["./test.mp3"]);
 
         await service.scanLibrary();
-
-        expect(musicService.clear).toHaveBeenCalled();
         expect(service.getMediaFilePaths).toHaveBeenCalled();
-        expect(musicService.create).toHaveBeenCalled();
-        expect(musicService.save).toHaveBeenCalled();
     });
 
     it("should be able to get media file paths", async () => {

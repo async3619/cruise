@@ -24,7 +24,8 @@
             "@utils/*": ["./utils/*"],
             "@library/*": ["./library/*"],
             "@music/*": ["./music/*"],
-            "@base/*": ["./base/*"]
+            "@base/*": ["./base/*"],
+            "@album/*": ["./album/*"]
         }
     }
 }

@@ -6,7 +6,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 
 import { BaseService } from "@base/base.service";
 
-import { Music } from "@music/models/Music.model";
+import { Music } from "@music/models/music.model";
 
 type MusicCreationArgs = [metadata: mm.IAudioMetadata, filePath: string];
 
@@ -17,19 +17,18 @@ export class MusicService extends BaseService<Music, MusicCreationArgs> {
     }
 
     public create(metadata: mm.IAudioMetadata, filePath: string) {
-        const music = this.musicRepository.create();
-        music.title = metadata.common.title;
-        music.artist = metadata.common.artist;
-        music.artists = metadata.common.artists ?? [];
-        music.album = metadata.common.album;
-        music.albumArtist = metadata.common.albumartist;
-        music.genre = metadata.common.genre ?? [];
-        music.year = metadata.common.year;
-        music.trackNumber = metadata.common.track.no;
-        music.discNumber = metadata.common.disk.no;
-        music.duration = metadata.format.duration;
-        music.filePath = filePath;
-
-        return music;
+        return this.musicRepository.create({
+            title: metadata.common.title,
+            artist: metadata.common.artist,
+            artists: metadata.common.artists ?? [],
+            albumTitle: metadata.common.album,
+            albumArtist: metadata.common.albumartist,
+            genre: metadata.common.genre ?? [],
+            year: metadata.common.year,
+            trackNumber: metadata.common.track.no,
+            discNumber: metadata.common.disk.no,
+            duration: metadata.format.duration,
+            filePath,
+        });
     }
 }
