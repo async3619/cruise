@@ -8,6 +8,7 @@ import {
     JoinTable,
     ManyToMany,
     ManyToOne,
+    OneToMany,
     PrimaryGeneratedColumn,
     RelationId,
 } from "typeorm";
@@ -15,6 +16,7 @@ import { Field, Float, Int, ObjectType } from "@nestjs/graphql";
 
 import { Album } from "@album/models/album.model";
 import { Artist } from "@artist/models/artist.model";
+import { AlbumArt } from "@album-art/models/album-art.model";
 
 @Entity({ name: "musics" })
 @ObjectType()
@@ -89,4 +91,11 @@ export class Music extends BaseEntity {
 
     @RelationId((item: Music) => item.artists)
     public artistIds!: Artist["id"][];
+
+    // Music => AlbumArt[]
+    @OneToMany(() => AlbumArt, item => item.music)
+    public albumArts!: AlbumArt[];
+
+    @RelationId((item: Music) => item.albumArts)
+    public albumArtIds!: AlbumArt["id"][];
 }

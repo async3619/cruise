@@ -14,6 +14,8 @@ import { LibraryModule } from "@library/library.module";
 import { MusicModule } from "@music/music.module";
 import { AlbumModule } from "@album/album.module";
 import { ArtistModule } from "@artist/artist.module";
+import { ImageModule } from "@image/image.module";
+import { AlbumArtModule } from "@album-art/album-art.module";
 
 import { createGraphQLContext } from "@root/context";
 
@@ -46,6 +48,8 @@ import { createGraphQLContext } from "@root/context";
         MusicModule,
         AlbumModule,
         ArtistModule,
+        ImageModule,
+        AlbumArtModule,
     ],
 })
 export class AppModule {}
