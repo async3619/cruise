@@ -13,6 +13,7 @@ import { Field, Int, ObjectType } from "@nestjs/graphql";
 
 import { Music } from "@music/models/music.model";
 import { Artist } from "@artist/models/artist.model";
+import { AlbumArt } from "@album-art/models/album-art.model";
 
 @Entity({ name: "albums" })
 @ObjectType()
@@ -55,4 +56,11 @@ export class Album extends BaseEntity {
 
     @RelationId((item: Album) => item.artists)
     public artistIds!: Artist["id"][];
+
+    // Album => AlbumArt[]
+    @OneToMany(() => AlbumArt, item => item.album)
+    public albumArts!: AlbumArt[];
+
+    @RelationId((item: Album) => item.albumArts)
+    public albumArtIds!: AlbumArt["id"][];
 }
