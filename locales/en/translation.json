@@ -1,7 +1,8 @@
 {
     "pages": {
         "home": "Home",
-        "settings": "Settings"
+        "settings": "Settings",
+        "musics": "Musics"
     },
     "settings": {
         "library": {
@@ -33,5 +34,9 @@
             "error": "Failed to scan the library.",
             "loading": "Scanning the library..."
         }
+    },
+    "common": {
+        "library": "Library",
+        "unknown-genre": "Unknown Genre"
     }
 }

@@ -1,3 +1,4 @@
+import { In } from "typeorm";
 import { Test, TestingModule } from "@nestjs/testing";
 import { getRepositoryToken } from "@nestjs/typeorm";
 
@@ -15,6 +16,7 @@ describe("BaseService", () => {
             clear: jest.fn(),
             create: jest.fn(),
             save: jest.fn().mockImplementation(p => p),
+            find: jest.fn(),
         };
 
         const module: TestingModule = await Test.createTestingModule({
@@ -32,6 +34,24 @@ describe("BaseService", () => {
         await service.clear();
 
         expect(repository.clear).toHaveBeenCalled();
+    });
+
+    it("should be able to find items by ids", async () => {
+        repository.find.mockImplementation(() => [{ id: 1 }, { id: 2 }, { id: 3 }]);
+        await service.findByIds([1, 2, 3]);
+
+        expect(repository.find).toHaveBeenCalledWith({ where: { id: In([1, 2, 3]) } });
+    });
+
+    it("should throw error if item with given id is not found", async () => {
+        repository.find.mockImplementation(() => [{ id: 1 }, { id: 2 }, { id: 3 }]);
+        await expect(service.findByIds([1, 2, 3, 4])).rejects.toThrowError("Item with id `4` not found");
+    });
+
+    it("should be able to get all items", async () => {
+        await service.findAll();
+
+        expect(repository.find).toHaveBeenCalled();
     });
 
     it("should be able to save singular item", async () => {

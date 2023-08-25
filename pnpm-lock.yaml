@@ -111,6 +111,9 @@ importers:
       blake2:
         specifier: ^5.0.0
         version: 5.0.0
+      dataloader:
+        specifier: ^2.2.2
+        version: 2.2.2
       fast-glob:
         specifier: ^3.3.1
         version: 3.3.1
@@ -6264,7 +6267,6 @@ packages:
 
   /dataloader@2.2.2:
     resolution: {integrity: sha512-8YnDaaf7N3k/q5HnTJVuzSyLETjoZjVmHc4AeKAzOvKHEFQKcn64OKBfzHYtE9zGjctNM7V9I0MfnUVLpi7M5g==}
-    dev: true
 
   /date-fns@2.30.0:
     resolution: {integrity: sha512-fnULvOpxnC5/Vg3NCiWelDsLiUc9bRwAPs/+LfTLNvetFCtCTN+yQz15C/fs4AwX1R9K5GLtLfn8QW+dWisaAw==}

@@ -1,7 +1,8 @@
 {
     "pages": {
         "home": "홈",
-        "settings": "설정"
+        "settings": "설정",
+        "musics": "음악"
     },
     "settings": {
         "library": {
@@ -33,5 +34,9 @@
             "error": "라이브러리 스캔 중 오류가 발생했습니다.",
             "loading": "라이브러리 스캔 중..."
         }
+    },
+    "common": {
+        "library": "라이브러리",
+        "unknown-genre": "알 수 없는 장르"
     }
 }

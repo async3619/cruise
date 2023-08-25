@@ -6,6 +6,7 @@ import { Menu, MenuItem } from "ui";
 
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
+import MusicNoteRoundedIcon from "@mui/icons-material/MusicNoteRounded";
 
 import { ScrollbarThumb } from "@components/ScrollbarThumb";
 import { Content, Root } from "@components/Layout/SideBar.styles";
@@ -28,6 +29,16 @@ export function SideBar() {
                 type: "button",
                 label: t("pages.settings"),
                 icon: <SettingsRoundedIcon />,
+            },
+            {
+                type: "label",
+                label: t("common.library"),
+            },
+            {
+                id: "/library/musics",
+                type: "button",
+                label: t("pages.musics"),
+                icon: <MusicNoteRoundedIcon />,
             },
         ];
     }, [t]);
