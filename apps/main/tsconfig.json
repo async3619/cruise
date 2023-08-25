@@ -21,7 +21,12 @@
             "@nest/*": ["./nest/*"],
             "@electron/*": ["./electron/*"],
             "@config/*": ["./config/*"],
-            "@utils/*": ["./utils/*"]
+            "@utils/*": ["./utils/*"],
+            "@library/*": ["./library/*"],
+            "@music/*": ["./music/*"],
+            "@base/*": ["./base/*"],
+            "@album/*": ["./album/*"],
+            "@artist/*": ["./artist/*"]
         }
     }
 }

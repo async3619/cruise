@@ -3,6 +3,7 @@ import React from "react";
 import { Stack } from "@mui/material";
 
 import { SwitchConfigListItem } from "./SwitchItem";
+import { ActionConfigListItem } from "./ActionItem";
 
 import { Root } from "./ConfigList.styles";
 import { BaseConfig, ConfigListItem } from "./types";
@@ -17,7 +18,7 @@ export function ConfigList<TConfig extends BaseConfig>({ config, onChange, items
     return (
         <Root data-testid="ConfigList">
             <Stack spacing={1}>
-                {items.map(item => {
+                {items.map((item, index) => {
                     switch (item.type) {
                         case "switch":
                             return (
@@ -29,8 +30,13 @@ export function ConfigList<TConfig extends BaseConfig>({ config, onChange, items
                                 />
                             );
 
+                        case "action":
+                            return (
+                                <ActionConfigListItem key={index} item={item} config={config} setConfig={onChange} />
+                            );
+
                         default:
-                            throw new Error(`Unknown config item type: ${item.type}`);
+                            throw new Error(`Unknown config item type: ${(item as Record<string, unknown>).type}`);
                     }
                 })}
             </Stack>

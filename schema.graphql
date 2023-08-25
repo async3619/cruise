@@ -25,6 +25,7 @@ type Mutation {
   minimize: Boolean!
   close: Boolean!
   updateConfig(config: ConfigUpdateInput!): Boolean!
+  scanLibrary: Boolean!
 }
 
 input ConfigUpdateInput {
@@ -35,4 +36,5 @@ input ConfigUpdateInput {
 type Subscription {
   maximizedStateChanged: Boolean!
   configUpdated: ConfigData!
+  libraryScanningStateChanged: Boolean!
 }

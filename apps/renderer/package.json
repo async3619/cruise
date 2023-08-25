@@ -47,7 +47,7 @@
         "eslint": "^8.47.0",
         "eslint-config-custom": "workspace:*",
         "tsconfig": "workspace:*",
-        "typescript": "^5.2.1-rc",
+        "typescript": "^5.2.2",
         "vite": "^4.4.9",
         "vite-tsconfig-paths": "^4.2.0"
     }

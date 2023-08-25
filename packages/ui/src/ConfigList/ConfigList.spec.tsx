@@ -2,7 +2,7 @@ import React from "react";
 import { render, screen } from "@testing-library/react";
 
 import { Wrapper } from "../../__test__/Wrapper";
-import { MOCK_CONFIG, SWITCH_CONFIG_LIST_ITEM } from "../../__test__/ConfigList";
+import { ACTION_CONFIG_LIST_ITEM, MOCK_CONFIG, SWITCH_CONFIG_LIST_ITEM } from "../../__test__/ConfigList";
 
 import { ConfigList } from "./ConfigList";
 
@@ -21,12 +21,21 @@ describe("<ConfigList />", () => {
         expect(item).toBeInTheDocument();
     });
 
-    it("should render given items properly", () => {
+    it("should render given switch item properly", () => {
         render(<ConfigList config={MOCK_CONFIG} onChange={jest.fn()} items={[SWITCH_CONFIG_LIST_ITEM]} />, {
             wrapper: Wrapper,
         });
 
         const item = screen.getByTestId("SwitchConfigListItem");
+        expect(item).toBeInTheDocument();
+    });
+
+    it("should render given action item properly", () => {
+        render(<ConfigList config={MOCK_CONFIG} onChange={jest.fn()} items={[ACTION_CONFIG_LIST_ITEM]} />, {
+            wrapper: Wrapper,
+        });
+
+        const item = screen.getByTestId("ActionConfigListItem");
         expect(item).toBeInTheDocument();
     });
 

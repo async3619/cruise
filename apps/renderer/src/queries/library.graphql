@@ -1,0 +1,7 @@
+mutation scanLibrary {
+    scanLibrary
+}
+
+subscription libraryScanningStateChanged {
+    libraryScanningStateChanged
+}

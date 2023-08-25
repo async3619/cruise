@@ -1,5 +1,5 @@
 import React from "react";
-import { SwitchConfigListItem } from "../src";
+import { ActionConfigListItem, SwitchConfigListItem } from "../src";
 
 export const MOCK_CONFIG = {
     name: "mock",
@@ -14,4 +14,16 @@ export const SWITCH_CONFIG_LIST_ITEM: SwitchConfigListItem<typeof MOCK_CONFIG> =
         mock: "mock",
     },
     type: "switch",
+};
+
+export const ACTION_CONFIG_LIST_ITEM: ActionConfigListItem<typeof MOCK_CONFIG> = {
+    type: "action",
+    label: "label",
+    description: "description",
+    icon: <div />,
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    action: () => {},
+    button: {
+        label: "button",
+    },
 };

@@ -19,6 +19,6 @@
         "istanbul-lib-coverage": "^3.2.0",
         "ts-node": "^10.9.1",
         "tsconfig": "workspace:*",
-        "typescript": "^5.2.1-rc"
+        "typescript": "^5.2.2"
     }
 }

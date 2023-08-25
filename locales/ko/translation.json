@@ -4,6 +4,17 @@
         "settings": "설정"
     },
     "settings": {
+        "library": {
+            "title": "라이브러리"
+        },
+        "personalization": {
+            "title": "개인화"
+        },
+        "scan-library": {
+            "title": "라이브러리 스캔",
+            "description": "새로운 미디어를 검색하고 라이브러리를 업데이트합니다.",
+            "action": "새로고침"
+        },
         "color-mode": {
             "title": "색상 모드",
             "options": {
@@ -14,6 +25,13 @@
         },
         "language": {
             "title": "언어"
+        }
+    },
+    "toast": {
+        "scan-library": {
+            "success": "라이브러리 스캔이 완료되었습니다.",
+            "error": "라이브러리 스캔 중 오류가 발생했습니다.",
+            "loading": "라이브러리 스캔 중..."
         }
     }
 }

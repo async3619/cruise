@@ -1,4 +1,5 @@
 import React from "react";
+import { ToastProvider } from "ui";
 
 import { Experimental_CssVarsProvider as CssVarsProvider } from "@mui/material/styles";
 
@@ -21,7 +22,9 @@ export function App({ initialConfig }: AppProps) {
         <ApolloProvider client={apolloClient}>
             <CssVarsProvider theme={theme} defaultMode="dark">
                 <ConfigProvider initialConfig={initialConfig}>
-                    <Routes />
+                    <ToastProvider>
+                        <Routes />
+                    </ToastProvider>
                 </ConfigProvider>
             </CssVarsProvider>
         </ApolloProvider>

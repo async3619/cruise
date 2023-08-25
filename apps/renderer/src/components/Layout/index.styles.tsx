@@ -30,6 +30,7 @@ export const Root = styled.div`
 
 export const Body = styled.div`
     display: flex;
+    position: relative;
 
     flex: 1 1 auto;
 

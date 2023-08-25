@@ -23,7 +23,11 @@ export const theme = extendTheme({
         MuiButton: {
             defaultProps: {
                 disableElevation: true,
-                disableRipple: true,
+            },
+            styleOverrides: {
+                root: {
+                    textTransform: "none",
+                },
             },
         },
     },
