@@ -19,6 +19,10 @@ export abstract class BaseService<TEntity extends BaseEntity, TCreationArgs exte
 
     public abstract create(...args: TCreationArgs): TEntity;
 
+    public async findAll(): Promise<TEntity[]> {
+        return this.entityRepository.find();
+    }
+
     public async save(entity: TEntity): Promise<TEntity>;
     public async save(entities: TEntity[]): Promise<TEntity[]>;
     public async save(entityOrEntities: TEntity | TEntity[]): Promise<TEntity | TEntity[]> {
