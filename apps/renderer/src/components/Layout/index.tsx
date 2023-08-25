@@ -2,6 +2,8 @@ import React from "react";
 import { Outlet } from "react-router-dom";
 import { Scrollbars } from "rc-scrollbars";
 
+import { ToastContainer } from "ui";
+
 import { Global } from "@emotion/react";
 import { CssBaseline } from "@mui/material";
 
@@ -24,6 +26,7 @@ export function Layout() {
                         <Outlet />
                     </Scrollbars>
                 </Main>
+                <ToastContainer />
             </Body>
         </Root>
     );

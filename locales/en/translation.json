@@ -26,5 +26,12 @@
         "language": {
             "title": "Language"
         }
+    },
+    "toast": {
+        "scan-library": {
+            "success": "Completed scanning the library.",
+            "error": "Failed to scan the library.",
+            "loading": "Scanning the library..."
+        }
     }
 }

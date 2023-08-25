@@ -24,6 +24,11 @@ export const theme = extendTheme({
             defaultProps: {
                 disableElevation: true,
             },
+            styleOverrides: {
+                root: {
+                    textTransform: "none",
+                },
+            },
         },
     },
 });

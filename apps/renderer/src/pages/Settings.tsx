@@ -1,6 +1,6 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { ConfigList, ConfigListItem } from "ui";
+import { ConfigList, ConfigListItem, ToastInstance, useToast } from "ui";
 
 import PaletteRoundedIcon from "@mui/icons-material/PaletteRounded";
 import TranslateRoundedIcon from "@mui/icons-material/TranslateRounded";
@@ -24,6 +24,7 @@ export function Settings() {
     const { config, setConfig } = useConfig();
     const [libraryScanning, setLibraryScanning] = React.useState(false);
     const [scanLibrary] = useScanLibraryMutation();
+    const { enqueueToast } = useToast();
 
     useLibraryScanningStateChangedSubscription({
         onData: ({ data: { data } }) => {
@@ -34,6 +35,38 @@ export function Settings() {
             setLibraryScanning(data.libraryScanningStateChanged);
         },
     });
+
+    const handleScanLibrary = React.useCallback(async () => {
+        let toastInstance: ToastInstance | null = null;
+
+        try {
+            toastInstance = enqueueToast({
+                message: t("toast.scan-library.loading"),
+                persist: true,
+                loading: true,
+            });
+
+            await scanLibrary();
+
+            toastInstance.update({
+                severity: "success",
+                message: t("toast.scan-library.success"),
+                loading: false,
+                persist: false,
+            });
+        } catch (e) {
+            if (!toastInstance) {
+                return;
+            }
+
+            toastInstance.update({
+                severity: "error",
+                message: t("toast.scan-library.error"),
+                loading: false,
+                persist: false,
+            });
+        }
+    }, [enqueueToast, t, scanLibrary]);
 
     const items = React.useMemo<ItemTuple[]>(() => {
         return [
@@ -49,7 +82,7 @@ export function Settings() {
                             label: t("settings.scan-library.action"),
                             disabled: libraryScanning,
                         },
-                        action: scanLibrary,
+                        action: handleScanLibrary,
                     },
                 ],
             ],
@@ -80,7 +113,7 @@ export function Settings() {
                 ],
             ],
         ];
-    }, [libraryScanning, scanLibrary, t]);
+    }, [libraryScanning, handleScanLibrary, t]);
 
     return (
         <Page title={t("pages.settings")}>
