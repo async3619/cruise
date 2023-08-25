@@ -1,5 +1,7 @@
 import { Test, TestingModule } from "@nestjs/testing";
-import { MusicResolver } from "./music.resolver";
+
+import { MusicResolver } from "@music/music.resolver";
+import { MusicService } from "@music/music.service";
 
 describe("MusicResolver", () => {
     let resolver: MusicResolver;
@@ -11,7 +13,7 @@ describe("MusicResolver", () => {
         };
 
         const module: TestingModule = await Test.createTestingModule({
-            providers: [MusicResolver, { provide: "MusicService", useValue: musicService }],
+            providers: [MusicResolver, { provide: MusicService, useValue: musicService }],
         }).compile();
 
         resolver = module.get<MusicResolver>(MusicResolver);
@@ -21,8 +23,9 @@ describe("MusicResolver", () => {
         expect(resolver).toBeDefined();
     });
 
-    it("should be able to get all musics", () => {
-        expect(resolver.musics()).toEqual([]);
+    it("should be able to get all musics", async () => {
+        await resolver.musics();
+
         expect(musicService.findAll).toHaveBeenCalled();
     });
 });
