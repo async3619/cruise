@@ -1,27 +1,34 @@
 import styled from "@emotion/styled";
 import { backgroundColors } from "ui";
+import { css } from "@emotion/react";
 
 export const Root = styled.div`
     margin: 0;
     padding: 0;
 `;
 
-export const Item = styled.div`
+export const Item = styled.div<{ odd: boolean }>`
     margin: 0;
     padding: ${({ theme }) => theme.spacing(0, 2)};
     border-radius: ${({ theme }) => theme.shape.borderRadius}px;
 
     display: flex;
 
-    &:nth-of-type(odd) {
-        ${({ theme }) => theme.getColorSchemeSelector("dark")} {
-            background-color: ${backgroundColors["900"]};
+    ${({ odd, theme }) => {
+        if (odd) {
+            return "";
         }
 
-        ${({ theme }) => theme.getColorSchemeSelector("light")} {
-            background-color: ${backgroundColors["50"]};
-        }
-    }
+        return css`
+            ${theme.getColorSchemeSelector("dark")} {
+                background-color: ${backgroundColors["900"]};
+            }
+
+            ${theme.getColorSchemeSelector("light")} {
+                background-color: ${backgroundColors["50"]};
+            }
+        `;
+    }}
 
     &:hover {
         ${({ theme }) => theme.getColorSchemeSelector("dark")} {

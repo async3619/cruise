@@ -15,6 +15,7 @@
         "@mui/icons-material": "^5.14.3",
         "@mui/material": "^5.14.5",
         "@react-spring/web": "^9.7.3",
+        "@tanstack/react-virtual": "3.0.0-beta.54",
         "nanoid": "^4.0.2",
         "react": "^18.2.0",
         "react-use-measure": "^2.1.1"

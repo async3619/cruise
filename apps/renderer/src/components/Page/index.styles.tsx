@@ -1,3 +1,5 @@
+import { backgroundColors } from "ui";
+
 import styled from "@emotion/styled";
 import { keyframes } from "@emotion/css";
 
@@ -19,11 +21,27 @@ export const Root = styled.div`
 `;
 
 export const Header = styled.div`
-    padding: ${({ theme }) => theme.spacing(2, 2, 0)};
+    padding: ${({ theme }) => theme.spacing(2)};
+
+    position: sticky;
+    top: 0;
+
+    z-index: 100;
+
+    transition: ${({ theme }) =>
+        theme.transitions.create(["background-color"], { duration: theme.transitions.duration.shortest })};
+
+    ${({ theme }) => theme.getColorSchemeSelector("dark")} {
+        background-color: ${backgroundColors["800"]};
+    }
+
+    ${({ theme }) => theme.getColorSchemeSelector("light")} {
+        background-color: ${({ theme }) => theme.vars.palette.background.default};
+    }
 `;
 
 export const Content = styled.div`
-    padding: ${({ theme }) => theme.spacing(2)};
+    padding: ${({ theme }) => theme.spacing(0, 2, 2)};
 
     animation: ${FadeIn} ${({ theme }) => theme.transitions.duration.enteringScreen}ms ease-in-out;
 `;

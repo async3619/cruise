@@ -5,3 +5,4 @@ export * from "./Menu";
 export * from "./ConfigList";
 export * from "./Toast";
 export * from "./theme";
+export * from "./VirtualizedList";
