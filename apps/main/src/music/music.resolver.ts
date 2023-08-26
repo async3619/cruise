@@ -8,6 +8,7 @@ import { Album } from "@album/models/album.model";
 
 import { GraphQLContext } from "@root/context";
 import { Artist } from "@artist/models/artist.model";
+import { AlbumArt } from "@album-art/models/album-art.model";
 
 @Resolver(() => Music)
 export class MusicResolver {
@@ -36,5 +37,13 @@ export class MusicResolver {
         @Context("loaders") loaders: GraphQLContext["loaders"],
     ): Promise<Artist[]> {
         return Promise.all(music.artistIds.map(id => loaders.artist.load(id)));
+    }
+
+    @ResolveField(() => [AlbumArt])
+    public async albumArts(
+        @Parent() music: Music,
+        @Context("loaders") loaders: GraphQLContext["loaders"],
+    ): Promise<AlbumArt[]> {
+        return Promise.all(music.albumArtIds.map(id => loaders.albumArt.load(id)));
     }
 }

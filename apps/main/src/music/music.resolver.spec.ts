@@ -57,4 +57,15 @@ describe("MusicResolver", () => {
         expect(loaders.artist.load).toHaveBeenCalledWith(100);
         expect(loaders.artist.load).toHaveBeenCalledWith(200);
     });
+
+    it("should be able to get related album arts", async () => {
+        const music = { albumArtIds: [1, 2, 3] };
+        const loaders = { albumArt: { load: jest.fn() } };
+
+        await resolver.albumArts(music as any, loaders as any);
+
+        expect(loaders.albumArt.load).toHaveBeenNthCalledWith(1, 1);
+        expect(loaders.albumArt.load).toHaveBeenNthCalledWith(2, 2);
+        expect(loaders.albumArt.load).toHaveBeenNthCalledWith(3, 3);
+    });
 });

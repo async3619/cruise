@@ -1,5 +1,5 @@
 import os from "os";
-import { app, BrowserWindow, ipcMain } from "electron";
+import { app, BrowserWindow, ipcMain, protocol, net } from "electron";
 import * as path from "path";
 import { PubSub } from "graphql-subscriptions";
 import fs from "fs-extra";
@@ -11,6 +11,7 @@ import { electronApp, is, optimizer } from "@electron-toolkit/utils";
 import { ConfigService, ConfigType } from "@config/config.service";
 
 import { BaseEventMap, EventEmitter } from "@utils/event-emitter";
+import { ROOT_PATH } from "@root/constants";
 
 export const windowPubSub = new PubSub();
 
@@ -129,6 +130,14 @@ export class ElectronService extends EventEmitter<ElectronEventMap> implements O
 
         app.on("window-all-closed", this.onWindowAllClosed.bind(this));
 
+        protocol.handle("cruise", async request => {
+            let targetPath = request.url.slice("cruise://".length);
+            targetPath = `./${targetPath}`;
+            targetPath = path.join(ROOT_PATH, targetPath);
+
+            return net.fetch(`file://${targetPath}`);
+        });
+
         window.on("close", this.onClose.bind(this));
         window.on("maximize", () => {
             windowPubSub.publish("maximizedStateChanged", {
@@ -156,5 +165,16 @@ export class ElectronService extends EventEmitter<ElectronEventMap> implements O
         mainBindings(ipcMain, window, fs);
 
         return window;
+    }
+
+    public async getElectronUrl(targetPath: string) {
+        // check if path is in ROOT_PATH
+        if (targetPath.startsWith(ROOT_PATH)) {
+            const relativePath = path.relative(ROOT_PATH, targetPath);
+
+            return `cruise:///${relativePath.replace(/\\/g, "/")}`;
+        } else {
+            throw new Error(`Path \`${targetPath}\` is not in ROOT_PATH`);
+        }
     }
 }

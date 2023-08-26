@@ -20,26 +20,29 @@ import { AlbumArtModule } from "@album-art/album-art.module";
 import { AlbumService } from "@album/album.service";
 import { AlbumArtService } from "@album-art/album-art.service";
 import { ArtistService } from "@artist/artist.service";
+import { ImageService } from "@image/image.service";
 
 import { createGraphQLContext } from "@root/context";
 
 @Module({
     imports: [
         GraphQLModule.forRootAsync<ElectronApolloDriverConfig>({
-            imports: [AlbumModule, AlbumArtModule, ArtistModule],
-            inject: [AlbumService, AlbumArtService, ArtistService],
+            imports: [AlbumModule, AlbumArtModule, ArtistModule, ImageModule],
+            inject: [AlbumService, AlbumArtService, ArtistService, ImageService],
             driver: ElectronApolloDriver,
             useFactory: (
                 albumService: AlbumService,
                 albumArtService: AlbumArtService,
                 artistService: ArtistService,
+                imageService: ImageService,
             ) => ({
                 installSubscriptionHandlers: true,
                 autoSchemaFile:
                     process.env.NODE_ENV === "production"
                         ? true
                         : path.join(process.cwd(), "..", "..", "schema.graphql"),
-                context: window => createGraphQLContext(window, albumService, albumArtService, artistService),
+                context: window =>
+                    createGraphQLContext(window, albumService, albumArtService, artistService, imageService),
             }),
         }),
         TypeOrmModule.forRoot({

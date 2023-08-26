@@ -1,9 +1,9 @@
+import _ from "lodash";
 import * as mm from "music-metadata";
 import * as blake2 from "blake2";
-import { Repository } from "typeorm";
+import { In, Repository } from "typeorm";
 import sharp from "sharp";
 import path from "path";
-import os from "os";
 import fs from "fs-extra";
 import { v4 as generateUuid } from "uuid";
 import { fromBuffer } from "file-type";
@@ -13,7 +13,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 
 import { Image } from "@image/models/image.model";
 
-export const IMAGE_PATH = path.join(os.homedir(), ".cruise", "images");
+import { IMAGE_PATH } from "@root/constants";
 
 @Injectable()
 export class ImageService implements OnApplicationBootstrap {
@@ -21,6 +21,19 @@ export class ImageService implements OnApplicationBootstrap {
 
     public async onApplicationBootstrap() {
         await fs.ensureDir(IMAGE_PATH);
+    }
+
+    public async findByIds(ids: ReadonlyArray<number>) {
+        const items = await this.imageRepository.find({ where: { id: In(ids) } });
+        const idMap = _.keyBy(items, "id");
+
+        return ids.map(id => {
+            if (!idMap[id]) {
+                throw new Error(`Item with id \`${id}\` not found`);
+            }
+
+            return idMap[id];
+        });
     }
 
     public async ensure(picture: mm.IPicture, bucketName: string) {
