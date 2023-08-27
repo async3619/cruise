@@ -51,7 +51,7 @@ import { createGraphQLContext } from "@root/context";
             entities: getMetadataArgsStorage().tables.map(t => t.target),
             autoLoadEntities: true,
             synchronize: true,
-            dropSchema: true,
+            dropSchema: false,
         }),
         ElectronModule,
         ConfigModule,

@@ -5,7 +5,7 @@ import { Typography } from "@mui/material";
 import { PlayerControl } from "@components/Player/Control";
 import { usePlayer } from "@components/Player/context";
 
-import { AlbumArt, Description, NowPlaying, Root, Section } from "@components/Player/Panel.styles";
+import { AlbumArtView, Description, NowPlaying, Root, Section } from "@components/Player/Panel.styles";
 
 export interface PlayerPanelProps {}
 
@@ -18,7 +18,7 @@ export function PlayerPanel({}: PlayerPanelProps) {
             <Section>
                 {currentMusic && (
                     <NowPlaying>
-                        <AlbumArt style={{ backgroundImage: `url(${currentMusic.albumArts[0].url})` }} />
+                        <AlbumArtView albumArt={currentMusic.albumArt} />
                         <Description>
                             <Typography
                                 variant="body1"

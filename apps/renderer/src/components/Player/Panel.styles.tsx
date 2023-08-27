@@ -3,6 +3,8 @@ import { backgroundColors } from "ui";
 import styled from "@emotion/styled";
 import { ButtonBase } from "@mui/material";
 
+import { AlbumArt } from "@components/AlbumArt";
+
 export const Root = styled.div`
     height: ${({ theme }) => theme.spacing(11)};
 
@@ -50,20 +52,13 @@ export const NowPlaying = styled(ButtonBase)`
     text-align: left;
 `;
 
-export const AlbumArt = styled.div`
+export const AlbumArtView = styled(AlbumArt)`
     min-width: 0;
 
     width: ${({ theme }) => theme.spacing(9)};
     margin: ${({ theme }) => theme.spacing(0, 1.5, 0, 0)};
-    border: 1px solid ${({ theme }) => theme.vars.palette.divider};
-    border-radius: ${({ theme }) => theme.shape.borderRadius}px;
 
     flex: 0 0 ${({ theme }) => theme.spacing(9)};
-
-    aspect-ratio: 1 / 1;
-
-    background: center no-repeat;
-    background-size: cover;
 `;
 
 export const Description = styled.div`

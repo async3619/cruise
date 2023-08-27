@@ -9,7 +9,7 @@ import PauseRoundedIcon from "@mui/icons-material/PauseRounded";
 
 import { useLayout } from "@components/Layout/context";
 import { usePlayer } from "@components/Player/context";
-import { PlayPauseButton, Column, Item, Label, Root } from "@components/MusicList/index.styles";
+import { Column, Item, Label, PlayPauseButton, Root } from "@components/MusicList/index.styles";
 
 import { MinimalMusic } from "@utils/types";
 import { formatDuration } from "@utils/duration";
@@ -44,11 +44,16 @@ export function MusicList({ musics }: MusicListProps) {
         <Root>
             <VirtualizedList items={musics} estimateSize={() => 56} scrollElement={view}>
                 {(item, index) => (
-                    <Item odd={index % 2 !== 0} key={item.id}>
+                    <Item
+                        odd={index % 2 !== 0}
+                        key={item.id}
+                        isActive={player.currentIndex === index && player.isPlaying}
+                    >
                         <Column columnWidth="44px">
                             <PlayPauseButton
+                                withoutBorder
+                                albumArt={item.albumArt}
                                 onClick={() => handlePlayPauseClick(index)}
-                                style={{ backgroundImage: `url(${item.albumArts[0].url})` }}
                             >
                                 {(player.currentIndex !== index || !player.isPlaying) && <PlayArrowRoundedIcon />}
                                 {player.currentIndex === index && player.isPlaying && <PauseRoundedIcon />}
