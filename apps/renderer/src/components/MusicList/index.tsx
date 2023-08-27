@@ -4,9 +4,12 @@ import { useTranslation } from "react-i18next";
 import { VirtualizedList } from "ui";
 
 import { Typography } from "@mui/material";
+import PlayArrowRoundedIcon from "@mui/icons-material/PlayArrowRounded";
+import PauseRoundedIcon from "@mui/icons-material/PauseRounded";
 
 import { useLayout } from "@components/Layout/context";
-import { AlbumArt, AlbumArtWrapper, Column, Item, Label, Root } from "@components/MusicList/index.styles";
+import { usePlayer } from "@components/Player/context";
+import { PlayPauseButton, Column, Item, Label, Root } from "@components/MusicList/index.styles";
 
 import { MinimalMusic } from "@utils/types";
 import { formatDuration } from "@utils/duration";
@@ -18,6 +21,24 @@ export interface MusicListProps {
 export function MusicList({ musics }: MusicListProps) {
     const { t } = useTranslation();
     const { view } = useLayout();
+    const player = usePlayer();
+
+    const handlePlayPauseClick = React.useCallback(
+        (index: number) => {
+            if (player.currentIndex === index) {
+                if (player.isPlaying) {
+                    player.pause();
+                } else {
+                    player.play();
+                }
+
+                return;
+            }
+
+            player.playPlaylist(musics, index);
+        },
+        [player, musics],
+    );
 
     return (
         <Root>
@@ -25,9 +46,13 @@ export function MusicList({ musics }: MusicListProps) {
                 {(item, index) => (
                     <Item odd={index % 2 !== 0} key={item.id}>
                         <Column columnWidth="44px">
-                            <AlbumArtWrapper>
-                                <AlbumArt src={item.albumArts[0].url} width="48px" height="48px" />
-                            </AlbumArtWrapper>
+                            <PlayPauseButton
+                                onClick={() => handlePlayPauseClick(index)}
+                                style={{ backgroundImage: `url(${item.albumArts[0].url})` }}
+                            >
+                                {(player.currentIndex !== index || !player.isPlaying) && <PlayArrowRoundedIcon />}
+                                {player.currentIndex === index && player.isPlaying && <PauseRoundedIcon />}
+                            </PlayPauseButton>
                         </Column>
                         <Column columnWidth="43%">
                             <Typography component={Label} variant="body1" fontSize="0.9rem">

@@ -35,19 +35,9 @@ export const Label = styled.p`
     text-overflow: ellipsis;
 `;
 
-export const AlbumArt = styled.img`
-    max-width: 100%;
-
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-
-    display: block;
-`;
-
-export const AlbumArtWrapper = styled(ButtonBase)`
+export const PlayPauseButton = styled(ButtonBase, { shouldForwardProp: prop => prop !== "active" })<{
+    active?: boolean;
+}>`
     width: ${({ theme }) => theme.spacing(5.5)};
     height: ${({ theme }) => theme.spacing(5.5)};
 
@@ -55,6 +45,20 @@ export const AlbumArtWrapper = styled(ButtonBase)`
 
     position: relative;
     overflow: hidden;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: center no-repeat;
+    background-size: cover;
+
+    > svg {
+        position: relative;
+        z-index: 1;
+
+        opacity: 0;
+    }
 
     &:before {
         content: "";
@@ -64,7 +68,6 @@ export const AlbumArtWrapper = styled(ButtonBase)`
         left: 0;
         right: 0;
         bottom: 0;
-        z-index: 1;
 
         background-color: rgba(0, 0, 0, 0.5);
         opacity: 0;
@@ -103,8 +106,9 @@ export const Item = styled.div<{ odd: boolean }>`
             background-color: ${backgroundColors["100"]};
         }
 
-        ${AlbumArtWrapper} {
-            &:before {
+        ${PlayPauseButton} {
+            &:before,
+            > svg {
                 opacity: 1;
             }
         }

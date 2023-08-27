@@ -4,6 +4,8 @@ import styled from "@emotion/styled";
 import { css } from "@emotion/react";
 
 export const GlobalStyles = css`
+    @import url("https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300&display=swap");
+
     html,
     body,
     #app {

@@ -3,8 +3,8 @@ import React from "react";
 import { act, render, screen } from "@testing-library/react";
 
 import { useToast, useToastQueue } from "./Provider";
+import { ToastContainer } from "./Container";
 import { Wrapper } from "../../__test__/Wrapper";
-import { ToastContainer } from "./Container.tsx";
 
 describe("useToast()", () => {
     beforeEach(() => {

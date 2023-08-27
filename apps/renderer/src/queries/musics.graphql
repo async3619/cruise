@@ -6,6 +6,7 @@ fragment MinimalMusic on Music {
     trackNumber
     duration
     year
+    url
     album {
         id
         title

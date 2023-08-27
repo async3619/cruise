@@ -11,6 +11,7 @@ import { ScrollbarThumb } from "@components/ScrollbarThumb";
 import { LayoutContext } from "@components/Layout/context";
 import { TitleBar } from "@components/Layout/TitleBar";
 import { SideBar } from "@components/Layout/SideBar";
+import { PlayerPanel } from "@components/Player/Panel";
 
 import { Body, GlobalStyles, Main, Root } from "@components/Layout/index.styles";
 
@@ -36,6 +37,7 @@ export function Layout() {
                     </Main>
                     <ToastContainer />
                 </Body>
+                <PlayerPanel />
             </Root>
         </LayoutContext.Provider>
     );

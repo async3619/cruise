@@ -9,9 +9,11 @@ import apolloClient from "@graphql/client";
 import { theme } from "@styles/theme";
 
 import { ConfigProvider } from "@components/Config/Provider";
+import { PlayerProvider } from "@components/Player/Provider";
+
+import { Routes } from "@pages";
 
 import { ConfigData } from "@utils/types";
-import { Routes } from "@pages";
 
 interface AppProps {
     initialConfig: ConfigData;
@@ -23,7 +25,9 @@ export function App({ initialConfig }: AppProps) {
             <CssVarsProvider theme={theme} defaultMode="dark">
                 <ConfigProvider initialConfig={initialConfig}>
                     <ToastProvider>
-                        <Routes />
+                        <PlayerProvider>
+                            <Routes />
+                        </PlayerProvider>
                     </ToastProvider>
                 </ConfigProvider>
             </CssVarsProvider>

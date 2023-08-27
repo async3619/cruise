@@ -6,7 +6,6 @@
         "noUnusedParameters": true,
         "noImplicitReturns": true,
         "moduleResolution": "bundler",
-        "allowImportingTsExtensions": true,
         "resolveJsonModule": true,
         "isolatedModules": true,
         "noEmit": true,

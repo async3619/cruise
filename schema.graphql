@@ -61,6 +61,7 @@ type Music {
   album: Album
   artists: [Artist!]!
   albumArts: [AlbumArt!]!
+  url: String!
 }
 
 type Query {

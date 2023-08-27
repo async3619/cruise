@@ -2,13 +2,14 @@
     "name": "utils",
     "version": "0.0.0",
     "main": "dist/index.js",
+    "browser": "dist/index.mjs",
     "types": "dist/index.d.ts",
     "license": "MIT",
     "scripts": {
         "lint": "eslint \"**/*.ts\"",
         "test": "jest --coverage",
-        "build": "tsup src/index.ts --format cjs --minify --dts-resolve",
-        "dev": "tsup src/index.ts --format cjs --watch --dts-resolve"
+        "build": "tsup src/index.ts --format cjs,esm --minify --dts-resolve",
+        "dev": "tsup src/index.ts --format cjs,esm --watch --dts-resolve"
     },
     "devDependencies": {
         "@types/jest": "^29.5.4",
