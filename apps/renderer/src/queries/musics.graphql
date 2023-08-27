@@ -1,0 +1,29 @@
+fragment MinimalMusic on Music {
+    id
+    title
+    genre
+    discNumber
+    trackNumber
+    duration
+    year
+    album {
+        id
+        title
+    }
+    artists {
+        id
+        name
+    }
+    albumArts {
+        id
+        url
+        type
+        description
+    }
+}
+
+query musics {
+    musics {
+        ...MinimalMusic
+    }
+}

@@ -8,5 +8,6 @@ import { ElectronResolver } from "@electron/electron.resolver";
 @Module({
     imports: [ConfigModule],
     providers: [ElectronService, ElectronResolver],
+    exports: [ElectronService],
 })
 export class ElectronModule {}

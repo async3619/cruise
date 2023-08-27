@@ -1,14 +1,17 @@
 import fs from "fs-extra";
 import rawFs from "fs/promises";
 import * as mm from "music-metadata";
+import path from "path";
+import { In } from "typeorm";
 
 import { Test, TestingModule } from "@nestjs/testing";
 import { getRepositoryToken } from "@nestjs/typeorm";
 
-import { IMAGE_PATH, ImageService } from "@image/image.service";
+import { ImageService } from "@image/image.service";
 
 import { Image } from "@image/models/image.model";
-import path from "path";
+
+import { IMAGE_PATH } from "@root/constants";
 
 describe("ImageService", () => {
     let service: ImageService;
@@ -16,6 +19,7 @@ describe("ImageService", () => {
 
     beforeEach(async () => {
         repository = {
+            find: jest.fn(),
             findOne: jest.fn(),
             create: jest.fn().mockImplementation(p => p),
             save: jest.fn().mockImplementation(p => p),
@@ -92,5 +96,32 @@ describe("ImageService", () => {
         const result = await service.ensure(picture, "test");
 
         expect(result).toEqual(data);
+    });
+
+    it("should be able to get image by ids", async () => {
+        const data = {
+            id: 1,
+            bucketName: "test",
+            format: "png",
+            mimeType: "image/png",
+            path: expect.any(String),
+            hash: expect.any(String),
+            height: 20000,
+            width: 20000,
+            size: 10000,
+        };
+
+        repository.find.mockResolvedValue([data]);
+
+        const result = await service.findByIds([1]);
+
+        expect(result).toEqual([data]);
+        expect(repository.find).toHaveBeenCalledWith({ where: { id: In([1]) } });
+    });
+
+    it("should throw an error if image with given id is not found", async () => {
+        repository.find.mockResolvedValue([]);
+
+        await expect(service.findByIds([1])).rejects.toThrowError("Item with id `1` not found");
     });
 });

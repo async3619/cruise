@@ -1,5 +1,6 @@
+import _ from "lodash";
 import { PubSub } from "graphql-subscriptions";
-import { ObjectLiteral, Repository } from "typeorm";
+import { In, ObjectLiteral, Repository, FindOptionsWhere } from "typeorm";
 
 export interface BaseEntity extends ObjectLiteral {
     id: number;
@@ -18,6 +19,25 @@ export abstract class BaseService<TEntity extends BaseEntity, TCreationArgs exte
     }
 
     public abstract create(...args: TCreationArgs): TEntity;
+
+    public async findByIds(ids: ReadonlyArray<number>): Promise<TEntity[]> {
+        const items = await this.entityRepository.find({
+            where: { id: In(ids) } as FindOptionsWhere<TEntity>,
+        });
+
+        const idMap = _.keyBy(items, "id");
+
+        return ids.map(id => {
+            if (!idMap[id]) {
+                throw new Error(`Item with id \`${id}\` not found`);
+            }
+
+            return idMap[id];
+        });
+    }
+    public async findAll(): Promise<TEntity[]> {
+        return this.entityRepository.find();
+    }
 
     public async save(entity: TEntity): Promise<TEntity>;
     public async save(entities: TEntity[]): Promise<TEntity[]>;
