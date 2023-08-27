@@ -6,7 +6,7 @@ import { VirtualizedList } from "ui";
 import { Typography } from "@mui/material";
 
 import { useLayout } from "@components/Layout/context";
-import { Column, Item, Label, Root } from "@components/MusicList/index.styles";
+import { AlbumArt, AlbumArtWrapper, Column, Item, Label, Root } from "@components/MusicList/index.styles";
 
 import { MinimalMusic } from "@utils/types";
 import { formatDuration } from "@utils/duration";
@@ -21,30 +21,35 @@ export function MusicList({ musics }: MusicListProps) {
 
     return (
         <Root>
-            <VirtualizedList items={musics} estimateSize={() => 48} scrollElement={view}>
+            <VirtualizedList items={musics} estimateSize={() => 56} scrollElement={view}>
                 {(item, index) => (
                     <Item odd={index % 2 !== 0} key={item.id}>
-                        <Column width="43%">
+                        <Column columnWidth="44px">
+                            <AlbumArtWrapper>
+                                <AlbumArt src={item.albumArts[0].url} width="48px" height="48px" />
+                            </AlbumArtWrapper>
+                        </Column>
+                        <Column columnWidth="43%">
                             <Typography component={Label} variant="body1" fontSize="0.9rem">
                                 {item.title}
                             </Typography>
                         </Column>
-                        <Column width="18%">
+                        <Column columnWidth="18%">
                             <Typography component={Label} variant="body1" fontSize="0.9rem">
                                 {item.artists[0].name}
                             </Typography>
                         </Column>
-                        <Column width="18%">
+                        <Column columnWidth="18%">
                             <Typography component={Label} variant="body1" fontSize="0.9rem">
                                 {item.album?.title || "Unknown"}
                             </Typography>
                         </Column>
-                        <Column width="18%">
+                        <Column columnWidth="18%">
                             <Typography component={Label} variant="body1" fontSize="0.9rem">
                                 {item.genre[0] || t("common.unknown-genre")}
                             </Typography>
                         </Column>
-                        <Column width="7%">
+                        <Column columnWidth="7%">
                             <Typography component={Label} variant="body1" fontSize="0.9rem" textAlign="right">
                                 {formatDuration(item.duration)}
                             </Typography>

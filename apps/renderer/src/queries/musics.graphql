@@ -14,6 +14,12 @@ fragment MinimalMusic on Music {
         id
         name
     }
+    albumArts {
+        id
+        url
+        type
+        description
+    }
 }
 
 query musics {

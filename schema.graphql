@@ -25,6 +25,15 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type AlbumArt {
+  id: Int!
+  type: String
+  description: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  url: String!
+}
+
 type Album {
   id: Int!
   title: String!
@@ -51,6 +60,7 @@ type Music {
   updatedAt: DateTime!
   album: Album
   artists: [Artist!]!
+  albumArts: [AlbumArt!]!
 }
 
 type Query {
