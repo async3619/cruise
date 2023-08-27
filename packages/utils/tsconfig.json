@@ -1,0 +1,12 @@
+{
+    "extends": "tsconfig/renderer.json",
+    "compilerOptions": {
+        "isolatedModules": false,
+        "jsx": "react",
+        "lib": ["ES2015", "DOM"],
+        "module": "ESNext",
+        "target": "es6"
+    },
+    "include": ["./src"],
+    "exclude": ["node_modules"]
+}

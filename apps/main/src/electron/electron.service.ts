@@ -4,13 +4,13 @@ import * as path from "path";
 import { PubSub } from "graphql-subscriptions";
 import fs from "fs-extra";
 import { clearMainBindings, mainBindings } from "i18next-electron-fs-backend";
+import { BaseEventMap, EventEmitter } from "utils";
 
 import { Inject, Injectable, OnApplicationBootstrap } from "@nestjs/common";
 import { electronApp, is, optimizer } from "@electron-toolkit/utils";
 
 import { ConfigService, ConfigType } from "@config/config.service";
 
-import { BaseEventMap, EventEmitter } from "@utils/event-emitter";
 import { ROOT_PATH } from "@root/constants";
 
 export const windowPubSub = new PubSub();
