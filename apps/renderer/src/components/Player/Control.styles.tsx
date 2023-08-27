@@ -1,9 +1,9 @@
 import styled from "@emotion/styled";
 
 export const Root = styled.div`
-    width: ${({ theme }) => theme.spacing(70)};
+    width: ${({ theme }) => theme.spacing(60)};
 
-    margin: 0;
+    margin: ${({ theme }) => theme.spacing(0, 2)};
     padding: 0;
 
     display: flex;
