@@ -44,11 +44,7 @@ export function MusicList({ musics }: MusicListProps) {
         <Root>
             <VirtualizedList items={musics} estimateSize={() => 56} scrollElement={view}>
                 {(item, index) => (
-                    <Item
-                        odd={index % 2 !== 0}
-                        key={item.id}
-                        isActive={player.currentIndex === index && player.isPlaying}
-                    >
+                    <Item odd={index % 2 !== 0} key={item.id} isActive={player.currentIndex === index}>
                         <Column columnWidth="44px">
                             <PlayPauseButton
                                 withoutBorder
