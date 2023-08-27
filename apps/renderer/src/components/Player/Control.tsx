@@ -14,8 +14,19 @@ import { formatDuration } from "@utils/duration";
 export interface PlayerControlProps {}
 
 export function PlayerControl({}: PlayerControlProps) {
-    const { isPlaying, pause, play, playlist, currentIndex, events, getCurrentMusic, seekTo, seekPlaylist } =
-        usePlayer();
+    const {
+        isPlaying,
+        pause,
+        play,
+        playlist,
+        currentIndex,
+        events,
+        getCurrentMusic,
+        seekTo,
+        seekPlaylist,
+        canSeekForward,
+        canSeekBackward,
+    } = usePlayer();
     const [currentTime, setCurrentTime] = React.useState(0);
     const isPlaylistEmpty = playlist.length === 0;
     const music = getCurrentMusic();
@@ -43,14 +54,14 @@ export function PlayerControl({}: PlayerControlProps) {
     return (
         <Root data-testid="PlayerControl">
             <Stack direction="row" spacing={1} alignItems="center">
-                <IconButton disabled={isPlaylistEmpty || currentIndex === 0} onClick={handlePrevious}>
+                <IconButton disabled={!canSeekBackward()} onClick={handlePrevious}>
                     <SkipPreviousRoundedIcon />
                 </IconButton>
                 <IconButton disabled={isPlaylistEmpty} onClick={isPlaying ? pause : play}>
                     {!isPlaying && <PlayArrowRoundedIcon fontSize="large" />}
                     {isPlaying && <PauseRoundedIcon fontSize="large" />}
                 </IconButton>
-                <IconButton disabled={isPlaylistEmpty || currentIndex === playlist.length - 1} onClick={handleNext}>
+                <IconButton disabled={!canSeekForward()} onClick={handleNext}>
                     <SkipNextRoundedIcon />
                 </IconButton>
             </Stack>

@@ -67,7 +67,7 @@ export function MusicList({ musics }: MusicListProps) {
                         </Column>
                         <Column columnWidth="18%">
                             <Typography component={Label} variant="body1" fontSize="0.9rem">
-                                {item.album?.title || "Unknown"}
+                                {item.album?.title || t("common.unknown-album")}
                             </Typography>
                         </Column>
                         <Column columnWidth="18%">

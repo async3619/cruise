@@ -37,6 +37,7 @@
     },
     "common": {
         "library": "Library",
-        "unknown-genre": "Unknown Genre"
+        "unknown-genre": "Unknown Genre",
+        "unknown-album": "Unknown Album"
     }
 }

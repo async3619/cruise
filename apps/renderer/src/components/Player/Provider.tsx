@@ -10,10 +10,22 @@ export interface PlayerEvents extends BaseEventMap {
     timeUpdate: (currentTime: number) => void;
 }
 
+export enum RepeatMode {
+    None,
+    One,
+    All,
+}
+
 export interface Player {
     playlist: MinimalMusic[];
     currentIndex: number;
     isPlaying: boolean;
+
+    canSeekBackward(): boolean;
+    canSeekForward(): boolean;
+
+    setRepeatMode(mode: RepeatMode): void;
+    repeatMode: RepeatMode;
 
     playPlaylist(musics: MinimalMusic[], index?: number): void;
     seekPlaylist(index: number): void;
@@ -36,6 +48,12 @@ export class PlayerProvider extends React.Component<React.PropsWithChildren, Pla
         currentIndex: -1,
         isPlaying: false,
 
+        setRepeatMode: this.setRepeatMode.bind(this),
+        repeatMode: RepeatMode.None,
+
+        canSeekBackward: this.canSeekBackward.bind(this),
+        canSeekForward: this.canSeekForward.bind(this),
+
         playPlaylist: this.playPlaylist.bind(this),
         seekPlaylist: this.seekPlaylist.bind(this),
 
@@ -57,6 +75,10 @@ export class PlayerProvider extends React.Component<React.PropsWithChildren, Pla
         return this.audioRef.current;
     }
 
+    public setRepeatMode(mode: RepeatMode) {
+        this.setState({ repeatMode: mode });
+    }
+
     public getCurrentMusic(): Nullable<MinimalMusic> {
         const { playlist, currentIndex } = this.state;
         if (currentIndex < 0 || currentIndex >= playlist.length) {
@@ -73,10 +95,40 @@ export class PlayerProvider extends React.Component<React.PropsWithChildren, Pla
         });
     }
     public async seekPlaylist(index: number) {
-        this.setState({ currentIndex: index }, () => {
+        const { repeatMode } = this.state;
+
+        let currentIndex: number;
+        if (repeatMode === RepeatMode.All) {
+            if (index < 0) {
+                currentIndex = this.state.playlist.length - 2 - index;
+            } else {
+                currentIndex = index % this.state.playlist.length;
+            }
+        } else {
+            currentIndex = Math.max(0, Math.min(index, this.state.playlist.length - 1));
+        }
+
+        this.setState({ currentIndex }, () => {
             this.audio.play();
             this.handleTimeUpdate();
         });
+    }
+
+    public canSeekBackward() {
+        const { repeatMode, currentIndex } = this.state;
+        if (repeatMode === RepeatMode.All) {
+            return true;
+        }
+
+        return currentIndex > 0;
+    }
+    public canSeekForward() {
+        const { repeatMode, currentIndex, playlist } = this.state;
+        if (repeatMode === RepeatMode.All) {
+            return true;
+        }
+
+        return currentIndex + 1 < playlist.length;
     }
 
     public async play() {
@@ -109,8 +161,11 @@ export class PlayerProvider extends React.Component<React.PropsWithChildren, Pla
         events.emit("timeUpdate", this.audio.currentTime);
     };
     private handleEnded = () => {
-        const { currentIndex, playlist } = this.state;
-        if (currentIndex + 1 >= playlist.length) {
+        const { currentIndex, playlist, repeatMode } = this.state;
+        if (repeatMode !== RepeatMode.All && currentIndex + 1 >= playlist.length) {
+            return;
+        } else if (repeatMode === RepeatMode.One) {
+            this.play();
             return;
         }
 
