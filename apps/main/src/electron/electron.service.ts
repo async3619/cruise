@@ -138,6 +138,12 @@ export class ElectronService extends EventEmitter<ElectronEventMap> implements O
             return net.fetch(`file://${targetPath}`);
         });
 
+        protocol.registerFileProtocol("music", (request, callback) => {
+            callback({
+                path: decodeURIComponent(request.url.slice("music://".length)),
+            });
+        });
+
         window.on("close", this.onClose.bind(this));
         window.on("maximize", () => {
             windowPubSub.publish("maximizedStateChanged", {

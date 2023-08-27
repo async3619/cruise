@@ -46,4 +46,9 @@ export class MusicResolver {
     ): Promise<AlbumArt[]> {
         return Promise.all(music.albumArtIds.map(id => loaders.albumArt.load(id)));
     }
+
+    @ResolveField(() => String)
+    public async url(@Parent() music: Music): Promise<string> {
+        return `music://${music.filePath.replace(/\\/g, "/")}`;
+    }
 }

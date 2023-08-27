@@ -68,4 +68,11 @@ describe("MusicResolver", () => {
         expect(loaders.albumArt.load).toHaveBeenNthCalledWith(2, 2);
         expect(loaders.albumArt.load).toHaveBeenNthCalledWith(3, 3);
     });
+
+    it("should be able to get electron scheme url", async () => {
+        const music = { filePath: "test" };
+        const result = await resolver.url(music as any);
+
+        expect(result).toBe("music://test");
+    });
 });

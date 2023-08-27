@@ -67,7 +67,7 @@ export class Music extends BaseEntity {
 
     @Field(() => String)
     @Column({ type: "text" })
-    public filePath!: Nullable<string>;
+    public filePath!: string;
 
     @Field(() => Date)
     @CreateDateColumn()
