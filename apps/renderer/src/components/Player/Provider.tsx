@@ -27,6 +27,7 @@ export interface Player {
     setRepeatMode(mode: RepeatMode): void;
     repeatMode: RepeatMode;
 
+    shufflePlaylist(): void;
     playPlaylist(musics: MinimalMusic[], index?: number): void;
     seekPlaylist(index: number): void;
 
@@ -48,6 +49,7 @@ export class PlayerProvider extends React.Component<React.PropsWithChildren, Pla
         currentIndex: -1,
         isPlaying: false,
 
+        shufflePlaylist: this.shufflePlaylist.bind(this),
         setRepeatMode: this.setRepeatMode.bind(this),
         repeatMode: RepeatMode.None,
 
@@ -88,6 +90,22 @@ export class PlayerProvider extends React.Component<React.PropsWithChildren, Pla
         return playlist[currentIndex];
     }
 
+    public shufflePlaylist() {
+        this.setState(prev => {
+            const { playlist, currentIndex } = prev;
+            const currentMusic = playlist[currentIndex];
+            const newPlaylist = [...playlist];
+
+            newPlaylist.splice(currentIndex, 1);
+            newPlaylist.sort(() => Math.random() - 0.5);
+
+            if (currentMusic) {
+                newPlaylist.splice(currentIndex, 0, currentMusic);
+            }
+
+            return { playlist: newPlaylist };
+        });
+    }
     public async playPlaylist(musics: MinimalMusic[], index = 0) {
         this.setState({ playlist: [...musics], currentIndex: index }, () => {
             this.audio.play();

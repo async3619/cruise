@@ -22,6 +22,7 @@ export function MusicList({ musics }: MusicListProps) {
     const { t } = useTranslation();
     const { view } = useLayout();
     const player = usePlayer();
+    const currentMusic = player.getCurrentMusic();
 
     const handlePlayPauseClick = React.useCallback(
         (index: number) => {
@@ -44,7 +45,7 @@ export function MusicList({ musics }: MusicListProps) {
         <Root>
             <VirtualizedList items={musics} estimateSize={() => 56} scrollElement={view}>
                 {(item, index) => (
-                    <Item odd={index % 2 !== 0} key={item.id} isActive={player.currentIndex === index}>
+                    <Item odd={index % 2 !== 0} key={item.id} isActive={currentMusic?.id === item.id}>
                         <Column columnWidth="44px">
                             <PlayPauseButton
                                 withoutBorder

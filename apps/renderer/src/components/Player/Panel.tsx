@@ -1,24 +1,50 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 
-import { Box, IconButton, Stack, Typography } from "@mui/material";
+import { Box, IconButton, Stack, Typography, useTheme } from "@mui/material";
 import RepeatRoundedIcon from "@mui/icons-material/RepeatRounded";
 import RepeatOneRoundedIcon from "@mui/icons-material/RepeatOneRounded";
 import ShuffleRoundedIcon from "@mui/icons-material/ShuffleRounded";
 
 import { PlayerControl } from "@components/Player/Control";
 import { usePlayer } from "@components/Player/context";
+import { RepeatMode } from "@components/Player/Provider";
 
 import { AlbumArtView, Description, NowPlaying, Root, Section } from "@components/Player/Panel.styles";
-import { RepeatMode } from "@components/Player/Provider";
 
 export interface PlayerPanelProps {}
 
 export function PlayerPanel({}: PlayerPanelProps) {
     const { t } = useTranslation();
+    const theme = useTheme();
     const player = usePlayer();
     const currentMusic = player.getCurrentMusic();
     const repeatMode = player.repeatMode;
+    const [shuffleAnimating, setShuffleAnimating] = React.useState(false);
+
+    const handleShuffleClick = React.useCallback(
+        (e: React.MouseEvent<HTMLButtonElement>) => {
+            if (!shuffleAnimating) {
+                e.currentTarget
+                    .animate(
+                        [
+                            { transform: "rotateX(0)" },
+                            { transform: "rotateX(180deg)" },
+                            { transform: "rotateX(360deg)" },
+                        ],
+                        { duration: theme.transitions.duration.complex, iterations: 1 },
+                    )
+                    .addEventListener("finish", () => {
+                        setShuffleAnimating(false);
+                    });
+
+                setShuffleAnimating(true);
+            }
+
+            player.shufflePlaylist();
+        },
+        [theme, player, shuffleAnimating],
+    );
 
     const handleRepeatClick = React.useCallback(() => {
         if (repeatMode === RepeatMode.None) {
@@ -74,8 +100,8 @@ export function PlayerPanel({}: PlayerPanelProps) {
                         <IconButton size="small" onClick={handleRepeatClick}>
                             {repeatModeIcon}
                         </IconButton>
-                        <IconButton size="small">
-                            <ShuffleRoundedIcon fontSize="small" />
+                        <IconButton size="small" onClick={handleShuffleClick}>
+                            <ShuffleRoundedIcon fontSize="small" color={shuffleAnimating ? "inherit" : "disabled"} />
                         </IconButton>
                     </Stack>
                 </Box>
