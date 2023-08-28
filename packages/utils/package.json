@@ -1,0 +1,26 @@
+{
+    "name": "utils",
+    "version": "0.0.0",
+    "main": "dist/index.js",
+    "browser": "dist/index.mjs",
+    "types": "dist/index.d.ts",
+    "license": "MIT",
+    "scripts": {
+        "lint": "eslint \"**/*.ts\"",
+        "test": "jest --coverage",
+        "build": "tsup src/index.ts --format cjs,esm --minify --dts-resolve",
+        "dev": "tsup src/index.ts --format cjs,esm --watch --dts-resolve"
+    },
+    "devDependencies": {
+        "@types/jest": "^29.5.4",
+        "@types/react": "^18.2.20",
+        "@types/react-dom": "^18.2.7",
+        "eslint": "^8.47.0",
+        "eslint-config-custom": "*",
+        "jest": "^29.6.4",
+        "ts-jest": "^29.1.1",
+        "tsconfig": "workspace:*",
+        "tsup": "^7.2.0",
+        "typescript": "^5.2.2"
+    }
+}

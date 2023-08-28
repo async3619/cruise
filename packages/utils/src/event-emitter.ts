@@ -20,7 +20,7 @@ export class EventEmitter<TEventMap extends BaseEventMap> {
         }
     }
 
-    protected emit<TEvent extends keyof TEventMap>(event: TEvent, ...args: Parameters<TEventMap[TEvent]>) {
+    public emit<TEvent extends keyof TEventMap>(event: TEvent, ...args: Parameters<TEventMap[TEvent]>) {
         const listeners = this.eventMap.get(event) ?? [];
 
         for (const listener of listeners) {

@@ -60,7 +60,9 @@ type Music {
   updatedAt: DateTime!
   album: Album
   artists: [Artist!]!
+  albumArt: AlbumArt
   albumArts: [AlbumArt!]!
+  url: String!
 }
 
 type Query {

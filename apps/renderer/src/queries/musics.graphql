@@ -1,3 +1,8 @@
+fragment MinimalAlbumArt on AlbumArt {
+    id
+    url
+}
+
 fragment MinimalMusic on Music {
     id
     title
@@ -6,6 +11,7 @@ fragment MinimalMusic on Music {
     trackNumber
     duration
     year
+    url
     album {
         id
         title
@@ -14,11 +20,8 @@ fragment MinimalMusic on Music {
         id
         name
     }
-    albumArts {
-        id
-        url
-        type
-        description
+    albumArt {
+        ...MinimalAlbumArt
     }
 }
 

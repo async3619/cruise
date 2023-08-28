@@ -1,4 +1,4 @@
-import { EventEmitter } from "@utils/event-emitter";
+import { EventEmitter } from "./event-emitter";
 
 describe("EventEmitter class", () => {
     let emitter: EventEmitter<{ event: (arg: string) => void; test: () => void }>;

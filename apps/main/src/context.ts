@@ -1,3 +1,4 @@
+import _ from "lodash";
 import DataLoader from "dataloader";
 import { BrowserWindow } from "electron";
 
@@ -20,6 +21,7 @@ export interface GraphQLContext extends BaseContext {
         albumArt: DataLoader<number, AlbumArt>;
         artist: DataLoader<number, Artist>;
         image: DataLoader<number, Image>;
+        primaryAlbumArt: DataLoader<number[], AlbumArt | null, string>;
     };
 }
 
@@ -37,6 +39,18 @@ export async function createGraphQLContext(
             albumArt: new DataLoader<number, AlbumArt>(ids => albumArtService.findByIds(ids)),
             artist: new DataLoader<number, Artist>(ids => artistService.findByIds(ids)),
             image: new DataLoader<number, Image>(ids => imageService.findByIds(ids)),
+            primaryAlbumArt: new DataLoader<number[], AlbumArt | null, string>(
+                async idChunks => {
+                    const allItems = await albumArtService.findAll();
+                    const itemMap = _.keyBy(allItems, item => item.id);
+                    const albumArtChunks = idChunks.map(idChunk => idChunk.map(id => itemMap[id] ?? null));
+
+                    return albumArtChunks.map(albumArts => {
+                        return albumArts.find(albumArt => albumArt?.type === "Cover (front)") ?? albumArts[0] ?? null;
+                    });
+                },
+                { cacheKeyFn: key => key.join(",") },
+            ),
         },
     };
 }

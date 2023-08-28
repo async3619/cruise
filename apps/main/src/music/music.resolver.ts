@@ -39,11 +39,24 @@ export class MusicResolver {
         return Promise.all(music.artistIds.map(id => loaders.artist.load(id)));
     }
 
+    @ResolveField(() => AlbumArt, { nullable: true })
+    public async albumArt(
+        @Parent() music: Music,
+        @Context("loaders") loaders: GraphQLContext["loaders"],
+    ): Promise<AlbumArt | null> {
+        return loaders.primaryAlbumArt.load(music.albumArtIds);
+    }
+
     @ResolveField(() => [AlbumArt])
     public async albumArts(
         @Parent() music: Music,
         @Context("loaders") loaders: GraphQLContext["loaders"],
     ): Promise<AlbumArt[]> {
         return Promise.all(music.albumArtIds.map(id => loaders.albumArt.load(id)));
+    }
+
+    @ResolveField(() => String)
+    public async url(@Parent() music: Music): Promise<string> {
+        return `music://${music.filePath.replace(/\\/g, "/")}`;
     }
 }

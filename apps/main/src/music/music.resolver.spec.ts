@@ -58,6 +58,15 @@ describe("MusicResolver", () => {
         expect(loaders.artist.load).toHaveBeenCalledWith(200);
     });
 
+    it("should be able to get primary album art", async () => {
+        const music = { albumArtIds: [1, 2, 3] };
+        const loaders = { primaryAlbumArt: { load: jest.fn() } };
+
+        await resolver.albumArt(music as any, loaders as any);
+
+        expect(loaders.primaryAlbumArt.load).toHaveBeenCalledWith([1, 2, 3]);
+    });
+
     it("should be able to get related album arts", async () => {
         const music = { albumArtIds: [1, 2, 3] };
         const loaders = { albumArt: { load: jest.fn() } };
@@ -67,5 +76,12 @@ describe("MusicResolver", () => {
         expect(loaders.albumArt.load).toHaveBeenNthCalledWith(1, 1);
         expect(loaders.albumArt.load).toHaveBeenNthCalledWith(2, 2);
         expect(loaders.albumArt.load).toHaveBeenNthCalledWith(3, 3);
+    });
+
+    it("should be able to get electron scheme url", async () => {
+        const music = { filePath: "test" };
+        const result = await resolver.url(music as any);
+
+        expect(result).toBe("music://test");
     });
 });
