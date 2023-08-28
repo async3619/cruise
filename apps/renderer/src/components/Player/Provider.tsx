@@ -30,6 +30,7 @@ export interface Player {
     shufflePlaylist(): void;
     playPlaylist(musics: MinimalMusic[], index?: number): void;
     seekPlaylist(index: number): void;
+    clearPlaylist(): void;
 
     play(): void;
     pause(): void;
@@ -58,6 +59,7 @@ export class PlayerProvider extends React.Component<React.PropsWithChildren, Pla
 
         playPlaylist: this.playPlaylist.bind(this),
         seekPlaylist: this.seekPlaylist.bind(this),
+        clearPlaylist: this.clearPlaylist.bind(this),
 
         play: this.play.bind(this),
         pause: this.pause.bind(this),
@@ -130,6 +132,9 @@ export class PlayerProvider extends React.Component<React.PropsWithChildren, Pla
             this.audio.play();
             this.handleTimeUpdate();
         });
+    }
+    public async clearPlaylist() {
+        this.setState({ playlist: [], currentIndex: -1 });
     }
 
     public canSeekBackward() {

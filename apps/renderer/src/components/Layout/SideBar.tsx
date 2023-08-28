@@ -7,6 +7,7 @@ import { Menu, MenuItem } from "ui";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import MusicNoteRoundedIcon from "@mui/icons-material/MusicNoteRounded";
+import QueueMusicRoundedIcon from "@mui/icons-material/QueueMusicRounded";
 
 import { ScrollbarThumb } from "@components/ScrollbarThumb";
 import { Content, Root } from "@components/Layout/SideBar.styles";
@@ -39,6 +40,16 @@ export function SideBar() {
                 type: "button",
                 label: t("pages.musics"),
                 icon: <MusicNoteRoundedIcon />,
+            },
+            {
+                type: "label",
+                label: t("common.playlist"),
+            },
+            {
+                type: "button",
+                id: "/playlists/now-playing",
+                label: t("common.now-playing"),
+                icon: <QueueMusicRoundedIcon />,
             },
         ];
     }, [t]);

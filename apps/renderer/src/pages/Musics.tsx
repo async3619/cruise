@@ -13,11 +13,11 @@ export function Musics({}: MusicsProps) {
     const { data, loading } = useMusicsQuery();
 
     if (!data || loading) {
-        return <Page title={t("pages.musics")} loading />;
+        return <Page header={t("pages.musics")} loading />;
     }
 
     return (
-        <Page title={t("pages.musics")}>
+        <Page header={t("pages.musics")}>
             <MusicList musics={data.musics} />
         </Page>
     );

@@ -45,3 +45,12 @@ export const Content = styled.div`
 
     animation: ${FadeIn} ${({ theme }) => theme.transitions.duration.enteringScreen}ms ease-in-out;
 `;
+
+export const FixedHelper = styled.div`
+    height: 0;
+
+    position: sticky;
+    top: 0;
+
+    z-index: 100;
+`;

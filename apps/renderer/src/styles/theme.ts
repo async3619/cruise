@@ -18,6 +18,7 @@ export const theme = extendTheme({
     typography: {
         fontFamily: ["SUIT Variable Webfont", "sans-serif"].join(","),
         fontWeightRegular: 600,
+        fontWeightMedium: 600,
     },
     components: {
         MuiButton: {

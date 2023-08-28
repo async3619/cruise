@@ -116,7 +116,7 @@ export function Settings() {
     }, [libraryScanning, handleScanLibrary, t]);
 
     return (
-        <Page title={t("pages.settings")}>
+        <Page header={t("pages.settings")}>
             <Stack spacing={2}>
                 {items.map(([title, items]) => (
                     <Box key={title}>
