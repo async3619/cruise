@@ -32,8 +32,16 @@ mutation createPlaylist($name: String!, $musicIds: [Int!]!) {
     }
 }
 
+mutation deletePlaylist($id: Int!) {
+    deletePlaylist(id: $id)
+}
+
 subscription playlistCreated {
     playlistCreated {
         ...MinimalPlaylist
     }
+}
+
+subscription playlistDeleted {
+    playlistDeleted
 }

@@ -44,6 +44,11 @@ export class PlaylistService {
         return playlist;
     }
 
+    public async delete(id: number): Promise<void> {
+        await this.playlistRepository.delete({ id });
+        this.pubSub.publish(PlaylistEvents.DELETED, { [PlaylistEvents.DELETED]: id });
+    }
+
     public asyncIterator(event: PlaylistEvents) {
         return this.pubSub.asyncIterator(event);
     }

@@ -45,7 +45,8 @@
         "musicWithCount_one": "{{count}} Music",
         "clear": "Clear",
         "create": "Create",
-        "cancel": "Cancel"
+        "cancel": "Cancel",
+        "delete": "Delete"
     },
     "playlist": {
         "create": {
@@ -56,6 +57,10 @@
                 "title-required": "Please enter the name of the playlist.",
                 "title-tooLong": "The name of the playlist cannot be longer than 20 characters."
             }
+        },
+        "delete": {
+            "title": "Delete Playlist",
+            "description": "Are you sure you want to delete the playlist '{{name}}'?"
         }
     }
 }

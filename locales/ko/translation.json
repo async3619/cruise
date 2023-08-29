@@ -45,7 +45,8 @@
         "musicWithCount_one": "{{count}}개의 곡",
         "clear": "비우기",
         "create": "생성",
-        "cancel": "취소"
+        "cancel": "취소",
+        "delete": "삭제"
     },
     "playlist": {
         "create": {
@@ -56,6 +57,13 @@
                 "title-required": "재생목록 이름을 입력하세요.",
                 "title-too-long": "재생목록 이름은 20자를 넘을 수 없습니다."
             }
+        },
+        "delete": {
+            "title": "재생목록 삭제",
+            "description": "이 재생목록을 삭제하시겠습니까?",
+            "pending": "재생목록 삭제 중...",
+            "success": "재생목록이 삭제되었습니다.",
+            "error": "재생목록 삭제 중 오류가 발생했습니다."
         }
     }
 }

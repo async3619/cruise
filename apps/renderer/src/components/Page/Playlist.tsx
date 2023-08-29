@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 
 import { Box, CircularProgress } from "@mui/material";
 import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
+import ClearRoundedIcon from "@mui/icons-material/ClearRounded";
 
 import { ButtonItem, ShrinkHeaderPage } from "@components/Page/ShrinkHeader";
 import { MusicList } from "@components/MusicList";
@@ -14,9 +15,11 @@ export interface PlaylistPageProps {
     musics: MinimalMusic[];
     title: string;
     loading?: boolean;
+    playlistId?: number;
+    onDelete?: () => void;
 }
 
-export function PlaylistPage({ musics, title, loading = false }: PlaylistPageProps) {
+export function PlaylistPage({ musics, title, loading = false, playlistId, onDelete }: PlaylistPageProps) {
     const { t } = useTranslation();
     const player = usePlayer();
     const albumArt = musics[0]?.albumArt;
@@ -26,19 +29,30 @@ export function PlaylistPage({ musics, title, loading = false }: PlaylistPagePro
         player.clearPlaylist();
     }, [player]);
 
-    const buttons = React.useMemo<ButtonItem[]>(() => {
-        return [
-            {
-                label: t("common.clear"),
+    const buttons: ButtonItem[] = [
+        {
+            label: t("common.clear"),
+            variant: "contained",
+            size: "small",
+            color: "inherit",
+            startIcon: <DeleteRoundedIcon />,
+            disabled: musics.length === 0,
+            onClick: handleClear,
+        },
+    ];
+
+    if (playlistId) {
+        if (onDelete) {
+            buttons.push({
+                label: t("common.delete"),
                 variant: "contained",
                 size: "small",
                 color: "inherit",
-                startIcon: <DeleteRoundedIcon />,
-                disabled: musics.length === 0,
-                onClick: handleClear,
-            },
-        ];
-    }, [musics, handleClear, t]);
+                startIcon: <ClearRoundedIcon />,
+                onClick: onDelete,
+            });
+        }
+    }
 
     return (
         <ShrinkHeaderPage

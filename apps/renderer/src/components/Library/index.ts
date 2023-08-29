@@ -4,7 +4,9 @@ import React from "react";
 import { ApolloClient } from "@apollo/client";
 import {
     executeCreatePlaylist,
+    executeDeletePlaylist,
     usePlaylistCreatedSubscription,
+    usePlaylistDeletedSubscription,
     usePlaylistQuery,
     usePlaylistsQuery,
 } from "@graphql/queries";
@@ -44,6 +46,16 @@ export class Library {
             },
         });
 
+        usePlaylistDeletedSubscription({
+            onData: ({ data: { data } }) => {
+                if (!data) {
+                    return;
+                }
+
+                setPlaylists(playlists => playlists.filter(playlist => playlist.id !== data.playlistDeleted));
+            },
+        });
+
         React.useEffect(() => {
             setPlaylists(data?.playlists ?? []);
         }, [data]);
@@ -58,5 +70,8 @@ export class Library {
                 musicIds: musicIds ?? [],
             },
         });
+    }
+    public async deletePlaylist(id: number): Promise<void> {
+        await executeDeletePlaylist(this.client, { variables: { id } });
     }
 }

@@ -40,6 +40,11 @@ describe("PlaylistResolver", () => {
         expect(service.createFromMusicIds).toHaveBeenCalled();
     });
 
+    it("should be able to delete a playlist", async () => {
+        await resolver.deletePlaylist(1);
+        expect(service.delete).toHaveBeenCalled();
+    });
+
     it("should be able to resolve musics", async () => {
         const musicLoader = { load: jest.fn() };
         await resolver.musics({ musicIds: [1, 2, 3] } as any, { music: musicLoader } as any);
@@ -49,6 +54,11 @@ describe("PlaylistResolver", () => {
 
     it("should be able to subscribe to playlistCreated event", async () => {
         await resolver.playlistCreated();
+        expect(service.asyncIterator).toHaveBeenCalled();
+    });
+
+    it("should be able to subscribe to playlistDeleted event", async () => {
+        await resolver.playlistDeleted();
         expect(service.asyncIterator).toHaveBeenCalled();
     });
 });

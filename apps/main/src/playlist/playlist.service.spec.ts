@@ -17,6 +17,7 @@ describe("PlaylistService", () => {
             findOne: jest.fn(),
             create: jest.fn(),
             save: jest.fn(),
+            delete: jest.fn(),
         };
 
         musicService = {
@@ -69,14 +70,24 @@ describe("PlaylistService", () => {
         expect(pubSub.publish).toHaveBeenCalled();
     });
 
+    it("should be able to delete a playlist", async () => {
+        await service.delete(1);
+        expect(repository.delete).toHaveBeenCalled();
+    });
+
+    it("should publish a event when a playlist is deleted", async () => {
+        await service.delete(1);
+        expect(pubSub.publish).toHaveBeenCalled();
+    });
+
     it("should throw an error if a playlist with the same name already exists", async () => {
         repository.findOne.mockResolvedValueOnce({});
 
         await expect(service.createFromMusicIds("name", [1, 2, 3])).rejects.toThrowError();
     });
 
-    it("should be able to subscribe to playlistCreated event", async () => {
+    it("should be able to subscribe to events", async () => {
         await service.asyncIterator(PlaylistEvents.CREATED);
-        expect(pubSub.asyncIterator).toHaveBeenCalled();
+        expect(pubSub.asyncIterator).toHaveBeenCalledWith(PlaylistEvents.CREATED);
     });
 });
