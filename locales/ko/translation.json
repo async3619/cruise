@@ -43,6 +43,19 @@
         "unknown-album": "알 수 없는 앨범",
         "musicWithCount_other": "{{count}}개의 곡",
         "musicWithCount_one": "{{count}}개의 곡",
-        "clear": "비우기"
+        "clear": "비우기",
+        "create": "생성",
+        "cancel": "취소"
+    },
+    "playlist": {
+        "create": {
+            "title": "새 재생목록 추가",
+            "description": "추가할 재생목록의 이름을 입력하세요.",
+            "placeholder": "재생목록 이름",
+            "errors": {
+                "title-required": "재생목록 이름을 입력하세요.",
+                "title-too-long": "재생목록 이름은 20자를 넘을 수 없습니다."
+            }
+        }
     }
 }

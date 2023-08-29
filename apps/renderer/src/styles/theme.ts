@@ -21,6 +21,11 @@ export const theme = extendTheme({
         fontWeightMedium: 600,
     },
     components: {
+        MuiSkeleton: {
+            defaultProps: {
+                animation: "wave",
+            },
+        },
         MuiButton: {
             defaultProps: {
                 disableElevation: true,

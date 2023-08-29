@@ -43,6 +43,19 @@
         "unknown-album": "Unknown Album",
         "musicWithCount_other": "{{count}} Musics",
         "musicWithCount_one": "{{count}} Music",
-        "clear": "Clear"
+        "clear": "Clear",
+        "create": "Create",
+        "cancel": "Cancel"
+    },
+    "playlist": {
+        "create": {
+            "title": "Create Playlist",
+            "description": "Please enter the name of the playlist.",
+            "placeholder": "Playlist Name",
+            "errors": {
+                "title-required": "Please enter the name of the playlist.",
+                "title-tooLong": "The name of the playlist cannot be longer than 20 characters."
+            }
+        }
     }
 }

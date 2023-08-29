@@ -10,5 +10,6 @@ generates:
             - "typescript"
             - "typescript-operations"
             - "typescript-react-apollo"
+            - "./tools/client-executions.js"
         config:
             withComponent: true

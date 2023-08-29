@@ -1,6 +1,7 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 
+import { Box, CircularProgress } from "@mui/material";
 import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
 
 import { ButtonItem, ShrinkHeaderPage } from "@components/Page/ShrinkHeader";
@@ -11,9 +12,11 @@ import { MinimalMusic } from "@utils/types";
 
 export interface PlaylistPageProps {
     musics: MinimalMusic[];
+    title: string;
+    loading?: boolean;
 }
 
-export function PlaylistPage({ musics }: PlaylistPageProps) {
+export function PlaylistPage({ musics, title, loading = false }: PlaylistPageProps) {
     const { t } = useTranslation();
     const player = usePlayer();
     const albumArt = musics[0]?.albumArt;
@@ -40,12 +43,18 @@ export function PlaylistPage({ musics }: PlaylistPageProps) {
     return (
         <ShrinkHeaderPage
             albumArt={albumArt}
-            title={t("common.now-playing")}
+            title={title || t("common.now-playing")}
             subtitle={t("common.playlist")}
             tokens={tokens}
             buttons={buttons}
+            loading={loading}
         >
-            <MusicList musics={musics} />
+            {!loading && <MusicList musics={musics} />}
+            {loading && (
+                <Box py={2} display="flex" justifyContent="center">
+                    <CircularProgress size={36} />
+                </Box>
+            )}
         </ShrinkHeaderPage>
     );
 }

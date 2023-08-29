@@ -1,5 +1,5 @@
 import React from "react";
-import { ToastProvider } from "ui";
+import { DialogProvider, ToastProvider } from "ui";
 
 import { Experimental_CssVarsProvider as CssVarsProvider } from "@mui/material/styles";
 
@@ -10,6 +10,7 @@ import { theme } from "@styles/theme";
 
 import { ConfigProvider } from "@components/Config/Provider";
 import { PlayerProvider } from "@components/Player/Provider";
+import { LibraryProvider } from "@components/Library/Provider";
 
 import { Routes } from "@pages";
 
@@ -25,9 +26,13 @@ export function App({ initialConfig }: AppProps) {
             <CssVarsProvider theme={theme} defaultMode="dark">
                 <ConfigProvider initialConfig={initialConfig}>
                     <ToastProvider>
-                        <PlayerProvider>
-                            <Routes />
-                        </PlayerProvider>
+                        <DialogProvider>
+                            <PlayerProvider>
+                                <LibraryProvider>
+                                    <Routes />
+                                </LibraryProvider>
+                            </PlayerProvider>
+                        </DialogProvider>
                     </ToastProvider>
                 </ConfigProvider>
             </CssVarsProvider>

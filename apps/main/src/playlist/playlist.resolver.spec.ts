@@ -8,8 +8,10 @@ describe("PlaylistResolver", () => {
 
     beforeEach(async () => {
         service = {
+            findById: jest.fn(),
             findAll: jest.fn(),
             createFromMusicIds: jest.fn(),
+            asyncIterator: jest.fn(),
         };
 
         const module: TestingModule = await Test.createTestingModule({
@@ -21,6 +23,11 @@ describe("PlaylistResolver", () => {
 
     it("should be defined", () => {
         expect(resolver).toBeDefined();
+    });
+
+    it("should be able to find a playlist with given id", async () => {
+        await resolver.playlist(1);
+        expect(service.findById).toHaveBeenCalled();
     });
 
     it("should be able to find all playlists", async () => {
@@ -38,5 +45,10 @@ describe("PlaylistResolver", () => {
         await resolver.musics({ musicIds: [1, 2, 3] } as any, { music: musicLoader } as any);
 
         expect(musicLoader.load).toHaveBeenCalledTimes(3);
+    });
+
+    it("should be able to subscribe to playlistCreated event", async () => {
+        await resolver.playlistCreated();
+        expect(service.asyncIterator).toHaveBeenCalled();
     });
 });

@@ -7,6 +7,7 @@ import { Home } from "@pages/Home";
 import { Settings } from "@pages/Settings";
 import { Musics } from "@pages/Musics";
 import { NowPlaying } from "@pages/NowPlaying";
+import { Playlist } from "@pages/Playlist";
 
 const router = createHashRouter(
     createRoutesFromElements(
@@ -15,6 +16,7 @@ const router = createHashRouter(
             <Route path="/settings" element={<Settings />} />
             <Route path="/library/musics" element={<Musics />} />
             <Route path="/playlists/now-playing" element={<NowPlaying />} />
+            <Route path="/playlists/:id" element={<Playlist />} />
         </Route>,
     ),
 );

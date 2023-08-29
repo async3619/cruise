@@ -12,13 +12,16 @@
         "@emotion/css": "^11.11.2",
         "@emotion/react": "^11.11.1",
         "@emotion/styled": "^11.11.0",
+        "@hookform/resolvers": "^3.3.1",
         "@mui/icons-material": "^5.14.3",
         "@mui/material": "^5.14.5",
         "@react-spring/web": "^9.7.3",
         "@tanstack/react-virtual": "3.0.0-beta.54",
         "nanoid": "^4.0.2",
         "react": "^18.2.0",
-        "react-use-measure": "^2.1.1"
+        "react-hook-form": "^7.45.4",
+        "react-use-measure": "^2.1.1",
+        "zod": "^3.22.2"
     },
     "devDependencies": {
         "@testing-library/jest-dom": "^6.1.2",

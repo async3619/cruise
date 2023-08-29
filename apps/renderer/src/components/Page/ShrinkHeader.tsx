@@ -3,7 +3,7 @@ import { Nullable } from "types";
 import React from "react";
 import Measure, { ContentRect, MeasuredComponentProps } from "react-measure";
 
-import { Box, Button, ButtonProps, Stack, Typography } from "@mui/material";
+import { Box, Button, ButtonProps, Skeleton, Stack, Typography } from "@mui/material";
 
 import { Page } from "@components/Page";
 import { AlbumArt } from "@components/AlbumArt";
@@ -23,19 +23,9 @@ export interface ShrinkHeaderPageProps extends WithLayoutProps {
     tokens?: Array<string | number>;
     albumArt: Nullable<MinimalAlbumArt>;
     buttons: ButtonItem[];
+    loading?: boolean;
 }
 export interface ShrinkHeaderPageStates {}
-
-export interface ShrinkHeaderContextValue {
-    subscribe(callback: (height: number) => void): void;
-    unsubscribe(callback: (height: number) => void): void;
-}
-
-export const ShrinkHeaderContext = React.createContext<ShrinkHeaderContextValue | null>(null);
-
-export function useShrinkHeader() {
-    return React.useContext(ShrinkHeaderContext);
-}
 
 class ShrinkHeaderPageImpl extends React.Component<ShrinkHeaderPageProps, ShrinkHeaderPageStates> {
     private readonly imageViewRef = React.createRef<HTMLDivElement>();
@@ -46,7 +36,6 @@ class ShrinkHeaderPageImpl extends React.Component<ShrinkHeaderPageProps, Shrink
     private titleHeight: number | null = null;
     private scrollY = 0;
     private unmounted = false;
-    private subscribers: Array<(height: number) => void> = [];
     private lastHeight = 0;
 
     public componentDidMount() {
@@ -112,7 +101,6 @@ class ShrinkHeaderPageImpl extends React.Component<ShrinkHeaderPageProps, Shrink
             return;
         }
 
-        this.notify(headerHeight);
         this.lastHeight = headerHeight;
     };
     private handleScroll = () => {
@@ -138,16 +126,6 @@ class ShrinkHeaderPageImpl extends React.Component<ShrinkHeaderPageProps, Shrink
         this.titleHeight = bounds.height;
     };
 
-    private subscribe = (callback: (height: number) => void) => {
-        this.subscribers.push(callback);
-    };
-    private unsubscribe = (callback: (height: number) => void) => {
-        this.subscribers = this.subscribers.filter(subscriber => subscriber !== callback);
-    };
-    private notify = (height: number) => {
-        this.subscribers.forEach(subscriber => subscriber(height));
-    };
-
     private renderButtonContainer = ({ measureRef }: MeasuredComponentProps) => {
         const { buttons } = this.props;
 
@@ -162,7 +140,7 @@ class ShrinkHeaderPageImpl extends React.Component<ShrinkHeaderPageProps, Shrink
         );
     };
     private renderTitle = ({ measureRef }: MeasuredComponentProps) => {
-        const { title } = this.props;
+        const { title, loading = false } = this.props;
 
         return (
             <Typography
@@ -175,12 +153,13 @@ class ShrinkHeaderPageImpl extends React.Component<ShrinkHeaderPageProps, Shrink
                     overflow: "hidden",
                 }}
             >
-                <span>{title}</span>
+                {!loading && <span>{title}</span>}
+                {loading && <Skeleton width="50%" />}
             </Typography>
         );
     };
     private renderHeader = () => {
-        const { subtitle, tokens, albumArt } = this.props;
+        const { subtitle, tokens, albumArt, loading = false } = this.props;
 
         return (
             <Root>
@@ -200,7 +179,8 @@ class ShrinkHeaderPageImpl extends React.Component<ShrinkHeaderPageProps, Shrink
                                 sx={{ mt: 1 }}
                                 color="text.secondary"
                             >
-                                <span>{subtitle}</span>
+                                {!loading && <span>{subtitle}</span>}
+                                {loading && <Skeleton width="25%" />}
                             </Typography>
                         )}
                         {tokens && (
@@ -211,7 +191,8 @@ class ShrinkHeaderPageImpl extends React.Component<ShrinkHeaderPageProps, Shrink
                                 sx={{ mt: 2 }}
                                 color="text.disabled"
                             >
-                                <span>{tokens.join(" · ")}</span>
+                                {!loading && <span>{tokens.join(" · ")}</span>}
+                                {loading && <Skeleton width="12.5%" />}
                             </Typography>
                         )}
                     </Description>
@@ -227,16 +208,9 @@ class ShrinkHeaderPageImpl extends React.Component<ShrinkHeaderPageProps, Shrink
         const { children } = this.props;
 
         return (
-            <ShrinkHeaderContext.Provider
-                value={{
-                    subscribe: this.subscribe,
-                    unsubscribe: this.unsubscribe,
-                }}
-            >
-                <Page header={this.renderHeader()} headerRef={this.rootRef} headerPosition="fixed">
-                    {children}
-                </Page>
-            </ShrinkHeaderContext.Provider>
+            <Page header={this.renderHeader()} headerRef={this.rootRef} headerPosition="fixed">
+                {children}
+            </Page>
         );
     }
 }

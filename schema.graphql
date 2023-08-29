@@ -43,6 +43,14 @@ type Album {
   updatedAt: DateTime!
 }
 
+type Playlist {
+  id: Int!
+  name: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  musics: [Music!]!
+}
+
 type Music {
   id: Int!
   title: String
@@ -66,10 +74,12 @@ type Music {
 }
 
 type Query {
+  musics: [Music!]!
   isMaximized: Boolean!
   isMinimized: Boolean!
   config: ConfigData!
-  musics: [Music!]!
+  playlist(id: Int!): Playlist
+  playlists: [Playlist!]!
 }
 
 type Mutation {
@@ -79,6 +89,7 @@ type Mutation {
   close: Boolean!
   updateConfig(config: ConfigUpdateInput!): Boolean!
   scanLibrary: Boolean!
+  createPlaylist(name: String!, musicIds: [Int!]!): Playlist!
 }
 
 input ConfigUpdateInput {
@@ -90,4 +101,5 @@ type Subscription {
   maximizedStateChanged: Boolean!
   configUpdated: ConfigData!
   libraryScanningStateChanged: Boolean!
+  playlistCreated: Playlist!
 }
