@@ -63,13 +63,19 @@ export class Library {
         return playlists;
     }
 
-    public async createPlaylist(name: string, musicIds?: number[]): Promise<void> {
-        await executeCreatePlaylist(this.client, {
+    public async createPlaylist(name: string, musicIds?: number[]) {
+        const { data } = await executeCreatePlaylist(this.client, {
             variables: {
                 name,
                 musicIds: musicIds ?? [],
             },
         });
+
+        if (!data) {
+            throw new Error("Failed to create playlist");
+        }
+
+        return data.createPlaylist.id;
     }
     public async deletePlaylist(id: number): Promise<void> {
         await executeDeletePlaylist(this.client, { variables: { id } });

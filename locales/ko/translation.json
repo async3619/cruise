@@ -46,13 +46,17 @@
         "clear": "비우기",
         "create": "생성",
         "cancel": "취소",
-        "delete": "삭제"
+        "delete": "삭제",
+        "open": "열기"
     },
     "playlist": {
         "create": {
             "title": "새 재생목록 추가",
             "description": "추가할 재생목록의 이름을 입력하세요.",
             "placeholder": "재생목록 이름",
+            "pending": "재생목록 추가 중...",
+            "success": "재생목록이 추가되었습니다.",
+            "error": "재생목록 추가 중 오류가 발생했습니다.",
             "errors": {
                 "title-required": "재생목록 이름을 입력하세요.",
                 "title-too-long": "재생목록 이름은 20자를 넘을 수 없습니다."

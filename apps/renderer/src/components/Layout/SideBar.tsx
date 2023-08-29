@@ -2,7 +2,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Scrollbars } from "rc-scrollbars";
-import { DialogActionType, Menu, MenuItem, useDialog, InputTextDialog } from "ui";
+import { DialogActionType, Menu, MenuItem, useDialog, InputTextDialog, useToast } from "ui";
 import { z } from "zod";
 
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
@@ -21,6 +21,7 @@ export function SideBar() {
     const { t } = useTranslation();
     const dialog = useDialog();
     const library = useLibrary();
+    const toast = useToast();
     const playlists = library.usePlaylists();
 
     const navigationItems = React.useMemo<MenuItem[]>(() => {
@@ -89,8 +90,21 @@ export function SideBar() {
             return;
         }
 
-        await library.createPlaylist(result.value, []);
-    }, [library, dialog, t]);
+        await toast.doWork({
+            work: () => library.createPlaylist(result.value, []),
+            loading: true,
+            persist: true,
+            messages: {
+                pending: t("playlist.create.pending"),
+                success: t("playlist.create.success"),
+                error: t("playlist.create.error"),
+            },
+            action: id => ({
+                label: t("common.open"),
+                onClick: () => navigate(`/playlists/${id}`),
+            }),
+        });
+    }, [dialog, t, toast, library, navigate]);
 
     const handleClick = React.useCallback(
         (item: MenuItem) => {

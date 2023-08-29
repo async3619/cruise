@@ -46,13 +46,17 @@
         "clear": "Clear",
         "create": "Create",
         "cancel": "Cancel",
-        "delete": "Delete"
+        "delete": "Delete",
+        "open": "Open"
     },
     "playlist": {
         "create": {
             "title": "Create Playlist",
             "description": "Please enter the name of the playlist.",
             "placeholder": "Playlist Name",
+            "pending": "Creating the playlist...",
+            "success": "The playlist has been created.",
+            "error": "Failed to create the playlist.",
             "errors": {
                 "title-required": "Please enter the name of the playlist.",
                 "title-tooLong": "The name of the playlist cannot be longer than 20 characters."
@@ -60,7 +64,10 @@
         },
         "delete": {
             "title": "Delete Playlist",
-            "description": "Are you sure you want to delete the playlist '{{name}}'?"
+            "description": "Are you sure you want to delete the playlist '{{name}}'?",
+            "pending": "Deleting the playlist...",
+            "success": "The playlist has been deleted.",
+            "error": "Failed to delete the playlist."
         }
     }
 }
