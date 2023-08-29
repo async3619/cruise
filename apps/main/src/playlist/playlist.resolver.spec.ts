@@ -12,6 +12,7 @@ describe("PlaylistResolver", () => {
             findAll: jest.fn(),
             createFromMusicIds: jest.fn(),
             asyncIterator: jest.fn(),
+            delete: jest.fn(),
         };
 
         const module: TestingModule = await Test.createTestingModule({
