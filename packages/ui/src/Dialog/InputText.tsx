@@ -1,8 +1,8 @@
 import React from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { TextField, Typography } from "@mui/material";
+import { Box, TextField, Typography } from "@mui/material";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { BaseDialogProps, DialogActionType } from "./types";
@@ -33,15 +33,15 @@ export function InputTextDialog({
     ...props
 }: InputTextDialogProps) {
     const schema = React.useMemo(() => z.object({ input: validationSchema }), [validationSchema]);
-    const { register, getFieldState, formState, handleSubmit } = useForm<InputTextFormValues>({
+    const { control, formState, handleSubmit } = useForm<InputTextFormValues>({
         mode: "all",
+        reValidateMode: "onBlur",
         resolver: zodResolver(schema),
         defaultValues: {
             input: defaultValue || "",
         },
     });
 
-    const fieldState = getFieldState("input");
     const onSubmit = handleSubmit(data => {
         props.onClose({
             type: DialogActionType.Submit,
@@ -61,21 +61,29 @@ export function InputTextDialog({
                 { type: DialogActionType.Submit, label: positiveLabel, disabled: !formState.isValid },
             ]}
         >
-            {description && (
-                <Typography variant="body1" color="text.secondary">
-                    {description}
-                </Typography>
-            )}
-            <TextField
-                size="small"
-                autoFocus
-                fullWidth
-                placeholder={placeholder}
-                sx={{ mt: 1.5 }}
-                error={!!fieldState.error}
-                helperText={fieldState.error?.message}
-                {...register("input")}
-            />
+            <Box data-testid="InputTextDialog">
+                {description && (
+                    <Typography variant="body1" color="text.secondary">
+                        {description}
+                    </Typography>
+                )}
+                <Controller
+                    control={control}
+                    name="input"
+                    render={({ field, fieldState }) => (
+                        <TextField
+                            size="small"
+                            autoFocus
+                            fullWidth
+                            placeholder={placeholder}
+                            sx={{ mt: 1.5 }}
+                            error={!!fieldState.error}
+                            helperText={fieldState.error?.message}
+                            {...field}
+                        />
+                    )}
+                />
+            </Box>
         </BaseDialog>
     );
 }
