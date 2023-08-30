@@ -92,6 +92,20 @@ export class Library {
             },
         });
 
+        usePlaylistUpdatedSubscription({
+            onData: ({ data: { data } }) => {
+                if (!data) {
+                    return;
+                }
+
+                setPlaylists(playlists =>
+                    playlists.map(playlist =>
+                        playlist.id === data.playlistUpdated.id ? data.playlistUpdated : playlist,
+                    ),
+                );
+            },
+        });
+
         React.useEffect(() => {
             setPlaylists(data?.playlists ?? []);
         }, [data]);
