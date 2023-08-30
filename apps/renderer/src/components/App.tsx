@@ -10,7 +10,6 @@ import { theme } from "@styles/theme";
 
 import { ConfigProvider } from "@components/Config/Provider";
 import { PlayerProvider } from "@components/Player/Provider";
-import { LibraryProvider } from "@components/Library/Provider";
 
 import { Routes } from "@pages";
 
@@ -28,9 +27,7 @@ export function App({ initialConfig }: AppProps) {
                     <ToastProvider>
                         <DialogProvider>
                             <PlayerProvider>
-                                <LibraryProvider>
-                                    <Routes />
-                                </LibraryProvider>
+                                <Routes />
                             </PlayerProvider>
                         </DialogProvider>
                     </ToastProvider>

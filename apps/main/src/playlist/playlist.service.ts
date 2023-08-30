@@ -37,11 +37,23 @@ export class PlaylistService {
         }
 
         const musics = await this.musicService.findByIds(musicIds);
-        playlist = this.playlistRepository.create({ name, musics });
+        playlist = this.playlistRepository.create({ name, musicIds: musics.map(m => m.id) });
         playlist = await this.playlistRepository.save(playlist);
 
         this.pubSub.publish(PlaylistEvents.CREATED, { [PlaylistEvents.CREATED]: playlist });
         return playlist;
+    }
+    public async addMusicsToPlaylist(playlistId: number, musicIds: number[]): Promise<void> {
+        const playlist = await this.playlistRepository.findOne({ where: { id: playlistId } });
+        if (!playlist) {
+            throw new Error(`Playlist with id '${playlistId}' does not exist`);
+        }
+
+        const musics = await this.musicService.findByIds(musicIds);
+        playlist.musicIds = [...(playlist.musicIds ?? []), ...musics.map(m => m.id)];
+        await this.playlistRepository.save(playlist);
+
+        this.pubSub.publish(PlaylistEvents.UPDATED, { [PlaylistEvents.UPDATED]: playlist });
     }
 
     public async delete(id: number): Promise<void> {

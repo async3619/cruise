@@ -36,6 +36,10 @@ mutation deletePlaylist($id: Int!) {
     deletePlaylist(id: $id)
 }
 
+mutation addMusicsToPlaylist($playlistId: Int!, $musicIds: [Int!]!) {
+    addMusicsToPlaylist(playlistId: $playlistId, musicIds: $musicIds)
+}
+
 subscription playlistCreated {
     playlistCreated {
         ...MinimalPlaylist
@@ -44,4 +48,10 @@ subscription playlistCreated {
 
 subscription playlistDeleted {
     playlistDeleted
+}
+
+subscription playlistUpdated {
+    playlistUpdated {
+        ...FullPlaylist
+    }
 }

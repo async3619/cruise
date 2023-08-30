@@ -1,9 +1,10 @@
 import { Nullable } from "types";
+import { Button, ButtonProps } from "ui";
 
 import React from "react";
 import Measure, { ContentRect, MeasuredComponentProps } from "react-measure";
 
-import { Box, Button, ButtonProps, Skeleton, Stack, Typography } from "@mui/material";
+import { Box, Skeleton, Stack, Typography } from "@mui/material";
 
 import { Page } from "@components/Page";
 import { AlbumArt } from "@components/AlbumArt";

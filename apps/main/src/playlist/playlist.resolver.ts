@@ -35,6 +35,15 @@ export class PlaylistResolver {
         return true;
     }
 
+    @Mutation(() => Boolean)
+    public async addMusicsToPlaylist(
+        @Args("playlistId", { type: () => Int }) playlistId: number,
+        @Args("musicIds", { type: () => [Int] }) musicIds: number[],
+    ): Promise<boolean> {
+        await this.playlistService.addMusicsToPlaylist(playlistId, musicIds);
+        return true;
+    }
+
     @ResolveField(() => [Music])
     public async musics(
         @Parent() playlist: Playlist,
@@ -51,5 +60,10 @@ export class PlaylistResolver {
     @Subscription(() => Int, { resolve: payload => payload[PlaylistEvents.DELETED] })
     public playlistDeleted() {
         return this.playlistService.asyncIterator(PlaylistEvents.DELETED);
+    }
+
+    @Subscription(() => Playlist, { resolve: payload => payload[PlaylistEvents.UPDATED] })
+    public playlistUpdated() {
+        return this.playlistService.asyncIterator(PlaylistEvents.UPDATED);
     }
 }

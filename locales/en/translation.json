@@ -47,7 +47,8 @@
         "create": "Create",
         "cancel": "Cancel",
         "delete": "Delete",
-        "open": "Open"
+        "open": "Open",
+        "add": "Add"
     },
     "playlist": {
         "create": {
@@ -68,6 +69,11 @@
             "pending": "Deleting the playlist...",
             "success": "The playlist has been deleted.",
             "error": "Failed to delete the playlist."
+        },
+        "add-musics": {
+            "pending": "Adding the musics to the playlist...",
+            "success": "The musics have been added to the playlist.",
+            "error": "Failed to add the musics to the playlist."
         }
     }
 }

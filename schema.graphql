@@ -43,14 +43,6 @@ type Album {
   updatedAt: DateTime!
 }
 
-type Playlist {
-  id: Int!
-  name: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  musics: [Music!]!
-}
-
 type Music {
   id: Int!
   title: String
@@ -73,6 +65,15 @@ type Music {
   url: String!
 }
 
+type Playlist {
+  id: Int!
+  name: String!
+  musicIds: [Int!]!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  musics: [Music!]!
+}
+
 type Query {
   musics: [Music!]!
   isMaximized: Boolean!
@@ -91,6 +92,7 @@ type Mutation {
   scanLibrary: Boolean!
   createPlaylist(name: String!, musicIds: [Int!]!): Playlist!
   deletePlaylist(id: Int!): Boolean!
+  addMusicsToPlaylist(playlistId: Int!, musicIds: [Int!]!): Boolean!
 }
 
 input ConfigUpdateInput {
@@ -104,4 +106,5 @@ type Subscription {
   libraryScanningStateChanged: Boolean!
   playlistCreated: Playlist!
   playlistDeleted: Int!
+  playlistUpdated: Playlist!
 }

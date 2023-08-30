@@ -8,3 +8,4 @@ export * from "./VirtualizedList";
 export * from "./Slider";
 export * from "./Dialog";
 export * from "./theme";
+export * from "./Button";

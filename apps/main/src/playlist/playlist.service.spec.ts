@@ -21,7 +21,7 @@ describe("PlaylistService", () => {
         };
 
         musicService = {
-            findByIds: jest.fn(),
+            findByIds: jest.fn().mockImplementation(ids => ids.map(id => ({ id }))),
         };
 
         pubSub = {
@@ -67,6 +67,28 @@ describe("PlaylistService", () => {
 
     it("should publish a event when a playlist is created", async () => {
         await service.createFromMusicIds("name", [1, 2, 3]);
+        expect(pubSub.publish).toHaveBeenCalled();
+    });
+
+    it("should be able to add musics to a playlist", async () => {
+        repository.findOne.mockResolvedValueOnce({});
+
+        await service.addMusicsToPlaylist(1, [1, 2, 3]);
+        expect(musicService.findByIds).toHaveBeenCalled();
+        expect(repository.findOne).toHaveBeenCalled();
+        expect(repository.save).toHaveBeenCalled();
+    });
+
+    it("should throw an error if a playlist does not exist", async () => {
+        repository.findOne.mockResolvedValueOnce(null);
+
+        await expect(service.addMusicsToPlaylist(1, [1, 2, 3])).rejects.toThrowError();
+    });
+
+    it("should publish a event when a playlist is updated", async () => {
+        repository.findOne.mockResolvedValueOnce({});
+
+        await service.addMusicsToPlaylist(1, [1, 2, 3]);
         expect(pubSub.publish).toHaveBeenCalled();
     });
 

@@ -11,6 +11,7 @@ describe("PlaylistResolver", () => {
             findById: jest.fn(),
             findAll: jest.fn(),
             createFromMusicIds: jest.fn(),
+            addMusicsToPlaylist: jest.fn(),
             asyncIterator: jest.fn(),
             delete: jest.fn(),
         };
@@ -39,6 +40,11 @@ describe("PlaylistResolver", () => {
     it("should be able to create a playlist", async () => {
         await resolver.createPlaylist("name", [1, 2, 3]);
         expect(service.createFromMusicIds).toHaveBeenCalled();
+    });
+
+    it("should be able to add musics to a playlist", async () => {
+        await resolver.addMusicsToPlaylist(1, [1, 2, 3]);
+        expect(service.addMusicsToPlaylist).toHaveBeenCalled();
     });
 
     it("should be able to delete a playlist", async () => {

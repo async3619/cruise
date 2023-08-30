@@ -55,6 +55,10 @@ export const Root = styled.button<{ active?: boolean }>`
         color: ${({ theme }) => theme.vars.palette.text.primary};
     }
 
+    &:not(:last-of-type) {
+        margin-bottom: ${({ theme }) => theme.spacing(0.5)};
+    }
+
     ${({ theme }) => theme.getColorSchemeSelector("dark")} {
         background-color: ${({ theme, active }) => (active ? theme.vars.palette.action.hover : "transparent")};
 
