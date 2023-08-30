@@ -68,6 +68,18 @@ export class PlaylistService {
         this.pubSub.publish(PlaylistEvents.UPDATED, { [PlaylistEvents.UPDATED]: playlist });
     }
 
+    public async rename(id: number, name: string) {
+        const playlist = await this.playlistRepository.findOne({ where: { id } });
+        if (!playlist) {
+            throw new Error(`Playlist with id '${id}' does not exist`);
+        }
+
+        playlist.name = name;
+        await this.playlistRepository.save(playlist);
+
+        this.pubSub.publish(PlaylistEvents.UPDATED, { [PlaylistEvents.UPDATED]: playlist });
+    }
+
     public async delete(id: number): Promise<void> {
         await this.playlistRepository.delete({ id });
         this.pubSub.publish(PlaylistEvents.DELETED, { [PlaylistEvents.DELETED]: id });

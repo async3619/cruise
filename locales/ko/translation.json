@@ -48,7 +48,8 @@
         "cancel": "취소",
         "delete": "삭제",
         "open": "열기",
-        "add": "추가"
+        "add": "추가",
+        "rename": "이름 변경"
     },
     "playlist": {
         "create": {
@@ -81,6 +82,18 @@
             "pending": "재생목록 비우기 중...",
             "success": "재생목록이 비워졌습니다.",
             "error": "재생목록 비우기 중 오류가 발생했습니다."
+        },
+        "rename": {
+            "title": "재생목록 이름 변경",
+            "description": "변경할 재생목록의 이름을 입력하세요.",
+            "placeholder": "재생목록 이름",
+            "pending": "재생목록 이름 변경 중...",
+            "success": "재생목록 이름이 변경되었습니다.",
+            "error": "재생목록 이름 변경 중 오류가 발생했습니다.",
+            "errors": {
+                "title-required": "재생목록 이름을 입력하세요.",
+                "title-too-long": "재생목록 이름은 20자를 넘을 수 없습니다."
+            }
         }
     }
 }

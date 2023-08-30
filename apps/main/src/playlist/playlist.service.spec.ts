@@ -110,6 +110,19 @@ describe("PlaylistService", () => {
         await expect(service.clear(1)).rejects.toThrowError();
     });
 
+    it("should be able to rename a playlist", async () => {
+        repository.findOne.mockResolvedValueOnce({});
+
+        await service.rename(1, "name");
+        expect(repository.save).toHaveBeenCalled();
+    });
+
+    it("should throw an error if target renaming playlist does not exist", async () => {
+        repository.findOne.mockResolvedValueOnce(null);
+
+        await expect(service.rename(1, "name")).rejects.toThrowError();
+    });
+
     it("should publish a event when a playlist is deleted", async () => {
         await service.delete(1);
         expect(pubSub.publish).toHaveBeenCalled();

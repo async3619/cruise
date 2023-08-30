@@ -48,7 +48,8 @@
         "cancel": "Cancel",
         "delete": "Delete",
         "open": "Open",
-        "add": "Add"
+        "add": "Add",
+        "rename": "Rename"
     },
     "playlist": {
         "create": {
@@ -81,6 +82,18 @@
             "pending": "Clearing the playlist...",
             "success": "The playlist has been cleared.",
             "error": "Failed to clear the playlist."
+        },
+        "rename": {
+            "title": "Rename Playlist",
+            "description": "Please enter the new name of the playlist.",
+            "placeholder": "Playlist Name",
+            "pending": "Renaming the playlist...",
+            "success": "The playlist has been renamed.",
+            "error": "Failed to rename the playlist.",
+            "errors": {
+                "title-required": "Please enter the new name of the playlist.",
+                "title-tooLong": "The new name of the playlist cannot be longer than 20 characters."
+            }
         }
     }
 }

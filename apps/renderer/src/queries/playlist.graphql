@@ -40,6 +40,10 @@ mutation clearPlaylist($id: Int!) {
     clearPlaylist(playlistId: $id)
 }
 
+mutation renamePlaylist($id: Int!, $name: String!) {
+    renamePlaylist(id: $id, name: $name)
+}
+
 mutation addMusicsToPlaylist($playlistId: Int!, $musicIds: [Int!]!) {
     addMusicsToPlaylist(playlistId: $playlistId, musicIds: $musicIds)
 }

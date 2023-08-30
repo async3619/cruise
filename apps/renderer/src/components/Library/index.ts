@@ -11,6 +11,7 @@ import {
     executeClearPlaylist,
     executeCreatePlaylist,
     executeDeletePlaylist,
+    executeRenamePlaylist,
     usePlaylistCreatedSubscription,
     usePlaylistDeletedSubscription,
     usePlaylistQuery,
@@ -202,6 +203,35 @@ export class Library {
         });
 
         return true;
+    }
+    public async renamePlaylist(playlist: MinimalPlaylist) {
+        const result = await this.dialog.openDialog(InputTextDialog, {
+            title: this.t("playlist.rename.title"),
+            description: this.t("playlist.rename.description"),
+            placeholder: this.t("playlist.rename.placeholder"),
+            positiveLabel: this.t("common.rename"),
+            negativeLabel: this.t("common.cancel"),
+            validationSchema: z
+                .string()
+                .nonempty(this.t("playlist.rename.errors.title-required"))
+                .max(20, this.t("playlist.rename.errors.title-too-long")),
+            defaultValue: playlist.name,
+        });
+
+        if (result.type !== DialogActionType.Submit) {
+            return;
+        }
+
+        await this.toast.doWork({
+            work: () => executeRenamePlaylist(this.client, { variables: { id: playlist.id, name: result.value } }),
+            loading: true,
+            persist: true,
+            messages: {
+                pending: this.t("playlist.rename.pending"),
+                success: this.t("playlist.rename.success"),
+                error: this.t("playlist.rename.error"),
+            },
+        });
     }
 
     public async addMusicsToPlaylist(playlistId: number, musicIds: number[]): Promise<void> {

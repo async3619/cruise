@@ -42,6 +42,15 @@ export class PlaylistResolver {
     }
 
     @Mutation(() => Boolean)
+    public async renamePlaylist(
+        @Args("id", { type: () => Int }) id: number,
+        @Args("name", { type: () => String }) name: string,
+    ): Promise<boolean> {
+        await this.playlistService.rename(id, name);
+        return true;
+    }
+
+    @Mutation(() => Boolean)
     public async addMusicsToPlaylist(
         @Args("playlistId", { type: () => Int }) playlistId: number,
         @Args("musicIds", { type: () => [Int] }) musicIds: number[],

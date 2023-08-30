@@ -13,6 +13,7 @@ import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import ClearRoundedIcon from "@mui/icons-material/ClearRounded";
 import QueueMusicRoundedIcon from "@mui/icons-material/QueueMusicRounded";
+import EditRoundedIcon from "@mui/icons-material/EditRounded";
 
 import { MinimalMusic } from "@utils/types";
 
@@ -40,6 +41,15 @@ export function useHeaderButtons(playlistId: Nullable<number>, onDelete: Nullabl
         }
     }, [library, player, playlistId, playlists]);
 
+    const handleRename = React.useCallback(() => {
+        const playlist = playlists.find(playlist => playlist.id === playlistId);
+        if (!playlist) {
+            return;
+        }
+
+        return library.renamePlaylist(playlist);
+    }, [library, playlistId, playlists]);
+
     return React.useMemo(() => {
         const menuItems: MenuItem[] = [];
         if (playlists.length > 0) {
@@ -56,7 +66,7 @@ export function useHeaderButtons(playlistId: Nullable<number>, onDelete: Nullabl
             }
         }
 
-        const buttons: ButtonItem[] = [
+        let buttons: ButtonItem[] = [
             {
                 label: t("common.clear"),
                 variant: "contained",
@@ -87,16 +97,38 @@ export function useHeaderButtons(playlistId: Nullable<number>, onDelete: Nullabl
         ];
 
         if (playlistId && onDelete) {
-            buttons.push({
-                label: t("common.delete"),
-                variant: "contained",
-                size: "small",
-                color: "inherit",
-                startIcon: <ClearRoundedIcon />,
-                onClick: onDelete,
-            });
+            buttons = [
+                ...buttons,
+                {
+                    label: t("common.delete"),
+                    variant: "contained",
+                    size: "small",
+                    color: "inherit",
+                    startIcon: <ClearRoundedIcon />,
+                    onClick: onDelete,
+                },
+                {
+                    label: t("common.rename"),
+                    variant: "contained",
+                    size: "small",
+                    color: "inherit",
+                    startIcon: <EditRoundedIcon />,
+                    onClick: handleRename,
+                },
+            ];
         }
 
         return buttons;
-    }, [t, handleCreatePlaylist, playlists, musics.length, handleClear, playlistId, library, musicIds, onDelete]);
+    }, [
+        playlists,
+        t,
+        musics,
+        handleClear,
+        handleCreatePlaylist,
+        playlistId,
+        onDelete,
+        library,
+        musicIds,
+        handleRename,
+    ]);
 }

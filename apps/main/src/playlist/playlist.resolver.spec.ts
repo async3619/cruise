@@ -15,6 +15,7 @@ describe("PlaylistResolver", () => {
             asyncIterator: jest.fn(),
             delete: jest.fn(),
             clear: jest.fn(),
+            rename: jest.fn(),
         };
 
         const module: TestingModule = await Test.createTestingModule({
@@ -51,6 +52,11 @@ describe("PlaylistResolver", () => {
     it("should be able to clear a playlist", async () => {
         await resolver.clearPlaylist(1);
         expect(service.clear).toHaveBeenCalled();
+    });
+
+    it("should be able to rename a playlist", async () => {
+        await resolver.renamePlaylist(1, "name");
+        expect(service.rename).toHaveBeenCalled();
     });
 
     it("should be able to delete a playlist", async () => {
