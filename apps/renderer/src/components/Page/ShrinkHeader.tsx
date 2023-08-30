@@ -128,12 +128,12 @@ class ShrinkHeaderPageImpl extends React.Component<ShrinkHeaderPageProps, Shrink
     };
 
     private renderButtonContainer = ({ measureRef }: MeasuredComponentProps) => {
-        const { buttons } = this.props;
+        const { buttons, loading } = this.props;
 
         return (
             <Stack ref={measureRef} spacing={1} direction="row">
                 {buttons.map((button, index) => (
-                    <Button key={index} {...button}>
+                    <Button key={index} {...button} disabled={loading || button.disabled}>
                         {button.label}
                     </Button>
                 ))}

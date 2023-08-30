@@ -77,17 +77,15 @@ export function useHeaderButtons(playlistId: Nullable<number>, onDelete: Nullabl
             },
         ];
 
-        if (playlistId) {
-            if (onDelete) {
-                buttons.push({
-                    label: t("common.delete"),
-                    variant: "contained",
-                    size: "small",
-                    color: "inherit",
-                    startIcon: <ClearRoundedIcon />,
-                    onClick: onDelete,
-                });
-            }
+        if (playlistId && onDelete) {
+            buttons.push({
+                label: t("common.delete"),
+                variant: "contained",
+                size: "small",
+                color: "inherit",
+                startIcon: <ClearRoundedIcon />,
+                onClick: onDelete,
+            });
         }
 
         return buttons;

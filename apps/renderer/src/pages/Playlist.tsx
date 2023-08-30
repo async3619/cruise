@@ -16,6 +16,7 @@ export function Playlist({}: PlaylistProps) {
         throw new Error("Invalid playlist id");
     }
 
+    const playlistId = parseInt(id);
     const playlist = library.usePlaylist(parseInt(id));
     const handleDelete = React.useCallback(async () => {
         if (!playlist) {
@@ -32,7 +33,7 @@ export function Playlist({}: PlaylistProps) {
 
     return (
         <PlaylistPage
-            playlistId={playlist?.id}
+            playlistId={playlistId}
             onDelete={handleDelete}
             musics={playlist?.musics ?? []}
             title={playlist?.name ?? ""}
