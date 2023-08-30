@@ -22,7 +22,11 @@ export function Playlist({}: PlaylistProps) {
             return;
         }
 
-        await library.deletePlaylist(playlist);
+        const deleted = await library.deletePlaylist(playlist);
+        if (!deleted) {
+            return;
+        }
+
         navigate("/");
     }, [library, navigate, playlist]);
 
