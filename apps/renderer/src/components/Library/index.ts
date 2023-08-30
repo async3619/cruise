@@ -1,6 +1,9 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import React from "react";
-import { ToastAction, useToast } from "ui";
+import { DialogActionType, DialogContextValues, InputTextDialog, ToastContextValues, YesNoDialog } from "ui";
+import { TFunction } from "i18next";
+import { Fn } from "types";
+import { z } from "zod";
 
 import { ApolloClient } from "@apollo/client";
 import {
@@ -14,53 +17,26 @@ import {
     usePlaylistUpdatedSubscription,
 } from "@graphql/queries";
 import { MinimalPlaylist } from "@utils/types";
-import { TFunction } from "i18next";
-import { AsyncFn, Fn } from "types";
-
-interface ToastMessages {
-    success: string;
-    error: string;
-    pending: string;
-}
 
 export class Library {
     private readonly client: ApolloClient<object>;
-    private readonly translator: TFunction<"ns1", undefined>;
-
-    public useAddMusicToPlaylist: Fn<[], AsyncFn<[playlistId: number, musicIds: number[]]>>;
-    public useCreatePlaylist: Fn<[], AsyncFn<[name: string, musicIds?: number[]], number>>;
-    public useDeletePlaylist: Fn<[], AsyncFn<[id: number]>>;
+    private readonly t: TFunction<"ns1", undefined>;
+    private readonly navigate: Fn<[path: string]>;
+    private readonly toast: ToastContextValues;
+    private readonly dialog: DialogContextValues;
 
     public constructor(
         client: ApolloClient<object>,
         translator: TFunction<"ns1", undefined>,
         navigate: Fn<[path: string]>,
+        toast: ToastContextValues,
+        dialog: DialogContextValues,
     ) {
         this.client = client;
-        this.translator = translator;
-
-        this.useAddMusicToPlaylist = this.generateHook(this.addMusicToPlaylist.bind(this), {
-            pending: this.translator("playlist.add-musics.pending"),
-            success: this.translator("playlist.add-musics.success"),
-            error: this.translator("playlist.add-musics.error"),
-        });
-        this.useCreatePlaylist = this.generateHook(
-            this.createPlaylist.bind(this),
-            {
-                pending: this.translator("playlist.create.pending"),
-                success: this.translator("playlist.create.success"),
-                error: this.translator("playlist.create.error"),
-            },
-            id => ({
-                label: this.translator("common.open"),
-                onClick: () => navigate(`/playlists/${id}`),
-            }),
-        );
-        this.useDeletePlaylist = this.generateHook(this.deletePlaylist.bind(this), {
-            pending: this.translator("playlist.delete.pending"),
-            success: this.translator("playlist.delete.success"),
-            error: this.translator("playlist.delete.error"),
-        });
+        this.t = translator;
+        this.navigate = navigate;
+        this.toast = toast;
+        this.dialog = dialog;
     }
 
     public usePlaylist(id: number) {
@@ -76,7 +52,7 @@ export class Library {
                     return;
                 }
 
-                refetch();
+                return refetch();
             },
         });
 
@@ -121,48 +97,92 @@ export class Library {
         return playlists;
     }
 
-    public async createPlaylist(name: string, musicIds?: number[]) {
-        const { data } = await executeCreatePlaylist(this.client, {
-            variables: {
-                name,
-                musicIds: musicIds ?? [],
+    public async createPlaylist(musicIds?: number[]) {
+        const result = await this.dialog.openDialog(InputTextDialog, {
+            title: this.t("playlist.create.title"),
+            description: this.t("playlist.create.description"),
+            placeholder: this.t("playlist.create.placeholder"),
+            positiveLabel: this.t("common.create"),
+            negativeLabel: this.t("common.cancel"),
+            validationSchema: z
+                .string()
+                .nonempty(this.t("playlist.create.errors.title-required"))
+                .max(20, this.t("playlist.create.errors.title-too-long")),
+        });
+
+        if (result.type !== DialogActionType.Submit) {
+            return;
+        }
+
+        await this.toast.doWork({
+            work: async () => {
+                const { data } = await executeCreatePlaylist(this.client, {
+                    variables: {
+                        name: result.value,
+                        musicIds: musicIds ?? [],
+                    },
+                });
+
+                if (!data) {
+                    throw new Error("Failed to create playlist");
+                }
+
+                return data.createPlaylist.id;
+            },
+            persist: true,
+            loading: true,
+            messages: {
+                pending: this.t("playlist.create.pending"),
+                success: this.t("playlist.create.success"),
+                error: this.t("playlist.create.error"),
+            },
+            action: id => ({
+                label: this.t("common.open"),
+                onClick: () => this.navigate(`/playlists/${id}`),
+            }),
+        });
+    }
+    public async deletePlaylist(playlist: MinimalPlaylist, confirmation = true) {
+        if (confirmation) {
+            const result = await this.dialog.openDialog(YesNoDialog, {
+                title: this.t("playlist.delete.title"),
+                description: this.t("playlist.delete.description", {
+                    name: playlist?.name ?? "",
+                }),
+                positiveLabel: this.t("common.delete"),
+                negativeLabel: this.t("common.cancel"),
+                positiveColor: "error",
+            });
+
+            if (result.type !== DialogActionType.Positive) {
+                return false;
+            }
+        }
+
+        await this.toast.doWork({
+            work: () => executeDeletePlaylist(this.client, { variables: { id: playlist.id } }),
+            loading: true,
+            persist: true,
+            messages: {
+                pending: this.t("playlist.delete.pending"),
+                success: this.t("playlist.delete.success"),
+                error: this.t("playlist.delete.error"),
             },
         });
 
-        if (!data) {
-            throw new Error("Failed to create playlist");
-        }
-
-        return data.createPlaylist.id;
-    }
-    public async deletePlaylist(id: number): Promise<void> {
-        await executeDeletePlaylist(this.client, { variables: { id } });
+        return true;
     }
 
-    public async addMusicToPlaylist(playlistId: number, musicIds: number[]): Promise<void> {
-        await executeAddMusicsToPlaylist(this.client, { variables: { playlistId, musicIds } });
-    }
-
-    private generateHook<TArgs extends any[], TReturn>(
-        func: (...args: TArgs) => Promise<TReturn>,
-        messages: ToastMessages,
-        action?: ToastAction | ((result: TReturn) => ToastAction | undefined),
-    ) {
-        return () => {
-            const toast = useToast();
-
-            return React.useCallback(
-                async (...args: TArgs) => {
-                    return toast.doWork({
-                        work: () => func(...args),
-                        persist: true,
-                        loading: true,
-                        messages,
-                        action,
-                    });
-                },
-                [toast],
-            );
-        };
+    public async addMusicsToPlaylist(playlistId: number, musicIds: number[]): Promise<void> {
+        await this.toast.doWork({
+            work: () => executeAddMusicsToPlaylist(this.client, { variables: { playlistId, musicIds } }),
+            persist: true,
+            loading: true,
+            messages: {
+                success: this.t("playlist.add-musics.success"),
+                error: this.t("playlist.add-musics.error"),
+                pending: this.t("playlist.add-musics.pending"),
+            },
+        });
     }
 }
