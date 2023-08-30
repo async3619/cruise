@@ -8,6 +8,7 @@ import { z } from "zod";
 import { ApolloClient } from "@apollo/client";
 import {
     executeAddMusicsToPlaylist,
+    executeClearPlaylist,
     executeCreatePlaylist,
     executeDeletePlaylist,
     usePlaylistCreatedSubscription,
@@ -167,6 +168,36 @@ export class Library {
                 pending: this.t("playlist.delete.pending"),
                 success: this.t("playlist.delete.success"),
                 error: this.t("playlist.delete.error"),
+            },
+        });
+
+        return true;
+    }
+    public async clearPlaylist(playlist: MinimalPlaylist, confirmation = true) {
+        if (confirmation) {
+            const result = await this.dialog.openDialog(YesNoDialog, {
+                title: this.t("playlist.clear.title"),
+                description: this.t("playlist.clear.description", {
+                    name: playlist?.name ?? "",
+                }),
+                positiveLabel: this.t("common.clear"),
+                negativeLabel: this.t("common.cancel"),
+                positiveColor: "error",
+            });
+
+            if (result.type !== DialogActionType.Positive) {
+                return false;
+            }
+        }
+
+        await this.toast.doWork({
+            work: () => executeClearPlaylist(this.client, { variables: { id: playlist.id } }),
+            loading: true,
+            persist: true,
+            messages: {
+                pending: this.t("playlist.clear.pending"),
+                success: this.t("playlist.clear.success"),
+                error: this.t("playlist.clear.error"),
             },
         });
 

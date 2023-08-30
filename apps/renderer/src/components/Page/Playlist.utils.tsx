@@ -28,20 +28,20 @@ export function useHeaderButtons(playlistId: Nullable<number>, onDelete: Nullabl
     }, [musicIds, library]);
 
     const handleClear = React.useCallback(() => {
-        player.clearPlaylist();
-    }, [player]);
+        if (playlistId) {
+            const playlist = playlists.find(playlist => playlist.id === playlistId);
+            if (!playlist) {
+                return;
+            }
+
+            library.clearPlaylist(playlist);
+        } else {
+            player.clearPlaylist();
+        }
+    }, [library, player, playlistId, playlists]);
 
     return React.useMemo(() => {
-        const menuItems: MenuItem[] = [
-            {
-                type: "button",
-                id: "add-to-playlist",
-                icon: <AddRoundedIcon />,
-                label: t("playlist.create.title"),
-                onClick: handleCreatePlaylist,
-            },
-        ];
-
+        const menuItems: MenuItem[] = [];
         if (playlists.length > 0) {
             menuItems.push({ type: "divider" });
 
@@ -73,7 +73,16 @@ export function useHeaderButtons(playlistId: Nullable<number>, onDelete: Nullabl
                 color: "inherit",
                 disabled: musics.length === 0,
                 startIcon: <AddRoundedIcon />,
-                menuItems,
+                menuItems: [
+                    {
+                        type: "button",
+                        id: "add-to-playlist",
+                        icon: <AddRoundedIcon />,
+                        label: t("playlist.create.title"),
+                        onClick: handleCreatePlaylist,
+                    },
+                    ...menuItems,
+                ],
             },
         ];
 

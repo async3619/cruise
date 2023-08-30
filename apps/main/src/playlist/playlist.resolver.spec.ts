@@ -14,6 +14,7 @@ describe("PlaylistResolver", () => {
             addMusicsToPlaylist: jest.fn(),
             asyncIterator: jest.fn(),
             delete: jest.fn(),
+            clear: jest.fn(),
         };
 
         const module: TestingModule = await Test.createTestingModule({
@@ -45,6 +46,11 @@ describe("PlaylistResolver", () => {
     it("should be able to add musics to a playlist", async () => {
         await resolver.addMusicsToPlaylist(1, [1, 2, 3]);
         expect(service.addMusicsToPlaylist).toHaveBeenCalled();
+    });
+
+    it("should be able to clear a playlist", async () => {
+        await resolver.clearPlaylist(1);
+        expect(service.clear).toHaveBeenCalled();
     });
 
     it("should be able to delete a playlist", async () => {

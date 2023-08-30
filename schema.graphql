@@ -91,6 +91,7 @@ type Mutation {
   updateConfig(config: ConfigUpdateInput!): Boolean!
   scanLibrary: Boolean!
   createPlaylist(name: String!, musicIds: [Int!]!): Playlist!
+  clearPlaylist(playlistId: Int!): Boolean!
   deletePlaylist(id: Int!): Boolean!
   addMusicsToPlaylist(playlistId: Int!, musicIds: [Int!]!): Boolean!
 }

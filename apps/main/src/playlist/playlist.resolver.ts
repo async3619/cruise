@@ -30,6 +30,12 @@ export class PlaylistResolver {
     }
 
     @Mutation(() => Boolean)
+    public async clearPlaylist(@Args("playlistId", { type: () => Int }) playlistId: number): Promise<boolean> {
+        await this.playlistService.clear(playlistId);
+        return true;
+    }
+
+    @Mutation(() => Boolean)
     public async deletePlaylist(@Args("id", { type: () => Int }) id: number): Promise<boolean> {
         await this.playlistService.delete(id);
         return true;

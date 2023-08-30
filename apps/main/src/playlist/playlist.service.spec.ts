@@ -97,6 +97,19 @@ describe("PlaylistService", () => {
         expect(repository.delete).toHaveBeenCalled();
     });
 
+    it("should be able to clear a playlist", async () => {
+        repository.findOne.mockResolvedValueOnce({});
+
+        await service.clear(1);
+        expect(repository.save).toHaveBeenCalled();
+    });
+
+    it("should throw an error if target clearing playlist does not exist", async () => {
+        repository.findOne.mockResolvedValueOnce(null);
+
+        await expect(service.clear(1)).rejects.toThrowError();
+    });
+
     it("should publish a event when a playlist is deleted", async () => {
         await service.delete(1);
         expect(pubSub.publish).toHaveBeenCalled();

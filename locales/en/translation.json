@@ -74,6 +74,13 @@
             "pending": "Adding the musics to the playlist...",
             "success": "The musics have been added to the playlist.",
             "error": "Failed to add the musics to the playlist."
+        },
+        "clear": {
+            "title": "Clear Playlist",
+            "description": "Are you sure you want to clear the playlist '{{name}}'?",
+            "pending": "Clearing the playlist...",
+            "success": "The playlist has been cleared.",
+            "error": "Failed to clear the playlist."
         }
     }
 }

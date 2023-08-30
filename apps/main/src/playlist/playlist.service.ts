@@ -56,6 +56,18 @@ export class PlaylistService {
         this.pubSub.publish(PlaylistEvents.UPDATED, { [PlaylistEvents.UPDATED]: playlist });
     }
 
+    public async clear(playlistId: number) {
+        const playlist = await this.playlistRepository.findOne({ where: { id: playlistId } });
+        if (!playlist) {
+            throw new Error(`Playlist with id '${playlistId}' does not exist`);
+        }
+
+        playlist.musicIds = [];
+        await this.playlistRepository.save(playlist);
+
+        this.pubSub.publish(PlaylistEvents.UPDATED, { [PlaylistEvents.UPDATED]: playlist });
+    }
+
     public async delete(id: number): Promise<void> {
         await this.playlistRepository.delete({ id });
         this.pubSub.publish(PlaylistEvents.DELETED, { [PlaylistEvents.DELETED]: id });
