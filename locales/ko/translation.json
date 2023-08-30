@@ -49,7 +49,9 @@
         "delete": "삭제",
         "open": "열기",
         "add": "추가",
-        "rename": "이름 변경"
+        "rename": "이름 변경",
+        "play-all": "전체 재생",
+        "shuffle-all": "무작위 재생"
     },
     "playlist": {
         "create": {

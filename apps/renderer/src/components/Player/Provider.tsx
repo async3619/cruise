@@ -28,7 +28,7 @@ export interface Player {
     repeatMode: RepeatMode;
 
     shufflePlaylist(): void;
-    playPlaylist(musics: MinimalMusic[], index?: number): void;
+    playPlaylist(musics: MinimalMusic[], index?: number, shuffled?: boolean): void;
     seekPlaylist(index: number): void;
     clearPlaylist(): void;
 
@@ -108,8 +108,13 @@ export class PlayerProvider extends React.Component<React.PropsWithChildren, Pla
             return { playlist: newPlaylist };
         });
     }
-    public async playPlaylist(musics: MinimalMusic[], index = 0) {
-        this.setState({ playlist: [...musics], currentIndex: index }, () => {
+    public async playPlaylist(musics: MinimalMusic[], index = 0, shuffled = false) {
+        const playlist = [...musics];
+        if (shuffled) {
+            playlist.sort(() => Math.random() - 0.5);
+        }
+
+        this.setState({ playlist, currentIndex: index }, () => {
             this.audio.play();
             this.handleTimeUpdate();
         });

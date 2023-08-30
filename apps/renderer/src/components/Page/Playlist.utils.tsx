@@ -14,6 +14,8 @@ import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import ClearRoundedIcon from "@mui/icons-material/ClearRounded";
 import QueueMusicRoundedIcon from "@mui/icons-material/QueueMusicRounded";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
+import PlayArrowRoundedIcon from "@mui/icons-material/PlayArrowRounded";
+import ShuffleRoundedIcon from "@mui/icons-material/ShuffleRounded";
 
 import { MinimalMusic } from "@utils/types";
 
@@ -23,32 +25,38 @@ export function useHeaderButtons(playlistId: Nullable<number>, onDelete: Nullabl
     const library = useLibrary();
     const playlists = library.usePlaylists();
     const musicIds = React.useMemo(() => musics.map(music => music.id), [musics]);
+    const playlist = React.useMemo(
+        () => playlists.find(playlist => playlist.id === playlistId),
+        [playlists, playlistId],
+    );
 
     const handleCreatePlaylist = React.useCallback(async () => {
         await library.createPlaylist(musicIds);
     }, [musicIds, library]);
 
     const handleClear = React.useCallback(() => {
-        if (playlistId) {
-            const playlist = playlists.find(playlist => playlist.id === playlistId);
-            if (!playlist) {
-                return;
-            }
-
+        if (playlist) {
             library.clearPlaylist(playlist);
         } else {
             player.clearPlaylist();
         }
-    }, [library, player, playlistId, playlists]);
+    }, [library, player, playlist]);
 
     const handleRename = React.useCallback(() => {
-        const playlist = playlists.find(playlist => playlist.id === playlistId);
         if (!playlist) {
             return;
         }
 
         return library.renamePlaylist(playlist);
-    }, [library, playlistId, playlists]);
+    }, [library, playlist]);
+
+    const handlePlayAll = React.useCallback(() => {
+        player.playPlaylist(musics, 0);
+    }, [musics, player]);
+
+    const handleShuffleAll = React.useCallback(() => {
+        player.playPlaylist(musics, 0, true);
+    }, [musics, player]);
 
     return React.useMemo(() => {
         const menuItems: MenuItem[] = [];
@@ -98,6 +106,24 @@ export function useHeaderButtons(playlistId: Nullable<number>, onDelete: Nullabl
 
         if (playlistId && onDelete) {
             buttons = [
+                {
+                    label: t("common.play-all"),
+                    variant: "contained",
+                    size: "small",
+                    color: "primary",
+                    startIcon: <PlayArrowRoundedIcon />,
+                    disabled: musics.length === 0,
+                    onClick: handlePlayAll,
+                },
+                {
+                    label: t("common.shuffle-all"),
+                    variant: "contained",
+                    size: "small",
+                    color: "inherit",
+                    startIcon: <ShuffleRoundedIcon />,
+                    disabled: musics.length === 0,
+                    onClick: handleShuffleAll,
+                },
                 ...buttons,
                 {
                     label: t("common.delete"),
@@ -122,13 +148,15 @@ export function useHeaderButtons(playlistId: Nullable<number>, onDelete: Nullabl
     }, [
         playlists,
         t,
-        musics,
+        musics.length,
         handleClear,
         handleCreatePlaylist,
         playlistId,
         onDelete,
         library,
         musicIds,
+        handlePlayAll,
+        handleShuffleAll,
         handleRename,
     ]);
 }

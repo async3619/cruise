@@ -49,7 +49,9 @@
         "delete": "Delete",
         "open": "Open",
         "add": "Add",
-        "rename": "Rename"
+        "rename": "Rename",
+        "play-all": "Play All",
+        "shuffle-all": "Shuffle All"
     },
     "playlist": {
         "create": {
