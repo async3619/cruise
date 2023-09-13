@@ -1,6 +1,6 @@
 import React from "react";
 
-import { render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 
 import { ButtonMenuItem, ButtonMenuItemProps } from "./ButtonMenuItem";
 import { Wrapper } from "../../__test__/Wrapper";
@@ -32,6 +32,40 @@ describe("<ButtonMenuItem />", () => {
 
         const item = screen.getByTestId("icon");
         expect(item).toBeInTheDocument();
+    });
+
+    it("should render given icon buttons properly", () => {
+        const onClick = jest.fn();
+
+        render(
+            <ButtonMenuItem
+                item={{
+                    icon: <div data-testid="icon" />,
+                    type: "button",
+                    label: "Test",
+                    id: "id",
+                    iconButtons: [
+                        {
+                            icon: <div data-testid="icon-button" />,
+                            tooltip: "Test",
+                            onClick,
+                        },
+                    ],
+                }}
+            />,
+            { wrapper: Wrapper },
+        );
+
+        const item = screen.getByTestId("icon-button");
+        expect(item).toBeInTheDocument();
+
+        act(() => {
+            item.click();
+            fireEvent.keyDown(item, { key: "Enter" });
+            fireEvent.keyDown(item, { key: " " });
+        });
+
+        expect(onClick).toHaveBeenCalledTimes(3);
     });
 
     it("should render with active status if active prop is true", () => {
