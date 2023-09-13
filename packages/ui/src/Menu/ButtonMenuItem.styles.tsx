@@ -24,7 +24,7 @@ export const Root = styled.button<{ active?: boolean }>`
     height: ${({ theme }) => theme.spacing(5)};
 
     margin: 0;
-    padding: 0 ${({ theme }) => theme.spacing(1)};
+    padding: ${({ theme }) => theme.spacing(0, 0.75, 0, 1)};
     border: 0;
     border-radius: ${({ theme }) => theme.shape.borderRadius}px;
 
@@ -42,16 +42,33 @@ export const Root = styled.button<{ active?: boolean }>`
             duration: theme.transitions.duration.shortest,
         })};
 
+    .icon-buttons {
+        opacity: 0;
+
+        transition: ${({ theme }) =>
+            theme.transitions.create("opacity", {
+                duration: theme.transitions.duration.shortest,
+            })};
+    }
+
     &:hover,
     &:focus-visible {
         color: ${({ theme }) => theme.vars.palette.text.primary};
+    }
+
+    &:hover,
+    &:focus-visible,
+    &:focus-within {
+        .icon-buttons {
+            opacity: 1;
+        }
     }
 
     &:focus-visible {
         box-shadow: 0 0 0 2px ${({ theme }) => theme.vars.palette.primary.main};
     }
 
-    &:active {
+    &:active:not(:has(:active)) {
         color: ${({ theme }) => theme.vars.palette.text.primary};
     }
 
@@ -67,7 +84,7 @@ export const Root = styled.button<{ active?: boolean }>`
             background-color: ${({ theme }) => theme.vars.palette.action.hover};
         }
 
-        &:active {
+        &:active:not(:has(:active)) {
             background-color: ${({ theme }) => theme.vars.palette.action.selected};
         }
     }
@@ -80,8 +97,41 @@ export const Root = styled.button<{ active?: boolean }>`
             background-color: ${({ theme }) => theme.vars.palette.action.selected};
         }
 
-        &:active {
+        &:active:not(:has(:active)) {
             background-color: ${({ theme }) => theme.vars.palette.action.focus};
         }
+    }
+`;
+
+export const IconButton = styled.span`
+    margin: 0;
+    padding: ${({ theme }) => theme.spacing(0.25)};
+    border: 0;
+    border-radius: ${({ theme }) => theme.shape.borderRadius}px;
+
+    color: ${({ theme }) => theme.vars.palette.text.disabled};
+    background-color: transparent;
+
+    cursor: pointer;
+    outline: none;
+
+    transition: ${({ theme }) =>
+        theme.transitions.create("color", {
+            duration: theme.transitions.duration.shortest,
+        })};
+
+    > svg {
+        font-size: ${({ theme }) => theme.spacing(2.5)};
+
+        display: block;
+    }
+
+    &:hover,
+    &:focus-visible {
+        color: ${({ theme }) => theme.vars.palette.text.secondary};
+    }
+
+    &:focus-visible {
+        box-shadow: 0 0 0 2px ${({ theme }) => theme.vars.palette.primary.main};
     }
 `;

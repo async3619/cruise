@@ -9,6 +9,7 @@ import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import MusicNoteRoundedIcon from "@mui/icons-material/MusicNoteRounded";
 import QueueMusicRoundedIcon from "@mui/icons-material/QueueMusicRounded";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 import { ScrollbarThumb } from "@components/ScrollbarThumb";
 import { Content, Root } from "@components/Layout/SideBar.styles";
@@ -60,6 +61,20 @@ export function SideBar() {
                 id: `/playlists/${playlist.id}`,
                 label: playlist.name,
                 icon: <QueueMusicRoundedIcon />,
+                iconButtons: [
+                    {
+                        icon: <DeleteIcon />,
+                        tooltip: t("common.delete"),
+                        onClick: async () => {
+                            const deleted = await library.deletePlaylist(playlist);
+                            if (!deleted || location.pathname !== `/playlists/${playlist.id}`) {
+                                return;
+                            }
+
+                            navigate("/");
+                        },
+                    },
+                ],
             })),
             {
                 type: "button",
@@ -69,7 +84,7 @@ export function SideBar() {
                 onClick: () => library.createPlaylist(),
             },
         ];
-    }, [library, playlists, t]);
+    }, [library, playlists, t, location, navigate]);
 
     const handleClick = React.useCallback(
         (item: MenuItem) => {
