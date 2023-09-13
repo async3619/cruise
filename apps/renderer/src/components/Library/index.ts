@@ -11,6 +11,7 @@ import {
     executeClearPlaylist,
     executeCreatePlaylist,
     executeDeletePlaylist,
+    executeDeletePlaylistItems,
     executeRenamePlaylist,
     usePlaylistCreatedSubscription,
     usePlaylistDeletedSubscription,
@@ -244,6 +245,18 @@ export class Library {
                 pending: this.t("playlist.rename.pending"),
                 success: this.t("playlist.rename.success"),
                 error: this.t("playlist.rename.error"),
+            },
+        });
+    }
+    public async deletePlaylistItems(playlistId: number, indices: number[]) {
+        await this.toast.doWork({
+            work: () => executeDeletePlaylistItems(this.client, { variables: { playlistId, indices } }),
+            loading: true,
+            persist: true,
+            messages: {
+                pending: this.t("playlist.delete-items.pending"),
+                success: this.t("playlist.delete-items.success"),
+                error: this.t("playlist.delete-items.error"),
             },
         });
     }

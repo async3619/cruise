@@ -36,6 +36,10 @@ mutation deletePlaylist($id: Int!) {
     deletePlaylist(id: $id)
 }
 
+mutation deletePlaylistItems($playlistId: Int!, $indices: [Int!]!) {
+    deletePlaylistItems(playlistId: $playlistId, indices: $indices)
+}
+
 mutation clearPlaylist($id: Int!) {
     clearPlaylist(playlistId: $id)
 }

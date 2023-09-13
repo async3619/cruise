@@ -4,7 +4,7 @@ import { mergeRefs } from "react-merge-refs";
 
 import { Box, CircularProgress, Typography } from "@mui/material";
 
-import { Content, FixedHelper, Header, Root } from "@components/Page/index.styles";
+import { Content, FixedHelper, Header, Root, ToolbarPlaceholder } from "@components/Page/index.styles";
 
 export interface PageProps {
     children?: React.ReactNode;
@@ -12,9 +12,10 @@ export interface PageProps {
     loading?: boolean;
     headerRef?: React.Ref<HTMLDivElement>;
     headerPosition?: "fixed" | "sticky";
+    toolbar?: React.ReactNode;
 }
 
-export function Page({ children, header, headerRef, loading = false, headerPosition = "sticky" }: PageProps) {
+export function Page({ children, header, headerRef, loading = false, headerPosition = "sticky", toolbar }: PageProps) {
     const [ref, { height: headerHeight }] = useMeasure();
     const [initialHeight, setInitialHeight] = React.useState<number | null>(null);
 
@@ -52,13 +53,14 @@ export function Page({ children, header, headerRef, loading = false, headerPosit
     }
 
     let headerNode = (
-        <Header ref={mergeRefs(headerRefs)} style={headerStyle}>
+        <Header ref={mergeRefs(headerRefs)} style={headerStyle} hasToolbar={!!toolbar}>
             {typeof header === "string" && (
                 <Typography variant="h2" fontSize="1.85rem">
                     {header}
                 </Typography>
             )}
             {typeof header !== "string" && header}
+            {toolbar}
         </Header>
     );
 
@@ -70,6 +72,7 @@ export function Page({ children, header, headerRef, loading = false, headerPosit
         <Root>
             {headerNode}
             <Content style={{ paddingTop: headerPosition === "fixed" ? initialHeight ?? 0 : undefined }}>
+                {toolbar && <ToolbarPlaceholder />}
                 {content}
             </Content>
         </Root>

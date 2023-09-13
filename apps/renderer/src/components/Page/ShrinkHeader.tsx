@@ -25,6 +25,7 @@ export interface ShrinkHeaderPageProps extends WithLayoutProps {
     albumArt: Nullable<MinimalAlbumArt>;
     buttons: ButtonItem[];
     loading?: boolean;
+    toolbar?: React.ReactNode;
 }
 export interface ShrinkHeaderPageStates {}
 
@@ -206,10 +207,10 @@ class ShrinkHeaderPageImpl extends React.Component<ShrinkHeaderPageProps, Shrink
         );
     };
     public render() {
-        const { children } = this.props;
+        const { children, toolbar } = this.props;
 
         return (
-            <Page header={this.renderHeader()} headerRef={this.rootRef} headerPosition="fixed">
+            <Page toolbar={toolbar} header={this.renderHeader()} headerRef={this.rootRef} headerPosition="fixed">
                 {children}
             </Page>
         );

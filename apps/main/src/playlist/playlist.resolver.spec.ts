@@ -1,6 +1,6 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { PlaylistResolver } from "@playlist/playlist.resolver";
-import { PlaylistService } from "@playlist/playlist.service";
+import { PlaylistEvents, PlaylistService } from "@playlist/playlist.service";
 
 describe("PlaylistResolver", () => {
     let resolver: PlaylistResolver;
@@ -16,6 +16,7 @@ describe("PlaylistResolver", () => {
             delete: jest.fn(),
             clear: jest.fn(),
             rename: jest.fn(),
+            deleteItems: jest.fn(),
         };
 
         const module: TestingModule = await Test.createTestingModule({
@@ -64,6 +65,11 @@ describe("PlaylistResolver", () => {
         expect(service.delete).toHaveBeenCalled();
     });
 
+    it("should be able to delete items from a playlist", async () => {
+        await resolver.deletePlaylistItems(1, [1, 2, 3]);
+        expect(service.deleteItems).toHaveBeenCalledWith(1, [1, 2, 3]);
+    });
+
     it("should be able to resolve musics", async () => {
         const musicLoader = { load: jest.fn() };
         await resolver.musics({ musicIds: [1, 2, 3] } as any, { music: musicLoader } as any);
@@ -73,11 +79,16 @@ describe("PlaylistResolver", () => {
 
     it("should be able to subscribe to playlistCreated event", async () => {
         await resolver.playlistCreated();
-        expect(service.asyncIterator).toHaveBeenCalled();
+        expect(service.asyncIterator).toHaveBeenCalledWith(PlaylistEvents.CREATED);
     });
 
     it("should be able to subscribe to playlistDeleted event", async () => {
         await resolver.playlistDeleted();
-        expect(service.asyncIterator).toHaveBeenCalled();
+        expect(service.asyncIterator).toHaveBeenCalledWith(PlaylistEvents.DELETED);
+    });
+
+    it("should be able to subscribe to playlistUpdated event", async () => {
+        await resolver.playlistUpdated();
+        expect(service.asyncIterator).toHaveBeenCalledWith(PlaylistEvents.UPDATED);
     });
 });

@@ -20,8 +20,8 @@ export const Root = styled.div`
     padding: 0;
 `;
 
-export const Header = styled.div`
-    padding: ${({ theme }) => theme.spacing(2)};
+export const Header = styled.div<{ hasToolbar: boolean }>`
+    padding: ${({ theme, hasToolbar }) => theme.spacing(2, 2, hasToolbar ? 1 : 2)};
 
     position: sticky;
     top: 0;
@@ -44,6 +44,14 @@ export const Content = styled.div`
     padding: ${({ theme }) => theme.spacing(0, 2, 2)};
 
     animation: ${FadeIn} ${({ theme }) => theme.transitions.duration.enteringScreen}ms ease-in-out;
+`;
+
+export const ToolbarPlaceholder = styled.div`
+    height: ${({ theme }) => theme.spacing(7)};
+
+    margin-bottom: ${({ theme }) => theme.spacing(1)};
+
+    display: block;
 `;
 
 export const FixedHelper = styled.div`

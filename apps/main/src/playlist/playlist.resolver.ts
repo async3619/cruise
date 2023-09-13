@@ -42,6 +42,15 @@ export class PlaylistResolver {
     }
 
     @Mutation(() => Boolean)
+    public async deletePlaylistItems(
+        @Args("playlistId", { type: () => Int }) playlistId: number,
+        @Args("indices", { type: () => [Int] }) indices: number[],
+    ): Promise<boolean> {
+        await this.playlistService.deleteItems(playlistId, indices);
+        return true;
+    }
+
+    @Mutation(() => Boolean)
     public async renamePlaylist(
         @Args("id", { type: () => Int }) id: number,
         @Args("name", { type: () => String }) name: string,

@@ -97,6 +97,21 @@ describe("PlaylistService", () => {
         expect(repository.delete).toHaveBeenCalled();
     });
 
+    it("should be able to delete items from a playlist", async () => {
+        repository.findOne.mockResolvedValueOnce({
+            musicIds: [1, 2, 3, 4],
+        });
+
+        await service.deleteItems(1, [1, 2, 3]);
+        expect(repository.save).toHaveBeenCalledWith(expect.objectContaining({ musicIds: [1] }));
+    });
+
+    it("should throw an error if target deleting item playlist does not exist", async () => {
+        repository.findOne.mockResolvedValueOnce(null);
+
+        await expect(service.deleteItems(1, [1, 2, 3])).rejects.toThrowError();
+    });
+
     it("should be able to clear a playlist", async () => {
         repository.findOne.mockResolvedValueOnce({});
 

@@ -43,6 +43,8 @@
         "unknown-album": "Unknown Album",
         "musicWithCount_other": "{{count}} Musics",
         "musicWithCount_one": "{{count}} Music",
+        "selectedCount_other": "{{count}} Items Selected",
+        "selectedCount_one": "{{count}} Item Selected",
         "clear": "Clear",
         "create": "Create",
         "cancel": "Cancel",

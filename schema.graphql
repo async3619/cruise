@@ -93,6 +93,7 @@ type Mutation {
   createPlaylist(name: String!, musicIds: [Int!]!): Playlist!
   clearPlaylist(playlistId: Int!): Boolean!
   deletePlaylist(id: Int!): Boolean!
+  deletePlaylistItems(playlistId: Int!, indices: [Int!]!): Boolean!
   renamePlaylist(id: Int!, name: String!): Boolean!
   addMusicsToPlaylist(playlistId: Int!, musicIds: [Int!]!): Boolean!
 }

@@ -5,6 +5,10 @@ import { Box, CircularProgress } from "@mui/material";
 
 import { ShrinkHeaderPage } from "@components/Page/ShrinkHeader";
 import { useHeaderButtons } from "@components/Page/Playlist.utils";
+import { MusicSelection } from "@components/Selection/Music";
+import { useLibrary } from "@components/Library/context";
+import { usePlayer } from "@components/Player/context";
+import { MusicSelectionToolbar } from "@components/Selection/MusicToolbar";
 import { MusicList } from "@components/MusicList";
 
 import { MinimalMusic } from "@utils/types";
@@ -22,22 +26,38 @@ export function PlaylistPage({ musics, title, loading = false, playlistId, onDel
     const albumArt = musics[0]?.albumArt;
     const tokens = [t("common.musicWithCount", { count: musics.length })];
     const buttons = useHeaderButtons(playlistId, onDelete, musics);
+    const library = useLibrary();
+    const player = usePlayer();
+
+    const handleDelete = React.useCallback(
+        async (indices: number[]) => {
+            if (!playlistId) {
+                return player.deletePlaylistItems(indices);
+            } else {
+                return library.deletePlaylistItems(playlistId, indices);
+            }
+        },
+        [playlistId, player, library],
+    );
 
     return (
-        <ShrinkHeaderPage
-            albumArt={albumArt}
-            title={title || t("common.now-playing")}
-            subtitle={t("common.playlist")}
-            tokens={tokens}
-            buttons={buttons}
-            loading={loading}
-        >
-            {!loading && <MusicList musics={musics} />}
-            {loading && (
-                <Box py={2} display="flex" justifyContent="center">
-                    <CircularProgress size={36} />
-                </Box>
-            )}
-        </ShrinkHeaderPage>
+        <MusicSelection items={musics}>
+            <ShrinkHeaderPage
+                albumArt={albumArt}
+                title={title || t("common.now-playing")}
+                subtitle={t("common.playlist")}
+                tokens={tokens}
+                buttons={buttons}
+                loading={loading}
+                toolbar={<MusicSelectionToolbar onDelete={handleDelete} />}
+            >
+                {!loading && <MusicList musics={musics} />}
+                {loading && (
+                    <Box py={2} display="flex" justifyContent="center">
+                        <CircularProgress size={36} />
+                    </Box>
+                )}
+            </ShrinkHeaderPage>
+        </MusicSelection>
     );
 }
