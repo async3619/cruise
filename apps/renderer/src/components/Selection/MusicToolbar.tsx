@@ -12,15 +12,16 @@ import { useMusicSelection } from "@components/Selection/Music.context";
 import { useLibrary } from "@components/Library/context";
 import { usePlayer } from "@components/Player/context";
 
-import { CheckboxWrapper, Root, Wrapper } from "@components/Selection/MusicToolbar.styles";
+import { CheckboxWrapper, ChildrenWrapper, Root, Wrapper } from "@components/Selection/MusicToolbar.styles";
 import { MinimalMusic } from "@utils/types";
 
 export interface MusicSelectionToolbarProps {
     onDelete?(indices: number[]): Promise<void>;
     playable?: boolean;
+    children?: React.ReactNode;
 }
 
-export function MusicSelectionToolbar({ onDelete, playable = true }: MusicSelectionToolbarProps) {
+export function MusicSelectionToolbar({ onDelete, playable = true, children }: MusicSelectionToolbarProps) {
     const { t } = useTranslation();
     const selection = useMusicSelection();
     const [currentCount, setCurrentCount] = React.useState(selection?.selectedIndices.length || 0);
@@ -136,6 +137,7 @@ export function MusicSelectionToolbar({ onDelete, playable = true }: MusicSelect
 
     return (
         <Wrapper>
+            {children && <ChildrenWrapper>{children}</ChildrenWrapper>}
             <Root isVisible={selectedIndices.length > 0}>
                 <CheckboxWrapper>
                     <Checkbox
@@ -186,16 +188,18 @@ export function MusicSelectionToolbar({ onDelete, playable = true }: MusicSelect
                     >
                         {t("common.add")}
                     </AddButton>
-                    <Button
-                        variant="contained"
-                        color="inherit"
-                        size="small"
-                        startIcon={<DeleteIcon />}
-                        onClick={handleDelete}
-                        disabled={isLoading}
-                    >
-                        {t("common.delete")}
-                    </Button>
+                    {onDelete && (
+                        <Button
+                            variant="contained"
+                            color="inherit"
+                            size="small"
+                            startIcon={<DeleteIcon />}
+                            onClick={handleDelete}
+                            disabled={isLoading}
+                        >
+                            {t("common.delete")}
+                        </Button>
+                    )}
                 </Stack>
             </Root>
         </Wrapper>

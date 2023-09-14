@@ -12,6 +12,7 @@ export const Root = styled.div<{ isVisible: boolean }>`
 
     position: sticky;
     top: 0;
+    z-index: 100;
 
     opacity: ${({ isVisible }) => (isVisible ? 1 : 0)};
     transform: translateY(${({ theme }) => theme.spacing(1)});
@@ -32,6 +33,29 @@ export const Root = styled.div<{ isVisible: boolean }>`
 
 export const Wrapper = styled.div`
     height: 0;
+
+    position: relative;
+`;
+
+export const ChildrenWrapper = styled.div`
+    width: 100%;
+    height: ${({ theme }) => theme.spacing(7)};
+
+    display: flex;
+    align-items: center;
+
+    position: absolute;
+    top: 0;
+
+    transform: translateY(${({ theme }) => theme.spacing(1)});
+
+    ${({ theme }) => theme.getColorSchemeSelector("dark")} {
+        background-color: ${backgroundColors["800"]};
+    }
+
+    ${({ theme }) => theme.getColorSchemeSelector("light")} {
+        background-color: ${backgroundColors["100"]};
+    }
 `;
 
 export const CheckboxWrapper = styled.div`
