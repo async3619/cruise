@@ -28,7 +28,10 @@ export function MusicList({ musics }: MusicListProps) {
     const selection = useMusicSelection();
 
     const handlePlayPauseClick = React.useCallback(
-        (index: number) => {
+        (e: React.MouseEvent<HTMLButtonElement>, index: number) => {
+            e.preventDefault();
+            e.stopPropagation();
+
             if (player.currentIndex === index) {
                 if (player.isPlaying) {
                     player.pause();
@@ -88,7 +91,7 @@ export function MusicList({ musics }: MusicListProps) {
                             <PlayPauseButton
                                 withoutBorder
                                 albumArt={item.albumArt}
-                                onClick={() => handlePlayPauseClick(index)}
+                                onClick={e => handlePlayPauseClick(e, index)}
                             >
                                 {(player.currentIndex !== index || !player.isPlaying) && <PlayArrowRoundedIcon />}
                                 {player.currentIndex === index && player.isPlaying && <PauseRoundedIcon />}

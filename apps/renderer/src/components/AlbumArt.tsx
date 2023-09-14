@@ -11,7 +11,7 @@ export interface AlbumArtProps {
     className?: string;
     withoutBorder?: boolean;
 
-    onClick?: () => void;
+    onClick?: (e: React.MouseEvent<any>) => void;
 
     children?: React.ReactNode;
 }
