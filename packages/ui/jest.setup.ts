@@ -9,7 +9,7 @@ global.ResizeObserver = require("resize-observer-polyfill");
 
 jest.mock("nanoid", () => {
     return {
-        nanoid: () => "mocked-nanoid",
+        nanoid: () => `mocked-nanoid-${Math.random()}`,
     };
 });
 

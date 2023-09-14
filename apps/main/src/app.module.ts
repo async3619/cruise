@@ -16,33 +16,44 @@ import { AlbumModule } from "@album/album.module";
 import { ArtistModule } from "@artist/artist.module";
 import { ImageModule } from "@image/image.module";
 import { AlbumArtModule } from "@album-art/album-art.module";
+import { PlaylistModule } from "@playlist/playlist.module";
 
 import { AlbumService } from "@album/album.service";
 import { AlbumArtService } from "@album-art/album-art.service";
 import { ArtistService } from "@artist/artist.service";
 import { ImageService } from "@image/image.service";
+import { MusicService } from "@music/music.service";
 
 import { createGraphQLContext } from "@root/context";
 
 @Module({
     imports: [
         GraphQLModule.forRootAsync<ElectronApolloDriverConfig>({
-            imports: [AlbumModule, AlbumArtModule, ArtistModule, ImageModule],
-            inject: [AlbumService, AlbumArtService, ArtistService, ImageService],
+            imports: [AlbumModule, AlbumArtModule, ArtistModule, ImageModule, MusicModule],
+            inject: [AlbumService, AlbumArtService, ArtistService, ImageService, MusicService],
             driver: ElectronApolloDriver,
             useFactory: (
                 albumService: AlbumService,
                 albumArtService: AlbumArtService,
                 artistService: ArtistService,
                 imageService: ImageService,
+                musicService: MusicService,
             ) => ({
                 installSubscriptionHandlers: true,
                 autoSchemaFile:
                     process.env.NODE_ENV === "production"
                         ? true
                         : path.join(process.cwd(), "..", "..", "schema.graphql"),
-                context: window =>
-                    createGraphQLContext(window, albumService, albumArtService, artistService, imageService),
+                context: window => {
+                    return createGraphQLContext(
+                        window,
+                        albumService,
+                        albumArtService,
+                        artistService,
+                        imageService,
+                        musicService,
+                    );
+                },
             }),
         }),
         TypeOrmModule.forRoot({
@@ -61,6 +72,7 @@ import { createGraphQLContext } from "@root/context";
         ArtistModule,
         ImageModule,
         AlbumArtModule,
+        PlaylistModule,
     ],
 })
 export class AppModule {}

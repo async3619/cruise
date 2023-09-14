@@ -14,6 +14,7 @@ export function VirtualizedList<T>({ children, items, estimateSize, scrollElemen
         count: items.length,
         estimateSize,
         getScrollElement: () => scrollElement || null,
+        overscan: 5,
     });
 
     return (

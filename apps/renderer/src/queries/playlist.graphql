@@ -1,0 +1,69 @@
+fragment FullPlaylist on Playlist {
+    id
+    name
+    musics {
+        ...MinimalMusic
+    }
+    createdAt
+    updatedAt
+}
+
+fragment MinimalPlaylist on Playlist {
+    id
+    name
+}
+
+query playlist($id: Int!) {
+    playlist(id: $id) {
+        ...FullPlaylist
+    }
+}
+
+query playlists {
+    playlists {
+        ...MinimalPlaylist
+    }
+}
+
+mutation createPlaylist($name: String!, $musicIds: [Int!]!) {
+    createPlaylist(name: $name, musicIds: $musicIds) {
+        id
+        name
+    }
+}
+
+mutation deletePlaylist($id: Int!) {
+    deletePlaylist(id: $id)
+}
+
+mutation deletePlaylistItems($playlistId: Int!, $indices: [Int!]!) {
+    deletePlaylistItems(playlistId: $playlistId, indices: $indices)
+}
+
+mutation clearPlaylist($id: Int!) {
+    clearPlaylist(playlistId: $id)
+}
+
+mutation renamePlaylist($id: Int!, $name: String!) {
+    renamePlaylist(id: $id, name: $name)
+}
+
+mutation addMusicsToPlaylist($playlistId: Int!, $musicIds: [Int!]!) {
+    addMusicsToPlaylist(playlistId: $playlistId, musicIds: $musicIds)
+}
+
+subscription playlistCreated {
+    playlistCreated {
+        ...MinimalPlaylist
+    }
+}
+
+subscription playlistDeleted {
+    playlistDeleted
+}
+
+subscription playlistUpdated {
+    playlistUpdated {
+        ...FullPlaylist
+    }
+}

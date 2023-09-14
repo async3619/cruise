@@ -7,14 +7,20 @@ import { Menu, MenuItem } from "ui";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import MusicNoteRoundedIcon from "@mui/icons-material/MusicNoteRounded";
+import QueueMusicRoundedIcon from "@mui/icons-material/QueueMusicRounded";
+import AddRoundedIcon from "@mui/icons-material/AddRounded";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 import { ScrollbarThumb } from "@components/ScrollbarThumb";
 import { Content, Root } from "@components/Layout/SideBar.styles";
+import { useLibrary } from "@components/Library/context";
 
 export function SideBar() {
     const location = useLocation();
     const navigate = useNavigate();
     const { t } = useTranslation();
+    const library = useLibrary();
+    const playlists = library.usePlaylists();
 
     const navigationItems = React.useMemo<MenuItem[]>(() => {
         return [
@@ -40,12 +46,49 @@ export function SideBar() {
                 label: t("pages.musics"),
                 icon: <MusicNoteRoundedIcon />,
             },
+            {
+                type: "label",
+                label: t("common.playlist"),
+            },
+            {
+                type: "button",
+                id: "/playlists/now-playing",
+                label: t("common.now-playing"),
+                icon: <QueueMusicRoundedIcon />,
+            },
+            ...playlists.map<MenuItem>(playlist => ({
+                type: "button",
+                id: `/playlists/${playlist.id}`,
+                label: playlist.name,
+                icon: <QueueMusicRoundedIcon />,
+                iconButtons: [
+                    {
+                        icon: <DeleteIcon />,
+                        tooltip: t("common.delete"),
+                        onClick: async () => {
+                            const deleted = await library.deletePlaylist(playlist);
+                            if (!deleted || location.pathname !== `/playlists/${playlist.id}`) {
+                                return;
+                            }
+
+                            navigate("/");
+                        },
+                    },
+                ],
+            })),
+            {
+                type: "button",
+                id: "create-playlist",
+                label: t("playlist.create.title"),
+                icon: <AddRoundedIcon />,
+                onClick: () => library.createPlaylist(),
+            },
         ];
-    }, [t]);
+    }, [library, playlists, t, location, navigate]);
 
     const handleClick = React.useCallback(
         (item: MenuItem) => {
-            if (item.type !== "button") {
+            if (item.type !== "button" || item.onClick) {
                 return;
             }
 

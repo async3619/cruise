@@ -1,9 +1,9 @@
 import React from "react";
 
-import { Typography } from "@mui/material";
+import { Box, Stack, Tooltip, Typography } from "@mui/material";
 
-import { ButtonMenuItem as ItemType } from "./Menu.types";
-import { Icon, Root } from "./ButtonMenuItem.styles";
+import { ButtonMenuItem as ItemType, IconButtonItem } from "./Menu.types";
+import { Icon, IconButton, Root } from "./ButtonMenuItem.styles";
 
 export interface ButtonMenuItemProps {
     item: ItemType;
@@ -12,10 +12,15 @@ export interface ButtonMenuItemProps {
 }
 
 export function ButtonMenuItem({ item, active, onClick }: ButtonMenuItemProps) {
-    const { label, icon } = item;
+    const { label, icon, iconButtons } = item;
+
     const handleClick = React.useCallback(() => {
         onClick?.(item);
     }, [onClick, item]);
+
+    const handleDeleteButton = React.useCallback((iconButton: IconButtonItem) => {
+        iconButton.onClick();
+    }, []);
 
     return (
         <Root
@@ -28,6 +33,32 @@ export function ButtonMenuItem({ item, active, onClick }: ButtonMenuItemProps) {
             <Typography variant="body1" component="span" fontSize="0.9rem" lineHeight={1}>
                 {label}
             </Typography>
+            {iconButtons && (
+                <>
+                    <Box flex="1 1 auto" />
+                    <Stack direction="row" className="icon-buttons">
+                        {iconButtons.map((iconButton, index) => (
+                            <Tooltip title={iconButton.tooltip} key={index}>
+                                <IconButton
+                                    role="button"
+                                    tabIndex={0}
+                                    onKeyDown={e => {
+                                        if (e.key === "Enter" || e.key === " ") {
+                                            handleDeleteButton(iconButtons[index]);
+                                        }
+                                    }}
+                                    onClick={e => {
+                                        handleDeleteButton(iconButtons[index]);
+                                        e.stopPropagation();
+                                    }}
+                                >
+                                    {iconButton.icon}
+                                </IconButton>
+                            </Tooltip>
+                        ))}
+                    </Stack>
+                </>
+            )}
         </Root>
     );
 }

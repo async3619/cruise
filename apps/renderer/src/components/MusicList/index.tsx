@@ -9,6 +9,8 @@ import PauseRoundedIcon from "@mui/icons-material/PauseRounded";
 
 import { useLayout } from "@components/Layout/context";
 import { usePlayer } from "@components/Player/context";
+import { useMusicSelection } from "@components/Selection/Music.context";
+
 import { Column, Item, Label, PlayPauseButton, Root } from "@components/MusicList/index.styles";
 
 import { MinimalMusic } from "@utils/types";
@@ -23,6 +25,7 @@ export function MusicList({ musics }: MusicListProps) {
     const { view } = useLayout();
     const player = usePlayer();
     const currentMusic = player.getCurrentMusic();
+    const selection = useMusicSelection();
 
     const handlePlayPauseClick = React.useCallback(
         (index: number) => {
@@ -41,11 +44,46 @@ export function MusicList({ musics }: MusicListProps) {
         [player, musics],
     );
 
+    const handleItemClick = React.useCallback(
+        (_: React.MouseEvent<HTMLDivElement>, index: number) => {
+            if (!selection) {
+                return;
+            }
+
+            const newSelection = [...selection.selectedIndices];
+            if (newSelection.includes(index)) {
+                newSelection.splice(newSelection.indexOf(index), 1);
+            } else {
+                newSelection.push(index);
+            }
+
+            selection.setSelection(newSelection);
+        },
+        [selection],
+    );
+    const handleItemKeyDown = React.useCallback(
+        (e: React.KeyboardEvent<HTMLDivElement>, index: number) => {
+            if (e.key === "Enter" || e.key === " ") {
+                handleItemClick(e as any, index);
+                e.preventDefault();
+            }
+        },
+        [handleItemClick],
+    );
+
     return (
         <Root>
             <VirtualizedList items={musics} estimateSize={() => 56} scrollElement={view}>
                 {(item, index) => (
-                    <Item odd={index % 2 !== 0} key={item.id} isActive={currentMusic?.id === item.id}>
+                    <Item
+                        tabIndex={0}
+                        odd={index % 2 !== 0}
+                        key={item.id}
+                        isActive={currentMusic?.id === item.id}
+                        onClick={e => handleItemClick(e, index)}
+                        onKeyDown={e => handleItemKeyDown(e, index)}
+                        selected={selection?.selectedIndices.includes(index) || false}
+                    >
                         <Column columnWidth="44px">
                             <PlayPauseButton
                                 withoutBorder

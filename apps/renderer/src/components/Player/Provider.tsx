@@ -28,8 +28,10 @@ export interface Player {
     repeatMode: RepeatMode;
 
     shufflePlaylist(): void;
-    playPlaylist(musics: MinimalMusic[], index?: number): void;
+    playPlaylist(musics: MinimalMusic[], index?: number, shuffled?: boolean): void;
     seekPlaylist(index: number): void;
+    clearPlaylist(): void;
+    deletePlaylistItems(indices: number[]): void;
 
     play(): void;
     pause(): void;
@@ -58,6 +60,8 @@ export class PlayerProvider extends React.Component<React.PropsWithChildren, Pla
 
         playPlaylist: this.playPlaylist.bind(this),
         seekPlaylist: this.seekPlaylist.bind(this),
+        clearPlaylist: this.clearPlaylist.bind(this),
+        deletePlaylistItems: this.deletePlaylistItems.bind(this),
 
         play: this.play.bind(this),
         pause: this.pause.bind(this),
@@ -106,8 +110,13 @@ export class PlayerProvider extends React.Component<React.PropsWithChildren, Pla
             return { playlist: newPlaylist };
         });
     }
-    public async playPlaylist(musics: MinimalMusic[], index = 0) {
-        this.setState({ playlist: [...musics], currentIndex: index }, () => {
+    public async playPlaylist(musics: MinimalMusic[], index = 0, shuffled = false) {
+        const playlist = [...musics];
+        if (shuffled) {
+            playlist.sort(() => Math.random() - 0.5);
+        }
+
+        this.setState({ playlist, currentIndex: index }, () => {
             this.audio.play();
             this.handleTimeUpdate();
         });
@@ -130,6 +139,35 @@ export class PlayerProvider extends React.Component<React.PropsWithChildren, Pla
             this.audio.play();
             this.handleTimeUpdate();
         });
+    }
+    public async clearPlaylist() {
+        this.setState({ playlist: [], currentIndex: -1 });
+    }
+    public async deletePlaylistItems(indices: number[]) {
+        let matched = false;
+
+        this.setState(
+            prev => {
+                const newItems = [...prev.playlist];
+                let currentIndex = prev.currentIndex;
+                for (const index of indices) {
+                    newItems.splice(index, 1);
+                }
+
+                if (indices.includes(currentIndex)) {
+                    currentIndex = 0;
+                    matched = true;
+                }
+
+                return { playlist: newItems, currentIndex };
+            },
+            () => {
+                if (matched) {
+                    this.pause();
+                    this.handlePause();
+                }
+            },
+        );
     }
 
     public canSeekBackward() {

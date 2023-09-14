@@ -35,6 +35,10 @@ export const ButtonRoot = styled(ButtonBase, {
     overflow: hidden;
 
     aspect-ratio: 1 / 1;
+
+    &:focus-visible {
+        box-shadow: 0 0 0 2px ${({ theme }) => theme.vars.palette.primary.main};
+    }
 `;
 
 export const Background = styled.div`

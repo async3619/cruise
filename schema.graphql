@@ -65,11 +65,22 @@ type Music {
   url: String!
 }
 
+type Playlist {
+  id: Int!
+  name: String!
+  musicIds: [Int!]!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  musics: [Music!]!
+}
+
 type Query {
+  musics: [Music!]!
   isMaximized: Boolean!
   isMinimized: Boolean!
   config: ConfigData!
-  musics: [Music!]!
+  playlist(id: Int!): Playlist
+  playlists: [Playlist!]!
 }
 
 type Mutation {
@@ -79,6 +90,12 @@ type Mutation {
   close: Boolean!
   updateConfig(config: ConfigUpdateInput!): Boolean!
   scanLibrary: Boolean!
+  createPlaylist(name: String!, musicIds: [Int!]!): Playlist!
+  clearPlaylist(playlistId: Int!): Boolean!
+  deletePlaylist(id: Int!): Boolean!
+  deletePlaylistItems(playlistId: Int!, indices: [Int!]!): Boolean!
+  renamePlaylist(id: Int!, name: String!): Boolean!
+  addMusicsToPlaylist(playlistId: Int!, musicIds: [Int!]!): Boolean!
 }
 
 input ConfigUpdateInput {
@@ -90,4 +107,7 @@ type Subscription {
   maximizedStateChanged: Boolean!
   configUpdated: ConfigData!
   libraryScanningStateChanged: Boolean!
+  playlistCreated: Playlist!
+  playlistDeleted: Int!
+  playlistUpdated: Playlist!
 }

@@ -11,6 +11,7 @@
         "outDir": "./dist",
         "baseUrl": "./src",
         "incremental": true,
+        "allowJs": true,
         "strictNullChecks": true,
         "noImplicitAny": false,
         "strictBindCallApply": true,
@@ -28,7 +29,8 @@
             "@album/*": ["./album/*"],
             "@artist/*": ["./artist/*"],
             "@image/*": ["./image/*"],
-            "@album-art/*": ["./album-art/*"]
+            "@album-art/*": ["./album-art/*"],
+            "@playlist/*": ["./playlist/*"]
         }
     }
 }

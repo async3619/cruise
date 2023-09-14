@@ -63,7 +63,7 @@ export const PlayPauseButton = styled(AlbumArt)`
     }
 `;
 
-export const Item = styled.div<{ odd: boolean; isActive: boolean }>`
+export const Item = styled.div<{ odd: boolean; isActive: boolean; selected: boolean }>`
     margin: 0;
     padding: ${({ theme }) => theme.spacing(0, 2, 0, 0.75)};
     border-radius: ${({ theme }) => theme.shape.borderRadius}px;
@@ -71,6 +71,19 @@ export const Item = styled.div<{ odd: boolean; isActive: boolean }>`
     display: flex;
 
     color: ${({ theme, isActive }) => (isActive ? theme.vars.palette.primary.main : theme.vars.palette.text.primary)};
+
+    outline: none;
+
+    ${({ selected, theme }) => {
+        if (!selected) {
+            return "";
+        }
+
+        return css`
+            background-color: rgba(${theme.vars.palette.primary.mainChannel} / 0.25) !important;
+            color: white;
+        `;
+    }}
 
     ${({ odd, theme }) => {
         if (odd) {
@@ -115,6 +128,24 @@ export const Item = styled.div<{ odd: boolean; isActive: boolean }>`
             svg {
                 opacity: 1;
             }
+        }
+    }
+
+    &:focus-visible {
+        position: relative;
+        z-index: 1;
+
+        background-color: ${({ theme }) => `rgba(${theme.vars.palette.primary.mainChannel} / 0.1)`};
+        box-shadow: inset 0 0 0 2px ${({ theme }) => theme.vars.palette.primary.main};
+    }
+
+    ${PlayPauseButton}:focus-visible {
+        &:before {
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        svg {
+            opacity: 1;
         }
     }
 `;

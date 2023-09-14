@@ -301,6 +301,9 @@ importers:
       apollo-link-logger:
         specifier: ^2.0.1
         version: 2.0.1(@apollo/client@3.8.1)
+      change-case:
+        specifier: ^4.1.2
+        version: 4.1.2
       graphql:
         specifier: ^16.8.0
         version: 16.8.0
@@ -325,9 +328,18 @@ importers:
       react-i18next:
         specifier: ^13.1.2
         version: 13.1.2(i18next@23.4.4)(react-dom@18.2.0)(react@18.2.0)
+      react-measure:
+        specifier: ^2.5.2
+        version: 2.5.2(react-dom@18.2.0)(react@18.2.0)
+      react-merge-refs:
+        specifier: ^2.0.2
+        version: 2.0.2
       react-router-dom:
         specifier: ^6.15.0
         version: 6.15.0(react-dom@18.2.0)(react@18.2.0)
+      react-use-measure:
+        specifier: ^2.1.1
+        version: 2.1.1(react-dom@18.2.0)(react@18.2.0)
       serialize-error:
         specifier: ^11.0.1
         version: 11.0.1
@@ -340,6 +352,9 @@ importers:
       zen-observable:
         specifier: ^0.10.0
         version: 0.10.0
+      zod:
+        specifier: ^3.22.2
+        version: 3.22.2
     devDependencies:
       '@emotion/babel-plugin':
         specifier: ^11.11.0
@@ -368,6 +383,9 @@ importers:
       '@types/react-dom':
         specifier: ^18.2.7
         version: 18.2.7
+      '@types/react-measure':
+        specifier: ^2.0.8
+        version: 2.0.8
       '@types/zen-observable':
         specifier: ^0.8.3
         version: 0.8.3
@@ -389,6 +407,9 @@ importers:
       typescript:
         specifier: ^5.2.2
         version: 5.2.2
+      utility-types:
+        specifier: ^3.10.0
+        version: 3.10.0
       utils:
         specifier: workspace:*
         version: link:../../packages/utils
@@ -478,6 +499,9 @@ importers:
       '@emotion/styled':
         specifier: ^11.11.0
         version: 11.11.0(@emotion/react@11.11.1)(@types/react@18.2.20)(react@18.2.0)
+      '@hookform/resolvers':
+        specifier: ^3.3.1
+        version: 3.3.1(react-hook-form@7.45.4)
       '@mui/icons-material':
         specifier: ^5.14.3
         version: 5.14.3(@mui/material@5.14.5)(@types/react@18.2.20)(react@18.2.0)
@@ -490,15 +514,24 @@ importers:
       '@tanstack/react-virtual':
         specifier: 3.0.0-beta.54
         version: 3.0.0-beta.54(react@18.2.0)
+      material-ui-popup-state:
+        specifier: ^5.0.9
+        version: 5.0.9(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(@types/react@18.2.20)(react-dom@18.2.0)(react@18.2.0)
       nanoid:
         specifier: ^4.0.2
         version: 4.0.2
       react:
         specifier: ^18.2.0
         version: 18.2.0
+      react-hook-form:
+        specifier: ^7.45.4
+        version: 7.45.4(react@18.2.0)
       react-use-measure:
         specifier: ^2.1.1
         version: 2.1.1(react-dom@18.2.0)(react@18.2.0)
+      zod:
+        specifier: ^3.22.2
+        version: 3.22.2
     devDependencies:
       '@testing-library/jest-dom':
         specifier: ^6.1.2
@@ -2806,6 +2839,14 @@ packages:
     dependencies:
       graphql: 16.8.0
 
+  /@hookform/resolvers@3.3.1(react-hook-form@7.45.4):
+    resolution: {integrity: sha512-K7KCKRKjymxIB90nHDQ7b9nli474ru99ZbqxiqDAWYsYhOsU3/4qLxW91y+1n04ic13ajjZ66L3aXbNef8PELQ==}
+    peerDependencies:
+      react-hook-form: ^7.0.0
+    dependencies:
+      react-hook-form: 7.45.4(react@18.2.0)
+    dev: false
+
   /@humanwhocodes/config-array@0.11.10:
     resolution: {integrity: sha512-KVVjQmNUepDVGXNuoRRdmmEjruj0KfiGSbS8LVc12LMsWDQzRXJ0qdhN8L8uUigKpfEHRhlaQFY0ib1tnUbNeQ==}
     engines: {node: '>=10.10.0'}
@@ -4454,6 +4495,12 @@ packages:
       '@types/react': 18.2.20
     dev: false
 
+  /@types/react-measure@2.0.8:
+    resolution: {integrity: sha512-Pu4/hQ/1AKVN6efoawtcM+l376WYOI8e1fiM6ir4pdLkHilDCkJLjUGvAm0mWKJ0GE6hzu55yCrcJ/xNyEdFwA==}
+    dependencies:
+      '@types/react': 18.2.20
+    dev: true
+
   /@types/react-transition-group@4.4.6:
     resolution: {integrity: sha512-VnCdSxfcm08KjsJVQcfBmhEQAPnLB8G08hAxn39azX1qYBQ/5RVQuoHuKIcfKOdncuaUvEpFKFzEvbtIMsfVew==}
     dependencies:
@@ -5793,7 +5840,6 @@ packages:
     dependencies:
       pascal-case: 3.1.2
       tslib: 2.6.1
-    dev: true
 
   /camelcase@5.3.1:
     resolution: {integrity: sha512-L28STB170nwWS63UjtlEOE3dldQApaJXZkOI1uMFfzf3rRuPegHaHesyee+YxQ+W6SvRDQV6UrdOdRiR153wJg==}
@@ -5815,7 +5861,6 @@ packages:
       no-case: 3.0.4
       tslib: 2.6.1
       upper-case-first: 2.0.2
-    dev: true
 
   /chalk@2.4.2:
     resolution: {integrity: sha512-Mti+f9lpJNcwF4tWV8/OrTTtF1gZi+f8FqlyAdouralcFWFQWF2+NgCHShjkCb+IFBLq9buZwE1xckQU4peSuQ==}
@@ -5885,7 +5930,6 @@ packages:
       sentence-case: 3.0.4
       snake-case: 3.0.4
       tslib: 2.6.1
-    dev: true
 
   /char-regex@1.0.2:
     resolution: {integrity: sha512-kWWXztvZ5SBQV+eRgKFeh8q5sLuZY2+8WUIzlxWVTg+oGwY14qylx1KbKzHd8P6ZYkAg0xyIDU9JMHhyJMZ1jw==}
@@ -5939,6 +5983,10 @@ packages:
   /cjs-module-lexer@1.2.3:
     resolution: {integrity: sha512-0TNiGstbQmCFwt4akjjBg5pLRTSyj/PkWQ1ZoO2zntmg9yLqSRxwEa4iCfQLGjqhiqBfOJa7W/E8wfGrTDmlZQ==}
     dev: true
+
+  /classnames@2.3.2:
+    resolution: {integrity: sha512-CSbhY4cFEJRe6/GQzIk5qXZ4Jeg5pcsP7b5peFSDpffpe1cqjASH/n9UTjBwOp6XpMSTwQ8Za2K5V02ueA7Tmw==}
+    dev: false
 
   /clean-regexp@1.0.0:
     resolution: {integrity: sha512-GfisEZEJvzKrmGWkvfhgzcz/BllN1USeqD2V6tg14OAOgaCD2Z/PUEuxnAZ/nPvmaHRG7a8y77p1T/IRQ4D1Hw==}
@@ -6198,7 +6246,6 @@ packages:
       no-case: 3.0.4
       tslib: 2.6.1
       upper-case: 2.0.2
-    dev: true
 
   /content-disposition@0.5.4:
     resolution: {integrity: sha512-FveZTNuGw04cxlAiWbzi6zTAL/lhehaWbTtgluJh4/E95DqMwTmha3KZN1aAWA8cFIhHzMZUvLevkw5Rqk+tSQ==}
@@ -6627,7 +6674,6 @@ packages:
     dependencies:
       no-case: 3.0.4
       tslib: 2.6.1
-    dev: true
 
   /dotenv-expand@5.1.0:
     resolution: {integrity: sha512-YXQl1DSa4/PQyRfgrv6aoNjhasp/p4qs9FjJ4q4cQk+8m4r6k4ZSiEyytKG8f8W9gi8WsQtIObNmKd+tMzNTmA==}
@@ -7782,6 +7828,10 @@ packages:
       has-proto: 1.0.1
       has-symbols: 1.0.3
 
+  /get-node-dimensions@1.2.1:
+    resolution: {integrity: sha512-2MSPMu7S1iOTL+BOa6K1S62hB2zUAYNF/lV0gSVlOaacd087lc6nR1H1r0e3B1CerTo+RceOmi1iJW+vp21xcQ==}
+    dev: false
+
   /get-package-type@0.1.0:
     resolution: {integrity: sha512-pjzuKtY64GYfWizNAJ0fr9VqttZkNiK2iS430LtIHzjBEr6bX8Am2zm4sW4Ro5wjWW5cAlRL1qAMTcXbjNAO2Q==}
     engines: {node: '>=8.0.0'}
@@ -8121,7 +8171,6 @@ packages:
     dependencies:
       capital-case: 1.0.4
       tslib: 2.6.1
-    dev: true
 
   /hexoid@1.0.0:
     resolution: {integrity: sha512-QFLV0taWQOZtvIRIAdBChesmogZrtuXvVWsFHZTk2SU+anspqZ2vMnoLg7IE1+Uk16N19APic1BuF8bC8c2m5g==}
@@ -10030,7 +10079,6 @@ packages:
     resolution: {integrity: sha512-7fm3l3NAF9WfN6W3JOmf5drwpVqX78JtoGJ3A6W0a6ZnldM41w2fV5D490psKFTpMds8TJse/eHLFFsNHHjHgg==}
     dependencies:
       tslib: 2.6.1
-    dev: true
 
   /lowercase-keys@2.0.0:
     resolution: {integrity: sha512-tqNXrS78oMOE73NMxK4EMLQsQowWf8jKooH9g7xPavRT706R6bkQJ6DY2Te7QukaZsulxa30wQ7bk0pm4XiHmA==}
@@ -10127,6 +10175,23 @@ packages:
       escape-string-regexp: 4.0.0
     dev: true
     optional: true
+
+  /material-ui-popup-state@5.0.9(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(@types/react@18.2.20)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-NjTm7zdEzOY1CHu+a2to6h1Jr1Y8ra24rZ2JF5teO/+g0wTNiKWwNT04v3oW3McHsLcTfG46yYcqf1iznjst8Q==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+    dependencies:
+      '@babel/runtime': 7.22.10
+      '@mui/material': 5.14.5(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(@types/react@18.2.20)(react-dom@18.2.0)(react@18.2.0)
+      classnames: 2.3.2
+      prop-types: 15.8.1
+      react: 18.2.0
+    transitivePeerDependencies:
+      - '@emotion/react'
+      - '@emotion/styled'
+      - '@types/react'
+      - react-dom
+    dev: false
 
   /media-typer@0.3.0:
     resolution: {integrity: sha512-dq+qelQ9akHpcOl/gUVRTxVIOkAJ1wR3QAvb4RsVjS8oVoFjDGTc679wJYmUmknUF5HwMLOgb5O+a3KxfWapPQ==}
@@ -10432,7 +10497,6 @@ packages:
     dependencies:
       lower-case: 2.0.2
       tslib: 2.6.1
-    dev: true
 
   /node-abi@3.47.0:
     resolution: {integrity: sha512-2s6B2CWZM//kPgwnuI0KrYwNjfdByE25zvAaEpq9IH4zcNsarH8Ihu/UuX6XMPEogDAxkuUFeZn60pXNHAqn3A==}
@@ -10773,7 +10837,6 @@ packages:
     dependencies:
       dot-case: 3.0.4
       tslib: 2.6.1
-    dev: true
 
   /parent-module@1.0.1:
     resolution: {integrity: sha512-GQ2EWRpQV8/o+Aw8YqtfZZPfNRWZYkbidE9k5rpl/hC3vtHHBfGm2Ifi6qWV+coDGkrUKZAxE3Lot5kcsRlh+g==}
@@ -10828,14 +10891,12 @@ packages:
     dependencies:
       no-case: 3.0.4
       tslib: 2.6.1
-    dev: true
 
   /path-case@3.0.4:
     resolution: {integrity: sha512-qO4qCFjXqVTrcbPt/hQfhTQ+VhFsqNKOPtytgNKkKxSoEp3XPUQ8ObFuePylOIok5gjn69ry8XiULxCwot3Wfg==}
     dependencies:
       dot-case: 3.0.4
       tslib: 2.6.1
-    dev: true
 
   /path-exists@4.0.0:
     resolution: {integrity: sha512-ak9Qy5Q7jYb2Wwcey5Fpvg2KoAc/ZIhLSLOSBmRmygPsGwkVVt0fZa0qrtMz+m6tJTAHfZQ8FnmB4MG4LWy7/w==}
@@ -11241,6 +11302,15 @@ packages:
       react: 18.2.0
       scheduler: 0.23.0
 
+  /react-hook-form@7.45.4(react@18.2.0):
+    resolution: {integrity: sha512-HGDV1JOOBPZj10LB3+OZgfDBTn+IeEsNOKiq/cxbQAIbKaiJUe/KV8DBUzsx0Gx/7IG/orWqRRm736JwOfUSWQ==}
+    engines: {node: '>=12.22.0'}
+    peerDependencies:
+      react: ^16.8.0 || ^17 || ^18
+    dependencies:
+      react: 18.2.0
+    dev: false
+
   /react-i18next@13.1.2(i18next@23.4.4)(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-D/OJ/8ZQYscabsvbCAiOgvJq8W3feQF/VIV0to1w7V7UvrUE1IZ3hcalOckUYvKBd7BP3b8EPm+hop3J8sS+Mw==}
     peerDependencies:
@@ -11270,6 +11340,24 @@ packages:
 
   /react-is@18.2.0:
     resolution: {integrity: sha512-xWGDIW6x921xtzPkhiULtthJHoJvBbF3q26fzloPCK0hsvxtPVelvftw3zjbHWSkR2km9Z+4uxbDDK/6Zw9B8w==}
+
+  /react-measure@2.5.2(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-M+rpbTLWJ3FD6FXvYV6YEGvQ5tMayQ3fGrZhRPHrE9bVlBYfDCLuDcgNttYfk8IqfOI03jz6cbpqMRTUclQnaA==}
+    peerDependencies:
+      react: '>0.13.0'
+      react-dom: '>0.13.0'
+    dependencies:
+      '@babel/runtime': 7.22.10
+      get-node-dimensions: 1.2.1
+      prop-types: 15.8.1
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+      resize-observer-polyfill: 1.5.1
+    dev: false
+
+  /react-merge-refs@2.0.2:
+    resolution: {integrity: sha512-V5BGTwGa2r+/t0A/BZMS6L7VPXY0CU8xtAhkT3XUoI1WJJhhtvulvoiZkJ5Jt9YAW23m4xFWmhQ+C5HwjtTFhQ==}
+    dev: false
 
   /react-refresh@0.14.0:
     resolution: {integrity: sha512-wViHqhAd8OHeLS/IRMJjTSDHF3U9eWi62F/MledQGPdJGDhodXJ9PBLNGr6WWL7qlH12Mt3TyTpbS+hGXMjCzQ==}
@@ -11506,7 +11594,6 @@ packages:
 
   /resize-observer-polyfill@1.5.1:
     resolution: {integrity: sha512-LwZrotdHOo12nQuZlHEmtuXdqGoOD0OhaxopaNFxWzInpEgaLWoVuAMbTzixuosCx2nEG58ngzW3vxdWoxIgdg==}
-    dev: true
 
   /resolve-alpn@1.2.1:
     resolution: {integrity: sha512-0a1F4l73/ZFZOakJnQ3FvkJ2+gSTQWz/r2KE5OdDY0TxPm5h4GkqkWWfM47T7HsbnOtcJVEF4epCVy6u7Q3K+g==}
@@ -11762,7 +11849,6 @@ packages:
       no-case: 3.0.4
       tslib: 2.6.1
       upper-case-first: 2.0.2
-    dev: true
 
   /serialize-error@11.0.1:
     resolution: {integrity: sha512-B5yw3/Lg+Daspbs0f+iO3Qim0+lALnaLS8aZUAy8Y0tO92tkOoMEuwtKo4jpZ5XO16CTwMi4tYN8cZQI3QF2Qw==}
@@ -11954,7 +12040,6 @@ packages:
     dependencies:
       dot-case: 3.0.4
       tslib: 2.6.1
-    dev: true
 
   /socks-proxy-agent@7.0.0:
     resolution: {integrity: sha512-Fgl0YPZ902wEsAyiQ+idGd1A7rSFx/ayC1CQVMw5P+EQx2V0SgpGtf6OKFhVjPflPUl9YMmEOnmfjCdMUsygww==}
@@ -13190,13 +13275,11 @@ packages:
     resolution: {integrity: sha512-514ppYHBaKwfJRK/pNC6c/OxfGa0obSnAl106u97Ed0I625Nin96KAjttZF6ZL3e1XLtphxnqrOi9iWgm+u+bg==}
     dependencies:
       tslib: 2.6.1
-    dev: true
 
   /upper-case@2.0.2:
     resolution: {integrity: sha512-KgdgDGJt2TpuwBUIjgG6lzw2GWFRCW9Qkfkiv0DxqHHLYJHmtmdUIKcZd8rHgFSjopVTlw6ggzCm1b8MFQwikg==}
     dependencies:
       tslib: 2.6.1
-    dev: true
 
   /uri-js@4.4.1:
     resolution: {integrity: sha512-7rKUyy33Q1yc98pQ1DAmLtwX109F7TIfWlW1Ydo8Wl1ii1SeHieeh0HHfPeL2fMXK6z0s8ecKs9frCuLJvndBg==}
@@ -13224,6 +13307,11 @@ packages:
 
   /util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
+
+  /utility-types@3.10.0:
+    resolution: {integrity: sha512-O11mqxmi7wMKCo6HKFt5AhO4BwY3VV68YU07tgxfz8zJTIxr4BpsezN49Ffwy9j3ZpwwJp4fkRwjRzq3uWE6Rg==}
+    engines: {node: '>= 4'}
+    dev: true
 
   /utils-merge@1.0.1:
     resolution: {integrity: sha512-pMZTvIkT1d+TFGvDOqodOclx0QWkkgi6Tdoa8gC8ffGAAqz9pzPTZWAybbsHHoED/ztMtkv/VoYTYyShUn81hA==}
