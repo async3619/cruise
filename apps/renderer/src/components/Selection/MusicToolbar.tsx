@@ -4,23 +4,29 @@ import { useTranslation } from "react-i18next";
 import { Box, Button, Checkbox, Stack, Typography } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
+import PlayArrowRoundedIcon from "@mui/icons-material/PlayArrowRounded";
+import ShuffleRoundedIcon from "@mui/icons-material/ShuffleRounded";
 
 import { AddButton } from "@components/AddButton";
 import { useMusicSelection } from "@components/Selection/Music.context";
 import { useLibrary } from "@components/Library/context";
+import { usePlayer } from "@components/Player/context";
 
 import { CheckboxWrapper, Root, Wrapper } from "@components/Selection/MusicToolbar.styles";
+import { MinimalMusic } from "@utils/types";
 
 export interface MusicSelectionToolbarProps {
     onDelete?(indices: number[]): Promise<void>;
+    playable?: boolean;
 }
 
-export function MusicSelectionToolbar({ onDelete }: MusicSelectionToolbarProps) {
+export function MusicSelectionToolbar({ onDelete, playable = true }: MusicSelectionToolbarProps) {
     const { t } = useTranslation();
     const selection = useMusicSelection();
     const [currentCount, setCurrentCount] = React.useState(selection?.selectedIndices.length || 0);
     const [isLoading, setIsLoading] = React.useState(false);
     const library = useLibrary();
+    const player = usePlayer();
 
     React.useEffect(() => {
         if (!selection) {
@@ -92,6 +98,33 @@ export function MusicSelectionToolbar({ onDelete }: MusicSelectionToolbarProps) 
         [library, selection],
     );
 
+    const handlePlay = React.useCallback(() => {
+        if (!selection) {
+            return;
+        }
+
+        const targetMusics: MinimalMusic[] = [];
+        for (const idx of selection.selectedIndices) {
+            targetMusics.push(selection.allItems[idx]);
+        }
+
+        player.playPlaylist(targetMusics, 0);
+        selection.setSelection([]);
+    }, [player, selection]);
+    const handleShuffle = React.useCallback(() => {
+        if (!selection) {
+            return;
+        }
+
+        const targetMusics: MinimalMusic[] = [];
+        for (const idx of selection.selectedIndices) {
+            targetMusics.push(selection.allItems[idx]);
+        }
+
+        player.playPlaylist(targetMusics, 0, true);
+        selection.setSelection([]);
+    }, [player, selection]);
+
     if (!selection) {
         return null;
     }
@@ -118,6 +151,30 @@ export function MusicSelectionToolbar({ onDelete }: MusicSelectionToolbarProps) 
                 </Typography>
                 <Box flex="1 1 auto" />
                 <Stack direction="row" spacing={1}>
+                    {playable && (
+                        <>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                size="small"
+                                startIcon={<PlayArrowRoundedIcon />}
+                                onClick={handlePlay}
+                                disabled={isLoading}
+                            >
+                                {t("common.play-selected")}
+                            </Button>
+                            <Button
+                                variant="contained"
+                                color="inherit"
+                                size="small"
+                                startIcon={<ShuffleRoundedIcon />}
+                                onClick={handleShuffle}
+                                disabled={isLoading}
+                            >
+                                {t("common.shuffle-all")}
+                            </Button>
+                        </>
+                    )}
                     <AddButton
                         variant="contained"
                         color="inherit"

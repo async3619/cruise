@@ -49,7 +49,7 @@ export function PlaylistPage({ musics, title, loading = false, playlistId, onDel
                 tokens={tokens}
                 buttons={buttons}
                 loading={loading}
-                toolbar={<MusicSelectionToolbar onDelete={handleDelete} />}
+                toolbar={<MusicSelectionToolbar playable={!!playlistId} onDelete={handleDelete} />}
             >
                 {!loading && <MusicList musics={musics} />}
                 {loading && (

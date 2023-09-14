@@ -53,6 +53,7 @@
         "add": "추가",
         "rename": "이름 변경",
         "play-all": "전체 재생",
+        "play-selected": "선택 재생",
         "shuffle-all": "무작위 재생"
     },
     "playlist": {

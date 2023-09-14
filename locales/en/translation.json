@@ -53,6 +53,7 @@
         "add": "Add",
         "rename": "Rename",
         "play-all": "Play All",
+        "play-selected": "Play Selected",
         "shuffle-all": "Shuffle All"
     },
     "playlist": {
