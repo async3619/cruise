@@ -1,0 +1,25 @@
+fragment MinimalArtist on Artist {
+    id
+    name
+}
+
+fragment MinimalAlbum on Album {
+    id
+    title
+    albumArtists
+    musics {
+        ...MinimalMusic
+    }
+    artists {
+        ...MinimalArtist
+    }
+    albumArt {
+        ...MinimalAlbumArt
+    }
+}
+
+query albums {
+    albums {
+        ...MinimalAlbum
+    }
+}

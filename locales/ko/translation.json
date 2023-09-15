@@ -2,7 +2,8 @@
     "pages": {
         "home": "홈",
         "settings": "설정",
-        "musics": "음악"
+        "musics": "음악",
+        "albums": "앨범"
     },
     "settings": {
         "library": {

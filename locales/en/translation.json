@@ -2,7 +2,8 @@
     "pages": {
         "home": "Home",
         "settings": "Settings",
-        "musics": "Musics"
+        "musics": "Musics",
+        "albums": "Albums"
     },
     "settings": {
         "library": {

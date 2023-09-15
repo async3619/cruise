@@ -10,6 +10,7 @@ import MusicNoteRoundedIcon from "@mui/icons-material/MusicNoteRounded";
 import QueueMusicRoundedIcon from "@mui/icons-material/QueueMusicRounded";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import DeleteIcon from "@mui/icons-material/Delete";
+import AlbumRoundedIcon from "@mui/icons-material/AlbumRounded";
 
 import { ScrollbarThumb } from "@components/ScrollbarThumb";
 import { Content, Root } from "@components/Layout/SideBar.styles";
@@ -45,6 +46,12 @@ export function SideBar() {
                 type: "button",
                 label: t("pages.musics"),
                 icon: <MusicNoteRoundedIcon />,
+            },
+            {
+                id: "/library/albums",
+                type: "button",
+                label: t("pages.albums"),
+                icon: <AlbumRoundedIcon />,
             },
             {
                 type: "label",
