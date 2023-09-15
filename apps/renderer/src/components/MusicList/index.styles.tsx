@@ -80,8 +80,15 @@ export const Item = styled.div<{ odd: boolean; isActive: boolean; selected: bool
         }
 
         return css`
-            background-color: rgba(${theme.vars.palette.primary.mainChannel} / 0.25) !important;
-            color: white;
+            ${theme.getColorSchemeSelector("light")} {
+                color: inherit;
+            }
+
+            ${theme.getColorSchemeSelector("dark")} {
+                color: white;
+            }
+
+            background-color: rgba(${theme.vars.palette.primary.mainChannel} / 0.45) !important;
         `;
     }}
 

@@ -9,8 +9,10 @@ import { Box, Skeleton, Stack, Typography } from "@mui/material";
 import { Page } from "@components/Page";
 import { AlbumArt } from "@components/AlbumArt";
 import { withLayout, WithLayoutProps } from "@components/Layout/withLayout";
+
 import { Content, Description, ImageWrapper, Root } from "@components/Page/ShrinkHeader.styles";
 
+import { DisabledText } from "@styles/components";
 import { MinimalAlbumArt } from "@utils/types";
 
 export interface ButtonItem extends Omit<ButtonProps, "children"> {
@@ -187,11 +189,11 @@ class ShrinkHeaderPageImpl extends React.Component<ShrinkHeaderPageProps, Shrink
                         )}
                         {tokens && (
                             <Typography
+                                component={DisabledText}
                                 fontWeight={600}
                                 variant="body1"
                                 fontSize="0.9rem"
                                 sx={{ mt: 2 }}
-                                color="text.disabled"
                             >
                                 {!loading && <span>{tokens.join(" · ")}</span>}
                                 {loading && <Skeleton width="12.5%" />}

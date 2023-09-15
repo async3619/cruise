@@ -19,7 +19,7 @@ export function AddButton({ onPlaylistCreate, onPlaylistSelected, ...rest }: Add
     const { t } = useTranslation();
 
     const menuItems = React.useMemo<MenuItem[]>(() => {
-        return [
+        const result: MenuItem[] = [
             {
                 type: "button",
                 id: "add-to-playlist",
@@ -27,6 +27,15 @@ export function AddButton({ onPlaylistCreate, onPlaylistSelected, ...rest }: Add
                 label: t("playlist.create.title"),
                 onClick: onPlaylistCreate,
             },
+        ];
+
+        if (playlists.length > 0) {
+            result.push({
+                type: "divider",
+            });
+        }
+
+        result.push(
             ...playlists.map<MenuItem>(playlist => ({
                 type: "button",
                 label: playlist.name,
@@ -36,7 +45,9 @@ export function AddButton({ onPlaylistCreate, onPlaylistSelected, ...rest }: Add
                     onPlaylistSelected(playlist.id);
                 },
             })),
-        ];
+        );
+
+        return result;
     }, [onPlaylistCreate, onPlaylistSelected, playlists, t]);
 
     return <Button {...rest} menuItems={menuItems} />;

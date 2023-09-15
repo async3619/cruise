@@ -27,7 +27,10 @@ export const Root = styled.div<{ isVisible: boolean }>`
     }
 
     ${({ theme }) => theme.getColorSchemeSelector("light")} {
-        background-color: ${backgroundColors["50"]};
+        border: 1px solid ${({ theme }) => theme.palette.divider};
+        background-color: white;
+
+        box-shadow: ${({ theme }) => theme.shadows[2]};
     }
 `;
 
@@ -54,7 +57,7 @@ export const ChildrenWrapper = styled.div`
     }
 
     ${({ theme }) => theme.getColorSchemeSelector("light")} {
-        background-color: ${backgroundColors["100"]};
+        background-color: #fff;
     }
 `;
 

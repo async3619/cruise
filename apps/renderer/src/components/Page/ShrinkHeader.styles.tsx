@@ -14,6 +14,7 @@ export const Root = styled.div`
 
     ${({ theme }) => theme.getColorSchemeSelector("light")} {
         background-color: ${backgroundColors["50"]};
+        border: 1px solid ${({ theme }) => theme.palette.divider};
     }
 `;
 
