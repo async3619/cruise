@@ -13,6 +13,7 @@ import {
     executeDeletePlaylist,
     executeDeletePlaylistItems,
     executeRenamePlaylist,
+    useAlbumQuery,
     useAlbumsQuery,
     usePlaylistCreatedSubscription,
     usePlaylistDeletedSubscription,
@@ -44,6 +45,19 @@ export class Library {
         this.dialog = dialog;
     }
 
+    public useAlbum(id: number) {
+        const { data, error } = useAlbumQuery({ variables: { id } });
+
+        React.useEffect(() => {
+            if (!error) {
+                return;
+            }
+
+            throw error;
+        }, [error]);
+
+        return data?.album ?? null;
+    }
     public useAlbums() {
         const { data, loading } = useAlbumsQuery();
         const [albums, setAlbums] = React.useState<MinimalAlbum[]>([]);

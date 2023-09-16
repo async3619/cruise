@@ -10,6 +10,7 @@ describe("AlbumResolver", () => {
     beforeEach(async () => {
         service = {
             findAll: jest.fn(),
+            findById: jest.fn(),
         };
 
         const module: TestingModule = await Test.createTestingModule({
@@ -21,6 +22,15 @@ describe("AlbumResolver", () => {
 
     it("should be defined", () => {
         expect(resolver).toBeDefined();
+    });
+
+    it("should be able to get an album by id", async () => {
+        const album = { id: 1 } as Album;
+        service.findById.mockReturnValue(album);
+
+        const result = await resolver.album(1);
+
+        expect(result).toStrictEqual(album);
     });
 
     it("should be able to get all albums", async () => {

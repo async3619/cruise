@@ -17,6 +17,7 @@ describe("BaseService", () => {
             create: jest.fn(),
             save: jest.fn().mockImplementation(p => p),
             find: jest.fn(),
+            findOne: jest.fn(),
         };
 
         const module: TestingModule = await Test.createTestingModule({
@@ -34,6 +35,13 @@ describe("BaseService", () => {
         await service.clear();
 
         expect(repository.clear).toHaveBeenCalled();
+    });
+
+    it("should be able to find item by id", async () => {
+        repository.findOne.mockImplementation(() => [{ id: 1 }]);
+        await service.findById(1);
+
+        expect(repository.findOne).toHaveBeenCalledWith({ where: { id: 1 } });
     });
 
     it("should be able to find items by ids", async () => {

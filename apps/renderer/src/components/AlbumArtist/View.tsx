@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 import { Fab, Typography } from "@mui/material";
 import PlayArrowRoundedIcon from "@mui/icons-material/PlayArrowRounded";
@@ -14,8 +15,11 @@ export interface AlbumArtistViewProps {
 
 export function AlbumArtistView({ item, onPlay }: AlbumArtistViewProps) {
     const imageUrl = item.albumArt?.url;
+    const navigate = useNavigate();
 
-    const handleClick = React.useCallback(() => {}, []);
+    const handleClick = React.useCallback(() => {
+        navigate(`/library/album/${item.id}`);
+    }, [item, navigate]);
     const handleKeyDown = React.useCallback(
         (e: React.KeyboardEvent<HTMLDivElement>) => {
             if (!(e.key === "Enter" || e.key === " ")) {

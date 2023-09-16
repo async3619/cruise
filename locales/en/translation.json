@@ -39,6 +39,7 @@
     "common": {
         "library": "Library",
         "playlist": "Playlist",
+        "album": "Album",
         "now-playing": "Now Playing",
         "unknown-genre": "Unknown Genre",
         "unknown-album": "Unknown Album",

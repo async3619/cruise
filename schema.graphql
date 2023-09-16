@@ -79,6 +79,7 @@ type Playlist {
 }
 
 type Query {
+  album(id: Int!): Album
   albums: [Album!]!
   musics: [Music!]!
   isMaximized: Boolean!

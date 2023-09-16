@@ -18,6 +18,12 @@ fragment MinimalAlbum on Album {
     }
 }
 
+query album($id: Int!) {
+    album(id: $id) {
+        ...MinimalAlbum
+    }
+}
+
 query albums {
     albums {
         ...MinimalAlbum

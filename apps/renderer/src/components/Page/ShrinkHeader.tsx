@@ -14,10 +14,18 @@ import { Content, Description, ImageWrapper, Root } from "@components/Page/Shrin
 
 import { DisabledText } from "@styles/components";
 import { MinimalAlbumArt } from "@utils/types";
+import { AddButton, AddButtonProps } from "@components/AddButton";
 
-export interface ButtonItem extends Omit<ButtonProps, "children"> {
+export interface NormalButtonItem extends Omit<ButtonProps, "children" | "type"> {
+    type?: "button";
     label: string;
 }
+export interface AddButtonItem extends Omit<AddButtonProps, "children" | "type"> {
+    type: "add-button";
+    label: string;
+}
+
+export type ButtonItem = NormalButtonItem | AddButtonItem;
 
 export interface ShrinkHeaderPageProps extends WithLayoutProps {
     children?: React.ReactNode;
@@ -135,11 +143,23 @@ class ShrinkHeaderPageImpl extends React.Component<ShrinkHeaderPageProps, Shrink
 
         return (
             <Stack ref={measureRef} spacing={1} direction="row">
-                {buttons.map((button, index) => (
-                    <Button key={index} {...button} disabled={loading || button.disabled}>
-                        {button.label}
-                    </Button>
-                ))}
+                {buttons.map((button, index) => {
+                    if (button.type === "add-button") {
+                        const { type: _, ...rest } = button;
+
+                        return (
+                            <AddButton key={index} {...rest} disabled={loading || button.disabled}>
+                                {button.label}
+                            </AddButton>
+                        );
+                    }
+
+                    return (
+                        <Button key={index} {...button} disabled={loading || button.disabled}>
+                            {button.label}
+                        </Button>
+                    );
+                })}
             </Stack>
         );
     };

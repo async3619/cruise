@@ -1,5 +1,8 @@
+import _ from "lodash";
+import { Nullable } from "types";
+
 import { Inject } from "@nestjs/common";
-import { Context, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
+import { Args, Context, Int, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
 
 import { AlbumService } from "@album/album.service";
 
@@ -9,11 +12,15 @@ import { AlbumArt } from "@album-art/models/album-art.model";
 import { Music } from "@music/models/music.model";
 
 import { GraphQLContext } from "@root/context";
-import _ from "lodash";
 
 @Resolver(() => Album)
 export class AlbumResolver {
     public constructor(@Inject(AlbumService) private readonly albumService: AlbumService) {}
+
+    @Query(() => Album, { nullable: true })
+    public async album(@Args("id", { type: () => Int }) id: number): Promise<Nullable<Album>> {
+        return this.albumService.findById(id);
+    }
 
     @Query(() => [Album])
     public async albums(): Promise<Album[]> {
