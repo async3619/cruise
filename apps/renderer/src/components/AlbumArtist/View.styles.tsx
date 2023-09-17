@@ -61,6 +61,24 @@ export const PlayButton = styled.div`
     }
 `;
 
+export const CheckBoxWrapper = styled.div<{ visible: boolean }>`
+    padding: ${({ theme }) => theme.spacing(0.5)};
+
+    position: absolute;
+
+    background-color: rgba(0, 0, 0, 0.75);
+    opacity: ${({ visible }) => (visible ? 1 : 0)};
+
+    transition: ${({ theme }) =>
+        theme.transitions.create(["opacity"], {
+            duration: theme.transitions.duration.shortest,
+        })};
+
+    &:has(:focus-visible) {
+        opacity: 1;
+    }
+`;
+
 export const Root = styled.div`
     margin: ${({ theme }) => theme.spacing(0, 1.5, 1.5, 0)};
     padding: ${({ theme }) => theme.spacing(1.5)};
@@ -107,6 +125,10 @@ export const Root = styled.div`
         ${PlayButton} {
             opacity: 1;
             transform: scale(1);
+        }
+
+        ${CheckBoxWrapper} {
+            opacity: 1;
         }
     }
 `;

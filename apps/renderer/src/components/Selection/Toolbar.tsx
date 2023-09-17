@@ -8,22 +8,30 @@ import PlayArrowRoundedIcon from "@mui/icons-material/PlayArrowRounded";
 import ShuffleRoundedIcon from "@mui/icons-material/ShuffleRounded";
 
 import { AddButton } from "@components/AddButton";
-import { useMusicSelection } from "@components/Selection/Music.context";
 import { useLibrary } from "@components/Library/context";
 import { usePlayer } from "@components/Player/context";
+import { SelectionContextValue } from "@components/Selection/context";
 
-import { CheckboxWrapper, ChildrenWrapper, Root, Wrapper } from "@components/Selection/MusicToolbar.styles";
+import { CheckboxWrapper, ChildrenWrapper, Root, Wrapper } from "@components/Selection/Toolbar.styles";
 import { MinimalMusic } from "@utils/types";
 
-export interface MusicSelectionToolbarProps {
+export interface SelectionToolbarProps<T> {
     onDelete?(indices: number[]): Promise<void>;
     playable?: boolean;
     children?: React.ReactNode;
+    useSelection: () => SelectionContextValue<T> | null;
+    getMusics(items: T[], indices: number[]): MinimalMusic[];
 }
 
-export function MusicSelectionToolbar({ onDelete, playable = true, children }: MusicSelectionToolbarProps) {
+export function SelectionToolbar<T>({
+    onDelete,
+    playable = true,
+    children,
+    useSelection,
+    getMusics,
+}: SelectionToolbarProps<T>) {
     const { t } = useTranslation();
-    const selection = useMusicSelection();
+    const selection = useSelection();
     const [currentCount, setCurrentCount] = React.useState(selection?.selectedIndices.length || 0);
     const [isLoading, setIsLoading] = React.useState(false);
     const library = useLibrary();
@@ -75,13 +83,9 @@ export function MusicSelectionToolbar({ onDelete, playable = true, children }: M
             return;
         }
 
-        const targetIds: number[] = [];
-        for (const idx of selection.selectedIndices) {
-            targetIds.push(selection.allItems[idx].id);
-        }
-
+        const targetIds = getMusics(selection.allItems, selection.selectedIndices).map(m => m.id);
         await library.createPlaylist(targetIds);
-    }, [library, selection]);
+    }, [library, selection, getMusics]);
 
     const handlePlaylistSelected = React.useCallback(
         async (playlistId: number) => {
@@ -89,14 +93,10 @@ export function MusicSelectionToolbar({ onDelete, playable = true, children }: M
                 return;
             }
 
-            const targetIds: number[] = [];
-            for (const idx of selection.selectedIndices) {
-                targetIds.push(selection.allItems[idx].id);
-            }
-
+            const targetIds = getMusics(selection.allItems, selection.selectedIndices).map(m => m.id);
             await library.addMusicsToPlaylist(playlistId, targetIds);
         },
-        [library, selection],
+        [library, selection, getMusics],
     );
 
     const handlePlay = React.useCallback(() => {
@@ -104,27 +104,19 @@ export function MusicSelectionToolbar({ onDelete, playable = true, children }: M
             return;
         }
 
-        const targetMusics: MinimalMusic[] = [];
-        for (const idx of selection.selectedIndices) {
-            targetMusics.push(selection.allItems[idx]);
-        }
-
-        player.playPlaylist(targetMusics, 0);
+        const targetItems = getMusics(selection.allItems, selection.selectedIndices);
+        player.playPlaylist(targetItems, 0);
         selection.setSelection([]);
-    }, [player, selection]);
+    }, [player, selection, getMusics]);
     const handleShuffle = React.useCallback(() => {
         if (!selection) {
             return;
         }
 
-        const targetMusics: MinimalMusic[] = [];
-        for (const idx of selection.selectedIndices) {
-            targetMusics.push(selection.allItems[idx]);
-        }
-
+        const targetMusics = getMusics(selection.allItems, selection.selectedIndices);
         player.playPlaylist(targetMusics, 0, true);
         selection.setSelection([]);
-    }, [player, selection]);
+    }, [getMusics, player, selection]);
 
     if (!selection) {
         return null;

@@ -5,6 +5,7 @@ import { Page } from "@components/Page";
 import { useLibrary } from "@components/Library/context";
 import { AlbumArtistList } from "@components/AlbumArtist/List";
 import { usePlayer } from "@components/Player/context";
+import { AlbumSelection, AlbumSelectionToolbar } from "@components/Selection";
 
 import { MinimalAlbum } from "@utils/types";
 
@@ -24,8 +25,10 @@ export function Albums({}: AlbumsProps) {
     );
 
     return (
-        <Page header={t("pages.albums")} loading={loading}>
-            <AlbumArtistList items={albums} onPlayAlbum={handlePlayAlbum} />
-        </Page>
+        <AlbumSelection items={albums}>
+            <Page header={t("pages.albums")} loading={loading} toolbar={<AlbumSelectionToolbar />}>
+                <AlbumArtistList items={albums} onPlayAlbum={handlePlayAlbum} />
+            </Page>
+        </AlbumSelection>
     );
 }

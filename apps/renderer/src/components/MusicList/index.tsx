@@ -9,7 +9,7 @@ import PauseRoundedIcon from "@mui/icons-material/PauseRounded";
 
 import { useLayout } from "@components/Layout/context";
 import { usePlayer } from "@components/Player/context";
-import { useMusicSelection } from "@components/Selection/Music.context";
+import { useMusicSelection } from "@components/Selection";
 
 import { Column, Item, Label, PlayPauseButton, Root } from "@components/MusicList/index.styles";
 

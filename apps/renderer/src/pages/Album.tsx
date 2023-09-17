@@ -9,13 +9,12 @@ import { Box, CircularProgress } from "@mui/material";
 import { ShrinkHeaderPage } from "@components/Page/ShrinkHeader";
 import { useLibrary } from "@components/Library/context";
 import { MusicList } from "@components/MusicList";
-import { MusicSelection } from "@components/Selection/Music";
+import { MusicSelection, MusicSelectionToolbar } from "@components/Selection";
 
 import { useAlbumHeaderButtons } from "@pages/Album.const";
 
 import { formatDuration } from "@utils/duration";
 import { MinimalMusic } from "@utils/types";
-import { MusicSelectionToolbar } from "@components/Selection/MusicToolbar";
 
 export interface AlbumProps {}
 
