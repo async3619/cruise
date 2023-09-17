@@ -8,6 +8,10 @@ export const Image = styled.div<{ circular?: boolean }>`
     height: ${({ theme }) => theme.spacing(22)};
     border-radius: ${({ circular }) => (circular ? "50%" : "0")};
 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
     position: relative;
 
     background-size: cover;
@@ -65,6 +69,8 @@ export const CheckBoxWrapper = styled.div<{ visible: boolean }>`
     padding: ${({ theme }) => theme.spacing(0.5)};
 
     position: absolute;
+    top: 0;
+    left: 0;
 
     background-color: rgba(0, 0, 0, 0.75);
     opacity: ${({ visible }) => (visible ? 1 : 0)};
@@ -76,6 +82,20 @@ export const CheckBoxWrapper = styled.div<{ visible: boolean }>`
 
     &:has(:focus-visible) {
         opacity: 1;
+    }
+`;
+
+export const ImageIcon = styled.div`
+    display: flex;
+    justify-content: center;
+
+    color: ${({ theme }) => theme.palette.text.disabled};
+
+    > svg {
+        width: 35%;
+        height: 35%;
+
+        display: block;
     }
 `;
 

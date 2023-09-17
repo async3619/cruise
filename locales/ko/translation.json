@@ -3,7 +3,8 @@
         "home": "홈",
         "settings": "설정",
         "musics": "음악",
-        "albums": "앨범"
+        "albums": "앨범",
+        "artists": "아티스트"
     },
     "settings": {
         "library": {

@@ -3,50 +3,52 @@ import { useTranslation } from "react-i18next";
 
 import { Button } from "ui";
 
+import { Page } from "@components/Page";
+import { AlbumArtistList } from "@components/AlbumArtist/List";
+import { ArtistSelection, ArtistSelectionToolbar } from "@components/Selection";
+import { useLibrary } from "@components/Library/context";
+import { usePlayer } from "@components/Player/context";
+
 import ShuffleRoundedIcon from "@mui/icons-material/ShuffleRounded";
 
-import { Page } from "@components/Page";
-import { useLibrary } from "@components/Library/context";
-import { AlbumArtistList } from "@components/AlbumArtist/List";
-import { usePlayer } from "@components/Player/context";
-import { AlbumSelection, AlbumSelectionToolbar } from "@components/Selection";
+import { FullArtist } from "@utils/types";
 
-import { MinimalAlbum } from "@utils/types";
+export interface ArtistsProps {}
 
-export interface AlbumsProps {}
-
-export function Albums({}: AlbumsProps) {
+export function Artists({}: ArtistsProps) {
     const { t } = useTranslation();
     const library = useLibrary();
     const player = usePlayer();
-    const { albums, loading } = library.useAlbums();
+    const { artists, loading } = library.useArtists();
 
     const handleShuffleAll = React.useCallback(() => {
-        if (!albums) {
+        if (!artists || artists.length === 0) {
             return;
         }
 
         player.playPlaylist(
-            albums.flatMap(a => a.musics),
+            artists.flatMap(a => a.musics),
             0,
             true,
         );
-    }, [albums, player]);
-
-    const handlePlayAlbum = React.useCallback(
-        (album: MinimalAlbum) => {
-            player.playPlaylist(album.musics, 0, false);
+    }, [artists, player]);
+    const handlePlayItem = React.useCallback(
+        (artist: FullArtist) => {
+            player.playPlaylist(
+                artist.albums.flatMap(a => a.musics),
+                0,
+            );
         },
         [player],
     );
 
     return (
-        <AlbumSelection items={albums}>
+        <ArtistSelection items={artists}>
             <Page
-                header={t("pages.albums")}
+                header={t("pages.artists")}
                 loading={loading}
                 toolbar={
-                    <AlbumSelectionToolbar>
+                    <ArtistSelectionToolbar>
                         <Button
                             variant="contained"
                             color="primary"
@@ -56,11 +58,11 @@ export function Albums({}: AlbumsProps) {
                         >
                             {t("common.shuffle-all")}
                         </Button>
-                    </AlbumSelectionToolbar>
+                    </ArtistSelectionToolbar>
                 }
             >
-                <AlbumArtistList type="album" items={albums} onPlayItem={handlePlayAlbum} />
+                <AlbumArtistList type="artist" items={artists} onPlayItem={handlePlayItem} />
             </Page>
-        </AlbumSelection>
+        </ArtistSelection>
     );
 }

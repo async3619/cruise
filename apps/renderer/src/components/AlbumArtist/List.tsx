@@ -1,22 +1,32 @@
 import React from "react";
 
 import { AlbumArtistView } from "@components/AlbumArtist/View";
-import { useAlbumSelection } from "@components/Selection";
+import { useAlbumSelection, useArtistSelection } from "@components/Selection";
 import { Root } from "@components/AlbumArtist/List.styles";
 
-import { MinimalAlbum } from "@utils/types";
+import { FullArtist, MinimalAlbum } from "@utils/types";
 
-export interface AlbumArtistListProps {
-    items: MinimalAlbum[];
-    onPlayAlbum(album: MinimalAlbum): void;
+export interface AlbumListProps {
+    type: "album";
+    items: Array<MinimalAlbum>;
+    onPlayItem(album: MinimalAlbum): void;
 }
 
-export function AlbumArtistList({ items, onPlayAlbum }: AlbumArtistListProps) {
-    const selection = useAlbumSelection();
+export interface ArtistListProps {
+    type: "artist";
+    items: Array<FullArtist>;
+    onPlayItem(artist: FullArtist): void;
+}
+
+export type AlbumArtistListProps = AlbumListProps | ArtistListProps;
+
+export function AlbumArtistList({ items, onPlayItem, type }: AlbumArtistListProps) {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const selection = type === "album" ? useAlbumSelection() : useArtistSelection();
     const selectedIndices = selection?.selectedIndices || [];
 
     const handleSelectChange = React.useCallback(
-        (album: MinimalAlbum, checked: boolean) => {
+        (album: MinimalAlbum | FullArtist, checked: boolean) => {
             if (!selection) {
                 return;
             }
@@ -45,7 +55,7 @@ export function AlbumArtistList({ items, onPlayAlbum }: AlbumArtistListProps) {
                     selected={selectedIndices.includes(index)}
                     key={item.id}
                     item={item}
-                    onPlay={onPlayAlbum}
+                    onPlay={onPlayItem}
                     onSelectChange={handleSelectChange}
                 />
             ))}

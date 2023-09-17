@@ -3,26 +3,30 @@ import { useNavigate } from "react-router-dom";
 
 import { Fab, Typography, Checkbox } from "@mui/material";
 import PlayArrowRoundedIcon from "@mui/icons-material/PlayArrowRounded";
+import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
+import AlbumRoundedIcon from "@mui/icons-material/AlbumRounded";
 
-import { CheckBoxWrapper, Image, Metadata, PlayButton, Root } from "@components/AlbumArtist/View.styles";
+import { CheckBoxWrapper, ImageIcon, Image, Metadata, PlayButton, Root } from "@components/AlbumArtist/View.styles";
 
-import { MinimalAlbum } from "@utils/types";
+import { FullArtist, MinimalAlbum } from "@utils/types";
 import { stopPropagation } from "@utils/events";
 
 export interface AlbumArtistViewProps {
-    item: MinimalAlbum;
+    item: MinimalAlbum | FullArtist;
     selected?: boolean;
-    onPlay(album: MinimalAlbum): void;
-    onSelectChange?(album: MinimalAlbum, selected: boolean): void;
+    onPlay(item: MinimalAlbum | FullArtist): void;
+    onSelectChange?(item: MinimalAlbum | FullArtist, selected: boolean): void;
 }
 
 export function AlbumArtistView({ item, onPlay, onSelectChange, selected }: AlbumArtistViewProps) {
-    const imageUrl = item.albumArt?.url;
     const navigate = useNavigate();
+    const isArtist = item.__typename === "Artist";
 
     const handleClick = React.useCallback(() => {
-        navigate(`/library/album/${item.id}`);
-    }, [item, navigate]);
+        const itemType = isArtist ? "artist" : "album";
+
+        navigate(`/library/${itemType}/${item.id}`);
+    }, [item, navigate, isArtist]);
     const handleKeyDown = React.useCallback(
         (e: React.KeyboardEvent<HTMLDivElement>) => {
             if (!(e.key === "Enter" || e.key === " ")) {
@@ -54,9 +58,28 @@ export function AlbumArtistView({ item, onPlay, onSelectChange, selected }: Albu
         [item, onSelectChange],
     );
 
+    let title: string;
+    let subtitle: string | undefined;
+    let imageUrl: string | undefined;
+    if (item.__typename === "Album") {
+        title = item.title;
+        subtitle = item.albumArtists.join(", ");
+        imageUrl = item.albumArt?.url;
+    } else if (item.__typename === "Artist") {
+        title = item.name;
+    } else {
+        throw new Error("Invalid item type");
+    }
+
     return (
         <Root tabIndex={0} role="button" data-testid="AlbumArtistView" onKeyDown={handleKeyDown} onClick={handleClick}>
-            <Image style={{ backgroundImage: `url(${imageUrl})` }}>
+            <Image circular={isArtist} style={{ backgroundImage: `url(${imageUrl})` }}>
+                {!imageUrl && (
+                    <ImageIcon>
+                        {isArtist && <PersonRoundedIcon />}
+                        {!isArtist && <AlbumRoundedIcon />}
+                    </ImageIcon>
+                )}
                 {onSelectChange && (
                     <CheckBoxWrapper visible={selected || false}>
                         <Checkbox
@@ -76,12 +99,14 @@ export function AlbumArtistView({ item, onPlay, onSelectChange, selected }: Albu
                 </PlayButton>
             </Image>
             <Metadata>
-                <Typography variant="body1" fontSize="1rem" sx={{ mb: 0.5 }}>
-                    {item.title}
+                <Typography variant="body1" fontSize="1rem">
+                    {title}
                 </Typography>
-                <Typography variant="body2" fontSize="0.9rem" color="text.disabled">
-                    {item.albumArtists.join(", ")}
-                </Typography>
+                {subtitle && (
+                    <Typography variant="body2" fontSize="0.9rem" color="text.disabled" sx={{ mt: 0.5 }}>
+                        {subtitle}
+                    </Typography>
+                )}
             </Metadata>
         </Root>
     );

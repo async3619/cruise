@@ -11,6 +11,7 @@ import QueueMusicRoundedIcon from "@mui/icons-material/QueueMusicRounded";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AlbumRoundedIcon from "@mui/icons-material/AlbumRounded";
+import PeopleAltRoundedIcon from "@mui/icons-material/PeopleAltRounded";
 
 import { ScrollbarThumb } from "@components/ScrollbarThumb";
 import { Content, Root } from "@components/Layout/SideBar.styles";
@@ -52,6 +53,12 @@ export function SideBar() {
                 type: "button",
                 label: t("pages.albums"),
                 icon: <AlbumRoundedIcon />,
+            },
+            {
+                id: "/library/artists",
+                type: "button",
+                label: t("pages.artists"),
+                icon: <PeopleAltRoundedIcon />,
             },
             {
                 type: "label",

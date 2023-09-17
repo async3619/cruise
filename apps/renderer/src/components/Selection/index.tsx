@@ -1,6 +1,6 @@
 import React from "react";
 import { SelectionContextValue } from "@components/Selection/context";
-import { MinimalAlbum, MinimalMusic } from "@utils/types";
+import { FullArtist, MinimalAlbum, MinimalMusic } from "@utils/types";
 import { SelectionToolbar, SelectionToolbarProps } from "@components/Selection/Toolbar";
 
 export interface SelectionProps<T> {
@@ -54,4 +54,15 @@ export const {
     Toolbar: AlbumSelectionToolbar,
 } = createSelectionComponent<MinimalAlbum>("AlbumSelection", (items, indices) =>
     indices.map(index => items[index]).flatMap(album => album.musics),
+);
+
+export const {
+    Component: ArtistSelection,
+    useSelection: useArtistSelection,
+    Toolbar: ArtistSelectionToolbar,
+} = createSelectionComponent<FullArtist>("ArtistSelection", (items, indices) =>
+    indices
+        .map(index => items[index])
+        .flatMap(artist => artist.albums)
+        .flatMap(album => album.musics),
 );
