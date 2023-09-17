@@ -15,13 +15,19 @@ export const Root = styled.div`
 export const Time = styled.span`
     font-family: "Roboto Mono", monospace !important;
 
-    color: ${({ theme }) => theme.vars.palette.text.disabled};
-
     &:first-of-type {
         text-align: left;
     }
 
     &:last-of-type {
         text-align: right;
+    }
+
+    ${({ theme }) => theme.getColorSchemeSelector("dark")} {
+        color: ${({ theme }) => theme.vars.palette.text.disabled};
+    }
+
+    ${({ theme }) => theme.getColorSchemeSelector("light")} {
+        color: ${({ theme }) => theme.vars.palette.text.primary};
     }
 `;

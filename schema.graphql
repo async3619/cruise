@@ -41,6 +41,10 @@ type Album {
   albumArtists: [String!]!
   createdAt: DateTime!
   updatedAt: DateTime!
+  musics: [Music!]!
+  artists: [Artist!]!
+  albumArt: AlbumArt
+  albumArts: [AlbumArt!]!
 }
 
 type Music {
@@ -75,6 +79,8 @@ type Playlist {
 }
 
 type Query {
+  album(id: Int!): Album
+  albums: [Album!]!
   musics: [Music!]!
   isMaximized: Boolean!
   isMinimized: Boolean!

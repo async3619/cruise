@@ -8,8 +8,7 @@ import ShuffleRoundedIcon from "@mui/icons-material/ShuffleRounded";
 
 import { Page } from "@components/Page";
 import { MusicList } from "@components/MusicList";
-import { MusicSelection } from "@components/Selection/Music";
-import { MusicSelectionToolbar } from "@components/Selection/MusicToolbar";
+import { MusicSelection, MusicSelectionToolbar } from "@components/Selection";
 import { usePlayer } from "@components/Player/context";
 
 export interface MusicsProps {}

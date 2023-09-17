@@ -5,12 +5,17 @@ export const Root = styled.div<{ standalone: boolean }>`
     margin: 0;
     padding: ${({ theme, standalone }) => theme.spacing(standalone ? 0 : 0.75)};
 
+    transition: ${({ theme }) =>
+        theme.transitions.create(["background-color"], {
+            duration: theme.transitions.duration.shortest,
+        })};
+
     ${({ theme }) => theme.getColorSchemeSelector("dark")} {
         background-color: ${backgroundColors["950"]};
     }
 
     ${({ theme }) => theme.getColorSchemeSelector("light")} {
-        background-color: ${backgroundColors["50"]};
+        background-color: ${({ standalone }) => (standalone ? backgroundColors["100"] : backgroundColors["50"])};
     }
 `;
 

@@ -5,10 +5,9 @@ import { Box, CircularProgress } from "@mui/material";
 
 import { ShrinkHeaderPage } from "@components/Page/ShrinkHeader";
 import { useHeaderButtons } from "@components/Page/Playlist.utils";
-import { MusicSelection } from "@components/Selection/Music";
+import { MusicSelection, MusicSelectionToolbar } from "@components/Selection";
 import { useLibrary } from "@components/Library/context";
 import { usePlayer } from "@components/Player/context";
-import { MusicSelectionToolbar } from "@components/Selection/MusicToolbar";
 import { MusicList } from "@components/MusicList";
 
 import { MinimalMusic } from "@utils/types";
