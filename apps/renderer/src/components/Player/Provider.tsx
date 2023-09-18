@@ -218,7 +218,11 @@ export class PlayerProvider extends React.Component<React.PropsWithChildren, Pla
     }
 
     public canSeekBackward() {
-        const { repeatMode, currentIndex } = this.state;
+        const { repeatMode, currentIndex, playlist } = this.state;
+        if (playlist.length === 0) {
+            return false;
+        }
+
         if (repeatMode === RepeatMode.All) {
             return true;
         }
@@ -227,6 +231,10 @@ export class PlayerProvider extends React.Component<React.PropsWithChildren, Pla
     }
     public canSeekForward() {
         const { repeatMode, currentIndex, playlist } = this.state;
+        if (playlist.length === 0) {
+            return false;
+        }
+
         if (repeatMode === RepeatMode.All) {
             return true;
         }
