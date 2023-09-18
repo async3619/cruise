@@ -1,7 +1,9 @@
 import {
     ConfigDataFragment,
+    FullArtistFragment,
     MinimalAlbumArtFragment,
     MinimalAlbumFragment,
+    MinimalArtistFragment,
     MinimalMusicFragment,
     MinimalPlaylistFragment,
 } from "@graphql/queries";
@@ -14,3 +16,5 @@ export type MinimalMusic = FromGraphQL<MinimalMusicFragment>;
 export type MinimalAlbumArt = FromGraphQL<MinimalAlbumArtFragment>;
 export type MinimalPlaylist = FromGraphQL<MinimalPlaylistFragment>;
 export type MinimalAlbum = FromGraphQL<MinimalAlbumFragment>;
+export type MinimalArtist = FromGraphQL<MinimalArtistFragment>;
+export type FullArtist = FromGraphQL<FullArtistFragment>;

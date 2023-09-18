@@ -1,0 +1,26 @@
+fragment MinimalArtist on Artist {
+    id
+    name
+}
+
+fragment FullArtist on Artist {
+    ...MinimalArtist
+    musics {
+        ...MinimalMusic
+    }
+    albums {
+        ...MinimalAlbum
+    }
+}
+
+query artists {
+    artists {
+        ...FullArtist
+    }
+}
+
+query artist($id: Int!) {
+    artist(id: $id) {
+        ...FullArtist
+    }
+}

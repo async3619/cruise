@@ -3,7 +3,8 @@
         "home": "홈",
         "settings": "설정",
         "musics": "음악",
-        "albums": "앨범"
+        "albums": "앨범",
+        "artists": "아티스트"
     },
     "settings": {
         "library": {
@@ -40,11 +41,14 @@
         "library": "라이브러리",
         "playlist": "재생목록",
         "album": "앨범",
+        "artist": "아티스트",
         "now-playing": "재생 대기열",
         "unknown-genre": "알 수 없는 장르",
         "unknown-album": "알 수 없는 앨범",
         "musicWithCount_other": "{{count}}개의 곡",
         "musicWithCount_one": "{{count}}개의 곡",
+        "albumWithCount_other": "{{count}}개의 앨범",
+        "albumWithCount_one": "{{count}}개의 앨범",
         "selectedCount_other": "{{count}}개 항목 선택됨",
         "selectedCount_one": "{{count}}개 항목 선택됨",
         "clear": "비우기",
@@ -56,7 +60,10 @@
         "rename": "이름 변경",
         "play-all": "전체 재생",
         "play-selected": "선택 재생",
-        "shuffle-all": "무작위 재생"
+        "shuffle-all": "무작위 재생",
+        "album-list": "앨범 목록",
+        "artist-list": "아티스트 목록",
+        "track-list": "곡 목록"
     },
     "playlist": {
         "create": {

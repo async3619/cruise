@@ -7,9 +7,16 @@ export interface VirtualizedListProps<T> {
     scrollElement?: HTMLElement | null;
     children: (item: T, index: number) => React.ReactNode;
     estimateSize: (index: number) => number;
+    className?: string;
 }
 
-export function VirtualizedList<T>({ children, items, estimateSize, scrollElement }: VirtualizedListProps<T>) {
+export function VirtualizedList<T>({
+    children,
+    items,
+    estimateSize,
+    scrollElement,
+    className,
+}: VirtualizedListProps<T>) {
     const virtualizer = useVirtualizer({
         count: items.length,
         estimateSize,
@@ -19,6 +26,7 @@ export function VirtualizedList<T>({ children, items, estimateSize, scrollElemen
 
     return (
         <div
+            className={className}
             style={{
                 height: `${virtualizer.getTotalSize()}px`,
                 width: "100%",

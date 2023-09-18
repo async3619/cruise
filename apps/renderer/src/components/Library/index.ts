@@ -15,6 +15,8 @@ import {
     executeRenamePlaylist,
     useAlbumQuery,
     useAlbumsQuery,
+    useArtistQuery,
+    useArtistsQuery,
     usePlaylistCreatedSubscription,
     usePlaylistDeletedSubscription,
     usePlaylistQuery,
@@ -22,7 +24,7 @@ import {
     usePlaylistUpdatedSubscription,
 } from "@graphql/queries";
 
-import { MinimalAlbum, MinimalPlaylist } from "@utils/types";
+import { FullArtist, MinimalAlbum, MinimalPlaylist } from "@utils/types";
 
 export class Library {
     private readonly client: ApolloClient<object>;
@@ -67,6 +69,30 @@ export class Library {
         }, [data]);
 
         return { albums, loading };
+    }
+
+    public useArtist(id: number) {
+        const { data, error } = useArtistQuery({ variables: { id } });
+
+        React.useEffect(() => {
+            if (!error) {
+                return;
+            }
+
+            throw error;
+        }, [error]);
+
+        return data?.artist ?? null;
+    }
+    public useArtists() {
+        const { data, loading } = useArtistsQuery();
+        const [artists, setArtists] = React.useState<FullArtist[]>([]);
+
+        React.useEffect(() => {
+            setArtists(data?.artists ?? []);
+        }, [data]);
+
+        return { artists, loading };
     }
 
     public usePlaylist(id: number) {

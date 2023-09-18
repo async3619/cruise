@@ -18,6 +18,8 @@ type Artist {
   name: String!
   createdAt: DateTime!
   updatedAt: DateTime!
+  musics: [Music!]!
+  albums: [Album!]!
 }
 
 """
@@ -81,6 +83,8 @@ type Playlist {
 type Query {
   album(id: Int!): Album
   albums: [Album!]!
+  artist(id: Int!): Artist
+  artists: [Artist!]!
   musics: [Music!]!
   isMaximized: Boolean!
   isMinimized: Boolean!

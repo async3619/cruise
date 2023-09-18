@@ -1,19 +1,7 @@
 import { backgroundColors } from "ui";
 
 import styled from "@emotion/styled";
-import { keyframes } from "@emotion/css";
-
-export const FadeIn = keyframes`
-    from {
-        opacity: 0;
-        transform: translateY(12px);
-    }
-    
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-`;
+import { FadeInKeyframes } from "@components/FadeIn";
 
 export const Root = styled.div`
     margin: 0;
@@ -43,7 +31,7 @@ export const Header = styled.div<{ hasToolbar: boolean }>`
 export const Content = styled.div`
     padding: ${({ theme }) => theme.spacing(0, 2, 2)};
 
-    animation: ${FadeIn} ${({ theme }) => theme.transitions.duration.enteringScreen}ms ease-in-out;
+    animation: ${FadeInKeyframes} ${({ theme }) => theme.transitions.duration.enteringScreen}ms ease-in-out;
 `;
 
 export const ToolbarPlaceholder = styled.div`
