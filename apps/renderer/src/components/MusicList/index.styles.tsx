@@ -1,4 +1,4 @@
-import { backgroundColors } from "ui";
+import { backgroundColors, VirtualizedList } from "ui";
 
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
@@ -155,4 +155,19 @@ export const Item = styled.div<{ odd: boolean; isActive: boolean; selected: bool
             opacity: 1;
         }
     }
+`;
+
+export const ShrinkList = styled(VirtualizedList)`
+    margin-left: auto;
+    padding-left: ${({ theme }) => theme.spacing(24)};
+
+    width: calc(100% - ${({ theme }) => theme.spacing(24)}) !important;
+`;
+
+export const AlbumInformation = styled.section`
+    width: ${({ theme }) => theme.spacing(22)};
+
+    position: absolute;
+    top: 0;
+    left: ${({ theme }) => theme.spacing(-24)};
 `;

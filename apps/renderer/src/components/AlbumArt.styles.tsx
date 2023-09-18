@@ -1,11 +1,11 @@
 import styled from "@emotion/styled";
 import { ButtonBase } from "@mui/material";
 
-export const Root = styled.div<{ withoutBorder: boolean }>`
+export const Root = styled.div<{ withoutBorder: boolean; rounded?: boolean }>`
     margin: 0;
     padding: 0;
     border: ${({ theme, withoutBorder }) => (withoutBorder ? "0" : `1px solid ${theme.vars.palette.divider}`)};
-    border-radius: ${({ theme }) => theme.shape.borderRadius}px;
+    border-radius: ${({ theme, rounded }) => (rounded ? "100%" : `${theme.shape.borderRadius}px`)};
 
     display: flex;
     align-items: center;
@@ -19,12 +19,12 @@ export const Root = styled.div<{ withoutBorder: boolean }>`
 `;
 
 export const ButtonRoot = styled(ButtonBase, {
-    shouldForwardProp: prop => prop !== "withoutBorder",
-})<{ withoutBorder: boolean }>`
+    shouldForwardProp: prop => prop !== "withoutBorder" && prop !== "rounded",
+})<{ withoutBorder: boolean; rounded?: boolean }>`
     margin: 0;
     padding: 0;
     border: ${({ theme, withoutBorder }) => (withoutBorder ? "0" : `1px solid ${theme.vars.palette.divider}`)};
-    border-radius: ${({ theme }) => theme.shape.borderRadius}px;
+    border-radius: ${({ theme, rounded }) => (rounded ? "100%" : `${theme.shape.borderRadius}px`)};
 
     display: flex;
     align-items: center;
@@ -52,10 +52,13 @@ export const Background = styled.div`
     align-items: center;
     justify-content: center;
 
-    > svg {
-        display: block;
+    color: ${({ theme }) => theme.vars.palette.text.disabled};
 
-        opacity: 0.5;
+    > svg {
+        width: 35%;
+        height: 35%;
+
+        display: block;
     }
 `;
 

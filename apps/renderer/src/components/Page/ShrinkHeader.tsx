@@ -5,6 +5,7 @@ import React from "react";
 import Measure, { ContentRect, MeasuredComponentProps } from "react-measure";
 
 import { Box, Skeleton, Stack, Typography } from "@mui/material";
+import { AddButton, AddButtonProps } from "@components/AddButton";
 
 import { Page } from "@components/Page";
 import { AlbumArt } from "@components/AlbumArt";
@@ -14,7 +15,6 @@ import { Content, Description, ImageWrapper, Root } from "@components/Page/Shrin
 
 import { DisabledText } from "@styles/components";
 import { MinimalAlbumArt } from "@utils/types";
-import { AddButton, AddButtonProps } from "@components/AddButton";
 
 export interface NormalButtonItem extends Omit<ButtonProps, "children" | "type"> {
     type?: "button";
@@ -31,6 +31,7 @@ export interface ShrinkHeaderPageProps extends WithLayoutProps {
     children?: React.ReactNode;
     title: string;
     subtitle?: string;
+    isArtist?: boolean;
     tokens?: Array<string | number>;
     albumArt: Nullable<MinimalAlbumArt>;
     buttons: ButtonItem[];
@@ -183,12 +184,12 @@ class ShrinkHeaderPageImpl extends React.Component<ShrinkHeaderPageProps, Shrink
         );
     };
     private renderHeader = () => {
-        const { subtitle, tokens, albumArt, loading = false } = this.props;
+        const { subtitle, tokens, albumArt, isArtist = false, loading = false } = this.props;
 
         return (
             <Root>
                 <ImageWrapper ref={this.imageViewRef}>
-                    <AlbumArt albumArt={albumArt} />
+                    <AlbumArt isArtist={isArtist} albumArt={albumArt} />
                 </ImageWrapper>
                 <Content>
                     <Measure bounds onResize={this.handleTitleMeasure}>

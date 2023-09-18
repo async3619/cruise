@@ -40,11 +40,14 @@
         "library": "Library",
         "playlist": "Playlist",
         "album": "Album",
+        "artist": "Artist",
         "now-playing": "Now Playing",
         "unknown-genre": "Unknown Genre",
         "unknown-album": "Unknown Album",
         "musicWithCount_other": "{{count}} Musics",
         "musicWithCount_one": "{{count}} Music",
+        "albumWithCount_other": "{{count}} Albums",
+        "albumWithCount_one": "{{count}} Album",
         "selectedCount_other": "{{count}} Items Selected",
         "selectedCount_one": "{{count}} Item Selected",
         "clear": "Clear",
@@ -56,7 +59,10 @@
         "rename": "Rename",
         "play-all": "Play All",
         "play-selected": "Play Selected",
-        "shuffle-all": "Shuffle All"
+        "shuffle-all": "Shuffle All",
+        "album-list": "Album List",
+        "artist-list": "Artist List",
+        "track-list": "Track List"
     },
     "playlist": {
         "create": {

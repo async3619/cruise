@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 
 import { VirtualizedList } from "ui";
 
-import { Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import PlayArrowRoundedIcon from "@mui/icons-material/PlayArrowRounded";
 import PauseRoundedIcon from "@mui/icons-material/PauseRounded";
 
@@ -11,16 +11,27 @@ import { useLayout } from "@components/Layout/context";
 import { usePlayer } from "@components/Player/context";
 import { useMusicSelection } from "@components/Selection";
 
-import { Column, Item, Label, PlayPauseButton, Root } from "@components/MusicList/index.styles";
+import {
+    AlbumInformation,
+    Column,
+    Item,
+    Label,
+    PlayPauseButton,
+    Root,
+    ShrinkList,
+} from "@components/MusicList/index.styles";
 
 import { MinimalMusic } from "@utils/types";
 import { formatDuration } from "@utils/duration";
+import { AlbumArt } from "@components/AlbumArt";
+import { DisabledText } from "@styles/components";
 
 export interface MusicListProps {
     musics: MinimalMusic[];
+    withAlbum?: boolean;
 }
 
-export function MusicList({ musics }: MusicListProps) {
+export function MusicList({ musics, withAlbum = false }: MusicListProps) {
     const { t } = useTranslation();
     const { view } = useLayout();
     const player = usePlayer();
@@ -74,9 +85,11 @@ export function MusicList({ musics }: MusicListProps) {
         [handleItemClick],
     );
 
+    const List = (withAlbum ? ShrinkList : VirtualizedList) as typeof VirtualizedList<MinimalMusic>;
+
     return (
         <Root>
-            <VirtualizedList items={musics} estimateSize={() => 56} scrollElement={view}>
+            <List items={musics} estimateSize={() => 56} scrollElement={view}>
                 {(item, index) => (
                     <Item
                         tabIndex={0}
@@ -87,6 +100,27 @@ export function MusicList({ musics }: MusicListProps) {
                         onKeyDown={e => handleItemKeyDown(e, index)}
                         selected={selection?.selectedIndices.includes(index) || false}
                     >
+                        {withAlbum && (!index || item.album?.id !== musics[index - 1].album?.id) && (
+                            <AlbumInformation>
+                                <AlbumArt albumArt={item.albumArt} />
+                                <Box mt={1}>
+                                    <Typography
+                                        variant="body1"
+                                        overflow="hidden"
+                                        textOverflow="ellipsis"
+                                        whiteSpace="nowrap"
+                                        color="text.primary"
+                                    >
+                                        {item.album?.title || t("common.unknown-album")}
+                                    </Typography>
+                                    {item.year && (
+                                        <Typography component={DisabledText} variant="body2">
+                                            {item.year}
+                                        </Typography>
+                                    )}
+                                </Box>
+                            </AlbumInformation>
+                        )}
                         <Column columnWidth="44px">
                             <PlayPauseButton
                                 withoutBorder
@@ -124,7 +158,7 @@ export function MusicList({ musics }: MusicListProps) {
                         </Column>
                     </Item>
                 )}
-            </VirtualizedList>
+            </List>
         </Root>
     );
 }
