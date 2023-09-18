@@ -72,13 +72,20 @@ export const CheckBoxWrapper = styled.div<{ visible: boolean }>`
     top: 0;
     left: 0;
 
-    background-color: rgba(0, 0, 0, 0.75);
     opacity: ${({ visible }) => (visible ? 1 : 0)};
 
     transition: ${({ theme }) =>
         theme.transitions.create(["opacity"], {
             duration: theme.transitions.duration.shortest,
         })};
+
+    ${({ theme }) => theme.getColorSchemeSelector("dark")} {
+        background-color: rgba(0, 0, 0, 0.75);
+    }
+
+    ${({ theme }) => theme.getColorSchemeSelector("light")} {
+        background-color: rgba(255, 255, 255, 0.75);
+    }
 
     &:has(:focus-visible) {
         opacity: 1;
