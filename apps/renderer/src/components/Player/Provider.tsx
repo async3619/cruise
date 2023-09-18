@@ -24,6 +24,11 @@ export interface Player {
     canSeekBackward(): boolean;
     canSeekForward(): boolean;
 
+    setMuted(muted: boolean): void;
+    setVolume(volume: number, persist?: boolean): void;
+    volume: number;
+    muted: boolean;
+
     setRepeatMode(mode: RepeatMode): void;
     repeatMode: RepeatMode;
 
@@ -55,6 +60,11 @@ export class PlayerProvider extends React.Component<React.PropsWithChildren, Pla
         setRepeatMode: this.setRepeatMode.bind(this),
         repeatMode: RepeatMode.None,
 
+        setMuted: this.setMuted.bind(this),
+        setVolume: this.setVolume.bind(this),
+        volume: Number(localStorage.getItem("volume")) || 0.5,
+        muted: localStorage.getItem("muted") === "true",
+
         canSeekBackward: this.canSeekBackward.bind(this),
         canSeekForward: this.canSeekForward.bind(this),
 
@@ -79,6 +89,13 @@ export class PlayerProvider extends React.Component<React.PropsWithChildren, Pla
         }
 
         return this.audioRef.current;
+    }
+
+    public componentDidMount() {
+        const { volume, muted } = this.state;
+
+        this.audio.volume = volume;
+        this.audio.muted = muted;
     }
 
     public setRepeatMode(mode: RepeatMode) {
@@ -168,6 +185,30 @@ export class PlayerProvider extends React.Component<React.PropsWithChildren, Pla
                 }
             },
         );
+    }
+
+    public setMuted(muted: boolean) {
+        this.audio.muted = muted;
+
+        localStorage.setItem("muted", String(muted));
+        this.setState({ muted });
+
+        if (!muted) {
+            this.setVolume(this.state.volume);
+        }
+    }
+    public setVolume(volume: number, persist = false) {
+        if (!volume && persist) {
+            this.setMuted(true);
+            return;
+        }
+
+        this.audio.volume = volume;
+
+        if (persist) {
+            localStorage.setItem("volume", String(volume));
+            this.setState({ volume });
+        }
     }
 
     public canSeekBackward() {

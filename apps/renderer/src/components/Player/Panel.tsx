@@ -11,6 +11,7 @@ import { usePlayer } from "@components/Player/context";
 import { RepeatMode } from "@components/Player/Provider";
 
 import { AlbumArtView, Description, NowPlaying, Root, Section } from "@components/Player/Panel.styles";
+import { VolumeControl } from "@components/VolumeControl";
 
 export interface PlayerPanelProps {}
 
@@ -97,6 +98,7 @@ export function PlayerPanel({}: PlayerPanelProps) {
             <Section>
                 <Box width="100%" display="flex" justifyContent="flex-end" alignItems="center" pr={1}>
                     <Stack direction="row" spacing={1}>
+                        <VolumeControl />
                         <IconButton size="small" onClick={handleRepeatClick}>
                             {repeatModeIcon}
                         </IconButton>
