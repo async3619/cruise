@@ -58,7 +58,7 @@ export class PlayerProvider extends React.Component<React.PropsWithChildren, Pla
 
         shufflePlaylist: this.shufflePlaylist.bind(this),
         setRepeatMode: this.setRepeatMode.bind(this),
-        repeatMode: RepeatMode.None,
+        repeatMode: Number(localStorage.getItem("repeatMode")) || RepeatMode.None,
 
         setMuted: this.setMuted.bind(this),
         setVolume: this.setVolume.bind(this),
@@ -96,6 +96,12 @@ export class PlayerProvider extends React.Component<React.PropsWithChildren, Pla
 
         this.audio.volume = volume;
         this.audio.muted = muted;
+    }
+
+    public componentDidUpdate(_: Readonly<React.PropsWithChildren>, prevState: Readonly<Player>) {
+        if (prevState.repeatMode !== this.state.repeatMode) {
+            localStorage.setItem("repeatMode", String(this.state.repeatMode));
+        }
     }
 
     public setRepeatMode(mode: RepeatMode) {
