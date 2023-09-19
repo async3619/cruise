@@ -102,6 +102,11 @@ export class PlayerProvider extends React.Component<React.PropsWithChildren<Play
         this.audio.muted = muted;
 
         this.handleQueryFinished();
+
+        const targetActions: MediaSessionAction[] = ["play", "pause", "stop", "nexttrack", "previoustrack"];
+        for (const action of targetActions) {
+            navigator.mediaSession.setActionHandler(action, this.handleMediaSessionAction.bind(this, action));
+        }
     }
     public componentDidUpdate(_: Readonly<React.PropsWithChildren>, prevState: Readonly<Player>) {
         if (prevState.repeatMode !== this.state.repeatMode) {
@@ -320,6 +325,29 @@ export class PlayerProvider extends React.Component<React.PropsWithChildren<Play
         }
 
         this.seekPlaylist(currentIndex + 1);
+    };
+    private handleMediaSessionAction = (action: MediaSessionAction) => {
+        switch (action) {
+            case "play":
+                this.play();
+                break;
+
+            case "pause":
+                this.pause();
+                break;
+
+            case "stop":
+                this.stop();
+                break;
+
+            case "nexttrack":
+                this.seekPlaylist(this.state.currentIndex + 1);
+                break;
+
+            case "previoustrack":
+                this.seekPlaylist(this.state.currentIndex - 1);
+                break;
+        }
     };
 
     public render() {
