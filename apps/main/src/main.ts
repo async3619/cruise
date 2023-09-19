@@ -1,4 +1,4 @@
-import { app as electronApp } from "electron";
+import { app as electronApp, protocol } from "electron";
 
 import { NestFactory } from "@nestjs/core";
 import { DummyAdapter } from "@nest/dummy.adapter";
@@ -6,6 +6,8 @@ import { DummyAdapter } from "@nest/dummy.adapter";
 import { AppModule } from "@root/app.module";
 
 import { ElectronService } from "@electron/electron.service";
+
+protocol.registerSchemesAsPrivileged([{ scheme: "cruise", privileges: { bypassCSP: true, supportFetchAPI: true } }]);
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule, new DummyAdapter());

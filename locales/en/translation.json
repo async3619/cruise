@@ -44,6 +44,8 @@
         "now-playing": "Now Playing",
         "unknown-genre": "Unknown Genre",
         "unknown-album": "Unknown Album",
+        "unknown-artist": "Unknown Artist",
+        "untitled": "Untitled",
         "musicWithCount_other": "{{count}} Musics",
         "musicWithCount_one": "{{count}} Music",
         "albumWithCount_other": "{{count}} Albums",

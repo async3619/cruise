@@ -1,10 +1,12 @@
 import React from "react";
 import { Nullable } from "types";
 import { BaseEventMap, EventEmitter } from "utils";
+import { t } from "i18next";
 
 import { PlayerContext } from "@components/Player/context";
 
 import { MinimalMusic } from "@utils/types";
+import { downloadBlob } from "@utils/networking";
 
 export interface PlayerEvents extends BaseEventMap {
     timeUpdate: (currentTime: number) => void;
@@ -108,7 +110,7 @@ export class PlayerProvider extends React.Component<React.PropsWithChildren<Play
             navigator.mediaSession.setActionHandler(action, this.handleMediaSessionAction.bind(this, action));
         }
     }
-    public componentDidUpdate(_: Readonly<React.PropsWithChildren>, prevState: Readonly<Player>) {
+    public async componentDidUpdate(_: Readonly<React.PropsWithChildren>, prevState: Readonly<Player>) {
         if (prevState.repeatMode !== this.state.repeatMode) {
             localStorage.setItem("repeatMode", String(this.state.repeatMode));
         }
@@ -120,6 +122,24 @@ export class PlayerProvider extends React.Component<React.PropsWithChildren<Play
 
         if (prevState.currentIndex !== this.state.currentIndex) {
             localStorage.setItem("currentIndex", String(this.state.currentIndex));
+        }
+
+        const prevMusic = prevState.playlist[prevState.currentIndex];
+        const currentMusic = this.state.playlist[this.state.currentIndex];
+
+        if (prevMusic?.id !== currentMusic?.id && currentMusic) {
+            let imageUrl: string | undefined;
+            if (currentMusic.albumArt) {
+                const blob = await downloadBlob(currentMusic.albumArt.url);
+                imageUrl = URL.createObjectURL(blob);
+            }
+
+            navigator.mediaSession.metadata = new MediaMetadata({
+                title: currentMusic.title ?? t("common.untitled"),
+                artist: currentMusic.artists.map(a => a.name).join(", ") ?? t("common.unknown-artist"),
+                album: currentMusic.album?.title ?? t("common.unknown-album"),
+                artwork: imageUrl ? [{ src: imageUrl }] : [],
+            });
         }
     }
 

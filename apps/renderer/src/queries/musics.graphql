@@ -1,6 +1,8 @@
 fragment MinimalAlbumArt on AlbumArt {
     id
     url
+    width
+    height
 }
 
 fragment MinimalMusic on Music {
