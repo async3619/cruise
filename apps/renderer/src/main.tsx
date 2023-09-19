@@ -7,8 +7,15 @@ import backend from "i18next-electron-fs-backend";
 
 import { App } from "@components/App";
 
+import { queryMusics } from "@graphql/queries";
+import apolloClient from "@graphql/client";
+
 (async () => {
     const config = await window.appBridge.getConfig();
+    const {
+        data: { musics },
+    } = await queryMusics(apolloClient);
+
     await i18next
         .use(backend)
         .use(initReactI18next)
@@ -29,6 +36,6 @@ import { App } from "@components/App";
     const container = document.getElementById("app");
     if (container) {
         const root = ReactDOM.createRoot(container);
-        root.render(<App initialConfig={config} />);
+        root.render(<App initialConfig={config} initialMusics={musics} />);
     }
 })();
