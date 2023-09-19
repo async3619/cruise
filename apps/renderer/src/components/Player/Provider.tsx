@@ -16,6 +16,10 @@ export enum RepeatMode {
     All,
 }
 
+export interface PlayerProps {
+    initialMusics: MinimalMusic[];
+}
+
 export interface Player {
     playlist: MinimalMusic[];
     currentIndex: number;
@@ -48,7 +52,7 @@ export interface Player {
     events: EventEmitter<PlayerEvents>;
 }
 
-export class PlayerProvider extends React.Component<React.PropsWithChildren, Player> {
+export class PlayerProvider extends React.Component<React.PropsWithChildren<PlayerProps>, Player> {
     private readonly audioRef = React.createRef<HTMLAudioElement>();
 
     public state: Player = {
@@ -58,7 +62,7 @@ export class PlayerProvider extends React.Component<React.PropsWithChildren, Pla
 
         shufflePlaylist: this.shufflePlaylist.bind(this),
         setRepeatMode: this.setRepeatMode.bind(this),
-        repeatMode: RepeatMode.None,
+        repeatMode: Number(localStorage.getItem("repeatMode")) || RepeatMode.None,
 
         setMuted: this.setMuted.bind(this),
         setVolume: this.setVolume.bind(this),
@@ -96,6 +100,22 @@ export class PlayerProvider extends React.Component<React.PropsWithChildren, Pla
 
         this.audio.volume = volume;
         this.audio.muted = muted;
+
+        this.handleQueryFinished();
+    }
+    public componentDidUpdate(_: Readonly<React.PropsWithChildren>, prevState: Readonly<Player>) {
+        if (prevState.repeatMode !== this.state.repeatMode) {
+            localStorage.setItem("repeatMode", String(this.state.repeatMode));
+        }
+
+        if (prevState.playlist !== this.state.playlist) {
+            const musicIds = this.state.playlist.map(music => music.id);
+            localStorage.setItem("playlist", JSON.stringify(musicIds));
+        }
+
+        if (prevState.currentIndex !== this.state.currentIndex) {
+            localStorage.setItem("currentIndex", String(this.state.currentIndex));
+        }
     }
 
     public setRepeatMode(mode: RepeatMode) {
@@ -212,7 +232,11 @@ export class PlayerProvider extends React.Component<React.PropsWithChildren, Pla
     }
 
     public canSeekBackward() {
-        const { repeatMode, currentIndex } = this.state;
+        const { repeatMode, currentIndex, playlist } = this.state;
+        if (playlist.length === 0) {
+            return false;
+        }
+
         if (repeatMode === RepeatMode.All) {
             return true;
         }
@@ -221,6 +245,10 @@ export class PlayerProvider extends React.Component<React.PropsWithChildren, Pla
     }
     public canSeekForward() {
         const { repeatMode, currentIndex, playlist } = this.state;
+        if (playlist.length === 0) {
+            return false;
+        }
+
         if (repeatMode === RepeatMode.All) {
             return true;
         }
@@ -246,6 +274,31 @@ export class PlayerProvider extends React.Component<React.PropsWithChildren, Pla
         this.audio.currentTime = time;
     }
 
+    private handleQueryFinished = () => {
+        const { initialMusics: musics } = this.props;
+        const musicMap = new Map<number, MinimalMusic>();
+        for (const music of musics) {
+            musicMap.set(music.id, music);
+        }
+
+        const playlist = JSON.parse(localStorage.getItem("playlist") ?? "[]") as number[];
+        const playlistMusics = playlist
+            .filter((id: number) => musicMap.has(id))
+            .map<MinimalMusic>((id: number) => musicMap.get(id)!);
+
+        let currentIndex = Number(localStorage.getItem("currentIndex")) || 0;
+        if (currentIndex < 0 || currentIndex >= playlist.length) {
+            currentIndex = 0;
+        }
+
+        if (playlist.length > 0 && playlistMusics.length > 0) {
+            this.setState({ playlist: playlistMusics, currentIndex });
+
+            if (playlistMusics.length !== playlist.length) {
+                localStorage.setItem("playlist", JSON.stringify(playlistMusics.map(music => music.id)));
+            }
+        }
+    };
     private handlePlay = () => {
         this.setState({ isPlaying: true });
     };
