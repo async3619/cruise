@@ -1,5 +1,5 @@
 import { Inject } from "@nestjs/common";
-import { Context, Int, Parent, ResolveField, Resolver } from "@nestjs/graphql";
+import { Context, Parent, ResolveField, Resolver } from "@nestjs/graphql";
 
 import { ElectronService } from "@electron/electron.service";
 
@@ -19,25 +19,5 @@ export class AlbumArtResolver {
         const image = await loaders.image.load(parent.imageId);
 
         return this.electronService.getElectronUrl(image.path);
-    }
-
-    @ResolveField(() => Int)
-    public async width(
-        @Parent() parent: AlbumArt,
-        @Context("loaders") loaders: GraphQLContext["loaders"],
-    ): Promise<number> {
-        const image = await loaders.image.load(parent.imageId);
-
-        return image.width;
-    }
-
-    @ResolveField(() => Int)
-    public async height(
-        @Parent() parent: AlbumArt,
-        @Context("loaders") loaders: GraphQLContext["loaders"],
-    ): Promise<number> {
-        const image = await loaders.image.load(parent.imageId);
-
-        return image.height;
     }
 }
