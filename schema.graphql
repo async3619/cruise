@@ -34,8 +34,6 @@ type AlbumArt {
   createdAt: DateTime!
   updatedAt: DateTime!
   url: String!
-  width: Int!
-  height: Int!
 }
 
 type Album {

@@ -1,30 +1,15 @@
 import React from "react";
-import { useTranslation } from "react-i18next";
 
 import { VirtualizedList } from "ui";
-
-import { Box, Typography } from "@mui/material";
-import PlayArrowRoundedIcon from "@mui/icons-material/PlayArrowRounded";
-import PauseRoundedIcon from "@mui/icons-material/PauseRounded";
 
 import { useLayout } from "@components/Layout/context";
 import { usePlayer } from "@components/Player/context";
 import { useMusicSelection } from "@components/Selection";
+import { Item } from "@components/MusicList/Item";
 
-import {
-    AlbumInformation,
-    Column,
-    Item,
-    Label,
-    PlayPauseButton,
-    Root,
-    ShrinkList,
-} from "@components/MusicList/index.styles";
+import { Root, ShrinkList } from "@components/MusicList/index.styles";
 
 import { MinimalMusic } from "@utils/types";
-import { formatDuration } from "@utils/duration";
-import { AlbumArt } from "@components/AlbumArt";
-import { DisabledText } from "@styles/components";
 
 export interface MusicListProps {
     musics: MinimalMusic[];
@@ -32,10 +17,8 @@ export interface MusicListProps {
 }
 
 export function MusicList({ musics, withAlbum = false }: MusicListProps) {
-    const { t } = useTranslation();
     const { view } = useLayout();
     const player = usePlayer();
-    const currentMusic = player.getCurrentMusic();
     const selection = useMusicSelection();
 
     const handlePlayPauseClick = React.useCallback(
@@ -43,7 +26,8 @@ export function MusicList({ musics, withAlbum = false }: MusicListProps) {
             e.preventDefault();
             e.stopPropagation();
 
-            if (player.currentIndex === index) {
+            const currentMusic = player.playlist[player.currentIndex];
+            if (currentMusic && currentMusic.id === musics[index].id) {
                 if (player.isPlaying) {
                     player.pause();
                 } else {
@@ -92,71 +76,15 @@ export function MusicList({ musics, withAlbum = false }: MusicListProps) {
             <List items={musics} estimateSize={() => 56} scrollElement={view}>
                 {(item, index) => (
                     <Item
-                        tabIndex={0}
-                        odd={index % 2 !== 0}
+                        item={item}
+                        index={index}
                         key={item.id}
-                        isActive={currentMusic?.id === item.id}
-                        onClick={e => handleItemClick(e, index)}
-                        onKeyDown={e => handleItemKeyDown(e, index)}
-                        selected={selection?.selectedIndices.includes(index) || false}
-                    >
-                        {withAlbum && (!index || item.album?.id !== musics[index - 1].album?.id) && (
-                            <AlbumInformation>
-                                <AlbumArt albumArt={item.albumArt} />
-                                <Box mt={1}>
-                                    <Typography
-                                        variant="body1"
-                                        overflow="hidden"
-                                        textOverflow="ellipsis"
-                                        whiteSpace="nowrap"
-                                        color="text.primary"
-                                    >
-                                        {item.album?.title || t("common.unknown-album")}
-                                    </Typography>
-                                    {item.year && (
-                                        <Typography component={DisabledText} variant="body2">
-                                            {item.year}
-                                        </Typography>
-                                    )}
-                                </Box>
-                            </AlbumInformation>
-                        )}
-                        <Column columnWidth="44px">
-                            <PlayPauseButton
-                                withoutBorder
-                                albumArt={item.albumArt}
-                                onClick={e => handlePlayPauseClick(e, index)}
-                            >
-                                {(player.currentIndex !== index || !player.isPlaying) && <PlayArrowRoundedIcon />}
-                                {player.currentIndex === index && player.isPlaying && <PauseRoundedIcon />}
-                            </PlayPauseButton>
-                        </Column>
-                        <Column columnWidth="43%">
-                            <Typography component={Label} variant="body1" fontSize="0.9rem">
-                                {item.title}
-                            </Typography>
-                        </Column>
-                        <Column columnWidth="18%">
-                            <Typography component={Label} variant="body1" fontSize="0.9rem">
-                                {item.artists[0].name}
-                            </Typography>
-                        </Column>
-                        <Column columnWidth="18%">
-                            <Typography component={Label} variant="body1" fontSize="0.9rem">
-                                {item.album?.title || t("common.unknown-album")}
-                            </Typography>
-                        </Column>
-                        <Column columnWidth="18%">
-                            <Typography component={Label} variant="body1" fontSize="0.9rem">
-                                {item.genre[0] || t("common.unknown-genre")}
-                            </Typography>
-                        </Column>
-                        <Column columnWidth="7%">
-                            <Typography component={Label} variant="body1" fontSize="0.9rem" textAlign="right">
-                                {formatDuration(item.duration)}
-                            </Typography>
-                        </Column>
-                    </Item>
+                        onClick={handleItemClick}
+                        onKeyDown={handleItemKeyDown}
+                        onPlayPauseClick={handlePlayPauseClick}
+                        musics={musics}
+                        withAlbum={withAlbum}
+                    />
                 )}
             </List>
         </Root>
