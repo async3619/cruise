@@ -4,9 +4,27 @@ fragment FullSearchSuggestion on SearchSuggestion {
     title
 }
 
+fragment FullSearchResult on SearchResult {
+    albums {
+        ...MinimalAlbum
+    }
+    musics {
+        ...MinimalMusic
+    }
+    artists {
+        ...FullArtist
+    }
+}
+
 query searchSuggestions {
     searchSuggestions {
         ...FullSearchSuggestion
+    }
+}
+
+query search($query: String!) {
+    search(query: $query) {
+        ...FullSearchResult
     }
 }
 

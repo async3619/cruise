@@ -112,5 +112,10 @@
                 "title-tooLong": "The new name of the playlist cannot be longer than 20 characters."
             }
         }
+    },
+    "search": {
+        "errors": {
+            "undefined-error": "Unknown error has occurred during search library."
+        }
     }
 }

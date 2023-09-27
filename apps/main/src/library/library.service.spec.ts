@@ -43,4 +43,18 @@ describe("LibraryService", () => {
         expect(albumService.findAll).toHaveBeenCalled();
         expect(artistService.findAll).toHaveBeenCalled();
     });
+
+    it("should be able to search library", async () => {
+        const result = await service.search("t");
+
+        expect(musicService.findAll).toHaveBeenCalled();
+        expect(albumService.findAll).toHaveBeenCalled();
+        expect(artistService.findAll).toHaveBeenCalled();
+
+        expect(result).toEqual({
+            musics: [{ id: 0, title: "title" }],
+            albums: [{ id: 0, title: "title" }],
+            artists: [],
+        });
+    });
 });

@@ -3,10 +3,14 @@ import useMeasure from "react-use-measure";
 
 import { AsyncFn, Fn, Nullable } from "types";
 
-import { Popper, Typography, useAutocomplete } from "@mui/material";
+import { createFilterOptions, Popper, Typography, useAutocomplete } from "@mui/material";
 
 import { Icon, List, Option, Root } from "./Autocomplete.styles";
 import { mergeRefs } from "../utils/mergeRefs";
+
+export interface AutocompleteController {
+    clearInput(): void;
+}
 
 export interface BaseAutocompleteProps<TItem> {
     getItemLabel: Fn<[TItem], string>;
@@ -14,6 +18,8 @@ export interface BaseAutocompleteProps<TItem> {
     getItemKey?: Fn<[TItem], string>;
     renderInput: Fn<[React.InputHTMLAttributes<HTMLInputElement>, boolean], React.ReactNode>;
     fullWidth?: boolean;
+
+    onKeyDown?(e: React.KeyboardEvent<HTMLInputElement>, controller: AutocompleteController): void;
 }
 
 export interface StaticAutocompleteProps<TItem> extends BaseAutocompleteProps<TItem> {
@@ -32,12 +38,14 @@ export function Autocomplete<TItem>({
     fullWidth = false,
     getItemIcon,
     getItemKey,
+    onKeyDown,
 }: AutocompleteProps<TItem>) {
     const [currentItems, setCurrentItems] = React.useState<Nullable<ReadonlyArray<TItem>>>(null);
     const [rootRef, setRootRef] = React.useState<Nullable<HTMLDivElement>>(null);
     const [measureRef, { width }] = useMeasure();
     const [loading, setLoading] = React.useState(false);
     const [focused, setFocused] = React.useState(false);
+    const [inputValue, setInputValue] = React.useState("");
 
     React.useEffect(() => {
         if (!focused || currentItems !== null) {
@@ -70,7 +78,24 @@ export function Autocomplete<TItem>({
         clearOnBlur: false,
         clearOnEscape: false,
         autoComplete: true,
+        inputValue,
+        onInputChange: (_, value) => setInputValue(value),
+        filterOptions: createFilterOptions({
+            limit: 50,
+            matchFrom: "start",
+        }),
     });
+
+    const clearInput = React.useCallback(() => {
+        setInputValue("");
+    }, []);
+
+    const controller = React.useMemo<AutocompleteController>(
+        () => ({
+            clearInput,
+        }),
+        [clearInput],
+    );
 
     let inputProps = getInputProps();
     const oldFocus = inputProps.onFocus;
@@ -91,10 +116,20 @@ export function Autocomplete<TItem>({
         [oldBlur],
     );
 
+    const oldKeyDown = inputProps.onKeyDown;
+    const handleKeyDown = React.useCallback(
+        (e: React.KeyboardEvent<HTMLInputElement>) => {
+            onKeyDown?.(e, controller);
+            oldKeyDown?.(e);
+        },
+        [oldKeyDown, onKeyDown, controller],
+    );
+
     inputProps = {
         ...inputProps,
         onFocus: handleFocus,
         onBlur: handleBlur,
+        onKeyDown: handleKeyDown,
     };
 
     const opened = groupedOptions.length > 0;
@@ -105,7 +140,7 @@ export function Autocomplete<TItem>({
             <Root fullWidth={fullWidth} ref={rootRefObject} data-testid="Autocomplete" {...getRootProps()}>
                 {renderInput(inputProps, loading)}
             </Root>
-            <Popper open={opened} anchorEl={rootRef} sx={{ zIndex: 1000 }}>
+            <Popper open={opened && !!inputValue} anchorEl={rootRef} sx={{ zIndex: 1000 }}>
                 <List {...getListboxProps()} style={{ width }}>
                     {(groupedOptions as TItem[]).map((option, index) => {
                         const props: React.HTMLAttributes<HTMLLIElement> & { key?: string } = getOptionProps({

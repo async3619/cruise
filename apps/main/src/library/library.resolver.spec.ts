@@ -17,6 +17,7 @@ describe("LibraryResolver", () => {
 
         libraryService = {
             getSearchSuggestions: jest.fn(),
+            search: jest.fn(),
         };
 
         const module: TestingModule = await Test.createTestingModule({
@@ -50,5 +51,11 @@ describe("LibraryResolver", () => {
         await resolver.searchSuggestions();
 
         expect(libraryService.getSearchSuggestions).toHaveBeenCalled();
+    });
+
+    it("should be able to search library", async () => {
+        await resolver.search("test");
+
+        expect(libraryService.search).toHaveBeenCalledWith("test");
     });
 });

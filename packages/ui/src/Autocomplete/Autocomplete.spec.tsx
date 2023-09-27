@@ -1,7 +1,7 @@
 import React from "react";
 import { act, fireEvent, render, screen } from "@testing-library/react";
 
-import { Autocomplete } from "./Autocomplete";
+import { Autocomplete, AutocompleteController } from "./Autocomplete";
 import { Wrapper } from "../../__test__/Wrapper";
 
 describe("<Autocomplete />", () => {
@@ -171,5 +171,65 @@ describe("<Autocomplete />", () => {
 
         const item = screen.queryByTestId("suggestion-option");
         expect(item).not.toBeInTheDocument();
+    });
+
+    it("should call onKeyDown event handler if provided", async () => {
+        const onKeyDown = jest.fn();
+
+        render(
+            <Autocomplete
+                getItemLabel={item => item.label}
+                items={[{ label: "test", value: "test" }]}
+                onKeyDown={onKeyDown}
+                renderInput={props => <input {...props} data-testid="Input" />}
+            />,
+            { wrapper: Wrapper },
+        );
+
+        const input = screen.getByTestId("Input");
+
+        act(() => {
+            fireEvent.focus(input);
+        });
+
+        act(() => {
+            fireEvent.keyDown(input, { key: "Enter" });
+        });
+
+        expect(onKeyDown).toHaveBeenCalled();
+    });
+
+    it("should be able to clear input value through controller", async () => {
+        const onKeyDown = jest
+            .fn()
+            .mockImplementation((e: React.KeyboardEvent<HTMLInputElement>, controller: AutocompleteController) => {
+                if (e.key === "Enter") {
+                    controller.clearInput();
+                }
+            });
+
+        render(
+            <Autocomplete
+                getItemLabel={item => item.label}
+                items={[{ label: "test", value: "test" }]}
+                onKeyDown={onKeyDown}
+                renderInput={props => <input {...props} data-testid="Input" />}
+            />,
+            { wrapper: Wrapper },
+        );
+
+        const input = screen.getByTestId("Input");
+
+        act(() => {
+            fireEvent.focus(input);
+        });
+
+        act(() => {
+            fireEvent.input(input, { target: { value: "test" } });
+            fireEvent.keyDown(input, { key: "Enter" });
+        });
+
+        expect(onKeyDown).toHaveBeenCalled();
+        expect(input).toHaveValue("");
     });
 });

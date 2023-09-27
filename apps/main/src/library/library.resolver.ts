@@ -1,10 +1,11 @@
 import { Inject } from "@nestjs/common";
-import { Mutation, Query, Resolver, Subscription } from "@nestjs/graphql";
+import { Args, Mutation, Query, Resolver, Subscription } from "@nestjs/graphql";
 
 import { LibraryScannerService } from "@library/library.scanner.service";
 import { LibraryService } from "@library/library.service";
 
 import { SearchSuggestion } from "@library/models/search-suggestion.model";
+import { SearchResult } from "@library/models/search-result.model";
 
 @Resolver()
 export class LibraryResolver {
@@ -12,6 +13,11 @@ export class LibraryResolver {
         @Inject(LibraryScannerService) private readonly libraryScannerService: LibraryScannerService,
         @Inject(LibraryService) private readonly libraryService: LibraryService,
     ) {}
+
+    @Query(() => SearchResult)
+    public async search(@Args("query", { type: () => String }) query: string): Promise<SearchResult> {
+        return this.libraryService.search(query);
+    }
 
     @Query(() => [SearchSuggestion])
     public async searchSuggestions(): Promise<SearchSuggestion[]> {
