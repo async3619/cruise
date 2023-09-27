@@ -2,10 +2,12 @@ import { Test, TestingModule } from "@nestjs/testing";
 
 import { LibraryResolver } from "@library/library.resolver";
 import { LibraryScannerService } from "@library/library.scanner.service";
+import { LibraryService } from "@library/library.service";
 
 describe("LibraryResolver", () => {
     let resolver: LibraryResolver;
     let libraryScannerService: Record<string, jest.Mock>;
+    let libraryService: Record<string, jest.Mock>;
 
     beforeEach(async () => {
         libraryScannerService = {
@@ -13,8 +15,16 @@ describe("LibraryResolver", () => {
             subscribeToLibraryScanningStateChanged: jest.fn(),
         };
 
+        libraryService = {
+            getSearchSuggestions: jest.fn(),
+        };
+
         const module: TestingModule = await Test.createTestingModule({
-            providers: [LibraryResolver, { provide: LibraryScannerService, useValue: libraryScannerService }],
+            providers: [
+                LibraryResolver,
+                { provide: LibraryScannerService, useValue: libraryScannerService },
+                { provide: LibraryService, useValue: libraryService },
+            ],
         }).compile();
 
         resolver = module.get<LibraryResolver>(LibraryResolver);
@@ -34,5 +44,11 @@ describe("LibraryResolver", () => {
         await resolver.libraryScanningStateChanged();
 
         expect(libraryScannerService.subscribeToLibraryScanningStateChanged).toHaveBeenCalled();
+    });
+
+    it("should be able to get search suggestions", async () => {
+        await resolver.searchSuggestions();
+
+        expect(libraryService.getSearchSuggestions).toHaveBeenCalled();
     });
 });
