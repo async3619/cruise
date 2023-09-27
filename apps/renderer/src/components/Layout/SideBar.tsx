@@ -12,6 +12,7 @@ import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AlbumRoundedIcon from "@mui/icons-material/AlbumRounded";
 import PeopleAltRoundedIcon from "@mui/icons-material/PeopleAltRounded";
+import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 
 import { ScrollbarThumb } from "@components/ScrollbarThumb";
 import { Content, Root } from "@components/Layout/SideBar.styles";
@@ -31,6 +32,12 @@ export function SideBar() {
                 type: "button",
                 label: t("pages.home"),
                 icon: <HomeRoundedIcon />,
+            },
+            {
+                id: "/search",
+                type: "button",
+                label: t("pages.search"),
+                icon: <SearchRoundedIcon />,
             },
             {
                 id: "/settings",

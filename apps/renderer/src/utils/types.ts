@@ -1,6 +1,7 @@
 import {
     ConfigDataFragment,
     FullArtistFragment,
+    FullSearchSuggestionFragment,
     MinimalAlbumArtFragment,
     MinimalAlbumFragment,
     MinimalArtistFragment,
@@ -18,3 +19,4 @@ export type MinimalPlaylist = FromGraphQL<MinimalPlaylistFragment>;
 export type MinimalAlbum = FromGraphQL<MinimalAlbumFragment>;
 export type MinimalArtist = FromGraphQL<MinimalArtistFragment>;
 export type FullArtist = FromGraphQL<FullArtistFragment>;
+export type SearchSuggestionItem = FromGraphQL<FullSearchSuggestionFragment>;

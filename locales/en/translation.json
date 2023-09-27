@@ -2,8 +2,10 @@
     "pages": {
         "home": "Home",
         "settings": "Settings",
+        "search": "Search",
         "musics": "Musics",
-        "albums": "Albums"
+        "albums": "Albums",
+        "artists": "Artists"
     },
     "settings": {
         "library": {

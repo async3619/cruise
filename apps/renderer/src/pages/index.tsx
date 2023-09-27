@@ -12,11 +12,13 @@ import { Albums } from "@pages/Albums";
 import { Album } from "@pages/Album";
 import { Artists } from "@pages/Artists";
 import { Artist } from "@pages/Artist";
+import { Search } from "@pages/Search";
 
 const router = createHashRouter(
     createRoutesFromElements(
         <Route element={<Layout />}>
             <Route path="/" element={<Home />} />
+            <Route path="/search" element={<Search />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/library/musics" element={<Musics />} />
             <Route path="/library/albums" element={<Albums />} />

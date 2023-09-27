@@ -10,6 +10,8 @@ export const GlobalStyles = css`
     body,
     #app {
         height: 100vh;
+
+        overflow: hidden;
     }
 
     @font-face {

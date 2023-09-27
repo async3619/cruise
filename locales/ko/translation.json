@@ -2,6 +2,7 @@
     "pages": {
         "home": "홈",
         "settings": "설정",
+        "search": "검색",
         "musics": "음악",
         "albums": "앨범",
         "artists": "아티스트"
