@@ -71,10 +71,17 @@ export function Page({ children, header, headerRef, loading = false, headerPosit
     return (
         <Root>
             {headerNode}
-            <Content style={{ paddingTop: headerPosition === "fixed" ? initialHeight ?? 0 : undefined }}>
-                {toolbar && <ToolbarPlaceholder />}
-                {content}
-            </Content>
+            {loading && (
+                <Content style={{ paddingTop: headerPosition === "fixed" ? initialHeight ?? 0 : undefined }}>
+                    {content}
+                </Content>
+            )}
+            {!loading && (
+                <Content style={{ paddingTop: headerPosition === "fixed" ? initialHeight ?? 0 : undefined }}>
+                    {toolbar && <ToolbarPlaceholder />}
+                    {content}
+                </Content>
+            )}
         </Root>
     );
 }
