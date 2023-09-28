@@ -37,21 +37,61 @@ export class LibraryService {
         const artists = await this.artistService.findAll();
         const albums = await this.albumService.findAll();
 
+        const musicMap = _.chain(musics).keyBy("id").mapValues().value();
+        const artistMap = _.chain(artists).keyBy("id").mapValues().value();
+        const albumMap = _.chain(albums).keyBy("id").mapValues().value();
+
+        query = query.toLowerCase();
+
         const matchedMusics = _.chain(musics)
-            .filter(m => !!m.title?.includes(query))
+            .filter(m => !!m.title?.toLowerCase()?.includes(query))
             .value();
 
         const matchedArtists = _.chain(artists)
-            .filter(a => !!a.name?.includes(query))
+            .filter(a => !!a.name?.toLowerCase()?.includes(query))
             .value();
 
         const matchedAlbums = _.chain(albums)
-            .filter(a => !!a.title?.includes(query))
+            .filter(a => !!a.title?.toLowerCase()?.includes(query))
             .value();
 
-        result.musics = matchedMusics;
-        result.artists = matchedArtists;
-        result.albums = matchedAlbums;
+        for (const album of matchedAlbums) {
+            matchedMusics.push(
+                ..._.chain(album.musicIds)
+                    .map(id => musicMap[id])
+                    .value(),
+            );
+        }
+
+        for (const artist of matchedArtists) {
+            matchedAlbums.push(
+                ..._.chain(artist.albumIds)
+                    .map(id => albumMap[id])
+                    .value(),
+            );
+
+            matchedMusics.push(
+                ..._.chain(artist.musicIds)
+                    .map(id => musicMap[id])
+                    .value(),
+            );
+        }
+
+        for (const music of matchedMusics) {
+            matchedArtists.push(
+                ..._.chain(music.artistIds)
+                    .map(id => artistMap[id])
+                    .value(),
+            );
+
+            if (music.albumId) {
+                matchedAlbums.push(albumMap[music.albumId]);
+            }
+        }
+
+        result.musics = _.chain(matchedMusics).uniqBy("id").value();
+        result.artists = _.chain(matchedArtists).uniqBy("id").value();
+        result.albums = _.chain(matchedAlbums).uniqBy("id").value();
 
         return result;
     }
