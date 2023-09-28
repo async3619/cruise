@@ -11,3 +11,4 @@ export * from "./theme";
 export * from "./Button";
 export * from "./IconTab";
 export * from "./Autocomplete";
+export * from "./ChipRadio";

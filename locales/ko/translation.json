@@ -66,7 +66,9 @@
         "shuffle-all": "무작위 재생",
         "album-list": "앨범 목록",
         "artist-list": "아티스트 목록",
-        "track-list": "곡 목록"
+        "track-list": "곡 목록",
+        "show-more": "더 보기",
+        "all": "전체"
     },
     "playlist": {
         "create": {

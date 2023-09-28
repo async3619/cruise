@@ -1,7 +1,7 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 
-import { Autocomplete, AutocompleteController } from "ui";
+import { Autocomplete, AutocompleteController, ChipRadio, ChipRadioItem } from "ui";
 
 import { Box, Stack, Typography } from "@mui/material";
 import PeopleAltRoundedIcon from "@mui/icons-material/PeopleAltRounded";
@@ -11,14 +11,20 @@ import AlbumRoundedIcon from "@mui/icons-material/AlbumRounded";
 import { Page } from "@components/Page";
 import { SearchInput } from "@components/SearchInput";
 import { useLibrary } from "@components/Library/context";
-import { MusicList } from "@components/MusicList";
-import { AlbumArtistList } from "@components/AlbumArtist/List";
 import { usePlayer } from "@components/Player/context";
+import { SearchSection } from "@components/SearchSection";
 
 import { MinimalAlbum, SearchResult, SearchSuggestionItem } from "@utils/types";
 import { FullArtistFragment, SearchSuggestionType } from "@graphql/queries";
 
 export interface SearchProps {}
+
+export enum SearchType {
+    All = "all",
+    Musics = "musics",
+    Artists = "artists",
+    Albums = "albums",
+}
 
 export function Search({}: SearchProps) {
     const { t } = useTranslation();
@@ -27,6 +33,15 @@ export function Search({}: SearchProps) {
     const lastQuery = React.useRef("");
     const [searchResult, setSearchResult] = React.useState<SearchResult | null>(null);
     const [isSearching, setIsSearching] = React.useState(false);
+    const [searchType, setSearchType] = React.useState<SearchType>(SearchType.All);
+    const searchTypeItems = React.useMemo<ChipRadioItem<SearchType>[]>(() => {
+        return [
+            { label: t("common.all"), value: SearchType.All },
+            { label: t("pages.musics"), value: SearchType.Musics },
+            { label: t("pages.albums"), value: SearchType.Albums },
+            { label: t("pages.artists"), value: SearchType.Artists },
+        ];
+    }, [t]);
 
     const getItems = React.useCallback(async () => {
         return library.getSearchSuggestions();
@@ -90,60 +105,60 @@ export function Search({}: SearchProps) {
             <Typography variant="h2" fontSize="1.85rem" sx={{ mb: 1.5 }}>
                 {t("pages.search")}
             </Typography>
-            <Autocomplete
-                fullWidth
-                items={getItems}
-                getItemIcon={getItemIcon}
-                getItemLabel={item => item.title}
-                getItemKey={item => `${item.type}_${item.id}`}
-                renderInput={(props, loading) => <SearchInput loading={loading} {...props} />}
-                onKeyDown={handleKeyDown}
-            />
+            <Box mb={2}>
+                <Autocomplete
+                    fullWidth
+                    items={getItems}
+                    getItemIcon={getItemIcon}
+                    getItemLabel={item => item.title}
+                    getItemKey={item => `${item.type}_${item.id}`}
+                    renderInput={(props, loading) => <SearchInput loading={loading} {...props} />}
+                    onKeyDown={handleKeyDown}
+                />
+            </Box>
+            <ChipRadio items={searchTypeItems} value={searchType} onChange={setSearchType} />
         </>
     );
 
     return (
-        <Page header={header} loading={isSearching}>
+        <Page header={header} loading={isSearching} contentKey={searchType}>
             {searchResult && (
                 <Stack spacing={3}>
-                    {searchResult.musics.length > 0 && (
-                        <Box>
-                            <Typography variant="h6">
-                                {t("pages.musics")} ({searchResult.musics.length})
-                            </Typography>
-                            <Box mt={1}>
-                                <MusicList musics={searchResult.musics.slice(0, 5)} />
-                            </Box>
-                        </Box>
-                    )}
-                    {searchResult.albums.length > 0 && (
-                        <Box>
-                            <Typography variant="h6">
-                                {t("pages.albums")} ({searchResult.albums.length})
-                            </Typography>
-                            <Box mt={1}>
-                                <AlbumArtistList
-                                    type="album"
-                                    items={searchResult.albums.slice(0, 5)}
-                                    onPlayItem={handlePlayAlbum}
-                                />
-                            </Box>
-                        </Box>
-                    )}
-                    {searchResult.artists.length > 0 && (
-                        <Box>
-                            <Typography variant="h6">
-                                {t("pages.artists")} ({searchResult.artists.length})
-                            </Typography>
-                            <Box mt={1}>
-                                <AlbumArtistList
-                                    type="artist"
-                                    items={searchResult.artists.slice(0, 5)}
-                                    onPlayItem={handlePlayArtist}
-                                />
-                            </Box>
-                        </Box>
-                    )}
+                    {searchResult.musics.length > 0 &&
+                        (searchType === SearchType.Musics || searchType === SearchType.All) && (
+                            <SearchSection
+                                type="music"
+                                title={t("pages.musics")}
+                                count={searchResult.musics.length}
+                                items={searchResult.musics}
+                                maxCount={searchType === SearchType.Musics ? undefined : 5}
+                                onShowMore={() => setSearchType(SearchType.Musics)}
+                            />
+                        )}
+                    {searchResult.albums.length > 0 &&
+                        (searchType === SearchType.Albums || searchType === SearchType.All) && (
+                            <SearchSection
+                                type="album"
+                                title={t("pages.albums")}
+                                count={searchResult.albums.length}
+                                items={searchResult.albums}
+                                onPlayItem={handlePlayAlbum}
+                                maxCount={searchType === SearchType.Albums ? undefined : 5}
+                                onShowMore={() => setSearchType(SearchType.Albums)}
+                            />
+                        )}
+                    {searchResult.artists.length > 0 &&
+                        (searchType === SearchType.Artists || searchType === SearchType.All) && (
+                            <SearchSection
+                                type="artist"
+                                title={t("pages.artists")}
+                                count={searchResult.artists.length}
+                                items={searchResult.artists}
+                                onPlayItem={handlePlayArtist}
+                                maxCount={searchType === SearchType.Artists ? undefined : 5}
+                                onShowMore={() => setSearchType(SearchType.Artists)}
+                            />
+                        )}
                 </Stack>
             )}
         </Page>
