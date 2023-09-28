@@ -2,6 +2,7 @@
     "pages": {
         "home": "홈",
         "settings": "설정",
+        "search": "검색",
         "musics": "음악",
         "albums": "앨범",
         "artists": "아티스트"
@@ -65,7 +66,9 @@
         "shuffle-all": "무작위 재생",
         "album-list": "앨범 목록",
         "artist-list": "아티스트 목록",
-        "track-list": "곡 목록"
+        "track-list": "곡 목록",
+        "show-more": "더 보기",
+        "all": "전체"
     },
     "playlist": {
         "create": {
@@ -115,6 +118,15 @@
             "pending": "재생목록 항목 삭제 중...",
             "success": "재생목록 항목이 삭제되었습니다.",
             "error": "재생목록 항목 삭제 중 오류가 발생했습니다."
+        }
+    },
+    "search": {
+        "errors": {
+            "undefined-error": "검색 도중 알 수 없는 오류가 발생 하였습니다."
+        },
+        "messages": {
+            "not-searched": "검색하여 라이브러리 탐색...",
+            "no-result": "'{{query}}'에 대한 검색 결과가 없습니다."
         }
     }
 }

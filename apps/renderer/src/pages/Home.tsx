@@ -6,5 +6,5 @@ import { Page } from "@components/Page";
 export function Home() {
     const { t } = useTranslation();
 
-    return <Page header={t("pages.home")}>Hello World!</Page>;
+    return <Page header={t("pages.home")}></Page>;
 }

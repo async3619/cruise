@@ -2,8 +2,10 @@
     "pages": {
         "home": "Home",
         "settings": "Settings",
+        "search": "Search",
         "musics": "Musics",
-        "albums": "Albums"
+        "albums": "Albums",
+        "artists": "Artists"
     },
     "settings": {
         "library": {
@@ -64,7 +66,9 @@
         "shuffle-all": "Shuffle All",
         "album-list": "Album List",
         "artist-list": "Artist List",
-        "track-list": "Track List"
+        "track-list": "Track List",
+        "show-more": "Show More",
+        "all": "All"
     },
     "playlist": {
         "create": {
@@ -109,6 +113,15 @@
                 "title-required": "Please enter the new name of the playlist.",
                 "title-tooLong": "The new name of the playlist cannot be longer than 20 characters."
             }
+        }
+    },
+    "search": {
+        "errors": {
+            "undefined-error": "Unknown error has occurred during search library."
+        },
+        "messages": {
+            "not-searched": "To search for find library items...",
+            "no-result": "There was no search result with '{{query}}'."
         }
     }
 }

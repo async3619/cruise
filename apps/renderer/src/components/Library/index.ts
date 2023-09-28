@@ -13,6 +13,8 @@ import {
     executeDeletePlaylist,
     executeDeletePlaylistItems,
     executeRenamePlaylist,
+    querySearch,
+    querySearchSuggestions,
     useAlbumQuery,
     useAlbumsQuery,
     useArtistQuery,
@@ -45,6 +47,28 @@ export class Library {
         this.navigate = navigate;
         this.toast = toast;
         this.dialog = dialog;
+    }
+
+    public async search(query: string) {
+        const { data, error } = await querySearch(this.client, {
+            variables: { query },
+        });
+
+        if (error) {
+            throw error;
+        } else if (!data) {
+            throw new Error(this.t("search.errors.undefined-error"));
+        }
+
+        return data.search;
+    }
+    public async getSearchSuggestions() {
+        const { data, error } = await querySearchSuggestions(this.client);
+        if (error) {
+            throw error;
+        }
+
+        return data?.searchSuggestions ?? [];
     }
 
     public useAlbum(id: number) {

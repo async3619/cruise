@@ -13,9 +13,18 @@ export interface PageProps {
     headerRef?: React.Ref<HTMLDivElement>;
     headerPosition?: "fixed" | "sticky";
     toolbar?: React.ReactNode;
+    contentKey?: string;
 }
 
-export function Page({ children, header, headerRef, loading = false, headerPosition = "sticky", toolbar }: PageProps) {
+export function Page({
+    children,
+    header,
+    headerRef,
+    loading = false,
+    headerPosition = "sticky",
+    toolbar,
+    contentKey,
+}: PageProps) {
     const [ref, { height: headerHeight }] = useMeasure();
     const [initialHeight, setInitialHeight] = React.useState<number | null>(null);
 
@@ -71,10 +80,23 @@ export function Page({ children, header, headerRef, loading = false, headerPosit
     return (
         <Root>
             {headerNode}
-            <Content style={{ paddingTop: headerPosition === "fixed" ? initialHeight ?? 0 : undefined }}>
-                {toolbar && <ToolbarPlaceholder />}
-                {content}
-            </Content>
+            {loading && (
+                <Content
+                    key={contentKey}
+                    style={{ paddingTop: headerPosition === "fixed" ? initialHeight ?? 0 : undefined }}
+                >
+                    {content}
+                </Content>
+            )}
+            {!loading && (
+                <Content
+                    key={contentKey}
+                    style={{ paddingTop: headerPosition === "fixed" ? initialHeight ?? 0 : undefined }}
+                >
+                    {toolbar && <ToolbarPlaceholder />}
+                    {content}
+                </Content>
+            )}
         </Root>
     );
 }

@@ -56,7 +56,7 @@ export function AlbumArtistList({ items, onPlayItem, type }: AlbumArtistListProp
                     key={item.id}
                     item={item}
                     onPlay={onPlayItem}
-                    onSelectChange={handleSelectChange}
+                    onSelectChange={selection ? handleSelectChange : undefined}
                 />
             ))}
         </Root>

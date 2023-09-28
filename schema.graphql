@@ -71,6 +71,24 @@ type Music {
   url: String!
 }
 
+type SearchSuggestion {
+  id: Int!
+  title: String!
+  type: SearchSuggestionType!
+}
+
+enum SearchSuggestionType {
+  Music
+  Album
+  Artist
+}
+
+type SearchResult {
+  musics: [Music!]!
+  artists: [Artist!]!
+  albums: [Album!]!
+}
+
 type Playlist {
   id: Int!
   name: String!
@@ -89,6 +107,8 @@ type Query {
   isMaximized: Boolean!
   isMinimized: Boolean!
   config: ConfigData!
+  search(query: String!): SearchResult!
+  searchSuggestions: [SearchSuggestion!]!
   playlist(id: Int!): Playlist
   playlists: [Playlist!]!
 }
