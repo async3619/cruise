@@ -120,9 +120,24 @@ export function Search({}: SearchProps) {
         </>
     );
 
+    let totalCounts = 0;
+    if (searchResult) {
+        if (searchType === SearchType.Musics || searchType === SearchType.All) {
+            totalCounts += searchResult.musics.length;
+        }
+
+        if (searchType === SearchType.Albums || searchType === SearchType.All) {
+            totalCounts += searchResult.albums.length;
+        }
+
+        if (searchType === SearchType.Artists || searchType === SearchType.All) {
+            totalCounts += searchResult.artists.length;
+        }
+    }
+
     return (
         <Page header={header} loading={isSearching} contentKey={searchType}>
-            {searchResult && (
+            {searchResult && totalCounts > 0 && (
                 <Stack spacing={3}>
                     {searchResult.musics.length > 0 &&
                         (searchType === SearchType.Musics || searchType === SearchType.All) && (
@@ -160,6 +175,20 @@ export function Search({}: SearchProps) {
                             />
                         )}
                 </Stack>
+            )}
+            {searchResult && totalCounts === 0 && (
+                <Box py={4}>
+                    <Typography variant="body1" textAlign="center" color="text.disabled">
+                        {t("search.messages.no-result", { query: lastQuery.current })}
+                    </Typography>
+                </Box>
+            )}
+            {!searchResult && (
+                <Box py={4}>
+                    <Typography variant="body1" textAlign="center" color="text.disabled">
+                        {t("search.messages.not-searched")}
+                    </Typography>
+                </Box>
             )}
         </Page>
     );

@@ -118,6 +118,10 @@
     "search": {
         "errors": {
             "undefined-error": "Unknown error has occurred during search library."
+        },
+        "messages": {
+            "not-searched": "To search for find library items...",
+            "no-result": "There was no search result with '{{query}}'."
         }
     }
 }
