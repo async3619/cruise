@@ -1,0 +1,12 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Query {
+  isMaximized: Boolean!
+  isMinimized: Boolean!
+}
+
+type Mutation {
+  close: Boolean!
+}
