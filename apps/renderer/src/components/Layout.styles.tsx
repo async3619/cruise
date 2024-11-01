@@ -20,4 +20,6 @@ export const Content = styled.div`
   left: ${({ theme }) => theme.spacing(NAVIGATOR_WIDTH)};
   right: 0;
   bottom: 0;
+
+  overflow: auto;
 `
