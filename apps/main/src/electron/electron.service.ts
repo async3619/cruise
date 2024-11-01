@@ -62,6 +62,11 @@ export class ElectronService implements OnApplicationBootstrap {
       width: 1300,
       height: 800,
       minWidth: 500,
+      titleBarStyle: 'hidden',
+      trafficLightPosition: {
+        x: 15,
+        y: 13,
+      },
       webPreferences: {
         preload:
           process.env.NODE_ENV === 'production'

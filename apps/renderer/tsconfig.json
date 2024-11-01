@@ -8,7 +8,8 @@
       "@pages": ["src/pages"],
       "@pages/*": ["src/pages/*"],
       "@components/*": ["src/components/*"],
-      "@styles/*": ["src/styles/*"]
+      "@styles/*": ["src/styles/*"],
+      "@constants/*": ["src/constants/*"],
     }
   },
   "include": ["src"]

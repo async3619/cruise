@@ -1,18 +1,24 @@
 import React from 'react'
+import { Outlet } from 'react-router-dom'
 
 import { Global } from '@emotion/react'
 import { CssBaseline } from '@mui/material'
 
-import { GlobalStyles, Root } from '@components/Layout.styles'
+import TitleBar from '@components/TitleBar'
+import Navigator from '@components/Navigator'
 
-export interface LayoutProps {}
+import * as Styled from '@components/Layout.styles'
 
-export function Layout({ children }: React.PropsWithChildren<LayoutProps>) {
+export function Layout() {
   return (
-    <Root>
-      <Global styles={GlobalStyles} />
+    <Styled.Root>
+      <Global styles={Styled.GlobalStyles} />
       <CssBaseline />
-      {children}
-    </Root>
+      <TitleBar />
+      <Navigator />
+      <Styled.Content>
+        <Outlet />
+      </Styled.Content>
+    </Styled.Root>
   )
 }
