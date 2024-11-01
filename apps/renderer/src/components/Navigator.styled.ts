@@ -5,6 +5,7 @@ import { NAVIGATOR_WIDTH, TITLE_BAR_HEIGHT } from '@constants/layout'
 export const Root = styled.div`
   width: ${({ theme }) => theme.spacing(NAVIGATOR_WIDTH)};
 
+  padding: ${({ theme }) => theme.spacing(1)};
   border-right: 1px solid #505153;
 
   position: fixed;
