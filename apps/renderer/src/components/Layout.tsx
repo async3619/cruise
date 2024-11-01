@@ -4,18 +4,20 @@ import { Global } from '@emotion/react'
 import { CssBaseline } from '@mui/material'
 
 import TitleBar from '@components/TitleBar'
+import Navigator from '@components/Navigator'
 
-import { GlobalStyles, Root } from '@components/Layout.styles'
+import * as Styled from '@components/Layout.styles'
 
 export interface LayoutProps {}
 
 export function Layout({ children }: React.PropsWithChildren<LayoutProps>) {
   return (
-    <Root>
-      <Global styles={GlobalStyles} />
+    <Styled.Root>
+      <Global styles={Styled.GlobalStyles} />
       <CssBaseline />
       <TitleBar />
-      {children}
-    </Root>
+      <Navigator />
+      <Styled.Content>{children}</Styled.Content>
+    </Styled.Root>
   )
 }

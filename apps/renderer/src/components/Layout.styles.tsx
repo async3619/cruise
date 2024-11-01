@@ -1,5 +1,6 @@
 import styled from '@emotion/styled'
 import { css } from '@emotion/react'
+import { NAVIGATOR_WIDTH, TITLE_BAR_HEIGHT } from '@constants/layout'
 
 export const GlobalStyles = css`
   html,
@@ -11,4 +12,12 @@ export const GlobalStyles = css`
 
 export const Root = styled.div`
   height: 100%;
+`
+
+export const Content = styled.div`
+  position: fixed;
+  top: ${({ theme }) => theme.spacing(TITLE_BAR_HEIGHT)};
+  left: ${({ theme }) => theme.spacing(NAVIGATOR_WIDTH)};
+  right: 0;
+  bottom: 0;
 `
